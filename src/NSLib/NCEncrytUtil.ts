@@ -10,14 +10,14 @@ export class RSAMemoryKeyPair {
   
   export interface IAESMemoryEncryptData {
     iv: string,
-    content: string
+    content: string | Uint8Array
   }
   
   export class AESMemoryEncryptData implements IAESMemoryEncryptData {
     iv: string;
-    content: string;
+    content: string | Uint8Array;
   
-    constructor(iv: string, content: string) {
+    constructor(iv: string, content: string | Uint8Array) {
         this.iv = iv;
         this.content = content;
     }

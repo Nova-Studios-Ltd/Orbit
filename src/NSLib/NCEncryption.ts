@@ -1,5 +1,5 @@
 import { FromUint8Array, ToBase64String, ToUint8Array } from "./Base64";
-import { AESMemoryEncryptData, RSAMemoryKeyPair } from "./NSEncrytUtil";
+import { AESMemoryEncryptData, RSAMemoryKeyPair } from "./NCEncrytUtil";
 
 function ImportRSAPubKey(key: string) : Promise<CryptoKey> {
     const pemHeader = "-----BEGIN PUBLIC KEY-----";
@@ -93,10 +93,25 @@ export async function DecryptUsingAES(key: string, data: AESMemoryEncryptData) :
             length: 64
         },
         await ImportKey(key),
-        ToUint8Array(data.content)
+        ToUint8Array(data.content as string)
     ) as ArrayBuffer;
     return FromUint8Array(new Uint8Array(decrypted));
 }
+
+export async function EncryptUint8ArrayUsingAES(key: string, data: Uint8Array, init_iv?: string) : Promise<AESMemoryEncryptData> {
+    const iv = (init_iv === undefined)? crypto.getRandomValues(new Uint8Array(16)) : ToUint8Array(init_iv);
+    const encrypted = await crypto.subtle.encrypt(
+        {
+            name: "AES-CTR",
+            counter: iv,
+            length: 64
+        },
+        await ImportKey(key),
+        data
+    ) as ArrayBuffer;
+    return new AESMemoryEncryptData(ToBase64String(iv), new Uint8Array(encrypted));
+}
+
 
 export async function GenerateKey(length: number) : Promise<string> {
     return ToBase64String(crypto.getRandomValues(new Uint8Array(length)));   
