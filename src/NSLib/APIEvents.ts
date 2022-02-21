@@ -83,6 +83,8 @@ export async function GETMessage(channel_uuid: string, message_id: string) : Pro
     const resp = await GET(`Message/${channel_uuid}/Messages/${message_id}`, "");
     if (resp.status === 200) {
         const rawMessage = resp.payload as IMessageProps;
+        
+
         return undefined;
     }
     return undefined;
