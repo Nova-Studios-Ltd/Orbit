@@ -2,6 +2,8 @@ import React from 'react';
 import logo from './logo.svg';
 import './App.css';
 import { SettingsManager } from './NSLib/SettingsManager';
+import { GetImageDimensions } from './NSLib/Util';
+import Dimensions from './DataTypes/Dimensions';
 
 function App() {
   return (
@@ -19,6 +21,11 @@ function App() {
         >
           Learn React
         </a>
+        <input type="file" accept="*/*" onChange={async (event) => {
+          if (event.currentTarget.files === null) return;
+          const d = await GetImageDimensions(new Uint8Array(await event.currentTarget.files[0].arrayBuffer())) || new Dimensions(0, 0);
+          console.log(d);
+        }} id="upload-file"/>
         <button onClick={async () => {
           const sett = new SettingsManager();
           sett.WriteSetting("test", 12345);

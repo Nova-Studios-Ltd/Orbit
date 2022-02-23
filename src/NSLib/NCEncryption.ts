@@ -67,11 +67,11 @@ export async function EncryptUsingPubKey(key: string, data: string) : Promise<st
 }
 
 export async function DecryptUsingPrivKey(key: string, data: string) : Promise<string> {
-    const res = await crypto.subtle.decrypt({name: "RSA-OAEP"}, await ImportRSAPrivKey(key), ToUint8Array(data));    
+    const res = await crypto.subtle.decrypt({name: "RSA-OAEP"}, await ImportRSAPrivKey(key), ToUint8Array(data)); 
     return ToBase64String(new Uint8Array(res));
 }
 
-export async function EncryptUsingAES(key: string, data: string, init_iv?: string) : Promise<AESMemoryEncryptData> {
+export async function EncryptStringUsingAES(key: string, data: string, init_iv?: string) : Promise<AESMemoryEncryptData> {
     const iv = (init_iv === undefined)? crypto.getRandomValues(new Uint8Array(16)) : ToUint8Array(init_iv);
     const encrypted = await crypto.subtle.encrypt(
         {
@@ -85,7 +85,7 @@ export async function EncryptUsingAES(key: string, data: string, init_iv?: strin
     return new AESMemoryEncryptData(ToBase64String(iv), ToBase64String(new Uint8Array(encrypted)));
 }
 
-export async function DecryptUsingAES(key: string, data: AESMemoryEncryptData) : Promise<string> {
+export async function DecryptStringUsingAES(key: string, data: AESMemoryEncryptData) : Promise<string> {
     const decrypted = await crypto.subtle.decrypt(
         {
             name: "AES-CTR",
@@ -96,6 +96,19 @@ export async function DecryptUsingAES(key: string, data: AESMemoryEncryptData) :
         ToUint8Array(data.content as string)
     ) as ArrayBuffer;
     return FromUint8Array(new Uint8Array(decrypted));
+}
+
+export async function DecryptUint8ArrayUsingAES(key: string, data: Uint8Array, iv: string) : Promise<Uint8Array> {
+    const decrypted = await crypto.subtle.decrypt(
+        {
+            name: "AES-CTR",
+            counter: ToUint8Array(iv),
+            length: 64
+        },
+        await ImportKey(key),
+        data
+    ) as ArrayBuffer;
+    return new Uint8Array(decrypted);
 }
 
 export async function EncryptUint8ArrayUsingAES(key: string, data: Uint8Array, init_iv?: string) : Promise<AESMemoryEncryptData> {
