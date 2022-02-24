@@ -166,3 +166,116 @@ export function SENDMessage(channel_uuid: string, contents: string, rawAttachmen
         callback(false);
     });
 }
+
+export async function EDITMessage(channel_uuid: string, message_id: string, message: string, encryptedKeys: {[uuid: string]: string;}, iv: string) : Promise<boolean> {
+    const key = await DecryptUsingPrivKey(settings.User.keyPair.PrivateKey, encryptedKeys[settings.User.uuid]);
+    const c = await EncryptStringUsingAES(key, message, iv);
+    const resp = await POST(`Message/${channel_uuid}/Messages/${message_id}`, ContentType.JSON, JSON.stringify({content: c.content}), settings.User.token);
+    if (resp.status === 200) return true;
+    return false;
+}
+
+export async function DELETEMessage(channel_uuid: string, message_id: string) : Promise<boolean> {
+    const resp = await DELETE(`Message/${channel_uuid}/Messages/${message_id}`, settings.User.token);
+    if (resp.status === 200) return true;
+    return false;
+}
+
+// Channels
+export async function GETChannel(channel_uuid: string) : Promise<IChannelProps | undefined> {
+    const resp = await GET(`/Channel/${channel_uuid}`, settings.User.token);
+    if (resp.status === 200) return resp.payload as IChannelProps;
+    return undefined;
+}
+
+export function CREATEChannel(recipient_uuid: string, callback: (created: boolean) => void) {
+    POST(`Channel/CreateChannel?recipient_uuid=${recipient_uuid}`, ContentType.EMPTY, "", settings.User.token).then((resp: NCAPIResponse) => {
+        if (resp.status === 200) callback(true);
+        else callback(false);
+    });
+}
+
+export function CREATEGroupChannel(group_name: string, recipients: string[], callback: (created: boolean) => void) {
+    POST(`Channel/CreateGroupChannel?group_name=${group_name}`, ContentType.JSON, JSON.stringify(recipients), settings.User.token).then((resp: NCAPIResponse) => {
+        if (resp.status === 200) callback(true);
+        else callback(false);
+    });
+}
+
+export function UPDATEChannelName(channel_uuid: string, newName: string, callback: (updated: boolean) => void)  {
+    PATCH(`/Channel/${channel_uuid}/Name?new_name=${newName}`, ContentType.EMPTY, "", settings.User.token).then((resp: NCAPIResponse) => {
+        if (resp.status === 200) callback(true);
+        else callback(false);
+    });
+}
+
+export function UPDATEChannelIcon(channel_uuid: string, file: Blob, callback: (updated: boolean) => void) {
+    POSTFile(`/Media/Channel/${channel_uuid}/Icon`, file, settings.User.token).then((resp: NCAPIResponse) => {
+        if (resp.status === 200) callback(true);
+        else callback(false);
+    });
+}
+  
+export function REMOVEChannelIcon(channel_uuid: string, callback: (removed: boolean) => void) {
+    POST(`/Media/Channel/${channel_uuid}/ClearIcon`, ContentType.EMPTY, "", settings.User.token).then((resp: NCAPIResponse) => {
+        if (resp.status === 200) callback(true);
+        else callback(false);
+    });
+}
+
+export function ADDChannelMember(channel_uuid: string, recipients: string[], callback: (added: boolean) => void) {
+    PATCH(`Channel/${channel_uuid}`, ContentType.JSON, JSON.stringify(recipients), settings.User.token).then((resp: NCAPIResponse) => {
+        if (resp.status === 200) callback(true);
+        else callback(false);
+    });
+}
+
+export function REMOVEChannelMember(channel_uuid: string, recipient: string, callback: (removed: boolean) => void) {
+    DELETE(`/Channel/${channel_uuid}/Members?recipient=${recipient}`, settings.User.token).then((resp: NCAPIResponse) => {
+        if (resp.status === 200) callback(true);
+        else callback(false);
+    });
+}
+
+export function ARCHIVEChannel(channel_uuid: string, callback: (archived: boolean) => void) {
+    PATCH(`/Channel/${channel_uuid}/Achrive`, ContentType.EMPTY, "", settings.User.token).then((resp: NCAPIResponse) => {
+        if (resp.status === 200) callback(true);
+        else callback(false);
+    });
+}
+
+export function UNARCHIVEChannel(channel_uuid: string, callback: (archived: boolean) => void) {
+    PATCH(`/Channel/${channel_uuid}/Unachrive`, ContentType.EMPTY, "", settings.User.token).then((resp: NCAPIResponse) => {
+        if (resp.status === 200) callback(true);
+        else callback(false);
+    });
+}
+
+export function DELETEChannel(channel_uuid: string, callback: (deleted: boolean) => void) {
+    DELETE(`/Channel/${channel_uuid}`, settings.User.token).then((resp: NCAPIResponse) => {
+        if (resp.status === 200) callback(true);
+        else callback(false);
+    });
+}
+
+// Media
+
+export function SETAvatar(user_uuid: string, file: Blob, callback: (set: boolean) => void) {
+    POSTFile(`/Media/Avatar/${user_uuid}`, file, settings.User.token).then((resp: NCAPIResponse) => {
+        if (resp.status === 200) callback(true);
+        else callback(false);
+    });
+}
+
+export function SETChannelIcon(channel_uuid: string, file: Blob, callback: (set: boolean) => void) {
+    POSTFile(`/Media/Channel/${channel_uuid}`, file, settings.User.token).then((resp: NCAPIResponse) => {
+        if (resp.status === 200) callback(true);
+        else callback(false);
+    });
+}
+
+export async function GETChannelName(channel_uuid: string) : Promise<string | undefined> {
+    const resp = await GET(`/Channel/${channel_uuid}`, settings.User.token);
+    if (resp.status === 200) return (resp.payload as IChannelProps).channelName;
+    return undefined;
+}
