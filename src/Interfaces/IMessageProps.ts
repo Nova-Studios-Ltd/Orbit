@@ -1,5 +1,5 @@
 import { IAttachmentProps } from "./IAttachmentProps";
-import { Dimensions } from "./Types";
+import Dimensions from "../DataTypes/Dimensions";
 
 export interface IMessageProps {
     message_Id: string,
