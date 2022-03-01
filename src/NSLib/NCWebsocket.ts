@@ -1,16 +1,16 @@
 import IWebSocketEvent from "../Interfaces/IWebsocketEvent";
 import { Dictionary } from "./Dictionary";
 
-export default class NSWebsocket {
-    reconnect = 1;
-    timesteps = [2500, 4000, 8000, 12000];
-    websocket: WebSocket;
-    insecure?: boolean;
-    address: string;
-    token: string;
-    terminated: boolean = false;
-    events: Dictionary<(event: IWebSocketEvent) => void>;
-    timeoutID?: NodeJS.Timeout = undefined;
+export default class NCWebsocket {
+    private reconnect = 1;
+    private timesteps = [2500, 4000, 8000, 12000];
+    private websocket: WebSocket;
+    private insecure?: boolean;
+    private address: string;
+    private token: string;
+    private terminated: boolean = false;
+    private events: Dictionary<(event: IWebSocketEvent) => void>;
+    private timeoutID?: NodeJS.Timeout = undefined;
 
     constructor(address: string, token: string, insecure?: boolean) {
         this.insecure = insecure;
@@ -46,18 +46,26 @@ export default class NSWebsocket {
         };
 
         this.websocket.onclose = () => {
-            console.warn(`Socket Closed. Attempting Reconnect In  ${this.timesteps[this.reconnect - 1] / 1000}s`);
+            console.warn(`Socket Closed. Attempting Reconnect In ${this.timesteps[this.reconnect - 1] / 1000}s`);
             this.Reconnect();
         };
 
         this.websocket.onopen = () => {
+            this.OnConnected();
             if (this.timeoutID !== undefined) clearTimeout(this.timeoutID);
             this.reconnect = 0;
             this.websocket.send(this.token);
         };
     }
 
+    OnTerminated: () => void = () => {};
+    OnReconnectStart: (attempt: number) => void = () => {};
+    OnReconnectEnd: (attempt: number) => void = () => {};
+    OnConnected: () => void = () => {};
+
     private Reconnect() {
+        const att = this.reconnect;
+        this.OnReconnectStart(this.reconnect);
         if (this.terminated) return;
         if (this.reconnect > 4) {
             this.Terminate();
@@ -72,6 +80,8 @@ export default class NSWebsocket {
                 this.websocket = new WebSocket(`ws://${this.address}`);
             }
             this.Init();
+            if (this.timeoutID !== undefined) clearTimeout(this.timeoutID)
+            this.OnReconnectEnd(att);
         }, this.timesteps[this.reconnect - 1]);
     }
 
@@ -84,6 +94,7 @@ export default class NSWebsocket {
     }
 
     Terminate() {
+        this.OnTerminated();
         this.terminated = true;
         this.websocket.close();
     }
