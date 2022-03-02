@@ -5,23 +5,51 @@ const Storage = require('@sifrr/storage');
 
 export class SettingsManager {
     private SettingsStorage: any;
+    private Keystore: any;
     private Operational: Dictionary<number | string | boolean>;
     User: UserData;
 
     constructor() {
-        const opts = {
+        const settings = {
             priority: ["indexeddb"],
             name: "Settings_",
             version: 1,
-            description: "User Settings S",
+            description: "User Settings",
             size: 10 * 1024 * 1024,
             ttl: 0
         };
-        this.SettingsStorage = Storage.Sifrr.Storage.getStorage(opts);
+        const keystore = {
+            priority: ["indexeddb"],
+            name: "Keystore_",
+            version: 1,
+            description: "User pub keystore",
+            size: 10 * 1024 * 1024,
+            ttl: 0
+        }
+        this.SettingsStorage = Storage.Sifrr.Storage.getStorage(settings);
+        this.Keystore = Storage.Sifrr.Storage.getStorage(keystore);
         this.Operational = new Dictionary<number | string | boolean>();
         this.User = new UserData();
     }
 
+    // Keystore
+    async ContainsKey(user_uuid: string) : Promise<boolean> {
+        return (await this.Keystore.get(user_uuid))[user_uuid] !== undefined;
+    }
+
+    async WriteKey(user_uuid: string, pubKey: string) : Promise<boolean> {
+        return this.Keystore.set(user_uuid, pubKey);
+    }
+
+    async ReadKey(user_uuid: string) : Promise<string> {
+        return (await this.Keystore.get(user_uuid)) as string;
+    }
+
+    async ClearKey(user_uuid: string) : Promise<boolean> {
+        return (await this.Keystore.del(user_uuid));
+    }
+
+    // Settings
     async ConstainsSetting(key: string) : Promise<boolean> {
         return (await this.SettingsStorage.get(key))[key] !== undefined;
     }
@@ -39,7 +67,7 @@ export class SettingsManager {
     }
 
     async Clear() : Promise<boolean> {
-        return this.SettingsStorage.clear();
+        return (await this.SettingsStorage.clear() && await this.Keystore.clear());
     }
 
     async ReadConst<T>(key: string) : Promise<T> {
