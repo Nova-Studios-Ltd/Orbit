@@ -13,7 +13,7 @@ function App() {
         <a
           className="App-link"
           href="https://novastudios.tk/NC3"
-          rel="noopene  r noreferrer"
+          rel="noopener noreferrer"
         >
           Try Our Desktop Client
         </a>
