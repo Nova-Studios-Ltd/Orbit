@@ -8,6 +8,7 @@ import { AESMemoryEncryptData } from "./NCEncrytUtil";
 import { SettingsManager } from "./SettingsManager";
 import { GetImageDimensions } from "./Util";
 import Dimensions from "../DataTypes/Dimensions";
+import IUserData from "../Interfaces/IUserData";
 
 
 // HACK Temporary settings manager
@@ -15,9 +16,9 @@ const settings = new SettingsManager();
 
 // TODO Add token fetching
 // User
-export async function GETUser(user_uuid: string) : Promise<string | undefined> {
+export async function GETUser(user_uuid: string) : Promise<IUserData | undefined> {
     const resp = await GET(`User/${user_uuid}`, settings.User.token);
-    if (resp.status === 200) return resp.payload;
+    if (resp.status === 200) return JSON.parse(resp.payload) as IUserData;
     return undefined;
 }
 
