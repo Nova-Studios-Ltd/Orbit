@@ -53,5 +53,31 @@ export async function LoginNewUser(email: string, password: string) : Promise<bo
 }
 
 export async function AutoLogin() : Promise<boolean> {
+    if (!await Manager.ContainsCookie("UUID") || !await Manager.ContainsCookie("Token")) return false;
+    Manager.User.uuid = await Manager.ReadCookie("UUID");
+    Manager.User.token = await Manager.ReadCookie("Token");
+
+    // Attempt to retreive user data
+    const userResp = await GETUser(Manager.User.uuid);
+    if (userResp === undefined) return false;
+
+    // Store user data
+    Manager.User.avatarSrc = userResp.avatar;
+    Manager.User.discriminator = userResp.discriminator;
+    Manager.User.username = userResp.username;
+
+    // Setup websocket
+    Websocket = new NCWebsocket(`api.novastudios.tk/Events/Listen?user_uuid=${Manager.User.uuid}`, Manager.User.token, false);
+    Websocket.OnConnected = () => console.log("Connected!");
+    Websocket.OnTerminated = () => console.log("Terminated!");
+    
+    // Fetch users keystore
+    const keyResp = await GETKeystore(Manager.User.uuid);
+    if (keyResp === undefined) return false;
+    Manager.LoadKeys(keyResp);
+
+    // Init Websocket Events
+    WebsocketInit(Websocket);
+
     return true;
 }
