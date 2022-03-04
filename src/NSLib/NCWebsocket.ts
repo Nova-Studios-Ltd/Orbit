@@ -4,7 +4,7 @@ import { Dictionary } from "./Dictionary";
 export default class NCWebsocket {
     private reconnect = 1;
     private timesteps = [2500, 4000, 8000, 12000];
-    private websocket: WebSocket;
+    websocket: WebSocket;
     private insecure?: boolean;
     private address: string;
     private token: string;
@@ -16,7 +16,7 @@ export default class NCWebsocket {
         this.insecure = insecure;
         this.address = address;
         this.token = token;
-        if (insecure !== undefined || !insecure) {
+        if (insecure === undefined || insecure === false) {
             this.websocket = new WebSocket(`wss://${address}`);
         }
         else {
@@ -40,7 +40,8 @@ export default class NCWebsocket {
             }
         };
 
-        this.websocket.onerror = () => {
+        this.websocket.onerror = (e) => {
+            console.log(e);
             console.error(`Socket Closed Unexpectedly. Attempting Reconnect In ${this.timesteps[this.reconnect - 1] / 1000}s`);
             this.Reconnect();
         };
@@ -73,7 +74,7 @@ export default class NCWebsocket {
         }
         this.reconnect++;
         this.timeoutID = setTimeout(() => {
-            if (this.insecure !== undefined || !this.insecure) {
+            if (this.insecure === undefined || this.insecure === false) {
                 this.websocket = new WebSocket(`wss://${this.address}`);
             }
             else {

@@ -6,7 +6,7 @@ import IUserLoginData from "../Interfaces/IUserLoginData";
 import { RSAMemoryKeyPair } from "../NSLib/NCEncrytUtil";
 import { GETUser } from "../NSLib/APIEvents";
 
-const Manager = new SettingsManager();
+export const Manager = new SettingsManager();
 let Websocket;
 
 export async function Init(email: string, password: string) {
@@ -22,6 +22,10 @@ export async function Init(email: string, password: string) {
     Manager.User.uuid = ud.uuid;
     Manager.User.keyPair = new RSAMemoryKeyPair(await DecryptStringUsingAES(shaPass, ud.key), ud.publicKey);
     
+    console.log(ud.token);
+    console.log(ud.uuid);
+
+
     // Attempt to retreive user data
     const userResp = await GETUser(ud.uuid);
     if (userResp === undefined) return;
@@ -31,7 +35,8 @@ export async function Init(email: string, password: string) {
     Manager.User.discriminator = userResp.discriminator;
     Manager.User.username = userResp.username;
 
-    Websocket = new NCWebsocket(`wss://api.novastudios.tk/Events/Listen?user_uuid=${Manager.User.uuid}`, Manager.User.token);
+    Websocket = new NCWebsocket(`api.novastudios.tk/Events/Listen?user_uuid=${Manager.User.uuid}`, Manager.User.token, false);
+    Websocket.OnConnected = () => console.log("Connected!");
     Websocket.CreateEvent("-1", () => console.log("<Beat>"));
     // TODO Implement websocket
 }

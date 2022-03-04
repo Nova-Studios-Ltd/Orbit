@@ -1,6 +1,7 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
+import { Init } from './Pages/LoginHandler';
 
 function App() {
   return (
@@ -17,6 +18,15 @@ function App() {
         >
           Try Our Desktop Client
         </a>
+        <input type="text" id="email"></input>
+        <input type="text" id="password"></input>
+        <button onClick={() => {
+          /*const email = document.getElementById("email");
+          const password = document.getElementById("password");
+          if (email === null || password === null) return;
+          Init((email as any).value, (password as any).value);*/
+          Init("aidencw01@gmail.com", "1234");
+        }}>Submit</button>
       </header>
     </div>
   );

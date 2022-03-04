@@ -1,4 +1,4 @@
-import { FromUint8Array, ToBase64String, ToUint8Array } from "./Base64";
+import { FromBase64String, FromUint8Array, ToBase64String, ToUint8Array } from "./Base64";
 import { AESMemoryEncryptData, RSAMemoryKeyPair } from "./NCEncrytUtil";
 
 function ImportRSAPubKey(key: string) : Promise<CryptoKey> {
@@ -36,7 +36,7 @@ function ImportRSAPrivKey(key: string) : Promise<CryptoKey> {
 }
 
 function ImportKey(key: string) : Promise<CryptoKey> {
-    const key2 = ToUint8Array(key);
+    const key2 = FromBase64String(key);
     return crypto.subtle.importKey("raw", key2, "AES-CTR", true, ["encrypt", "decrypt"]);
 }
 
@@ -89,7 +89,7 @@ export async function DecryptStringUsingAES(key: string, data: AESMemoryEncryptD
     const decrypted = await crypto.subtle.decrypt(
         {
             name: "AES-CTR",
-            counter: ToUint8Array(data.iv),
+            counter: FromBase64String(data.iv),
             length: 64
         },
         await ImportKey(key),

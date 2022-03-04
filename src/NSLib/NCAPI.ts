@@ -39,7 +39,7 @@ export async function POST(endpoint: string, content_type: ContentType, payload:
         },
         body: payload
     });
-    return new NCAPIResponse(resp.status, resp.statusText);
+    return new NCAPIResponse(resp.status, resp.statusText, await resp.json());
 }
 
 export async function PUT(endpoint: string, content_type: ContentType, payload: string, token?: string) : Promise<NCAPIResponse> {
