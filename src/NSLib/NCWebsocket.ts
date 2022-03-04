@@ -85,8 +85,8 @@ export default class NCWebsocket {
         }, this.timesteps[this.reconnect - 1]);
     }
 
-    CreateEvent(event_id: string, callback: (event: IWebSocketEvent) => void) {
-        this.events.setValue(event_id, callback);
+    CreateEvent(event_id: number, callback: (event: IWebSocketEvent) => void) {
+        this.events.setValue(event_id.toString(), callback);
     }
 
     RemoveEvent(event_id: string) {
