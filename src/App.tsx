@@ -18,13 +18,7 @@ function App() {
         >
           Try Our Desktop Client
         </a>
-        <input type="text" id="email"></input>
-        <input type="text" id="password"></input>
         <button onClick={() => {
-          /*const email = document.getElementById("email");
-          const password = document.getElementById("password");
-          if (email === null || password === null) return;
-          Init((email as any).value, (password as any).value);*/
           Init("aidencw01@gmail.com", "1234");
         }}>Submit</button>
       </header>
