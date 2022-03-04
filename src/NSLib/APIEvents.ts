@@ -147,7 +147,7 @@ export function SENDMessage(channel_uuid: string, contents: string, rawAttachmen
             for (let m = 0; m < channel.members.length; m++) {
                 const member = channel.members[m];
                 if (member !== Manager.User.uuid) {
-                    const pubKey = Manager.User.keystore.getValue(member);
+                    const pubKey = await Manager.ReadKey(member);
                     if (pubKey !== undefined) {
                         const encryptedKey = await EncryptUsingPubKey(pubKey, messageKey);
                         encKeys[member] = encryptedKey;

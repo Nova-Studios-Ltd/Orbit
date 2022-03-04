@@ -1,7 +1,8 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
-import { Init } from './Pages/LoginHandler';
+import { LoginNewUser } from './Pages/LoginHandler';
+const Storage = require('@sifrr/storage');
 
 function App() {
   return (

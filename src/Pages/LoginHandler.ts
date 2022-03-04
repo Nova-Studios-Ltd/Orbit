@@ -4,13 +4,13 @@ import NCWebsocket from "../NSLib/NCWebsocket";
 import { SettingsManager } from "../NSLib/SettingsManager";
 import IUserLoginData from "../Interfaces/IUserLoginData";
 import { RSAMemoryKeyPair } from "../NSLib/NCEncrytUtil";
-import { GETUser } from "../NSLib/APIEvents";
+import { GETKeystore, GETUser } from "../NSLib/APIEvents";
 import WebsocketInit from "./WebsocketEventInit";
 
 export const Manager = new SettingsManager();
 let Websocket;
 
-export async function Init(email: string, password: string) : Promise<boolean> {
+export async function LoginNewUser(email: string, password: string) : Promise<boolean> {
     const shaPass = await GenerateSHA256Hash(password);
 
     // Attempt to log user in
@@ -23,6 +23,10 @@ export async function Init(email: string, password: string) : Promise<boolean> {
     Manager.User.uuid = ud.uuid;
     Manager.User.keyPair = new RSAMemoryKeyPair(await DecryptStringUsingAES(shaPass, ud.key), ud.publicKey);
     
+    // Store user uuid/token for autologin
+    Manager.WriteCookie("UUID", Manager.User.uuid);
+    Manager.WriteCookie("Token", Manager.User.token);
+
     // Attempt to retreive user data
     const userResp = await GETUser(ud.uuid);
     if (userResp === undefined) return false;
@@ -37,8 +41,17 @@ export async function Init(email: string, password: string) : Promise<boolean> {
     Websocket.OnConnected = () => console.log("Connected!");
     Websocket.OnTerminated = () => console.log("Terminated!");
     
+    // Fetch users keystore
+    const keyResp = await GETKeystore(Manager.User.uuid);
+    if (keyResp === undefined) return false;
+    Manager.LoadKeys(keyResp);
+
     // Init Websocket Events
     WebsocketInit(Websocket);
 
+    return true;
+}
+
+export async function AutoLogin() : Promise<boolean> {
     return true;
 }

@@ -1,13 +1,14 @@
 import UserData from "../DataTypes/UserData";
-import { Dictionary } from "./Dictionary";
+import { Dictionary, KeyValuePair } from "./Dictionary";
 
 const Storage = require('@sifrr/storage');
 
 export class SettingsManager {
     private SettingsStorage: any;
     private Keystore: any;
+    private Cookies: any;
     private Operational: Dictionary<number | string | boolean>;
-    User: UserData;
+    private _User: UserData;
 
     constructor() {
         const settings = {
@@ -26,10 +27,39 @@ export class SettingsManager {
             size: 10 * 1024 * 1024,
             ttl: 0
         }
+        const cookies = {
+            priority: ["cookies"]
+        }
+        this.Cookies = Storage.Sifrr.Storage.getStorage(cookies);
         this.SettingsStorage = Storage.Sifrr.Storage.getStorage(settings);
         this.Keystore = Storage.Sifrr.Storage.getStorage(keystore);
         this.Operational = new Dictionary<number | string | boolean>();
-        this.User = new UserData();
+        this._User = new UserData();
+    }
+
+    get User() : UserData {
+        return this._User;
+    }
+
+    set User(user: UserData) {
+        this._User = user;
+    }
+
+    // Cookies
+    async WriteCookie(key: string, value: string) : Promise<boolean> {
+        return this.Cookies.set(key, value);
+    }
+
+    async ReadCookie(key: string) : Promise<string> {
+        return (await this.Cookies.get(key)) as string;
+    }
+
+    async ContainsCookie(key: string) : Promise<boolean> {
+        return (await this.Keystore.get(key))[key] !== undefined;
+    }
+
+    async ClearCookie(key: string) : Promise<boolean> {
+        return (await this.Keystore.del(key));
     }
 
     // Keystore
@@ -47,6 +77,12 @@ export class SettingsManager {
 
     async ClearKey(user_uuid: string) : Promise<boolean> {
         return (await this.Keystore.del(user_uuid));
+    }
+
+    async LoadKeys(keys: Dictionary<string>) {
+        keys.forEach((pair: KeyValuePair<string>) => {
+            this.WriteKey(pair.Key, pair.Value);
+        });
     }
 
     // Settings
