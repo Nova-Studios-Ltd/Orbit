@@ -24,8 +24,8 @@ export async function LoginNewUser(email: string, password: string) : Promise<bo
     Manager.User.keyPair = new RSAMemoryKeyPair(await DecryptStringUsingAES(shaPass, ud.key), ud.publicKey);
     
     // Store user uuid/token for autologin
-    Manager.WriteCookie("UUID", Manager.User.uuid);
-    Manager.WriteCookie("Token", Manager.User.token);
+    Manager.WriteLocalStorage("UUID", Manager.User.uuid);
+    Manager.WriteLocalStorage("Token", Manager.User.token);
 
     // Attempt to retreive user data
     const userResp = await GETUser(ud.uuid);
@@ -53,9 +53,9 @@ export async function LoginNewUser(email: string, password: string) : Promise<bo
 }
 
 export async function AutoLogin() : Promise<boolean> {
-    if (!await Manager.ContainsCookie("UUID") || !await Manager.ContainsCookie("Token")) return false;
-    Manager.User.uuid = await Manager.ReadCookie("UUID");
-    Manager.User.token = await Manager.ReadCookie("Token");
+    if (!await Manager.ContainsLocalStorage("UUID") || !await Manager.ContainsLocalStorage("Token")) return false;
+    Manager.User.uuid = await Manager.ReadLocalStorage("UUID");
+    Manager.User.token = await Manager.ReadLocalStorage("Token");
 
     // Attempt to retreive user data
     const userResp = await GETUser(Manager.User.uuid);

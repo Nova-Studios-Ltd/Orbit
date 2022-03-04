@@ -1,24 +1,24 @@
-import React from 'react';
-import logo from './logo.svg';
 import './App.css';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import TD from './Pages/TryDesktop';
+import { AutoLogin, Manager } from './Pages/LoginHandler';
 
 function App() {
+  Manager.ContainsCookie("LoggedIn").then(async (value: boolean) => {
+    if (!value) return;
+    const loggedIn = await AutoLogin();
+    if (loggedIn) {
+      Manager.WriteCookie("LoggedIn", "false");
+      document.location.assign("/Chat");
+    }
+  });
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Welcome to the homepage of Orbits Web Client, it's not ready yet so please be patient
-        </p>
-        <a
-          className="App-link"
-          href="https://novastudios.tk/NC3"
-          rel="noopener noreferrer"
-        >
-          Try Our Desktop Client
-        </a>
-      </header>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="*" element={<>404 Not Found</>}></Route>
+        <Route path="/" element={<TD/>}></Route>
+      </Routes>
+    </BrowserRouter>
   );
 }
 

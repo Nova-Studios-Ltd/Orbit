@@ -12,12 +12,8 @@ export class SettingsManager {
 
     constructor() {
         const settings = {
-            priority: ["indexeddb"],
-            name: "Settings_",
-            version: 1,
-            description: "User Settings",
-            size: 10 * 1024 * 1024,
-            ttl: 0
+            priority: ["localstorage"],
+            name: "Settings",
         };
         const keystore = {
             priority: ["indexeddb"],
@@ -28,7 +24,8 @@ export class SettingsManager {
             ttl: 0
         }
         const cookies = {
-            priority: ["cookies"]
+            priority: ["cookies"],
+            name: "NSCookies"
         }
         this.Cookies = Storage.Sifrr.Storage.getStorage(cookies);
         this.SettingsStorage = Storage.Sifrr.Storage.getStorage(settings);
@@ -55,11 +52,11 @@ export class SettingsManager {
     }
 
     async ContainsCookie(key: string) : Promise<boolean> {
-        return (await this.Keystore.get(key))[key] !== undefined;
+        return (await this.Cookies.get(key))[key] !== undefined;
     }
 
     async ClearCookie(key: string) : Promise<boolean> {
-        return (await this.Keystore.del(key));
+        return (await this.Cookies.del(key));
     }
 
     // Keystore
@@ -86,26 +83,27 @@ export class SettingsManager {
     }
 
     // Settings
-    async ConstainsSetting(key: string) : Promise<boolean> {
+    async ContainsLocalStorage(key: string) : Promise<boolean> {
         return (await this.SettingsStorage.get(key))[key] !== undefined;
     }
 
-    DeleteSetting(key: string) : boolean {
+    DeleteLocalStorage(key: string) : boolean {
         return this.SettingsStorage.del(key)
     }
 
-    async ReadSetting<T>(key: string) : Promise<T> {
+    async ReadLocalStorage<T>(key: string) : Promise<T> {
         return (await this.SettingsStorage.get(key)) as unknown as T;
     }
 
-    async WriteSetting(key: string, value: number | string | boolean) : Promise<boolean> {
+    async WriteLocalStorage(key: string, value: number | string | boolean) : Promise<boolean> {
         return this.SettingsStorage.set(key, value);
     }
 
-    async Clear() : Promise<boolean> {
+    async ClearLocalStorage() : Promise<boolean> {
         return (await this.SettingsStorage.clear() && await this.Keystore.clear());
     }
 
+    // Runtime constant info
     async ReadConst<T>(key: string) : Promise<T> {
         return this.Operational.getValue(key) as unknown as T;
     }
