@@ -18,9 +18,6 @@ function App() {
         >
           Try Our Desktop Client
         </a>
-        <button onClick={() => {
-          Init("aidencw01@gmail.com", "1234");
-        }}>Submit</button>
       </header>
     </div>
   );

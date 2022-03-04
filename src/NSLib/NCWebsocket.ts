@@ -41,7 +41,6 @@ export default class NCWebsocket {
         };
 
         this.websocket.onerror = (e) => {
-            console.log(e);
             console.error(`Socket Closed Unexpectedly. Attempting Reconnect In ${this.timesteps[this.reconnect - 1] / 1000}s`);
             this.Reconnect();
         };
