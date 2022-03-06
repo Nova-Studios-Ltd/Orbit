@@ -82,6 +82,10 @@ export class SettingsManager {
         });
     }
 
+    async ClearKeys() {
+        this.Keystore.clear();
+    }
+
     // Settings
     async ContainsLocalStorage(key: string) : Promise<boolean> {
         return (await this.SettingsStorage.get(key))[key] !== undefined;

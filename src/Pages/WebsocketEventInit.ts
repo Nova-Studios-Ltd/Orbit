@@ -1,14 +1,24 @@
 import IWebSocketEvent from "../Interfaces/IWebsocketEvent";
-import { GETMessage } from "../NSLib/APIEvents";
+import { GETKey, GETKeystore, GETMessage } from "../NSLib/APIEvents";
 import NCWebsocket from "../NSLib/NCWebsocket";
+import { Manager } from "./LoginHandler";
 
 export default function WebsocketInit(Websocket: NCWebsocket) {
     Websocket.CreateEvent(-1, () => console.log("<Beat>"));
+
+    // Message
     Websocket.CreateEvent(0, OnNewMessage);
     Websocket.CreateEvent(1, OnDeleteMessage);
     Websocket.CreateEvent(2, OnMessageEdit);
+
+    // Channel
     Websocket.CreateEvent(3, OnCreateChannel);
     Websocket.CreateEvent(4, OnDeleteChannel);
+
+    // Keystore
+    Websocket.CreateEvent(7, OnAddNewKey);
+    Websocket.CreateEvent(8, OnRemoveKey);
+    Websocket.CreateEvent(9, OnKeystoreReload);
 }
 
 async function OnNewMessage(event: IWebSocketEvent) {
@@ -31,4 +41,21 @@ async function OnCreateChannel(event: IWebSocketEvent) {
 
 async function OnDeleteChannel(event: IWebSocketEvent) {
     // TODO Implement channel removal logic
+}
+
+async function OnAddNewKey(event: IWebSocketEvent) {
+    const key = await GETKey(Manager.User.uuid, event.keyUserUUID);
+    if (key === undefined) return;
+    Manager.WriteKey(event.keyUserUUID, key);
+}
+
+async function OnRemoveKey(event: IWebSocketEvent) {
+    Manager.ClearKey(event.keyUserUUID);
+}
+
+async function OnKeystoreReload(event: IWebSocketEvent) {
+    const keystore = await GETKeystore(Manager.User.uuid);
+    if (keystore === undefined) return;
+    await Manager.ClearKeys();
+    Manager.LoadKeys(keystore);
 }
