@@ -1,7 +1,7 @@
 import IWebSocketEvent from "../Interfaces/IWebsocketEvent";
 import { GETKey, GETKeystore, GETMessage } from "../NSLib/APIEvents";
 import NCWebsocket from "../NSLib/NCWebsocket";
-import { Manager } from "./LoginHandler";
+import { Manager } from "./AuthHandler";
 
 export default function WebsocketInit(Websocket: NCWebsocket) {
     Websocket.CreateEvent(-1, () => console.log("<Beat>"));

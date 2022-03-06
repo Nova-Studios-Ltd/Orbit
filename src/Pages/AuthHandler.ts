@@ -89,3 +89,8 @@ export async function AutoLogin() : Promise<boolean> {
 
     return true;
 }
+
+export async function Logout() {
+    Manager.ClearKeys();
+    Manager.ClearLocalStorage();
+}
