@@ -33,7 +33,10 @@ export async function LoginNewUser(email: string, password: string) : Promise<bo
 
     // Attempt to retreive user data
     const userResp = await GETUser(ud.uuid);
-    if (userResp === undefined) return false;
+    if (userResp === undefined) {
+        Logout();
+        return false;
+    }
 
     // Store user data
     Manager.User.avatarSrc = userResp.avatar;
@@ -47,7 +50,10 @@ export async function LoginNewUser(email: string, password: string) : Promise<bo
     
     // Fetch users keystore
     const keyResp = await GETKeystore(Manager.User.uuid);
-    if (keyResp === undefined) return false;
+    if (keyResp === undefined) {
+        Logout();
+        return false;
+    }
     Manager.LoadKeys(keyResp);
 
     // Init Websocket Events

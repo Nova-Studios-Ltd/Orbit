@@ -1,5 +1,6 @@
 import logo from '../logo.svg';
 import '../App.css';
+import { LoginNewUser } from './AuthHandler';
 
 export default function TD() {
     return (
@@ -16,6 +17,10 @@ export default function TD() {
           >
             Try Our Desktop Client
           </a>
+          <button onClick={() => {
+            LoginNewUser("aidencw01@gmail.com", "1234");
+          }}>
+          </button>
         </header>
       </div>
     );

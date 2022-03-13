@@ -7,7 +7,7 @@ function App() {
   Manager.ContainsCookie("LoggedIn").then(async (value: boolean) => {
     if (!value) return;
     const loggedIn = await AutoLogin();
-    if (loggedIn) {
+    if (loggedIn && !document.location.href.includes("/Chat")) {
       Manager.WriteCookie("LoggedIn", "false");
       document.location.assign("/Chat");
     }
