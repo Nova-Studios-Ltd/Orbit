@@ -1,6 +1,6 @@
 import logo from '../logo.svg';
 import '../App.css';
-import { LoginNewUser } from './AuthHandler';
+import { GetIPCRenderer } from '../NSLib/ElectronAPI';
 
 export default function TD() {
     return (
@@ -17,6 +17,9 @@ export default function TD() {
           >
             Try Our Desktop Client
           </a>
+          <button onClick={() => {
+            GetIPCRenderer()?.send("openDevTools");
+          }}></button>
         </header>
       </div>
     );
