@@ -1,4 +1,5 @@
 import Dimensions from "../DataTypes/Dimensions";
+import customProtocolCheck from "custom-protocol-check";
 
 export async function GetImageDimensions(buffer: Uint8Array) : Promise<Dimensions | undefined> {
     return new Promise((resolve) => {
@@ -17,4 +18,19 @@ export async function GetImageDimensions(buffer: Uint8Array) : Promise<Dimension
             img.remove();
         }
     });
+}
+
+export async function OpenCustomProto(url: string) : Promise<boolean> {
+    return new Promise<boolean>((resolve) => {
+        if (window.navigator.userAgent.indexOf("Linux")) {
+            resolve(false);
+            return;
+        }
+        customProtocolCheck(url, 
+        () => {
+            resolve(false);
+        }, () => {
+            resolve(true);
+        }, 5000);
+    })
 }

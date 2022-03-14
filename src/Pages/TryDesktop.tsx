@@ -1,6 +1,7 @@
 import logo from '../logo.svg';
 import '../App.css';
 import { GetIPCRenderer } from '../NSLib/ElectronAPI';
+import { CustomLink } from './Components/CustomLink';
 
 export default function TD() {
     return (
@@ -17,9 +18,7 @@ export default function TD() {
           >
             Try Our Desktop Client
           </a>
-          <button onClick={() => {
-            GetIPCRenderer()?.send("openDevTools");
-          }}></button>
+          <CustomLink url="https://open.spotify.com/track/6Z8R6UsFuGXGtiIxiD8ISb?si=49aa50e147df4b15"></CustomLink>
         </header>
       </div>
     );
