@@ -1,6 +1,6 @@
 import IWebSocketEvent from "../Interfaces/IWebsocketEvent";
-import { GETKey, GETKeystore, GETMessage } from "../NSLib/APIEvents";
-import NCWebsocket from "../NSLib/NCWebsocket";
+import { GETKey, GETKeystore, GETMessage } from "./APIEvents";
+import NCWebsocket from "./NCWebsocket";
 import { Manager } from "./AuthHandler";
 
 export default function WebsocketInit(Websocket: NCWebsocket) {

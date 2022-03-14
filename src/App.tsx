@@ -1,7 +1,7 @@
 import './App.css';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import TD from './Pages/TryDesktop';
-import { AutoLogin, Manager } from './Pages/AuthHandler';
+import { AutoLogin, Manager } from './NSLib/AuthHandler';
 
 function App() {
   Manager.ContainsCookie("LoggedIn").then(async (value: boolean) => {
