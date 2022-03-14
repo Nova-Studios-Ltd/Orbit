@@ -8,7 +8,7 @@ import { AESMemoryEncryptData } from "./NCEncrytUtil";
 import { GetImageDimensions } from "./Util";
 import Dimensions from "../DataTypes/Dimensions";
 import IUserData from "../Interfaces/IUserData";
-import { Manager } from "../Pages/LoginHandler";
+import { Manager } from "../Init/LoginHandler";
 
 // TODO Add token fetching
 // User
@@ -212,7 +212,7 @@ export function UPDATEChannelIcon(channel_uuid: string, file: Blob, callback: (u
         else callback(false);
     });
 }
-  
+
 export function REMOVEChannelIcon(channel_uuid: string, callback: (removed: boolean) => void) {
     POST(`/Media/Channel/${channel_uuid}/ClearIcon`, ContentType.EMPTY, "", Manager.User.token).then((resp: NCAPIResponse) => {
         if (resp.status === 200) callback(true);

@@ -1,24 +1,29 @@
 import React from 'react';
-import logo from './logo.svg';
+import { ThemeProvider } from "@mui/material";
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+
+import { Init } from './Init/LoginHandler';
+import { DarkTheme_Default } from 'Theme';
+
+import ChatPage from 'Pages/ChatPage/ChatPage';
+import LoginPage from 'Pages/LoginPage/LoginPage';
+import SettingsPage from 'Pages/SettingsPage/SettingsPage';
+
 import './App.css';
-import { Init } from './Pages/LoginHandler';
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Welcome to the homepage of Orbits Web Client, it's not ready yet so please be patient
-        </p>
-        <a
-          className="App-link"
-          href="https://novastudios.tk/NC3"
-          rel="noopener noreferrer"
-        >
-          Try Our Desktop Client
-        </a>
-      </header>
+      <ThemeProvider theme={DarkTheme_Default}>
+        <Router>
+          <Routes>
+            <Route path="/" element={<LoginPage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/chat" element={<ChatPage />} />
+            <Route path="/settings" element={<SettingsPage />} />
+          </Routes>
+        </Router>
+      </ThemeProvider>
     </div>
   );
 }
