@@ -1,4 +1,3 @@
-import { Dictionary } from "../NSLib/Dictionary";
 import { RSAMemoryKeyPair } from "../NSLib/NCEncrytUtil";
 
 export default class UserData {
@@ -6,7 +5,6 @@ export default class UserData {
     uuid: string;
     token: string;
     keyPair: RSAMemoryKeyPair;
-    keystore: Dictionary<string>;
     discriminator: string;
     avatarSrc: string;
   
@@ -17,6 +15,5 @@ export default class UserData {
       this.discriminator = "";
       this.avatarSrc = "";
       this.keyPair = new RSAMemoryKeyPair("", "");
-      this.keystore = new Dictionary<string>();
     }
   }
