@@ -8,7 +8,7 @@ import { AESMemoryEncryptData } from "./NCEncrytUtil";
 import { GetImageDimensions } from "./Util";
 import Dimensions from "../DataTypes/Dimensions";
 import IUserData from "../Interfaces/IUserData";
-import { Manager } from "./AuthHandler";
+import { Manager } from "../Init/AuthHandler";
 
 // TODO Add token fetching
 // User
