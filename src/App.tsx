@@ -5,7 +5,6 @@ import i18n from "i18next";
 import { initReactI18next } from 'react-i18next';
 import resourcesToBackend from 'i18next-resources-to-backend';
 
-import { Init } from './Init/LoginHandler';
 import { AutoLogin, Manager } from './Init/AuthHandler';
 import { DarkTheme_Default } from 'Theme';
 import { Localizations } from 'Localization/Localizations';

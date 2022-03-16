@@ -5,6 +5,7 @@ import { Trans, useTranslation } from "react-i18next";
 import PageContainer from "Components/PageContainer/PageContainer";
 
 import type { Page } from "Types/Components";
+import { LoginNewUser } from "Init/AuthHandler";
 import { useNavigate } from "react-router-dom";
 
 interface LoginPageProps extends Page {
@@ -21,8 +22,13 @@ function LoginPage({ widthConstrained }: LoginPageProps) {
 
   const login = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    console.log("Loggin in")
 
     // TODO: Insert login code here
+    LoginNewUser(username, password).then((value: boolean) => {
+      if (value) document.location.assign("/Chat");
+      else console.error("Failed to log in");
+    });
   }
 
   const TextFieldChanged = (event: React.ChangeEvent<HTMLInputElement>) => {
