@@ -1,7 +1,7 @@
 import logo from '../logo.svg';
 import '../App.css';
-import { GetIPCRenderer } from '../NSLib/ElectronAPI';
-import { CustomLink } from './Components/CustomLink';
+import { GetIPCRenderer } from 'NSLib/ElectronAPI';
+import { CustomLink } from 'Components/CustomLink/CustomLink';
 
 export default function TD() {
     return (

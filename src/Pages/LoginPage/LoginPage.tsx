@@ -1,19 +1,62 @@
-import { Button, TextField } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { Button, Card, TextField, Typography, useTheme } from "@mui/material";
 
-import Page from "Components/Page/Page";
+import PageContainer from "Components/PageContainer/PageContainer";
 
-function LoginPage() {
+import type { Page } from "Types/Components";
+
+interface LoginPageProps extends Page {
+
+}
+
+function LoginPage({ widthConstrained }: LoginPageProps) {
+  const theme = useTheme();
+
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+
+  const login = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    // TODO: Insert login code here
+  }
+
+  const textFieldChanged = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { id, value } = event.currentTarget;
+    switch (id) {
+      case "usernameField":
+        setUsername(value);
+        break;
+      case "passwordField":
+        setPassword(value);
+        break;
+      default:
+        console.warn(`A TextField is missing an ID or has an ID mismatch with its event handler. (Got ID ${id.length > 0 ? id : "undefined"})`);
+        break;
+    }
+  }
+
+  const LoginPageBrandingContainer = (
+    <div className="LoginPageBrandingContainer">
+      <img className="BrandingImage" src="logo.png" alt="Orbit Logo"/>
+      <Typography className="BrandingTitle" variant="h3">Orbit</Typography>
+    </div>
+  );
+
   return (
-    <Page>
-      <div className="LoginFormContainer">
-        <form className="LoginForm">
-          <TextField />
-          <TextField />
-          <Button>Login</Button>
-        </form>
+    <PageContainer>
+      <div className="LoginPageCenterContainer" style={{ backgroundColor: widthConstrained ? theme.palette.background.paper : theme.palette.background.default }}>
+        {!widthConstrained ? LoginPageBrandingContainer : null}
+        <div className="LoginFormContainer" style={{ backgroundColor: theme.palette.background.paper }}>
+          {widthConstrained ? LoginPageBrandingContainer : null}
+          <form className="LoginForm" onSubmit={login}>
+            <TextField id="usernameField" className="LoginFormItem" autoFocus value={username} onChange={textFieldChanged} />
+            <TextField id="passwordField" className="LoginFormItem" type="password" value={password} onChange={textFieldChanged} />
+            <Button className="LoginFormItem" variant="outlined">Login</Button>
+          </form>
+        </div>
       </div>
-
-    </Page>
+    </PageContainer>
   );
 }
 
