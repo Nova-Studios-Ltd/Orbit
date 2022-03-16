@@ -10,7 +10,6 @@ import Dimensions from "../DataTypes/Dimensions";
 import IUserData from "../Interfaces/IUserData";
 import { Manager } from "../Init/AuthHandler";
 
-// TODO Add token fetching
 // User
 export async function GETUser(user_uuid: string) : Promise<IUserData | undefined> {
     const resp = await GET(`User/${user_uuid}`, Manager.User.token);

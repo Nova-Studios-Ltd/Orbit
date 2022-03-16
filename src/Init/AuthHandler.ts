@@ -23,41 +23,13 @@ export async function LoginNewUser(email: string, password: string) : Promise<bo
     Manager.User.token = ud.token;
     Manager.User.uuid = ud.uuid;
     Manager.User.keyPair = new RSAMemoryKeyPair(await DecryptStringUsingAES(shaPass, ud.key), ud.publicKey);
-    
+
     // Store keypair
     Manager.WriteLocalStorage("Keypair", ToBase64String(ToUint8Array(JSON.stringify(Manager.User.keyPair))));
 
     // Store user uuid/token for autologin
     Manager.WriteLocalStorage("UUID", Manager.User.uuid);
     Manager.WriteLocalStorage("Token", Manager.User.token);
-
-    // Attempt to retreive user data
-    const userResp = await GETUser(ud.uuid);
-    if (userResp === undefined) {
-        Logout();
-        return false;
-    }
-
-    // Store user data
-    Manager.User.avatarSrc = userResp.avatar;
-    Manager.User.discriminator = userResp.discriminator;
-    Manager.User.username = userResp.username;
-
-    // Setup websocket
-    Websocket = new NCWebsocket(`api.novastudios.tk/Events/Listen?user_uuid=${Manager.User.uuid}`, Manager.User.token, false);
-    Websocket.OnConnected = () => console.log("Connected!");
-    Websocket.OnTerminated = () => console.log("Terminated!");
-    
-    // Fetch users keystore
-    const keyResp = await GETKeystore(Manager.User.uuid);
-    if (keyResp === undefined) {
-        Logout();
-        return false;
-    }
-    Manager.LoadKeys(keyResp);
-
-    // Init Websocket Events
-    WebsocketInit(Websocket);
 
     return true;
 }
@@ -83,7 +55,7 @@ export async function AutoLogin() : Promise<boolean> {
     Websocket = new NCWebsocket(`api.novastudios.tk/Events/Listen?user_uuid=${Manager.User.uuid}`, Manager.User.token, false);
     Websocket.OnConnected = () => console.log("Connected!");
     Websocket.OnTerminated = () => console.log("Terminated!");
-    
+
     // Fetch users keystore
     const keyResp = await GETKeystore(Manager.User.uuid);
     if (keyResp === undefined) return false;

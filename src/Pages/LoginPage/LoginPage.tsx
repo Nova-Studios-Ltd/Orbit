@@ -4,6 +4,7 @@ import { Button, Card, TextField, Typography, useTheme } from "@mui/material";
 import PageContainer from "Components/PageContainer/PageContainer";
 
 import type { Page } from "Types/Components";
+import { LoginNewUser } from "Init/AuthHandler";
 
 interface LoginPageProps extends Page {
 
@@ -17,8 +18,13 @@ function LoginPage({ widthConstrained }: LoginPageProps) {
 
   const login = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    console.log("Loggin in")
 
     // TODO: Insert login code here
+    LoginNewUser(username, password).then((value: boolean) => {
+      if (value) document.location.assign("/Chat");
+      else console.error("Failed to log in");
+    });
   }
 
   const textFieldChanged = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -52,7 +58,7 @@ function LoginPage({ widthConstrained }: LoginPageProps) {
           <form className="LoginForm" onSubmit={login}>
             <TextField id="usernameField" className="LoginFormItem" autoFocus value={username} onChange={textFieldChanged} />
             <TextField id="passwordField" className="LoginFormItem" type="password" value={password} onChange={textFieldChanged} />
-            <Button className="LoginFormItem" variant="outlined">Login</Button>
+            <Button className="LoginFormItem" type="submit" variant="outlined">Login</Button>
           </form>
         </div>
       </div>

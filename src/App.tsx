@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { ThemeProvider } from "@mui/material";
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
-import { Init } from './Init/LoginHandler';
 import { AutoLogin, Manager } from './Init/AuthHandler';
 import { DarkTheme_Default } from 'Theme';
 
