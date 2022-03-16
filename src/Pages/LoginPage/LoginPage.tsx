@@ -1,15 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { Button, Card, TextField, Typography, useTheme } from "@mui/material";
+import { Trans, useTranslation } from "react-i18next";
 
 import PageContainer from "Components/PageContainer/PageContainer";
 
 import type { Page } from "Types/Components";
+import { useNavigate } from "react-router-dom";
 
 interface LoginPageProps extends Page {
 
 }
 
 function LoginPage({ widthConstrained }: LoginPageProps) {
+  const Localizations_Common = useTranslation().t;
+  const Localizations_LoginPage = useTranslation("LoginPage").t;
   const theme = useTheme();
 
   const [username, setUsername] = useState("");
@@ -21,7 +25,7 @@ function LoginPage({ widthConstrained }: LoginPageProps) {
     // TODO: Insert login code here
   }
 
-  const textFieldChanged = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const TextFieldChanged = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = event.currentTarget;
     switch (id) {
       case "usernameField":
@@ -39,7 +43,7 @@ function LoginPage({ widthConstrained }: LoginPageProps) {
   const LoginPageBrandingContainer = (
     <div className="LoginPageBrandingContainer">
       <img className="BrandingImage" src="logo.png" alt="Orbit Logo"/>
-      <Typography className="BrandingTitle" variant="h3">Orbit</Typography>
+      <Typography className="BrandingTitle" variant="h3">{Localizations_Common("AppTitle")}</Typography>
     </div>
   );
 
@@ -50,9 +54,9 @@ function LoginPage({ widthConstrained }: LoginPageProps) {
         <div className="LoginFormContainer" style={{ backgroundColor: theme.palette.background.paper }}>
           {widthConstrained ? LoginPageBrandingContainer : null}
           <form className="LoginForm" onSubmit={login}>
-            <TextField id="usernameField" className="LoginFormItem" autoFocus value={username} onChange={textFieldChanged} />
-            <TextField id="passwordField" className="LoginFormItem" type="password" value={password} onChange={textFieldChanged} />
-            <Button className="LoginFormItem" variant="outlined">Login</Button>
+            <TextField id="usernameField" className="LoginFormItem" autoFocus value={username} onChange={TextFieldChanged} />
+            <TextField id="passwordField" className="LoginFormItem" type="password" value={password} onChange={TextFieldChanged} />
+            <Button className="LoginFormItem" variant="outlined">{Localizations_LoginPage("ButtonText_Login")}</Button>
           </form>
         </div>
       </div>
