@@ -56,7 +56,7 @@ function LoginPage({ widthConstrained }: LoginPageProps) {
           <form className="LoginForm" onSubmit={login}>
             <TextField id="usernameField" className="LoginFormItem" autoFocus value={username} onChange={TextFieldChanged} />
             <TextField id="passwordField" className="LoginFormItem" type="password" value={password} onChange={TextFieldChanged} />
-            <Button className="LoginFormItem" variant="outlined">{Localizations_LoginPage("ButtonText_Login")}</Button>
+            <Button className="LoginFormItem" variant="outlined" type="submit">{Localizations_LoginPage("ButtonText_Login")}</Button>
           </form>
         </div>
       </div>
