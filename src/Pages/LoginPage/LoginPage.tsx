@@ -48,7 +48,7 @@ function LoginPage({ widthConstrained }: LoginPageProps) {
 
   const LoginPageBrandingContainer = (
     <div className="LoginPageBrandingContainer">
-      <img className="BrandingImage" src="logo.png" alt="Orbit Logo"/>
+      <img className="BrandingImage" src="logo.png" alt={Localizations_LoginPage("Image-Alt_BrandingLogo")} />
       <Typography className="BrandingTitle" variant="h3">{Localizations_Common("AppTitle")}</Typography>
     </div>
   );
@@ -60,9 +60,9 @@ function LoginPage({ widthConstrained }: LoginPageProps) {
         <div className="LoginFormContainer" style={{ backgroundColor: theme.palette.background.paper }}>
           {widthConstrained ? LoginPageBrandingContainer : null}
           <form className="LoginForm" onSubmit={login}>
-            <TextField id="usernameField" className="LoginFormItem" autoFocus value={username} onChange={TextFieldChanged} />
-            <TextField id="passwordField" className="LoginFormItem" type="password" value={password} onChange={TextFieldChanged} />
-            <Button className="LoginFormItem" variant="outlined" type="submit">{Localizations_LoginPage("ButtonText_Login")}</Button>
+            <TextField id="usernameField" className="LoginFormItem" autoFocus label={Localizations_LoginPage("TextField_Label-Username")} placeholder={Localizations_LoginPage("TextField_Placeholder-Username")} value={username} onChange={TextFieldChanged} />
+            <TextField id="passwordField" className="LoginFormItem" type="password" label={Localizations_LoginPage("TextField_Label-Password")} placeholder={Localizations_LoginPage("TextField_Placeholder-Password")} value={password} onChange={TextFieldChanged} />
+            <Button className="LoginFormItem" variant="outlined" type="submit">{Localizations_LoginPage("Button_Text-Login")}</Button>
           </form>
         </div>
       </div>

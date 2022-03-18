@@ -9,6 +9,8 @@ import { AutoLogin, Manager } from './Init/AuthHandler';
 import { DarkTheme_Default } from 'Theme';
 import { Localizations } from 'Localization/Localizations';
 
+import AuthView from 'Views/AuthView/AuthView';
+import ErrorView from 'Views/ErrorView/ErrorView';
 import MainView from 'Views/MainView/MainView';
 import ChatPage from 'Pages/ChatPage/ChatPage';
 import LoginPage from 'Pages/LoginPage/LoginPage';
@@ -45,9 +47,9 @@ function App() {
       <ThemeProvider theme={DarkTheme_Default}>
         <Router>
           <Routes>
-            <Route path="*" element={<>404 Not Found</>}></Route>
-            <Route path="/" element={<LoginPage widthConstrained={widthConstrained} />} />
-            <Route path="/login" element={<LoginPage widthConstrained={widthConstrained} />} />
+            <Route path="*" element={<ErrorView errorCode={404} />}></Route>
+            <Route path="/" element={<AuthView page={<LoginPage widthConstrained={widthConstrained} />} />} />
+            <Route path="/login" element={<AuthView page={<LoginPage widthConstrained={widthConstrained} />} />} />
             <Route path="/chat" element={<MainView page={<ChatPage />} />} />
             <Route path="/settings" element={<MainView page={<SettingsPage />} />} />
           </Routes>

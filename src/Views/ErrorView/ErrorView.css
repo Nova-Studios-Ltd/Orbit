@@ -1,0 +1,13 @@
+.ErrorViewQuicklinksContainer {
+  display: flex;
+  flex-direction: row;
+  margin-top: var(--global-margin);
+}
+
+.BackButton {
+
+}
+
+.HomeButton {
+  margin-left: var(--global-margin) !important;
+}

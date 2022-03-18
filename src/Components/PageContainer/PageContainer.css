@@ -14,4 +14,8 @@
   .PageContainer {
     padding: 0;
   }
+
+  .PageContainerNonAdaptive {
+    padding: var(--global-padding);;
+  }
 }
