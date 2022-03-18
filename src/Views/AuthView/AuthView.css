@@ -1,0 +1,36 @@
+.AuthViewCenterContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+
+  width: 100%;
+  height: 100%;
+}
+
+.AuthViewFormContainer {
+  padding: var(--card-padding);
+  border-radius: var(--global-border-radius);
+  box-sizing: border-box;
+
+  width: 30rem;
+}
+
+.AuthViewBrandingContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+@media only screen and (max-width: 600px) {
+  .AuthViewFormContainer {
+    border-radius: 0;
+    margin: 0;
+
+    width: 100%;
+  }
+
+  .AuthViewBrandingContainer {
+    margin-bottom: var(--global-margin);
+  }
+}

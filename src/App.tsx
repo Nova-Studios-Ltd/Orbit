@@ -47,8 +47,8 @@ function App() {
         <Router>
           <Routes>
             <Route path="*" element={<ErrorView errorCode={404} />}></Route>
-            <Route path="/" element={<AuthView page={<LoginPage widthConstrained={widthConstrained} />} />} />
-            <Route path="/login" element={<AuthView page={<LoginPage widthConstrained={widthConstrained} />} />} />
+            <Route path="/" element={<AuthView widthConstrained={widthConstrained} page={<LoginPage />} />} />
+            <Route path="/login" element={<AuthView widthConstrained={widthConstrained} page={<LoginPage />} />} />
             <Route path="/chat" element={<MainView page={<ChatPage />} />} />
             <Route path="/settings" element={<MainView page={<SettingsPage />} />} />
           </Routes>

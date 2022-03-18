@@ -10,5 +10,6 @@ export interface Page {
 }
 
 export interface View {
-  page?: ReactNode
+  page?: ReactNode,
+  widthConstrained?: boolean
 }
