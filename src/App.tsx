@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { ThemeProvider } from "@mui/material";
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import i18n from "i18next";
 import { initReactI18next } from 'react-i18next';
-import resourcesToBackend from 'i18next-resources-to-backend';
 
 import { AutoLogin, Manager } from './Init/AuthHandler';
 import { DarkTheme_Default } from 'Theme';

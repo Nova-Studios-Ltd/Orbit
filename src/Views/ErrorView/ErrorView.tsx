@@ -1,4 +1,4 @@
-import { Button, IconButton, TextField } from "@mui/material";
+import { Button } from "@mui/material";
 import { Home as HomeIcon, ChevronLeft as BackIcon } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -17,7 +17,7 @@ function ErrorView({ errorCode } : ErrorViewProps) {
   const navigate = useNavigate();
 
   const errorPage = (() => {
-      switch (errorCode) {
+    switch (errorCode) {
       case 404:
       default:
         return <E404 />

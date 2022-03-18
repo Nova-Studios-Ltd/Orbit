@@ -1,12 +1,11 @@
-import React, { useEffect, useState } from "react";
-import { Button, Card, TextField, Typography, useTheme } from "@mui/material";
-import { Trans, useTranslation } from "react-i18next";
+import React, { useState } from "react";
+import { Button, TextField, Typography, useTheme } from "@mui/material";
+import { useTranslation } from "react-i18next";
 
 import PageContainer from "Components/PageContainer/PageContainer";
 
 import type { Page } from "Types/Components";
 import { LoginNewUser } from "Init/AuthHandler";
-import { useNavigate } from "react-router-dom";
 
 interface LoginPageProps extends Page {
 
