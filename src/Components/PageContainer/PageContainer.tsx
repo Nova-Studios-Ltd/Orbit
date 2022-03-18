@@ -16,8 +16,18 @@ function PageContainer({ adaptive, className, children }: PageContainerProps) {
     adaptive = true;
   }
 
+  let classNames = "PageContainer";
+
+  if (className && className.length > 0) {
+    classNames = classNames.concat(className);
+  }
+
+  if (!adaptive) {
+    classNames = classNames.concat("PageContainerNonAdaptive");
+  }
+
   return (
-    <div className={`PageContainer ${className} ${!adaptive ? "PageContainerNonAdaptive" : ""}`} style={{ backgroundColor: theme.palette.background.default, color: theme.palette.text.primary }}>
+    <div className={classNames} style={{ backgroundColor: theme.palette.background.default, color: theme.palette.text.primary }}>
       {children}
     </div>
   )

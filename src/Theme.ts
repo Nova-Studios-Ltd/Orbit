@@ -9,20 +9,20 @@ export const DarkTheme_Default = createTheme({
     }
   },
   customPalette: {
-
+    formBackground: "#212121AA"
   }
 });
 
 declare module "@mui/material/styles" {
   interface Theme {
     customPalette: {
-
+      formBackground: string
     };
   }
 
   interface ThemeOptions {
     customPalette?: {
-
+      formBackground: string
     };
   }
 }

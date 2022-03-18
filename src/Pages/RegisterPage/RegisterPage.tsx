@@ -47,9 +47,9 @@ function RegisterPage({ widthConstrained }: RegisterPageProps) {
     <div>
       <Typography variant="h6" align="center">{Localizations_RegisterPage("Typography-FormCaption")}</Typography>
       <form className="AuthForm RegisterForm" onSubmit={register}>
-        <TextField id="emailField" className="RegisterFormItem" autoFocus label={Localizations_RegisterPage("TextField_Label-Email")} placeholder={Localizations_RegisterPage("TextField_Placeholder-Email")} value={email} onChange={TextFieldChanged} />
-        <TextField id="usernameField" className="RegisterFormItem" label={Localizations_RegisterPage("TextField_Label-Username")} placeholder={Localizations_RegisterPage("TextField_Placeholder-Username")} value={username} onChange={TextFieldChanged} />
-        <TextField id="passwordField" className="RegisterFormItem" type="password" label={Localizations_RegisterPage("TextField_Label-Password")} placeholder={Localizations_RegisterPage("TextField_Placeholder-Password")} value={password} onChange={TextFieldChanged} helperText={
+        <TextField id="emailField" className="RegisterFormItem" autoFocus required label={Localizations_RegisterPage("TextField_Label-Email")} placeholder={Localizations_RegisterPage("TextField_Placeholder-Email")} value={email} onChange={TextFieldChanged} />
+        <TextField id="usernameField" className="RegisterFormItem" required label={Localizations_RegisterPage("TextField_Label-Username")} placeholder={Localizations_RegisterPage("TextField_Placeholder-Username")} value={username} onChange={TextFieldChanged} />
+        <TextField id="passwordField" className="RegisterFormItem" type="password" required label={Localizations_RegisterPage("TextField_Label-Password")} placeholder={Localizations_RegisterPage("TextField_Placeholder-Password")} value={password} onChange={TextFieldChanged} helperText={
           <>
             <Typography variant="caption" color="red">{Localizations_RegisterPage("TextField_HelperText-ForgottenPasswordWarning").toUpperCase()}</Typography>
             <br />

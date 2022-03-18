@@ -23,9 +23,9 @@ function AuthView({page, widthConstrained} : AuthViewProps) {
 
   return (
     <PageContainer>
-      <div className="AuthViewCenterContainer" style={{ backgroundColor: widthConstrained ? theme.palette.background.paper : theme.palette.background.default }}>
+      <div className="AuthViewCenterContainer" style={{ backgroundColor: widthConstrained ? theme.customPalette.formBackground : theme.palette.background.default }}>
         {!widthConstrained ? authViewBrandingContainer : null}
-        <div className="AuthViewFormContainer" style={{ backgroundColor: theme.palette.background.paper }}>
+        <div className="AuthViewFormContainer" style={{ backgroundColor: theme.customPalette.formBackground }}>
           {widthConstrained ? authViewBrandingContainer : null}
           {page}
         </div>

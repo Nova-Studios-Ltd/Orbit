@@ -5,7 +5,7 @@ import PageContainer from "Components/PageContainer/PageContainer";
 function ChatPage() {
   return (
     <PageContainer>
-
+      Chat
     </PageContainer>
   );
 }

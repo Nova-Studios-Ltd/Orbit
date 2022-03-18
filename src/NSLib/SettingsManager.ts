@@ -1,7 +1,7 @@
 import UserData from "../DataTypes/UserData";
 import { Dictionary, KeyValuePair } from "./Dictionary";
 
-const Storage = require('@sifrr/storage');
+const Storage = require("@sifrr/storage");
 
 export class SettingsManager {
     private SettingsStorage: any;
