@@ -6,7 +6,7 @@ function E404() {
   const Localizations_E404 = useTranslation("E404").t;
 
   return (
-    <div>
+    <div className="ErrorPage E404PageContainer">
       <Typography variant="h4">{Localizations_E404("Typography-ErrorCaption")}</Typography>
       <br />
       <Typography variant="body1">{Localizations_E404("Typography-ErrorDetails")}</Typography>

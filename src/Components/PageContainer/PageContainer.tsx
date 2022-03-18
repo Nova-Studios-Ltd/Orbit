@@ -4,11 +4,12 @@ import type { ReactNode } from "react";
 import type { NCComponent } from "Types/Components";
 
 export interface PageContainerProps extends NCComponent {
-  adaptive?: boolean
+  adaptive?: boolean,
+  className?: string,
   children: ReactNode
 }
 
-function PageContainer({ adaptive, children }: PageContainerProps) {
+function PageContainer({ adaptive, className, children }: PageContainerProps) {
   const theme = useTheme();
 
   if (adaptive == null) {
@@ -16,7 +17,7 @@ function PageContainer({ adaptive, children }: PageContainerProps) {
   }
 
   return (
-    <div className={`PageContainer ${!adaptive ? "PageContainerNonAdaptive" : ""}`} style={{ backgroundColor: theme.palette.background.default, color: theme.palette.text.primary }}>
+    <div className={`PageContainer ${className} ${!adaptive ? "PageContainerNonAdaptive" : ""}`} style={{ backgroundColor: theme.palette.background.default, color: theme.palette.text.primary }}>
       {children}
     </div>
   )

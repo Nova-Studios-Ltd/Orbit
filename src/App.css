@@ -7,7 +7,7 @@
   --global-padding: 10px;
   --global-margin: 10px;
 
-  --card-padding: 10px;
+  --card-padding: 25px;
 }
 
 html, body, #root, .App {

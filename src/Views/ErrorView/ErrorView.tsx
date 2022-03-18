@@ -25,7 +25,7 @@ function ErrorView({ errorCode } : ErrorViewProps) {
   })();
 
   return (
-    <PageContainer adaptive={false}>
+    <PageContainer className="ErrorViewContainer" adaptive={false}>
       {errorPage}
       <div className="ErrorViewQuicklinksContainer">
         <Button className="BackButton" onClick={() => navigate(-1)} variant="outlined"><BackIcon /> {Localizations_ErrorView("Button_Text-Back")}</Button>
