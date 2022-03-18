@@ -1,0 +1,14 @@
+{
+  "Typography-FormCaption": "Register",
+  "Typography-HaveAccountQuestion": "Already have an account?",
+  "Button_Text-Login": "Register",
+  "TextField_Label-Email": "Email",
+  "TextField_Label-Username": "Username",
+  "TextField_Label-Password": "Password",
+  "TextField_Placeholder-Email": "Valid Email Address",
+  "TextField_Placeholder-Username": "New Username",
+  "TextField_Placeholder-Password": "New Password",
+  "TextField_HelperText-ForgottenPasswordWarning": "Warning: Remember this password.",
+  "TextField_HelperText-ForgottenPasswordWarningExplanation": "We currently do not have a password reset service and even if we did, attempting to reset the password would erase all your user data (due to E2E encryption).",
+  "Link-ToLoginForm": "Login"
+}

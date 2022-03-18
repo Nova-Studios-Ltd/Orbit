@@ -11,8 +11,10 @@ import { Localizations } from 'Localization/Localizations';
 import AuthView from 'Views/AuthView/AuthView';
 import ErrorView from 'Views/ErrorView/ErrorView';
 import MainView from 'Views/MainView/MainView';
+
 import ChatPage from 'Pages/ChatPage/ChatPage';
 import LoginPage from 'Pages/LoginPage/LoginPage';
+import RegisterPage from 'Pages/RegisterPage/RegisterPage';
 import SettingsPage from 'Pages/SettingsPage/SettingsPage';
 
 import './App.css';
@@ -49,6 +51,7 @@ function App() {
             <Route path="*" element={<ErrorView errorCode={404} />}></Route>
             <Route path="/" element={<AuthView widthConstrained={widthConstrained} page={<LoginPage />} />} />
             <Route path="/login" element={<AuthView widthConstrained={widthConstrained} page={<LoginPage />} />} />
+            <Route path="/register" element={<AuthView widthConstrained={widthConstrained} page={<RegisterPage />} />} />
             <Route path="/chat" element={<MainView page={<ChatPage />} />} />
             <Route path="/settings" element={<MainView page={<SettingsPage />} />} />
           </Routes>
