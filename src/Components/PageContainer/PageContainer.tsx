@@ -19,11 +19,11 @@ function PageContainer({ adaptive, className, children }: PageContainerProps) {
   let classNames = "PageContainer";
 
   if (className && className.length > 0) {
-    classNames = classNames.concat(className);
+    classNames = classNames.concat(" ", className);
   }
 
   if (!adaptive) {
-    classNames = classNames.concat("PageContainerNonAdaptive");
+    classNames = classNames.concat(" ", "PageContainerNonAdaptive");
   }
 
   return (

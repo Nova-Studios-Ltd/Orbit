@@ -16,7 +16,7 @@ function AuthView({page, widthConstrained} : AuthViewProps) {
 
   const authViewBrandingContainer = (
     <div className="AuthViewBrandingContainer">
-      <img className="BrandingImage" src="logo.png" alt={Localizations_AuthView("Image_Alt-BrandingLogo")} />
+      <img className="BrandingImage" src="logo192.png" alt={Localizations_AuthView("Image_Alt-BrandingLogo")} />
       <Typography className="BrandingTitle" variant="h3">{Localizations_Common("AppTitle")}</Typography>
     </div>
   );
