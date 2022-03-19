@@ -1,0 +1,21 @@
+.MessageCanvasContainer {
+  display: flex;
+  flex-direction: column;
+
+  padding: var(--global-padding);
+
+  height: 100%;
+}
+
+.TheActualMessageCanvas {
+  display: flex;
+  flex-direction: column;
+
+  height: 100%;
+}
+
+@media only screen and (max-width: 600px) {
+  .TheActualMessageCanvas {
+
+  }
+}

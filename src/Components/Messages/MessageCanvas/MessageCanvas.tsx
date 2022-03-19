@@ -10,8 +10,10 @@ function MessageCanvas({  }: MessageCanvasProps) {
   const theme = useTheme();
 
   return (
-    <div style={{ backgroundColor: theme.palette.background.paper }}>
-      [MessageCanvas]
+    <div className="MessageCanvasContainer" style={{ backgroundColor: theme.palette.background.paper }}>
+      <div className="TheActualMessageCanvas">
+        [Message Canvas]
+      </div>
     </div>
   )
 }

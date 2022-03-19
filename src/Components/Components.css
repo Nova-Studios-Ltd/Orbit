@@ -1,3 +1,4 @@
+@import "Channels/Channels.css";
 @import "CustomLink/CustomLink.css";
-@import "MessageCanvas/MessageCanvas.css";
+@import "Messages/Messages.css";
 @import "PageContainer/PageContainer.css";

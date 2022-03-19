@@ -1,12 +1,26 @@
 import { Button, TextField } from "@mui/material";
 
 import PageContainer from "Components/PageContainer/PageContainer";
-import MessageCanvas from "Components/MessageCanvas/MessageCanvas";
+import MessageCanvas from "Components/Messages/MessageCanvas/MessageCanvas";
+import ChannelList from "Components/Channels/ChannelList/ChannelList";
 
-function ChatPage() {
+import type { Page } from "Types/Components";
+
+interface ChatPageProps extends Page {
+
+}
+
+function ChatPage({}: ChatPageProps) {
   return (
     <PageContainer>
-      <MessageCanvas />
+      <div className="ChatPageContainer">
+        <div className="ChatPageContainerLeft">
+          <ChannelList />
+        </div>
+        <div className="ChatPageContainerRight">
+          <MessageCanvas />
+        </div>
+      </div>
     </PageContainer>
   );
 }

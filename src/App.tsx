@@ -32,6 +32,8 @@ function App() {
   const location = useLocation();
   const navigate = useNavigate();
 
+  const [title, setTitle] = useState("");
+
   Manager.ContainsCookie("LoggedIn").then(async (value: boolean) => {
     if (!value) return;
     const loggedIn = await AutoLogin();
@@ -49,12 +51,12 @@ function App() {
     <div className="App">
       <ThemeProvider theme={DarkTheme_Default}>
         <Routes>
-          <Route path="*" element={<ErrorView errorCode={404} />}></Route>
+          <Route path="*" element={<ErrorView widthConstrained={widthConstrained} errorCode={404} />}></Route>
           <Route path="/" element={<AuthView widthConstrained={widthConstrained} page={<LoginPage />} />} />
           <Route path="/login" element={<AuthView widthConstrained={widthConstrained} page={<LoginPage />} />} />
           <Route path="/register" element={<AuthView widthConstrained={widthConstrained} page={<RegisterPage />} />} />
-          <Route path="/chat" element={<MainView page={<ChatPage />} />} />
-          <Route path="/settings" element={<MainView page={<SettingsPage />} />} />
+          <Route path="/chat" element={<MainView widthConstrained={widthConstrained} page={<ChatPage />} />} />
+          <Route path="/settings" element={<MainView widthConstrained={widthConstrained} page={<SettingsPage />} />} />
         </Routes>
       </ThemeProvider>
     </div>

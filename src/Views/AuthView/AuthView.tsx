@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import PageContainer from "Components/PageContainer/PageContainer";
 
 import type { View } from "Types/Components";
+import { ReactNode, useRef } from "react";
 
 interface AuthViewProps extends View {
 
