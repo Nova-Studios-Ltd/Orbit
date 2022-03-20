@@ -46,12 +46,29 @@ function LoginPage({ widthConstrained }: LoginPageProps) {
     }
   }
 
+  const FormStatus = () => {
+    switch (failureStatus) {
+      case LoginStatus.Success:
+        return <Typography color="success">{Localizations_LoginPage("FormStatus-Success")}</Typography>;
+      case LoginStatus.InvalidCredentials:
+        return <Typography color="error">{Localizations_LoginPage("FormStatus-InvalidCredentials")}</Typography>;
+      case LoginStatus.UnknownUser:
+        return <Typography color="error">{Localizations_LoginPage("FormStatus-UnknownUser")}</Typography>;
+      case LoginStatus.ServerError:
+        return <Typography color="error">{Localizations_LoginPage("FormStatus-ServerError")}</Typography>;
+      case LoginStatus.PendingStatus:
+      default:
+        return null;
+    }
+  }
+
   return (
     <div>
       <Typography variant="h6" align="center">{Localizations_LoginPage("Typography-FormCaption")}</Typography>
+      <FormStatus />
       <form className="AuthForm LoginForm" onSubmit={login}>
-        <TextField id="emailField" className="LoginFormItem" autoFocus required label={Localizations_LoginPage("TextField_Label-Email")} placeholder={Localizations_LoginPage("TextField_Placeholder-Email")} value={email} onChange={TextFieldChanged} />
-        <TextField id="passwordField" className="LoginFormItem" type="password" required label={Localizations_LoginPage("TextField_Label-Password")} placeholder={Localizations_LoginPage("TextField_Placeholder-Password")} value={password} onChange={TextFieldChanged} />
+        <TextField id="emailField" className="LoginFormItem" autoFocus error={failureStatus === LoginStatus.UnknownUser} required label={Localizations_LoginPage("TextField_Label-Email")} placeholder={Localizations_LoginPage("TextField_Placeholder-Email")} value={email} onChange={TextFieldChanged} />
+        <TextField id="passwordField" className="LoginFormItem" type="password" error={failureStatus === LoginStatus.InvalidCredentials} required label={Localizations_LoginPage("TextField_Label-Password")} placeholder={Localizations_LoginPage("TextField_Placeholder-Password")} value={password} onChange={TextFieldChanged} />
         <Button className="LoginFormItem" variant="outlined" type="submit">{Localizations_LoginPage("Button_Text-Login")}</Button>
       </form>
       <Typography marginTop={1.5}>{Localizations_LoginPage("Typography-DontHaveAccountQuestion")} <Link to="/register">{Localizations_LoginPage("Link-ToRegisterForm")}</Link></Typography>

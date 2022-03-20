@@ -1,18 +1,28 @@
 import { Button, TextField } from "@mui/material";
+import { AutoLogin } from "Init/AuthHandler";
+import { useNavigate } from "react-router-dom";
 
 import PageContainer from "Components/PageContainer/PageContainer";
 import MessageCanvas from "Components/Messages/MessageCanvas/MessageCanvas";
 import ChannelList from "Components/Channels/ChannelList/ChannelList";
 
 import type { Page } from "Types/Components";
-import { AutoLogin } from "Init/AuthHandler";
+import { useEffect } from "react";
 
 interface ChatPageProps extends Page {
 
 }
 
 function ChatPage({}: ChatPageProps) {
-  AutoLogin();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    AutoLogin().then((result: boolean) => {
+      if (!result) navigate("/login");
+    });
+  });
+
+
   return (
     <PageContainer>
       <div className="ChatPageContainer">

@@ -5,3 +5,9 @@
 .RegisterFormItem {
   margin-top: var(--global-margin) !important;
 }
+
+.E2EHelpContainer {
+  position: relative;
+  width: 20rem;
+  padding: var(--card-padding);
+}
