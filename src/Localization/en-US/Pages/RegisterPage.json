@@ -9,7 +9,12 @@
   "TextField_Placeholder-Username": "New Username",
   "TextField_Placeholder-Password": "New Password",
   "TextField_HelperText-ForgottenPasswordWarning": "Warning: Remember this password.",
+  "TextField_HelperText-ForgottenPasswordWarningExplanationCaption": "Why Should I Remember?",
   "TextField_HelperText-ForgottenPasswordWarningExplanation": "We currently do not have a password reset service and even if we did, attempting to reset the password would erase all your user data (due to End-To-End encryption).",
   "Link-ToLoginForm": "Login",
-  "Learn-More": "Learn more"
+  "Link-LearnMore": "Learn More",
+  "FormStatus-Success": "Account Created Successfully.",
+  "FormStatus-EmailError": "This email is already registered to an account.",
+  "FormStatus-RSAKeygenError": "Unable to generate keypair (this is BAD).",
+  "FormStatus-ServerError": "Unable to create account, server died."
 }

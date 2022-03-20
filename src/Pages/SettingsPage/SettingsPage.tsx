@@ -2,7 +2,7 @@ import { Button, TextField } from "@mui/material";
 
 import PageContainer from "Components/PageContainer/PageContainer";
 
-import type { Page } from "Types/Components";
+import type { Page } from "DataTypes/Components";
 
 interface SettingsPageProps extends Page {
 
