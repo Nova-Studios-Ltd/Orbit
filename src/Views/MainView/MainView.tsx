@@ -1,6 +1,6 @@
 import PageContainer from "Components/PageContainer/PageContainer";
 
-import type { View } from "Types/Components";
+import type { View } from "DataTypes/Components";
 
 interface MainViewProps extends View {
 

@@ -6,7 +6,7 @@ import { EncryptStringUsingAES, GenerateRSAKeyPair, GenerateSHA256Hash } from "N
 import { ContentType, NCAPIResponse, POST } from "NSLib/NCAPI";
 import { RegisterPayload, RegPayloadKey } from "DataTypes/RegisterPayload";
 
-import type { Page } from "Types/Components";
+import type { Page } from "DataTypes/Components";
 import { RegisterStatus } from "DataTypes/Enums";
 
 interface RegisterPageProps extends Page {

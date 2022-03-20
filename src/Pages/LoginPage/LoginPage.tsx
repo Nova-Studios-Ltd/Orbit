@@ -5,7 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { LoginNewUser } from "Init/AuthHandler";
 
 
-import type { Page } from "Types/Components";
+import type { Page } from "DataTypes/Components";
 import { LoginStatus } from "DataTypes/Enums";
 
 interface LoginPageProps extends Page {

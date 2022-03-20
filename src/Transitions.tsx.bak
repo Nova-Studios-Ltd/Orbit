@@ -1,6 +1,6 @@
 import { Transition } from "react-transition-group";
 
-import type { FadeTransitionProps } from "Types/Transitions";
+import type { FadeTransitionProps } from "DataTypes/Transitions";
 
 export const FadeTransition = ({ children, ...TransitionComponentProps }: FadeTransitionProps) => (
   <Transition {...TransitionComponentProps}>

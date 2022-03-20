@@ -1,7 +1,7 @@
 import { useTheme } from "@mui/material";
 
 import type { ReactNode } from "react";
-import type { NCComponent } from "Types/Components";
+import type { NCComponent } from "DataTypes/Components";
 
 export interface PageContainerProps extends NCComponent {
   adaptive?: boolean,

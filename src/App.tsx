@@ -18,7 +18,7 @@ import RegisterPage from "Pages/RegisterPage/RegisterPage";
 import SettingsPage from "Pages/SettingsPage/SettingsPage";
 
 import type { ReactNode } from "react";
-import type { HelpPopupProps } from "Types/Components";
+import type { HelpPopupProps } from "DataTypes/Components";
 
 import "./App.css";
 
