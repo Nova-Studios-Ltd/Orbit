@@ -26,7 +26,7 @@ function AuthView({page, widthConstrained} : AuthViewProps) {
   const AuthViewCenterContainerBackgroundGradient = `linear-gradient(43deg, ${GenerateRandomColor()} 0%, ${GenerateRandomColor()} 46%, ${GenerateRandomColor()} 100%)`;
 
   const AuthViewCenterContainerBackground = () => {
-    if (CSS.supports("background", AuthViewCenterContainerBackgroundGradient)) {
+    if (CSS.supports("background-image", AuthViewCenterContainerBackgroundGradient)) {
       return AuthViewCenterContainerBackgroundGradient;
     }
 
@@ -35,7 +35,7 @@ function AuthView({page, widthConstrained} : AuthViewProps) {
 
   return (
     <PageContainer className="AuthViewPageContainer" noPadding>
-      <div className="AuthViewCenterContainer" style={{ background: AuthViewCenterContainerBackground() }}>
+      <div className="AuthViewCenterContainer" style={{ backgroundImage: AuthViewCenterContainerBackground() }}>
         {!widthConstrained ? authViewBrandingContainer : null}
         <div className="AuthViewFormContainer" style={{ backgroundColor: theme.customPalette.formBackground }}>
           {widthConstrained ? authViewBrandingContainer : null}
