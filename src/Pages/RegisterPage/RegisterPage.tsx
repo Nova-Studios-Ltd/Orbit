@@ -75,7 +75,7 @@ function RegisterPage({ widthConstrained }: RegisterPageProps) {
         <Button className="RegisterFormItem" variant="outlined" type="submit">{Localizations_RegisterPage("Button_Text-Login")}</Button>
       </form>
       <Typography marginTop={1.5}>{Localizations_RegisterPage("Typography-HaveAccountQuestion")} <Link to="/login">{Localizations_RegisterPage("Link-ToLoginForm")}</Link></Typography>
-      <Popup triggered={true}>
+      <Popup triggered={false}>
         We use End-To-End Encryption in order to provide private messaging
       </Popup>
     </div>

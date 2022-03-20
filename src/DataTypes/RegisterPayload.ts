@@ -19,7 +19,7 @@ export class RegPayloadKey {
 
   constructor(priv: string, privIV: string, pub: string) {
     this.priv = priv;
-    this.privIV = priv;
+    this.privIV = privIV;
     this.pub = pub;
   }
 }
