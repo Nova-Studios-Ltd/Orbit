@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { Button, TextField, Typography } from "@mui/material";
+import { Button, TextField, Typography, useTheme } from "@mui/material";
 import { useTranslation } from "react-i18next";
-import { Link, useNavigate } from "react-router-dom";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { LoginNewUser } from "Init/AuthHandler";
 
 
@@ -15,6 +15,7 @@ interface LoginPageProps extends Page {
 function LoginPage({ widthConstrained }: LoginPageProps) {
   const Localizations_Common = useTranslation().t;
   const Localizations_LoginPage = useTranslation("LoginPage").t;
+  const theme = useTheme();
   const navigate = useNavigate();
 
   const [email, setEmail] = useState("");
@@ -71,7 +72,7 @@ function LoginPage({ widthConstrained }: LoginPageProps) {
         <TextField id="passwordField" className="LoginFormItem" type="password" error={failureStatus === LoginStatus.InvalidCredentials} required label={Localizations_LoginPage("TextField_Label-Password")} placeholder={Localizations_LoginPage("TextField_Placeholder-Password")} value={password} onChange={TextFieldChanged} />
         <Button className="LoginFormItem" variant="outlined" type="submit">{Localizations_LoginPage("Button_Text-Login")}</Button>
       </form>
-      <Typography marginTop={1.5}>{Localizations_LoginPage("Typography-DontHaveAccountQuestion")} <Link to="/register">{Localizations_LoginPage("Link-ToRegisterForm")}</Link></Typography>
+      <Typography marginTop={1.5}>{Localizations_LoginPage("Typography-DontHaveAccountQuestion")} <RouterLink to="/register" style={{ color: theme.palette.primary.main }}>{Localizations_LoginPage("Link-ToRegisterForm")}</RouterLink></Typography>
     </div>
   );
 }

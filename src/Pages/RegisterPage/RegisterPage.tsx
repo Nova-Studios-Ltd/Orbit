@@ -115,7 +115,7 @@ function RegisterPage({ HelpPopup, widthConstrained }: RegisterPageProps) {
         }/>
         <Button className="RegisterFormItem" variant="outlined" type="submit">{Localizations_RegisterPage("Button_Text-Login")}</Button>
       </form>
-      <Typography marginTop={1.5}>{Localizations_RegisterPage("Typography-HaveAccountQuestion")} <RouterLink to="/login">{Localizations_RegisterPage("Link-ToLoginForm")}</RouterLink></Typography>
+      <Typography marginTop={1.5}>{Localizations_RegisterPage("Typography-HaveAccountQuestion")} <RouterLink to="/login" style={{ color: theme.palette.primary.main }}>{Localizations_RegisterPage("Link-ToLoginForm")}</RouterLink></Typography>
     </div>
   );
 }
