@@ -6,6 +6,7 @@ import { LoginNewUser } from "Init/AuthHandler";
 
 
 import type { Page } from "Types/Components";
+import { LoginStatus } from "DataTypes/Enums";
 
 interface LoginPageProps extends Page {
 
@@ -18,15 +19,15 @@ function LoginPage({ widthConstrained }: LoginPageProps) {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [failureStatus, setFailStatus] = useState(LoginStatus.PendingStatus);
 
   const login = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     console.log("Loggin in")
 
-    // TODO: Insert login code here
-    LoginNewUser(email, password).then((value: boolean) => {
-      if (value) navigate("/chat");
-      else console.error("Failed to log in");
+    LoginNewUser(email, password).then((status: LoginStatus) => {
+      if (status === LoginStatus.Success) navigate("/chat");
+      else setFailStatus(status);
     });
   }
 

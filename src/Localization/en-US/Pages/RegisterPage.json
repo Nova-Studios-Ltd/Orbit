@@ -9,6 +9,7 @@
   "TextField_Placeholder-Username": "New Username",
   "TextField_Placeholder-Password": "New Password",
   "TextField_HelperText-ForgottenPasswordWarning": "Warning: Remember this password.",
-  "TextField_HelperText-ForgottenPasswordWarningExplanation": "We currently do not have a password reset service and even if we did, attempting to reset the password would erase all your user data (due to E2E encryption).",
-  "Link-ToLoginForm": "Login"
+  "TextField_HelperText-ForgottenPasswordWarningExplanation": "We currently do not have a password reset service and even if we did, attempting to reset the password would erase all your user data (due to End-To-End encryption).",
+  "Link-ToLoginForm": "Login",
+  "Learn-More": "Learn more"
 }

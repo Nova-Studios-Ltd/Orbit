@@ -48,7 +48,7 @@ export class SettingsManager {
     }
 
     async ReadCookie(key: string) : Promise<string> {
-        return (await this.Cookies.get(key)) as string;
+        return (await this.Cookies.get(key))[key] as string;
     }
 
     async ContainsCookie(key: string) : Promise<boolean> {
@@ -69,7 +69,7 @@ export class SettingsManager {
     }
 
     async ReadKey(user_uuid: string) : Promise<string> {
-        return (await this.Keystore.get(user_uuid)) as string;
+        return (await this.Keystore.get(user_uuid))[user_uuid] as string;
     }
 
     async ClearKey(user_uuid: string) : Promise<boolean> {
@@ -96,7 +96,7 @@ export class SettingsManager {
     }
 
     async ReadLocalStorage<T>(key: string) : Promise<T> {
-        return (await this.SettingsStorage.get(key)) as unknown as T;
+        return (await this.SettingsStorage.get(key))[key] as unknown as T;
     }
 
     async WriteLocalStorage(key: string, value: number | string | boolean) : Promise<boolean> {
