@@ -9,7 +9,7 @@ export const DarkTheme_Default = createTheme({
     }
   },
   customPalette: {
-    formBackground: "#212121AA"
+    formBackground: "#212121E9"
   }
 });
 

@@ -1,8 +1,15 @@
+.AuthViewPageContainer {
+  height: 100%;
+}
+
 .AuthViewCenterContainer {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: space-evenly;
+
+  animation: gradient 15s ease infinite;
+  background-size: 200% 200%;
 
   width: 100%;
   height: 100%;
@@ -12,6 +19,7 @@
   padding: var(--card-padding);
   border-radius: var(--global-border-radius);
   box-sizing: border-box;
+  background: transparent;
 
   width: 30rem;
 }
@@ -35,9 +43,22 @@
     margin: 0;
 
     width: 100%;
+    height: 100%;
   }
 
   .AuthViewBrandingContainer {
     margin-bottom: var(--global-margin);
   }
+}
+
+@keyframes gradient {
+	0% {
+		background-position: 0% 50%;
+	}
+	50% {
+		background-position: 100% 50%;
+	}
+	100% {
+		background-position: 0% 50%;
+	}
 }

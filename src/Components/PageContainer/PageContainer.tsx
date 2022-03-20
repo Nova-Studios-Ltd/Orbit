@@ -5,11 +5,12 @@ import type { NCComponent } from "DataTypes/Components";
 
 export interface PageContainerProps extends NCComponent {
   adaptive?: boolean,
+  noPadding?: boolean,
   className?: string,
   children: ReactNode
 }
 
-function PageContainer({ adaptive, className, children }: PageContainerProps) {
+function PageContainer({ adaptive, noPadding, className, children }: PageContainerProps) {
   const theme = useTheme();
 
   if (adaptive == null) {
@@ -20,6 +21,10 @@ function PageContainer({ adaptive, className, children }: PageContainerProps) {
 
   if (className && className.length > 0) {
     classNames = classNames.concat(" ", className);
+  }
+
+  if (noPadding) {
+    classNames = classNames.concat(" ", "NoPadding");
   }
 
   if (!adaptive) {

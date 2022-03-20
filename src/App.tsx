@@ -67,11 +67,11 @@ function App() {
       <ThemeProvider theme={DarkTheme_Default}>
         <Routes>
           <Route path="*" element={<ErrorView widthConstrained={widthConstrained} errorCode={404} />}></Route>
-          <Route path="/" element={<AuthView widthConstrained={widthConstrained} page={<LoginPage />} />} />
-          <Route path="/login" element={<AuthView widthConstrained={widthConstrained} page={<LoginPage />} />} />
-          <Route path="/register" element={<AuthView widthConstrained={widthConstrained} page={<RegisterPage HelpPopup={HelpPopup} />} />} />
-          <Route path="/chat" element={<MainView widthConstrained={widthConstrained} page={<ChatPage />} />} />
-          <Route path="/settings" element={<MainView widthConstrained={widthConstrained} page={<SettingsPage />} />} />
+          <Route path="/" element={<AuthView widthConstrained={widthConstrained} page={<LoginPage changeTitleCallback={setTitle} />} />} />
+          <Route path="/login" element={<AuthView widthConstrained={widthConstrained} page={<LoginPage changeTitleCallback={setTitle} />} />} />
+          <Route path="/register" element={<AuthView widthConstrained={widthConstrained} page={<RegisterPage changeTitleCallback={setTitle} HelpPopup={HelpPopup} />} />} />
+          <Route path="/chat" element={<MainView widthConstrained={widthConstrained} page={<ChatPage changeTitleCallback={setTitle} />} />} />
+          <Route path="/settings" element={<MainView widthConstrained={widthConstrained} page={<SettingsPage changeTitleCallback={setTitle} />} />} />
         </Routes>
         <Popover open={helpVisible} anchorEl={helpAnchorEl} onClose={() => {
           setHelpAnchor(null as unknown as Element);

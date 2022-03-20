@@ -25,3 +25,7 @@ html, body, #root, .App {
 .BrandingTitle {
   margin-top: var(--global-margin);
 }
+
+.NoPadding {
+  padding: 0;
+}
