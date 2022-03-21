@@ -18,7 +18,6 @@ export default function TD() {
           >
             Try Our Desktop Client
           </a>
-          <CustomLink url="https://open.spotify.com/track/6Z8R6UsFuGXGtiIxiD8ISb?si=49aa50e147df4b15"></CustomLink>
         </header>
       </div>
     );
