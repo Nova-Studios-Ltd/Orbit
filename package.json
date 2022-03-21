@@ -1,7 +1,6 @@
 {
   "name": "novachatweb3",
   "version": "0.1.0",
-  "homepage": "/live-test/",
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.8.2",
