@@ -6,7 +6,7 @@ import IUserLoginData from "../Interfaces/IUserLoginData";
 import { RSAMemoryKeyPair } from "../NSLib/NCEncrytUtil";
 import { GETKeystore, GETUser } from "../NSLib/APIEvents";
 import WebsocketInit from "./WebsocketEventInit";
-import { FromBase64String, FromUint8Array, ToBase64String, ToUint8Array } from "../NSLib/Base64";
+import { ToBase64String, ToUint8Array } from "../NSLib/Base64";
 import { LoginStatus } from "DataTypes/Enums";
 
 export const Manager = new SettingsManager();
@@ -30,17 +30,11 @@ export async function LoginNewUser(email: string, password: string) : Promise<Lo
   // Store keypair
   Manager.WriteLocalStorage("Keypair", ToBase64String(ToUint8Array(JSON.stringify(Manager.User.keyPair))));
 
-  // Store user uuid/token for autologin
-  Manager.WriteLocalStorage("UUID", Manager.User.uuid);
-  Manager.WriteLocalStorage("Token", Manager.User.token);
-
   return LoginStatus.Success;
 }
 
 export async function AutoLogin() : Promise<boolean> {
   if (!await Manager.ContainsLocalStorage("UUID") || !await Manager.ContainsLocalStorage("Token")) return false;
-  Manager.User.uuid = await Manager.ReadLocalStorage("UUID");
-  Manager.User.token = await Manager.ReadLocalStorage("Token");
 
   console.log(Manager.User.uuid);
 
@@ -52,9 +46,6 @@ export async function AutoLogin() : Promise<boolean> {
   Manager.User.avatarSrc = userResp.avatar;
   Manager.User.discriminator = userResp.discriminator;
   Manager.User.username = userResp.username;
-
-  // Load keypair
-  Manager.User.keyPair = JSON.parse(FromUint8Array(FromBase64String(await Manager.ReadLocalStorage("Keypair")))) as RSAMemoryKeyPair;
 
   // Setup websocket
   Websocket = new NCWebsocket(`api.novastudios.tk/Events/Listen?user_uuid=${Manager.User.uuid}`, Manager.User.token, false);

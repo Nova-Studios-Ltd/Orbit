@@ -1,5 +1,5 @@
 import { Button, TextField } from "@mui/material";
-import { AutoLogin } from "Init/AuthHandler";
+import { AutoLogin, Manager } from "Init/AuthHandler";
 import { useNavigate } from "react-router-dom";
 
 import PageContainer from "Components/PageContainer/PageContainer";
@@ -8,6 +8,7 @@ import ChannelList from "Components/Channels/ChannelList/ChannelList";
 
 import type { Page } from "DataTypes/Components";
 import { useEffect } from "react";
+import { SettingsManager } from "NSLib/SettingsManager";
 
 interface ChatPageProps extends Page {
 
@@ -21,6 +22,8 @@ function ChatPage({}: ChatPageProps) {
       if (!result) navigate("/login");
     });
   });
+
+  console.log(new SettingsManager().User);
 
 
   return (

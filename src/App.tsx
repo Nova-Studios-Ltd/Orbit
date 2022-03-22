@@ -21,6 +21,7 @@ import type { ReactNode } from "react";
 import type { HelpPopupProps } from "DataTypes/Components";
 
 import "./App.css";
+import { SettingsManager } from "NSLib/SettingsManager";
 
 i18n.use(initReactI18next)
 .init({
