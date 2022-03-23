@@ -8,7 +8,10 @@ import { AESMemoryEncryptData } from "./NCEncrytUtil";
 import { GetImageDimensions } from "./Util";
 import Dimensions from "../DataTypes/Dimensions";
 import IUserData from "../Interfaces/IUserData";
-import { Manager } from "../Init/AuthHandler";
+import { SettingsManager } from "./SettingsManager";
+
+
+const Manager = new SettingsManager();
 
 // User
 export async function GETUser(user_uuid: string) : Promise<IUserData | undefined> {
