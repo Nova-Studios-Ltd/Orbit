@@ -16,7 +16,7 @@ function AuthView({page, widthConstrained} : AuthViewProps) {
   const Localizations_Common = useTranslation().t;
   const Localizations_AuthView = useTranslation("AuthView").t;
   const theme = useTheme();
-  const [AuthViewCenterContainerBackgroundGradient, setGradient] = useState(`linear-gradient(43deg, ${GenerateRandomColor()} 0%, ${GenerateRandomColor()} 46%, ${GenerateRandomColor()} 100%)`);
+  //const [AuthViewCenterContainerBackgroundGradient, setGradient] = useState(`linear-gradient(43deg, ${GenerateRandomColor()} 0%, ${GenerateRandomColor()} 46%, ${GenerateRandomColor()} 100%)`);
 
   const authViewBrandingContainer = (
     <div className="AuthViewBrandingContainer">
@@ -25,12 +25,12 @@ function AuthView({page, widthConstrained} : AuthViewProps) {
     </div>
   );
 
-  //const AuthViewCenterContainerBackgroundGradient = `linear-gradient(43deg, ${GenerateRandomColor()} 0%, ${GenerateRandomColor()} 46%, ${GenerateRandomColor()} 100%)`
+  const AuthViewCenterContainerBackgroundGradient = `linear-gradient(43deg, ${GenerateRandomColor()} 0%, ${GenerateRandomColor()} 46%, ${GenerateRandomColor()} 100%)`
 
-  useEffect(() => {
+  /*useEffect(() => {
     setGradient(`linear-gradient(43deg, ${GenerateRandomColor()} 0%, ${GenerateRandomColor()} 46%, ${GenerateRandomColor()} 100%)`)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [useLocation()]);
+  }, [useLocation()]);*/
 
   const AuthViewCenterContainerBackground = () => {
     if (CSS.supports("background-image", AuthViewCenterContainerBackgroundGradient)) {
