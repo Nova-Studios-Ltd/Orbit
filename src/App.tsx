@@ -22,6 +22,7 @@ import type { HelpPopupProps } from "DataTypes/Components";
 
 import "./App.css";
 import { SettingsManager } from "NSLib/SettingsManager";
+import { DownloadFile, UploadFile } from "NSLib/ElectronAPI";
 
 i18n.use(initReactI18next)
 .init({
