@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Popover, ThemeProvider } from "@mui/material";
 import { SettingsManager } from "NSLib/SettingsManager";
+import { DownloadFile, UploadFile } from "NSLib/ElectronAPI";
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
