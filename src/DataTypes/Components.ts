@@ -20,6 +20,9 @@ export interface Page {
 }
 
 export interface View {
-  page?: ReactNode,
-  widthConstrained?: boolean
+  path?: unknown,
+  changeTitleCallback?: (title: string) => void,
+  HelpPopup?: HelpPopupProps,
+  widthConstrained?: boolean,
+  pageSpecificProps?: unknown
 }

@@ -8,6 +8,7 @@
   "TextField_Placeholder-Email": "Valid Email Address",
   "TextField_Placeholder-Username": "New Username",
   "TextField_Placeholder-Password": "New Password",
+  "TextField_HelperText-EmailHint": "This will be used when signing in, and for account-related operations.",
   "TextField_HelperText-ForgottenPasswordWarning": "Warning: Remember this password. This cannot be reset if forgotten.",
   "TextField_HelperText-ForgottenPasswordWarningExplanationCaption": "Why Not?",
   "TextField_HelperText-ForgottenPasswordWarningExplanation": "We currently do not have a password reset service and even if we did, attempting to reset the password without the original password would erase all your user data as your data can't be decrypted without the original password.",

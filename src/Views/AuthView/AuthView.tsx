@@ -1,18 +1,21 @@
 import { Typography, useTheme } from "@mui/material";
 import { useTranslation } from "react-i18next";
 
+import LoginPage from "Pages/LoginPage/LoginPage";
+import RegisterPage from "Pages/RegisterPage/RegisterPage";
 import PageContainer from "Components/PageContainer/PageContainer";
 
 import type { View } from "DataTypes/Components";
 import { useEffect, useState } from "react";
 import GenerateRandomColor from "ColorGeneration";
 import { useLocation } from "react-router-dom";
+import { AuthViewRoutes } from "DataTypes/Routes";
 
 interface AuthViewProps extends View {
-
+  path: AuthViewRoutes
 }
 
-function AuthView({page, widthConstrained} : AuthViewProps) {
+function AuthView({ path, widthConstrained, HelpPopup, changeTitleCallback } : AuthViewProps) {
   const Localizations_Common = useTranslation().t;
   const Localizations_AuthView = useTranslation("AuthView").t;
   const theme = useTheme();
@@ -40,13 +43,25 @@ function AuthView({page, widthConstrained} : AuthViewProps) {
     return widthConstrained ? theme.customPalette.formBackground : theme.palette.background.default;
   };
 
+  const page = () => {
+    switch (path) {
+      case AuthViewRoutes.Login:
+        return (<LoginPage changeTitleCallback={changeTitleCallback} />);
+      case AuthViewRoutes.Register:
+        return (<RegisterPage changeTitleCallback={changeTitleCallback} HelpPopup={HelpPopup} />);
+      default:
+        console.warn("[AuthView] Invalid Page");
+        return null;
+    }
+  }
+
   return (
     <PageContainer className="AuthViewPageContainer" noPadding>
       <div className="AuthViewCenterContainer" style={{ backgroundImage: AuthViewCenterContainerBackground() }}>
         {!widthConstrained ? authViewBrandingContainer : null}
         <div className="AuthViewFormContainer" style={{ backgroundColor: theme.customPalette.formBackground }}>
           {widthConstrained ? authViewBrandingContainer : null}
-          {page}
+          {page()}
         </div>
       </div>
     </PageContainer>
