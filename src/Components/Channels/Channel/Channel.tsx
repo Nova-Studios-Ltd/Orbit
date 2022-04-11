@@ -1,4 +1,4 @@
-import { useTheme } from "@mui/material";
+import { Avatar, ButtonBase, Typography, useTheme } from "@mui/material";
 
 import type { NCComponent } from "DataTypes/Components";
 import { ChannelType } from "DataTypes/Enums";
@@ -31,9 +31,14 @@ function Channel({ channelName, channelID, channelIconSrc, channelMembers, isGro
   }
 
   return (
-    <div className="ChannelContainer" style={{ backgroundColor: theme.palette.background.paper }} onClick={channelClickHandler}>
-      [Channel]
-    </div>
+    <ButtonBase className="ChannelContainer" style={{ backgroundColor: theme.palette.background.paper }} onClick={channelClickHandler}>
+      <div className="ChannelLeft">
+        <Avatar className="ChannelIcon" src={channelIconSrc} />
+      </div>
+      <div className="ChannelRight">
+        <Typography>{channelName}</Typography>
+      </div>
+    </ButtonBase>
   )
 }
 

@@ -3,7 +3,7 @@ import { Home as HomeIcon, ChevronLeft as BackIcon } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
-import PageContainer from "Components/PageContainer/PageContainer";
+import ViewContainer from "Components/Containers/ViewContainer/ViewContainer";
 import E404 from "Pages/ErrorPages/E404/E404";
 
 import type { View } from "DataTypes/Components";
@@ -25,13 +25,13 @@ function ErrorView({ errorCode } : ErrorViewProps) {
   })();
 
   return (
-    <PageContainer className="ErrorViewContainer" adaptive={false}>
+    <ViewContainer className="ErrorViewContainer" adaptive={false}>
       {errorPage}
       <div className="ErrorViewQuicklinksContainer">
         <Button className="BackButton" onClick={() => navigate(-1)} variant="outlined"><BackIcon /> {Localizations_ErrorView("Button_Text-Back")}</Button>
         <Button className="HomeButton" onClick={() => navigate("/")} variant="outlined"><HomeIcon /> {Localizations_ErrorView("Button_Text-Home")}</Button>
       </div>
-    </PageContainer>
+    </ViewContainer>
   );
 }
 

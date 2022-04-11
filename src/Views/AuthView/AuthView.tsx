@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 
 import LoginPage from "Pages/LoginPage/LoginPage";
 import RegisterPage from "Pages/RegisterPage/RegisterPage";
-import PageContainer from "Components/PageContainer/PageContainer";
+import ViewContainer from "Components/Containers/ViewContainer/ViewContainer";
 
 import type { View } from "DataTypes/Components";
 import { useEffect, useState } from "react";
@@ -21,7 +21,7 @@ function AuthView({ path, widthConstrained, HelpPopup, changeTitleCallback } : A
   const theme = useTheme();
   //const [AuthViewCenterContainerBackgroundGradient, setGradient] = useState(`linear-gradient(43deg, ${GenerateRandomColor()} 0%, ${GenerateRandomColor()} 46%, ${GenerateRandomColor()} 100%)`);
 
-  const authViewBrandingContainer = (
+  const AuthViewBrandingContainer = (
     <div className="AuthViewBrandingContainer">
       <img className="BrandingImage" src="logo192.png" alt={Localizations_AuthView("Image_Alt-BrandingLogo")} />
       <Typography className="BrandingTitle" variant="h3">{Localizations_Common("AppTitle")}</Typography>
@@ -56,15 +56,15 @@ function AuthView({ path, widthConstrained, HelpPopup, changeTitleCallback } : A
   }
 
   return (
-    <PageContainer className="AuthViewPageContainer" noPadding>
+    <ViewContainer className="AuthViewContainer" noPadding>
       <div className="AuthViewCenterContainer" style={{ backgroundImage: AuthViewCenterContainerBackground() }}>
-        {!widthConstrained ? authViewBrandingContainer : null}
+        {!widthConstrained ? AuthViewBrandingContainer : null}
         <div className="AuthViewFormContainer" style={{ backgroundColor: theme.customPalette.formBackground }}>
-          {widthConstrained ? authViewBrandingContainer : null}
+          {widthConstrained ? AuthViewBrandingContainer : null}
           {page()}
         </div>
       </div>
-    </PageContainer>
+    </ViewContainer>
   );
 }
 

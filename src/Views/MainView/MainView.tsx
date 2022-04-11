@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { AutoLogin, Manager } from "Init/AuthHandler";
 import { SettingsManager } from "NSLib/SettingsManager";
 
-import PageContainer from "Components/PageContainer/PageContainer";
+import ViewContainer from "Components/Containers/ViewContainer/ViewContainer";
 import ChatPage from "Pages/ChatPage/ChatPage";
 import SettingsPage from "Pages/SettingsPage/SettingsPage";
 
@@ -28,11 +28,12 @@ function MainView({ path, changeTitleCallback } : MainViewProps) {
   const channels: IRawChannelProps[] = [
     { channelName: "Channel1", table_Id: "0", owner_UUID: "0", channelType: ChannelType.User, members: ["User0", "User1"] }
   ]; // Placeholder for testing
+  // TODO: Convert this to state and implement logic for updating it with the API
 
   const channelData: ChannelListProps = {
     channels: channels,
     onChannelClick: onChannelClick
-  }
+  } // TODO: Convert this to state
 
   useEffect(() => {
     AutoLogin().then((result: boolean) => {
@@ -55,9 +56,9 @@ function MainView({ path, changeTitleCallback } : MainViewProps) {
   }
 
   return (
-    <PageContainer>
+    <ViewContainer>
       {page()}
-    </PageContainer>
+    </ViewContainer>
   );
 }
 

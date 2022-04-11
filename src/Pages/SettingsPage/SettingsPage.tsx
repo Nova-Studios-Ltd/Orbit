@@ -1,6 +1,6 @@
 import { Button, TextField } from "@mui/material";
 
-import PageContainer from "Components/PageContainer/PageContainer";
+import PageContainer from "Components/Containers/PageContainer/PageContainer";
 
 import type { Page } from "DataTypes/Components";
 

@@ -1,6 +1,6 @@
 import { Button, TextField } from "@mui/material";
 
-import PageContainer from "Components/PageContainer/PageContainer";
+import PageContainer from "Components/Containers/PageContainer/PageContainer";
 import MessageCanvas from "Components/Messages/MessageCanvas/MessageCanvas";
 import ChannelList, { ChannelListProps } from "Components/Channels/ChannelList/ChannelList";
 
@@ -12,7 +12,7 @@ interface ChatPageProps extends Page {
 
 function ChatPage({ channelData }: ChatPageProps) {
   return (
-    <PageContainer>
+    <PageContainer noPadding>
       <div className="ChatPageContainer">
         <div className="ChatPageContainerLeft">
           <ChannelList channels={channelData?.channels} onChannelClick={channelData?.onChannelClick} />

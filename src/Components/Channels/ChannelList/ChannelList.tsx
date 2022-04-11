@@ -1,4 +1,5 @@
-import { useTheme } from "@mui/material";
+import { Typography, useTheme } from "@mui/material";
+import { useTranslation } from "react-i18next";
 
 import Channel, { ChannelClickEvent } from "Components/Channels/Channel/Channel";
 
@@ -11,11 +12,13 @@ export interface ChannelListProps extends NCComponent {
 }
 
 function ChannelList({ channels, onChannelClick }: ChannelListProps) {
+  const Localizations_ChannelList = useTranslation("ChannelList").t;
   const theme = useTheme();
 
   const NoChannelsHint = (
-    <div>
-      [No Channels]
+    <div className="NoChannelsHintContainer">
+      <Typography variant="h6">{Localizations_ChannelList("Typography_Heading-NoChannelsHint")}</Typography>
+      <Typography variant="body1">{Localizations_ChannelList("Typography_Body-NoChannelsHint")}</Typography>
     </div>
   );
 
