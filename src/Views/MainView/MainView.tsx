@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AutoLogin, Manager } from "Init/AuthHandler";
 import { SettingsManager } from "NSLib/SettingsManager";
@@ -13,6 +13,7 @@ import { ChannelType } from "DataTypes/Enums";
 import { MainViewRoutes } from "DataTypes/Routes";
 import type { ChannelClickEvent } from "Components/Channels/Channel/Channel";
 import type { ChannelListProps } from "Components/Channels/ChannelList/ChannelList";
+import { GETUserChannels } from "NSLib/APIEvents";
 
 interface MainViewProps extends View {
   path: MainViewRoutes
@@ -21,14 +22,19 @@ interface MainViewProps extends View {
 function MainView({ path, changeTitleCallback } : MainViewProps) {
   const navigate = useNavigate();
 
+  const [channels, setChannels] = useState([] as IRawChannelProps[]);
+
+
   const onChannelClick = (event: ChannelClickEvent) => {
     console.log("Channel clicked: ", event);
   }
 
-  const channels: IRawChannelProps[] = [
+  /*const channels: IRawChannelProps[] = [
     { channelName: "Channel1", table_Id: "0", owner_UUID: "0", channelType: ChannelType.User, members: ["User0", "User1"] }
-  ]; // Placeholder for testing
+  ]; // Placeholder for testing*/
   // TODO: Convert this to state and implement logic for updating it with the API
+
+
 
   const channelData: ChannelListProps = {
     channels: channels,
@@ -39,7 +45,12 @@ function MainView({ path, changeTitleCallback } : MainViewProps) {
     AutoLogin().then((result: boolean) => {
       if (!result) navigate("/login");
     });
-  });
+
+    GETUserChannels((channels: string[]) => {
+
+    });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   console.log(new SettingsManager().User);
 

@@ -21,7 +21,7 @@ export async function GETUser(user_uuid: string) : Promise<IUserData | undefined
 }
 
 export function GETUserChannels(callback: (channels: string[]) => void) {
-    GET("/User/Channels", Manager.User.token).then((resp: NCAPIResponse) => {
+    GET("/User/@me/Channels", Manager.User.token).then((resp: NCAPIResponse) => {
         if (resp.status === 200) callback(resp.payload as string[]);
     });
 }
