@@ -6,7 +6,7 @@ import IUserLoginData from "../Interfaces/IUserLoginData";
 import { RSAMemoryKeyPair } from "../NSLib/NCEncrytUtil";
 import { GETKeystore, GETUser } from "../NSLib/APIEvents";
 import WebsocketInit from "./WebsocketEventInit";
-import { ToBase64String, ToUint8Array } from "../NSLib/Base64";
+import { FromBase64String, FromUint8Array, ToBase64String, ToUint8Array } from "../NSLib/Base64";
 import { LoginStatus } from "DataTypes/Enums";
 
 export const Manager = new SettingsManager();
@@ -26,6 +26,7 @@ export async function LoginNewUser(email: string, password: string) : Promise<Lo
   Manager.User.token = ud.token;
   Manager.User.uuid = ud.uuid;
   Manager.User.keyPair = new RSAMemoryKeyPair(await DecryptStringUsingAES(shaPass, ud.key), ud.publicKey);
+  console.log(Manager.User.keyPair);
 
   // Store keypair
   Manager.WriteLocalStorage("Keypair", ToBase64String(ToUint8Array(JSON.stringify(Manager.User.keyPair))));
@@ -35,8 +36,6 @@ export async function LoginNewUser(email: string, password: string) : Promise<Lo
 
 export async function AutoLogin() : Promise<boolean> {
   if (!await Manager.ContainsLocalStorage("UUID") || !await Manager.ContainsLocalStorage("Token")) return false;
-
-  console.log(Manager.User.uuid);
 
   // Attempt to retreive user data
   const userResp = await GETUser(Manager.User.uuid);

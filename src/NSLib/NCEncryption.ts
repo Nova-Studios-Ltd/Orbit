@@ -5,10 +5,10 @@ function ImportRSAPubKey(key: string) : Promise<CryptoKey> {
     const pemHeader = "-----BEGIN PUBLIC KEY-----";
     const pemFooter = "-----END PUBLIC KEY-----";
     const pemContents = key.substring(pemHeader.length, key.length - pemFooter.length);
-    const keyBin = Buffer.from(pemContents, "base64");
+    const keyBin = FromBase64String(pemContents);
     return crypto.subtle.importKey(
-        "spki", 
-        keyBin, 
+        "spki",
+        keyBin,
         {
             name: "RSA-OAEP",
             hash: "SHA-256"
@@ -22,10 +22,11 @@ function ImportRSAPrivKey(key: string) : Promise<CryptoKey> {
     const pemHeader = "-----BEGIN PRIVATE KEY-----";
     const pemFooter = "-----END PRIVATE KEY-----";
     const pemContents = key.substring(pemHeader.length, key.length - pemFooter.length);
-    const keyBin = Buffer.from(pemContents, "base64");
+    console.log(key);
+    const keyBin = FromBase64String(pemContents);
     return crypto.subtle.importKey(
-        "pkcs8", 
-        keyBin, 
+        "pkcs8",
+        keyBin,
         {
             name: "RSA-OAEP",
             hash: "SHA-256"
@@ -67,7 +68,7 @@ export async function EncryptUsingPubKey(key: string, data: string) : Promise<st
 }
 
 export async function DecryptUsingPrivKey(key: string, data: string) : Promise<string> {
-    const res = await crypto.subtle.decrypt({name: "RSA-OAEP"}, await ImportRSAPrivKey(key), ToUint8Array(data)); 
+    const res = await crypto.subtle.decrypt({name: "RSA-OAEP"}, await ImportRSAPrivKey(key), ToUint8Array(data));
     return ToBase64String(new Uint8Array(res));
 }
 
@@ -93,7 +94,7 @@ export async function DecryptStringUsingAES(key: string, data: AESMemoryEncryptD
             length: 64
         },
         await ImportKey(key),
-        ToUint8Array(data.content as string)
+        FromBase64String(data.content as string),
     ) as ArrayBuffer;
     return FromUint8Array(new Uint8Array(decrypted));
 }
@@ -127,7 +128,7 @@ export async function EncryptUint8ArrayUsingAES(key: string, data: Uint8Array, i
 
 
 export async function GenerateKey(length: number) : Promise<string> {
-    return ToBase64String(crypto.getRandomValues(new Uint8Array(length)));   
+    return ToBase64String(crypto.getRandomValues(new Uint8Array(length)));
 }
 
 export async function GenerateSHA256Hash(data: string) : Promise<string> {
