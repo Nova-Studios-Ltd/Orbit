@@ -39,13 +39,6 @@ function MainView({ path, changeTitleCallback } : MainViewProps) {
     });
   }
 
-  /*const channels: IRawChannelProps[] = [
-    { channelName: "Channel1", table_Id: "0", owner_UUID: "0", channelType: ChannelType.User, members: ["User0", "User1"] }
-  ]; // Placeholder for testing*/
-  // TODO: Convert this to state and implement logic for updating it with the API
-
-
-
   const channelData: ChannelListProps = {
     channels: channels,
     onChannelClick: onChannelClick

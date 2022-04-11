@@ -41,13 +41,13 @@ export default class NCWebsocket {
         };
 
         this.websocket.onerror = (e) => {
-            console.error(`Socket Closed Unexpectedly. Attempting Reconnect In ${this.timesteps[this.reconnect - 1] / 1000}s`);
+            console.error(`Socket Closed Unexpectedly. Attempting Reconnect In ${this.timesteps[this.reconnect] / 1000}s`);
             this.Reconnect();
         };
 
-        this.websocket.onclose = () => {
-            console.warn(`Socket Closed. Attempting Reconnect In ${this.timesteps[this.reconnect - 1] / 1000}s`);
-            this.Reconnect();
+        this.websocket.onclose = (e) => {
+          console.warn(`Socket Closed. Attempting Reconnect In ${this.timesteps[this.reconnect] / 1000}s`);
+          this.Reconnect();
         };
 
         this.websocket.onopen = () => {
@@ -73,16 +73,20 @@ export default class NCWebsocket {
         }
         this.reconnect++;
         this.timeoutID = setTimeout(() => {
-            if (this.insecure === undefined || this.insecure === false) {
-                this.websocket = new WebSocket(`wss://${this.address}`);
-            }
-            else {
-                this.websocket = new WebSocket(`ws://${this.address}`);
-            }
-            this.Init();
-            if (this.timeoutID !== undefined) clearTimeout(this.timeoutID)
-            this.OnReconnectEnd(att);
-        }, this.timesteps[this.reconnect - 1]);
+          this.websocket.onclose = () => {};
+          this.websocket.onopen = () => {};
+          this.websocket.onerror = () => {};
+          this.websocket.onmessage = () => {};
+          if (this.insecure === undefined || this.insecure === false) {
+              this.websocket = new WebSocket(`wss://${this.address}`);
+          }
+          else {
+              this.websocket = new WebSocket(`ws://${this.address}`);
+          }
+          this.Init();
+          if (this.timeoutID !== undefined) clearTimeout(this.timeoutID)
+          this.OnReconnectEnd(att);
+        }, this.timesteps[this.reconnect]);
     }
 
     CreateEvent(event_id: number, callback: (event: IWebSocketEvent) => void) {

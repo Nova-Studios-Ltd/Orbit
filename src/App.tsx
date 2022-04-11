@@ -50,12 +50,12 @@ function App() {
   };
 
   Manager.ContainsCookie("LoggedIn").then(async (value: boolean) => {
-    if (!value) return;
+    /*if (!value) return;
     const loggedIn = await AutoLogin();
     if (loggedIn && !location.pathname.toLowerCase().includes("/chat")) {
       Manager.WriteCookie("LoggedIn", "false");
       navigate("/chat");
-    }
+    }*/
   });
 
   window.addEventListener("resize", (event) => {
