@@ -48,7 +48,7 @@ export async function AutoLogin() : Promise<boolean> {
   Manager.User.username = userResp.username;
 
   // Setup websocket
-  Websocket = new NCWebsocket(`api.novastudios.tk/Events/Listen?user_uuid=${Manager.User.uuid}`, Manager.User.token, true);
+  Websocket = new NCWebsocket(`api.novastudios.tk/Events/Listen?user_uuid=${Manager.User.uuid}`, Manager.User.token, false);
   Websocket.OnConnected = () => console.log("Connected!");
   Websocket.OnTerminated = () => console.log("Terminated!");
 

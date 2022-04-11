@@ -50,8 +50,12 @@ function App() {
   };
 
   Manager.ContainsCookie("LoggedIn").then(async (value: boolean) => {
-    /*if (!value) return;
-    const loggedIn = await AutoLogin();
+    if (!value) return;
+    if (!location.pathname.toLowerCase().includes("/chat")) {
+      Manager.WriteCookie("LoggedIn", "false");
+      navigate("/chat");
+    }
+    /*const loggedIn = await AutoLogin();
     if (loggedIn && !location.pathname.toLowerCase().includes("/chat")) {
       Manager.WriteCookie("LoggedIn", "false");
       navigate("/chat");
