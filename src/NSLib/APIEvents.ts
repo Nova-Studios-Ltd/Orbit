@@ -1,4 +1,4 @@
-import { IChannelProps } from "../Interfaces/IChannelProps";
+import { IRawChannelProps } from "../Interfaces/IChannelProps";
 import { IMessageProps } from "../Interfaces/IMessageProps";
 import MessageAttachment from "../DataTypes/MessageAttachment";
 import { Dictionary, Indexable } from "./Dictionary";
@@ -128,7 +128,7 @@ export function GETMessages(channel_uuid: string, limit = 30, before = 214748364
 export function SENDMessage(channel_uuid: string, contents: string, rawAttachments: MessageAttachment[], callback: (sent: boolean) => void) {
     GET(`/Channel/${channel_uuid}`, Manager.User.token).then(async (resp: NCAPIResponse) => {
         if (resp.status === 200) {
-            const channel = resp.payload as IChannelProps;
+            const channel = resp.payload as IRawChannelProps;
             if (channel.members === undefined) {
                 callback(false);
                 return;
@@ -181,9 +181,9 @@ export async function DELETEMessage(channel_uuid: string, message_id: string) : 
 }
 
 // Channels
-export async function GETChannel(channel_uuid: string) : Promise<IChannelProps | undefined> {
+export async function GETChannel(channel_uuid: string) : Promise<IRawChannelProps | undefined> {
     const resp = await GET(`/Channel/${channel_uuid}`, Manager.User.token);
-    if (resp.status === 200) return resp.payload as IChannelProps;
+    if (resp.status === 200) return resp.payload as IRawChannelProps;
     return undefined;
 }
 
@@ -275,6 +275,6 @@ export function SETChannelIcon(channel_uuid: string, file: Blob, callback: (set:
 
 export async function GETChannelName(channel_uuid: string) : Promise<string | undefined> {
     const resp = await GET(`/Channel/${channel_uuid}`, Manager.User.token);
-    if (resp.status === 200) return (resp.payload as IChannelProps).channelName;
+    if (resp.status === 200) return (resp.payload as IRawChannelProps).channelName;
     return undefined;
 }

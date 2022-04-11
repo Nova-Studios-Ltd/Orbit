@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { Popover, ThemeProvider } from "@mui/material";
+import { SettingsManager } from "NSLib/SettingsManager";
+import { DownloadFile, UploadFile } from "NSLib/ElectronAPI";
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
@@ -12,17 +14,13 @@ import AuthView from "Views/AuthView/AuthView";
 import ErrorView from "Views/ErrorView/ErrorView";
 import MainView from "Views/MainView/MainView";
 
-import ChatPage from "Pages/ChatPage/ChatPage";
-import LoginPage from "Pages/LoginPage/LoginPage";
-import RegisterPage from "Pages/RegisterPage/RegisterPage";
-import SettingsPage from "Pages/SettingsPage/SettingsPage";
-
+import { AuthViewRoutes, MainViewRoutes } from "DataTypes/Routes";
 import type { ReactNode } from "react";
 import type { HelpPopupProps } from "DataTypes/Components";
+import { ChannelType } from "DataTypes/Enums";
+import type { IRawChannelProps } from "Interfaces/IChannelProps";
 
 import "./App.css";
-import { SettingsManager } from "NSLib/SettingsManager";
-import { DownloadFile, UploadFile } from "NSLib/ElectronAPI";
 
 i18n.use(initReactI18next)
 .init({
@@ -68,12 +66,12 @@ function App() {
     <div className="App">
       <ThemeProvider theme={DarkTheme_Default}>
         <Routes>
-          <Route path="*" element={<ErrorView widthConstrained={widthConstrained} errorCode={404} />}></Route>
-          <Route path="/" element={<AuthView widthConstrained={widthConstrained} page={<LoginPage changeTitleCallback={setTitle} />} />} />
-          <Route path="/login" element={<AuthView widthConstrained={widthConstrained} page={<LoginPage changeTitleCallback={setTitle} />} />} />
-          <Route path="/register" element={<AuthView widthConstrained={widthConstrained} page={<RegisterPage changeTitleCallback={setTitle} HelpPopup={HelpPopup} />} />} />
-          <Route path="/chat" element={<MainView widthConstrained={widthConstrained} page={<ChatPage changeTitleCallback={setTitle} />} />} />
-          <Route path="/settings" element={<MainView widthConstrained={widthConstrained} page={<SettingsPage changeTitleCallback={setTitle} />} />} />
+          <Route path="*" element={<ErrorView widthConstrained={widthConstrained} changeTitleCallback={setTitle} errorCode={404} />}></Route>
+          <Route path="/" element={<AuthView widthConstrained={widthConstrained} changeTitleCallback={setTitle} path={AuthViewRoutes.Login} />} />
+          <Route path="/login" element={<AuthView widthConstrained={widthConstrained} changeTitleCallback={setTitle} path={AuthViewRoutes.Login} />} />
+          <Route path="/register" element={<AuthView widthConstrained={widthConstrained} changeTitleCallback={setTitle} HelpPopup={HelpPopup} path={AuthViewRoutes.Register} />} />
+          <Route path="/chat" element={<MainView widthConstrained={widthConstrained} changeTitleCallback={setTitle} path={MainViewRoutes.Chat} />} />
+          <Route path="/settings" element={<MainView widthConstrained={widthConstrained} changeTitleCallback={setTitle} path={MainViewRoutes.Settings} />} />
         </Routes>
         <Popover open={helpVisible} anchorEl={helpAnchorEl} onClose={() => {
           setHelpAnchor(null as unknown as Element);

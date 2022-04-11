@@ -1,12 +1,10 @@
 import type { ChannelType } from "../DataTypes/Enums";
 
-export interface IChannelProps {
+export interface IRawChannelProps {
     table_Id: string,
     owner_UUID?: string,
-    isGroup: ChannelType,
+    channelType?: ChannelType,
     channelName: string,
     channelIcon?: string,
     members?: string[],
-    isSelected: boolean,
-    onClick?: (event: React.MouseEvent<HTMLButtonElement>, channelID: string) => void
 }

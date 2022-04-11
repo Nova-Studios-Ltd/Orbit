@@ -11,11 +11,24 @@ import RegisterPage_EN_US from "./Pages/RegisterPage.json";
 // Error Pages
 import E404_EN_US from "./Pages/ErrorPages/E404.json";
 
+// Components
+import ChannelList_EN_US from "./Components/Channels/ChannelList.json";
+
 export const Localizations_EN_US = {
+  // Common
   translation: Common_EN_US,
+
+  // Views
   AuthView: AuthView_EN_US,
   ErrorView: ErrorView_EN_US,
+
+  // Pages
   LoginPage: LoginPage_EN_US,
   RegisterPage: RegisterPage_EN_US,
-  E404: E404_EN_US
+
+  // Error Pages
+  E404: E404_EN_US,
+
+  // Components
+  ChannelList: ChannelList_EN_US
 };

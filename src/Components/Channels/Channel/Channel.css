@@ -1,0 +1,31 @@
+.ChannelContainer {
+  display: flex;
+  flex-direction: row;
+
+  padding: var(--global-padding) !important;
+  border-radius: var(--global-border-radius) !important;
+
+  width: 100%;
+}
+
+.ChannelLeft {
+
+}
+
+.ChannelRight {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  margin-left: var(--global-margin);
+}
+
+.ChannelIcon {
+
+}
+
+@media only screen and (max-width: 600px) {
+  .ChannelContainer {
+
+  }
+}
