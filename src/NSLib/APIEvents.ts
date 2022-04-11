@@ -1,4 +1,4 @@
-import { IRawChannelProps } from "../Interfaces/IChannelProps";
+import { IRawChannelProps } from "../Interfaces/IRawChannelProps";
 import { IMessageProps } from "../Interfaces/IMessageProps";
 import MessageAttachment from "../DataTypes/MessageAttachment";
 import { Dictionary, Indexable } from "./Dictionary";

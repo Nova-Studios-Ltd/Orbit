@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import Channel, { ChannelClickEvent } from "Components/Channels/Channel/Channel";
 
 import type { NCComponent } from "DataTypes/Components";
-import type { IRawChannelProps } from "Interfaces/IChannelProps";
+import type { IRawChannelProps } from "Interfaces/IRawChannelProps";
 
 export interface ChannelListProps extends NCComponent {
   channels?: IRawChannelProps[],

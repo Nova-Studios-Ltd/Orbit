@@ -8,12 +8,12 @@ import ChatPage from "Pages/ChatPage/ChatPage";
 import SettingsPage from "Pages/SettingsPage/SettingsPage";
 
 import type { View } from "DataTypes/Components";
-import type { IRawChannelProps } from "Interfaces/IChannelProps";
+import type { IRawChannelProps } from "Interfaces/IRawChannelProps";
 import { ChannelType } from "DataTypes/Enums";
 import { MainViewRoutes } from "DataTypes/Routes";
 import type { ChannelClickEvent } from "Components/Channels/Channel/Channel";
 import type { ChannelListProps } from "Components/Channels/ChannelList/ChannelList";
-import { GETUserChannels } from "NSLib/APIEvents";
+import { GETChannel, GETUserChannels } from "NSLib/APIEvents";
 
 interface MainViewProps extends View {
   path: MainViewRoutes
@@ -23,10 +23,14 @@ function MainView({ path, changeTitleCallback } : MainViewProps) {
   const navigate = useNavigate();
 
   const [channels, setChannels] = useState([] as IRawChannelProps[]);
+  const [channelUUID, setChannel] = useState("");
 
 
   const onChannelClick = (event: ChannelClickEvent) => {
     console.log("Channel clicked: ", event);
+    if (event.channelID === undefined) return;
+    setChannel(event.channelID);
+    // TODO: Prepare to load channel messages
   }
 
   /*const channels: IRawChannelProps[] = [
@@ -46,8 +50,14 @@ function MainView({ path, changeTitleCallback } : MainViewProps) {
       if (!result) navigate("/login");
     });
 
-    GETUserChannels((channels: string[]) => {
-
+    GETUserChannels(async (channels: string[]) => {
+      const loadedChannels = [] as IRawChannelProps[];
+      for (var i = 0; i < channels.length; i++) {
+        const channel = await GETChannel(channels[i]);
+        if (channel === undefined) continue;
+        loadedChannels.push(channel);
+      }
+      setChannels(loadedChannels);
     });
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

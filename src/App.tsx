@@ -18,7 +18,7 @@ import { AuthViewRoutes, MainViewRoutes } from "DataTypes/Routes";
 import type { ReactNode } from "react";
 import type { HelpPopupProps } from "DataTypes/Components";
 import { ChannelType } from "DataTypes/Enums";
-import type { IRawChannelProps } from "Interfaces/IChannelProps";
+import type { IRawChannelProps } from "Interfaces/IRawChannelProps";
 
 import "./App.css";
 
