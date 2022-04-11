@@ -105,7 +105,7 @@ async function DecryptMessage(message: IMessageProps) : Promise<IMessageProps> {
 }
 
 export async function GETMessage(channel_uuid: string, message_id: string) : Promise<undefined | IMessageProps> {
-    const resp = await GET(`Message/${channel_uuid}/Messages/${message_id}`, Manager.User.token);
+    const resp = await GET(`Channel/${channel_uuid}/Messages/${message_id}`, Manager.User.token);
     if (resp.status === 200) {
         return await DecryptMessage(resp.payload as IMessageProps);
     }
@@ -113,7 +113,7 @@ export async function GETMessage(channel_uuid: string, message_id: string) : Pro
 }
 
 export function GETMessages(channel_uuid: string, callback: (messages: IMessageProps[]) => void, limit = 30, before = 2147483647) {
-    GET(`Message/${channel_uuid}/Messages?limit=${limit}&before=${before}`, Manager.User.token).then(async (resp: NCAPIResponse) => {
+    GET(`Channel/${channel_uuid}/Messages?limit=${limit}&before=${before}`, Manager.User.token).then(async (resp: NCAPIResponse) => {
         if (resp.status === 200) {
             const rawMessages = resp.payload as IMessageProps[];
             const decryptedMessages = [] as  IMessageProps[];
@@ -169,13 +169,13 @@ export function SENDMessage(channel_uuid: string, contents: string, rawAttachmen
 export async function EDITMessage(channel_uuid: string, message_id: string, message: string, encryptedKeys: {[uuid: string]: string;}, iv: string) : Promise<boolean> {
     const key = await DecryptUsingPrivKey(Manager.User.keyPair.PrivateKey, encryptedKeys[Manager.User.uuid]);
     const c = await EncryptStringUsingAES(key, message, iv);
-    const resp = await POST(`Message/${channel_uuid}/Messages/${message_id}`, ContentType.JSON, JSON.stringify({content: c.content}), Manager.User.token);
+    const resp = await POST(`Channel/${channel_uuid}/Messages/${message_id}`, ContentType.JSON, JSON.stringify({content: c.content}), Manager.User.token);
     if (resp.status === 200) return true;
     return false;
 }
 
 export async function DELETEMessage(channel_uuid: string, message_id: string) : Promise<boolean> {
-    const resp = await DELETE(`Message/${channel_uuid}/Messages/${message_id}`, Manager.User.token);
+    const resp = await DELETE(`Channel/${channel_uuid}/Messages/${message_id}`, Manager.User.token);
     if (resp.status === 200) return true;
     return false;
 }
