@@ -13,7 +13,8 @@ import { ChannelType } from "DataTypes/Enums";
 import { MainViewRoutes } from "DataTypes/Routes";
 import type { ChannelClickEvent } from "Components/Channels/Channel/Channel";
 import type { ChannelListProps } from "Components/Channels/ChannelList/ChannelList";
-import { GETChannel, GETUserChannels } from "NSLib/APIEvents";
+import { GETChannel, GETMessages, GETUserChannels } from "NSLib/APIEvents";
+import { IMessageProps } from "Interfaces/IMessageProps";
 
 interface MainViewProps extends View {
   path: MainViewRoutes
@@ -24,6 +25,7 @@ function MainView({ path, changeTitleCallback } : MainViewProps) {
 
   const [channels, setChannels] = useState([] as IRawChannelProps[]);
   const [channelUUID, setChannel] = useState("");
+  const [messages, setMessages] = useState([] as IMessageProps[]);
 
 
   const onChannelClick = (event: ChannelClickEvent) => {
@@ -31,6 +33,10 @@ function MainView({ path, changeTitleCallback } : MainViewProps) {
     if (event.channelID === undefined) return;
     setChannel(event.channelID);
     // TODO: Prepare to load channel messages
+    GETMessages(event.channelID, (decrypt: IMessageProps[]) => {
+      setMessages(decrypt);
+      console.log(decrypt);
+    });
   }
 
   /*const channels: IRawChannelProps[] = [

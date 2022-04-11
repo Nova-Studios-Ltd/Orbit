@@ -112,7 +112,7 @@ export async function GETMessage(channel_uuid: string, message_id: string) : Pro
     return undefined;
 }
 
-export function GETMessages(channel_uuid: string, limit = 30, before = 2147483647, callback: (messages: IMessageProps[]) => void) {
+export function GETMessages(channel_uuid: string, callback: (messages: IMessageProps[]) => void, limit = 30, before = 2147483647) {
     GET(`Message/${channel_uuid}/Messages?limit=${limit}&before=${before}`, Manager.User.token).then(async (resp: NCAPIResponse) => {
         if (resp.status === 200) {
             const rawMessages = resp.payload as IMessageProps[];
