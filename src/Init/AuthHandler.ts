@@ -16,7 +16,7 @@ export async function LoginNewUser(email: string, password: string) : Promise<Lo
   const shaPass = await GenerateSHA256Hash(password);
 
   // Attempt to log user in
-  const loginResp = await POST("Login", ContentType.JSON, JSON.stringify({password: shaPass, email: email}));
+  const loginResp = await POST("Auth/Login", ContentType.JSON, JSON.stringify({password: shaPass, email: email}));
   if (loginResp.status === 403) return LoginStatus.InvalidCredentials;
   else if (loginResp.status === 404) return LoginStatus.UnknownUser;
   else if (loginResp.status === 500) return LoginStatus.ServerError;
