@@ -1,9 +1,9 @@
 import { ContentType, POST } from "../NSLib/NCAPI";
-import { DecryptStringUsingAES, GenerateSHA256Hash } from "../NSLib/NCEncryption";
+import { DecryptBase64StringUsingAES, GenerateSHA256Hash } from "../NSLib/NCEncryption";
 import NCWebsocket from "../NSLib/NCWebsocket";
 import { SettingsManager } from "../NSLib/SettingsManager";
 import IUserLoginData from "../Interfaces/IUserLoginData";
-import { RSAMemoryKeyPair } from "../NSLib/NCEncrytUtil";
+import { AESMemoryEncryptData, RSAMemoryKeyPair } from "../NSLib/NCEncrytUtil";
 import { GETKeystore, GETUser } from "../NSLib/APIEvents";
 import WebsocketInit from "./WebsocketEventInit";
 import { FromBase64String, FromUint8Array, ToBase64String, ToUint8Array } from "../NSLib/Base64";
@@ -22,10 +22,12 @@ export async function LoginNewUser(email: string, password: string) : Promise<Lo
   else if (loginResp.status === 500) return LoginStatus.ServerError;
   const ud = loginResp.payload as IUserLoginData;
 
+  console.log(typeof ud.key.content);
+
   // Stored user secruity information (Keypair, token, uuid)
   Manager.User.token = ud.token;
   Manager.User.uuid = ud.uuid;
-  Manager.User.keyPair = new RSAMemoryKeyPair(await DecryptStringUsingAES(shaPass, ud.key), ud.publicKey);
+  Manager.User.keyPair = new RSAMemoryKeyPair(await DecryptBase64StringUsingAES(shaPass, ud.key), ud.publicKey);
   console.log(Manager.User.keyPair);
 
   // Store keypair

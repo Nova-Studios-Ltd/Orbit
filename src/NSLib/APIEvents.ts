@@ -3,7 +3,7 @@ import { IMessageProps } from "../Interfaces/IMessageProps";
 import MessageAttachment from "../DataTypes/MessageAttachment";
 import { Dictionary, Indexable } from "./Dictionary";
 import { ContentType, DELETE, GET, GETFile, NCAPIResponse, PATCH, POST, POSTFile } from "./NCAPI";
-import { DecryptStringUsingAES, DecryptUint8ArrayUsingAES, DecryptUsingPrivKey, EncryptUint8ArrayUsingAES, EncryptStringUsingAES, EncryptUsingPubKey, GenerateKey } from "./NCEncryption";
+import { DecryptBase64StringUsingAES, DecryptUint8ArrayUsingAES, DecryptUsingPrivKey, EncryptUint8ArrayUsingAES, EncryptStringUsingAES, EncryptUsingPubKey, GenerateKey } from "./NCEncryption";
 import { AESMemoryEncryptData } from "./NCEncrytUtil";
 import { GetImageDimensions } from "./Util";
 import Dimensions from "../DataTypes/Dimensions";
@@ -94,7 +94,7 @@ async function DecryptMessage(message: IMessageProps) : Promise<IMessageProps> {
     const key = await DecryptUsingPrivKey(Manager.User.keyPair.PrivateKey, message.encryptedKeys[Manager.User.uuid]);
     console.log(key);
     if (message.content.length !== 0) {
-      const decryptedMessage = await DecryptStringUsingAES(key, new AESMemoryEncryptData(message.iv, message.content));
+      const decryptedMessage = await DecryptBase64StringUsingAES(key, new AESMemoryEncryptData(message.iv, message.content));
       message.content = decryptedMessage;
     }
     for (let a = 0; a < message.attachments.length; a++) {
