@@ -2,43 +2,43 @@ import { FromBase64String, FromUint8Array, ToBase64String, ToUint8Array } from "
 import { AESMemoryEncryptData, RSAMemoryKeyPair } from "./NCEncrytUtil";
 
 function ImportRSAPubKey(key: string) : Promise<CryptoKey> {
-    const pemHeader = "-----BEGIN PUBLIC KEY-----";
-    const pemFooter = "-----END PUBLIC KEY-----";
-    const pemContents = key.substring(pemHeader.length, key.length - pemFooter.length);
-    const keyBin = FromBase64String(pemContents);
-    return crypto.subtle.importKey(
-        "spki",
-        keyBin,
-        {
-            name: "RSA-OAEP",
-            hash: "SHA-256"
-        },
-        true,
-        ["encrypt"]
-    );
+  const pemHeader = "-----BEGIN PUBLIC KEY-----";
+  const pemFooter = "-----END PUBLIC KEY-----";
+  const pemContents = key.substring(pemHeader.length, key.length - pemFooter.length - 1);
+  const keyBin = FromBase64String(pemContents);
+  return crypto.subtle.importKey(
+      "spki",
+      keyBin,
+      {
+        name: "RSA-OAEP",
+        hash: "SHA-256"
+      },
+      true,
+      ["encrypt"]
+  );
 }
 
 function ImportRSAPrivKey(key: string) : Promise<CryptoKey> {
-    const pemHeader = "-----BEGIN PRIVATE KEY-----";
-    const pemFooter = "-----END PRIVATE KEY-----";
-    const pemContents = key.substring(pemHeader.length, key.length - pemFooter.length);
-    console.log(key);
-    const keyBin = FromBase64String(pemContents);
-    return crypto.subtle.importKey(
-        "pkcs8",
-        keyBin,
-        {
-            name: "RSA-OAEP",
-            hash: "SHA-256"
-        },
-        true,
-        ["decrypt"]
-    );
+  const pemHeader = "-----BEGIN PRIVATE KEY-----";
+  const pemFooter = "-----END PRIVATE KEY-----";
+  const pemContents = key.substring(pemHeader.length, key.length - pemFooter.length - 1);
+  console.log(pemContents);
+  const keyBin = FromBase64String(pemContents);
+  return crypto.subtle.importKey(
+      "pkcs8",
+      keyBin,
+      {
+        name: "RSA-OAEP",
+        hash: "SHA-256"
+      },
+      true,
+      ["decrypt"]
+  );
 }
 
 function ImportKey(key: string) : Promise<CryptoKey> {
-    const key2 = FromBase64String(key);
-    return crypto.subtle.importKey("raw", key2, "AES-CTR", true, ["encrypt", "decrypt"]);
+  const key2 = FromBase64String(key);
+  return crypto.subtle.importKey("raw", key2, "AES-CTR", true, ["encrypt", "decrypt"]);
 }
 
 
@@ -68,8 +68,15 @@ export async function EncryptUsingPubKey(key: string, data: string) : Promise<st
 }
 
 export async function DecryptUsingPrivKey(key: string, data: string) : Promise<string> {
+  console.log("Pineapple");
+  try {
     const res = await crypto.subtle.decrypt({name: "RSA-OAEP"}, await ImportRSAPrivKey(key), ToUint8Array(data));
     return ToBase64String(new Uint8Array(res));
+  }
+  catch (e) {
+    console.error(e);
+    return "";
+  }
 }
 
 export async function EncryptStringUsingAES(key: string, data: string, init_iv?: string) : Promise<AESMemoryEncryptData> {
@@ -94,7 +101,7 @@ export async function DecryptStringUsingAES(key: string, data: AESMemoryEncryptD
             length: 64
         },
         await ImportKey(key),
-        FromBase64String(data.content as string),
+        ToUint8Array(data.content as string),
     ) as ArrayBuffer;
     return FromUint8Array(new Uint8Array(decrypted));
 }

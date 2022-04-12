@@ -90,16 +90,18 @@ export async function SETKey(user_uuid: string, key_user_uuid: string, key: stri
 // Messages
 
 async function DecryptMessage(message: IMessageProps) : Promise<IMessageProps> {
+  console.log(message);
     const key = await DecryptUsingPrivKey(Manager.User.keyPair.PrivateKey, message.encryptedKeys[Manager.User.uuid]);
+    console.log(key);
     if (message.content.length !== 0) {
-        const decryptedMessage = await DecryptStringUsingAES(key, new AESMemoryEncryptData(message.iv, message.content));
-        message.content = decryptedMessage;
+      const decryptedMessage = await DecryptStringUsingAES(key, new AESMemoryEncryptData(message.iv, message.content));
+      message.content = decryptedMessage;
     }
     for (let a = 0; a < message.attachments.length; a++) {
-        const attachment = message.attachments[a];
-        const content = await GETFile(attachment.contentUrl, Manager.User.token);
-        const decryptedContent = await DecryptUint8ArrayUsingAES(key, content.payload as Uint8Array, message.iv);
-        message.attachments[a].content = decryptedContent;
+      const attachment = message.attachments[a];
+      const content = await GETFile(attachment.contentUrl, Manager.User.token);
+      const decryptedContent = await DecryptUint8ArrayUsingAES(key, content.payload as Uint8Array, message.iv);
+      message.attachments[a].content = decryptedContent;
     }
     return message;
 }
