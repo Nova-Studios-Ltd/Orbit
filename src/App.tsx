@@ -21,6 +21,8 @@ import { ChannelType } from "DataTypes/Enums";
 import type { IRawChannelProps } from "Interfaces/IRawChannelProps";
 
 import "./App.css";
+import { DecryptBase64StringUsingAES, DecryptUsingPrivKey, EncryptStringUsingAES, EncryptUsingPubKey, GenerateRSAKeyPair, GenerateSHA256Hash } from "NSLib/NCEncryption";
+import { FromBase64String, FromUint8Array, ToUint8Array } from "NSLib/Base64";
 
 i18n.use(initReactI18next)
 .init({
@@ -68,6 +70,17 @@ function App() {
 
   return (
     <div className="App">
+      <button onClick={async () => {
+        const keypair = await GenerateRSAKeyPair();
+        if (keypair !== undefined) {
+          //console.log(keypair.PrivateKey);
+          const encrypted = await EncryptStringUsingAES(await GenerateSHA256Hash("Test"), keypair.PrivateKey);
+          const message = await EncryptUsingPubKey(keypair.PublicKey, "Hello");
+          const key = await DecryptBase64StringUsingAES(await GenerateSHA256Hash("Test"), encrypted);
+          //console.log(key);
+          console.log(FromUint8Array(FromBase64String(await DecryptUsingPrivKey(key, message))));
+        }
+      }}>Test</button>
       <ThemeProvider theme={DarkTheme_Default}>
         <Routes>
           <Route path="*" element={<ErrorView widthConstrained={widthConstrained} changeTitleCallback={setTitle} errorCode={404} />}></Route>

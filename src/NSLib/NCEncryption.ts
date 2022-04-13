@@ -22,7 +22,6 @@ function ImportRSAPrivKey(key: string) : Promise<CryptoKey> {
   const pemHeader = "-----BEGIN PRIVATE KEY-----";
   const pemFooter = "-----END PRIVATE KEY-----";
   const pemContents = key.substring(pemHeader.length, key.length - pemFooter.length - 1);
-  console.log(pemContents);
   const keyBin = FromBase64String(pemContents);
   try {
     return crypto.subtle.importKey(
@@ -74,9 +73,8 @@ export async function EncryptUsingPubKey(key: string, data: string) : Promise<st
 }
 
 export async function DecryptUsingPrivKey(key: string, data: string) : Promise<string> {
-  console.log("Pineapple");
   try {
-    const res = await crypto.subtle.decrypt({name: "RSA-OAEP"}, await ImportRSAPrivKey(key), ToUint8Array(data));
+    const res = await crypto.subtle.decrypt({name: "RSA-OAEP"}, await ImportRSAPrivKey(key), FromBase64String(data));
     return ToBase64String(new Uint8Array(res));
   }
   catch (e) {
@@ -86,7 +84,7 @@ export async function DecryptUsingPrivKey(key: string, data: string) : Promise<s
 }
 
 export async function EncryptStringUsingAES(key: string, data: string, init_iv?: string) : Promise<AESMemoryEncryptData> {
-    const iv = (init_iv === undefined)? crypto.getRandomValues(new Uint8Array(16)) : ToUint8Array(init_iv);
+    const iv = (init_iv === undefined)? crypto.getRandomValues(new Uint8Array(16)) : FromBase64String(init_iv);
     const encrypted = await crypto.subtle.encrypt(
         {
             name: "AES-CTR",
@@ -116,7 +114,7 @@ export async function DecryptUint8ArrayUsingAES(key: string, data: Uint8Array, i
     const decrypted = await crypto.subtle.decrypt(
         {
             name: "AES-CTR",
-            counter: ToUint8Array(iv),
+            counter: FromBase64String(iv),
             length: 64
         },
         await ImportKey(key),
@@ -126,7 +124,7 @@ export async function DecryptUint8ArrayUsingAES(key: string, data: Uint8Array, i
 }
 
 export async function EncryptUint8ArrayUsingAES(key: string, data: Uint8Array, init_iv?: string) : Promise<AESMemoryEncryptData> {
-    const iv = (init_iv === undefined)? crypto.getRandomValues(new Uint8Array(16)) : ToUint8Array(init_iv);
+    const iv = (init_iv === undefined)? crypto.getRandomValues(new Uint8Array(16)) : FromBase64String(init_iv);
     const encrypted = await crypto.subtle.encrypt(
         {
             name: "AES-CTR",

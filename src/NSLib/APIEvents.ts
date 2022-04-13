@@ -9,6 +9,7 @@ import { GetImageDimensions } from "./Util";
 import Dimensions from "../DataTypes/Dimensions";
 import IUserData from "../Interfaces/IUserData";
 import { SettingsManager } from "./SettingsManager";
+import { FromBase64String, ToBase64String, ToUint8Array } from "./Base64";
 
 
 const Manager = new SettingsManager();
@@ -90,9 +91,7 @@ export async function SETKey(user_uuid: string, key_user_uuid: string, key: stri
 // Messages
 
 async function DecryptMessage(message: IMessageProps) : Promise<IMessageProps> {
-  console.log(message);
     const key = await DecryptUsingPrivKey(Manager.User.keyPair.PrivateKey, message.encryptedKeys[Manager.User.uuid]);
-    console.log(key);
     if (message.content.length !== 0) {
       const decryptedMessage = await DecryptBase64StringUsingAES(key, new AESMemoryEncryptData(message.iv, message.content));
       message.content = decryptedMessage;
