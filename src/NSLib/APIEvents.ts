@@ -3,14 +3,13 @@ import { IMessageProps } from "../Interfaces/IMessageProps";
 import MessageAttachment from "../DataTypes/MessageAttachment";
 import { Dictionary, Indexable } from "./Dictionary";
 import { ContentType, DELETE, GET, GETFile, NCAPIResponse, PATCH, POST, POSTFile } from "./NCAPI";
-import { DecryptBase64StringUsingAES, DecryptUint8ArrayUsingAES, DecryptUsingPrivKey, EncryptUint8ArrayUsingAES, EncryptStringUsingAES, EncryptUsingPubKey, GenerateKey } from "./NCEncryption";
 import { AESMemoryEncryptData } from "./NCEncrytUtil";
 import { GetImageDimensions } from "./Util";
 import Dimensions from "../DataTypes/Dimensions";
 import IUserData from "../Interfaces/IUserData";
 import { SettingsManager } from "./SettingsManager";
 import { Base64String, FromBase64String, FromUint8Array, ToBase64String, ToUint8Array } from "./Base64";
-import { DecryptBase64, DecryptBase64WithPriv, DecryptUint8Array } from "./NCEncryptionBeta";
+import { DecryptBase64, DecryptBase64WithPriv, DecryptUint8Array, EncryptBase64, EncryptBase64WithPub, EncryptUint8Array, GenerateBase64Key } from "./NCEncryptionBeta";
 
 
 const Manager = new SettingsManager();
@@ -101,6 +100,7 @@ async function DecryptMessage(message: IMessageProps) : Promise<IMessageProps> {
     for (let a = 0; a < message.attachments.length; a++) {
       const attachment = message.attachments[a];
       const content = await GETFile(attachment.contentUrl, Manager.User.token);
+      // HACK Please fix this, it is only to make the client work with old keys
       const decryptedContent = await DecryptUint8Array(Base64String.CreateBase64String(FromBase64String(FromUint8Array(key.Uint8Array))), new AESMemoryEncryptData( message.iv, content.payload as Uint8Array));
       message.attachments[a].content = decryptedContent;
     }
@@ -116,16 +116,16 @@ export async function GETMessage(channel_uuid: string, message_id: string) : Pro
 }
 
 export function GETMessages(channel_uuid: string, callback: (messages: IMessageProps[]) => void, limit = 30, before = 2147483647) {
-    GET(`Channel/${channel_uuid}/Messages?limit=${limit}&before=${before}`, Manager.User.token).then(async (resp: NCAPIResponse) => {
-        if (resp.status === 200) {
-            const rawMessages = resp.payload as IMessageProps[];
-            const decryptedMessages = [] as  IMessageProps[];
-            for (let m = 0; m < rawMessages.length; m++) {
-                decryptedMessages.push(await DecryptMessage(rawMessages[m]));
-            }
-            callback(decryptedMessages);
-        }
-    });
+  GET(`Channel/${channel_uuid}/Messages?limit=${limit}&before=${before}`, Manager.User.token).then(async (resp: NCAPIResponse) => {
+    if (resp.status === 200) {
+      const rawMessages = resp.payload as IMessageProps[];
+      const decryptedMessages = [] as  IMessageProps[];
+      for (let m = 0; m < rawMessages.length; m++) {
+          decryptedMessages.push(await DecryptMessage(rawMessages[m]));
+      }
+      callback(decryptedMessages);
+    }
+  });
 }
 
 export function SENDMessage(channel_uuid: string, contents: string, rawAttachments: MessageAttachment[], callback: (sent: boolean) => void) {
@@ -137,15 +137,15 @@ export function SENDMessage(channel_uuid: string, contents: string, rawAttachmen
                 return;
             }
             // Generate Key and Encrypt Message
-            const messageKey = await GenerateKey(32);
-            const encryptedMessage = await EncryptStringUsingAES(messageKey, contents);
+            const messageKey = await GenerateBase64Key(32);
+            const encryptedMessage = await EncryptBase64(messageKey, Base64String.CreateBase64String(contents));
 
             // Handle Attachments
             const attachments = [] as string[];
             for (let a = 0; a < rawAttachments.length; a++) {
                 const attachment = rawAttachments[a];
                 const imageSize = (await GetImageDimensions(attachment.contents)) || new Dimensions(0, 0);
-                const re = await POSTFile(`Media/Channel/${channel_uuid}?width=${imageSize.width}&height=${imageSize.height}`, new Blob([(await EncryptUint8ArrayUsingAES(messageKey, attachment.contents, encryptedMessage.iv)).content]))
+                const re = await POSTFile(`Media/Channel/${channel_uuid}?width=${imageSize.width}&height=${imageSize.height}`, new Blob([(await EncryptUint8Array(messageKey, attachment.contents, new Base64String(encryptedMessage.iv))).content]))
                 if (re.status === 200) attachments.push(resp.payload as string);
             }
             const encKeys = {} as {[uuid: string]: string};
@@ -154,12 +154,12 @@ export function SENDMessage(channel_uuid: string, contents: string, rawAttachmen
                 if (member !== Manager.User.uuid) {
                     const pubKey = await Manager.ReadKey(member);
                     if (pubKey !== undefined) {
-                        const encryptedKey = await EncryptUsingPubKey(pubKey, messageKey);
-                        encKeys[member] = encryptedKey;
+                        const encryptedKey = await EncryptBase64WithPub(pubKey, messageKey);
+                        encKeys[member] = encryptedKey.Base64;
                     }
                 }
             }
-            encKeys[Manager.User.uuid] = await EncryptUsingPubKey(Manager.User.keyPair.PublicKey, messageKey);
+            encKeys[Manager.User.uuid] = (await EncryptBase64WithPub(Manager.User.keyPair.PublicKey, messageKey)).Base64;
             const mPost = await POST(`/Message/${channel_uuid}/Messages`, ContentType.JSON, JSON.stringify({Content: encryptedMessage.content as string, IV: encryptedMessage.iv, EncryptedKeys: encKeys, Attachments: attachments}))
             if (mPost.status === 200) callback(true);
             else callback(false);
@@ -170,8 +170,8 @@ export function SENDMessage(channel_uuid: string, contents: string, rawAttachmen
 }
 
 export async function EDITMessage(channel_uuid: string, message_id: string, message: string, encryptedKeys: {[uuid: string]: string;}, iv: string) : Promise<boolean> {
-    const key = await DecryptUsingPrivKey(Manager.User.keyPair.PrivateKey, encryptedKeys[Manager.User.uuid]);
-    const c = await EncryptStringUsingAES(key, message, iv);
+    const key = await DecryptBase64WithPriv(Manager.User.keyPair.PrivateKey, new Base64String(encryptedKeys[Manager.User.uuid]));
+    const c = await EncryptBase64(key, Base64String.CreateBase64String(message), new Base64String(iv));
     const resp = await POST(`Channel/${channel_uuid}/Messages/${message_id}`, ContentType.JSON, JSON.stringify({content: c.content}), Manager.User.token);
     if (resp.status === 200) return true;
     return false;
