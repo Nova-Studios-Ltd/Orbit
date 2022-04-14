@@ -9,7 +9,8 @@ import { GetImageDimensions } from "./Util";
 import Dimensions from "../DataTypes/Dimensions";
 import IUserData from "../Interfaces/IUserData";
 import { SettingsManager } from "./SettingsManager";
-import { FromBase64String, ToBase64String, ToUint8Array } from "./Base64";
+import { Base64String, FromBase64String, FromUint8Array, ToBase64String, ToUint8Array } from "./Base64";
+import { DecryptBase64, DecryptBase64WithPriv, DecryptUint8Array } from "./NCEncryptionBeta";
 
 
 const Manager = new SettingsManager();
@@ -91,15 +92,16 @@ export async function SETKey(user_uuid: string, key_user_uuid: string, key: stri
 // Messages
 
 async function DecryptMessage(message: IMessageProps) : Promise<IMessageProps> {
-    const key = await DecryptUsingPrivKey(Manager.User.keyPair.PrivateKey, message.encryptedKeys[Manager.User.uuid]);
+    const key = await DecryptBase64WithPriv(Manager.User.keyPair.PrivateKey, new Base64String(message.encryptedKeys[Manager.User.uuid]));
     if (message.content.length !== 0) {
-      const decryptedMessage = await DecryptBase64StringUsingAES(key, new AESMemoryEncryptData(message.iv, message.content));
-      message.content = decryptedMessage;
+      // HACK Please fix this, it is only to make the client work with old keys
+      const decryptedMessage = await DecryptBase64(Base64String.CreateBase64String(FromBase64String(FromUint8Array(key.Uint8Array))), new AESMemoryEncryptData(message.iv, message.content));
+      message.content = decryptedMessage.String;
     }
     for (let a = 0; a < message.attachments.length; a++) {
       const attachment = message.attachments[a];
       const content = await GETFile(attachment.contentUrl, Manager.User.token);
-      const decryptedContent = await DecryptUint8ArrayUsingAES(key, content.payload as Uint8Array, message.iv);
+      const decryptedContent = await DecryptUint8Array(Base64String.CreateBase64String(FromBase64String(FromUint8Array(key.Uint8Array))), new AESMemoryEncryptData( message.iv, content.payload as Uint8Array));
       message.attachments[a].content = decryptedContent;
     }
     return message;
