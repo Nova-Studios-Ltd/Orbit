@@ -24,12 +24,14 @@ function MainView({ path, changeTitleCallback } : MainViewProps) {
   const navigate = useNavigate();
 
   const [channels, setChannels] = useState([] as IRawChannelProps[]);
+  const [selectedChannel, setSelectedChannel] = useState(null as unknown as IRawChannelProps);
   const [channelUUID, setChannel] = useState("");
   const [messages, setMessages] = useState([] as IMessageProps[]);
 
 
   const onChannelClick = (event: ChannelClickEvent) => {
     console.log("Channel clicked: ", event);
+    setSelectedChannel({ table_Id: event.channelID, channelName: event.channelName, channelIcon: event.channelIconSrc, members: event.channelMembers, channelType: event.isGroup } as IRawChannelProps);
     if (event.channelID === undefined) return;
     setChannel(event.channelID);
     GETMessages(event.channelID, (decrypt: IMessageProps[]) => {
@@ -41,7 +43,7 @@ function MainView({ path, changeTitleCallback } : MainViewProps) {
   const channelData: ChannelListProps = {
     channels: channels,
     onChannelClick: onChannelClick
-  } // TODO: Convert this to state
+  }
 
   const messageData: MessageCanvasProps = {
     messages: messages
@@ -69,7 +71,7 @@ function MainView({ path, changeTitleCallback } : MainViewProps) {
   const page = () => {
     switch (path) {
       case MainViewRoutes.Chat:
-        return (<ChatPage channelData={channelData} messageData={messageData} changeTitleCallback={changeTitleCallback} />);
+        return (<ChatPage channelData={channelData} messageData={messageData} changeTitleCallback={changeTitleCallback} selectedChannel={selectedChannel} />);
       case MainViewRoutes.Settings:
         return (<SettingsPage changeTitleCallback={changeTitleCallback} />);
       default:

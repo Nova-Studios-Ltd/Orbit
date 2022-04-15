@@ -17,10 +17,11 @@ export interface ChannelProps extends NCComponent {
   channelIconSrc?: string,
   channelMembers?: string[],
   isGroup?: ChannelType,
+  isSelected?: boolean,
   onClick?: (event: ChannelClickEvent) => void
 }
 
-function Channel({ channelName, channelID, channelIconSrc, channelMembers, isGroup, onClick }: ChannelProps) {
+function Channel({ channelName, channelID, channelIconSrc, channelMembers, isGroup, isSelected, onClick }: ChannelProps) {
   const theme = useTheme();
 
   const channelClickHandler = () => {
@@ -31,7 +32,7 @@ function Channel({ channelName, channelID, channelIconSrc, channelMembers, isGro
   }
 
   return (
-    <ButtonBase className="ChannelContainer" style={{ backgroundColor: theme.palette.background.paper }} onClick={channelClickHandler}>
+    <ButtonBase className="ChannelContainer" style={{ backgroundColor: isSelected ? theme.customPalette.customActions.channelActive : theme.palette.background.paper }} onClick={channelClickHandler}>
       <div className="ChannelLeft">
         <Avatar className="ChannelIcon" src={channelIconSrc} />
       </div>

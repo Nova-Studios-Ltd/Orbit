@@ -3,7 +3,7 @@
 @import "Views/Views.css";
 
 :root {
-  --global-border-radius: 5px;
+  --global-border-radius: 10px;
   --global-border-thickness: 1px;
   --global-padding: 10px;
   --global-margin: 10px;

@@ -1,6 +1,7 @@
 .ChannelContainer {
-  display: flex;
+  display: flex !important;
   flex-direction: row;
+  justify-content: flex-start !important;
 
   padding: var(--global-padding) !important;
   border-radius: var(--global-border-radius) !important;

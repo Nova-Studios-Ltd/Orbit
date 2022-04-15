@@ -1,3 +1,4 @@
+import type { IRawChannelProps } from "Interfaces/IRawChannelProps"
 import type { ReactNode } from "react"
 
 export interface HelpPopupProps {
@@ -11,6 +12,10 @@ export interface HelpPopupProps {
 
 export interface NCComponent {
   className?: string
+}
+
+export interface NCAPIComponent extends NCComponent {
+  selectedChannel?: IRawChannelProps,
 }
 
 export interface Page {
