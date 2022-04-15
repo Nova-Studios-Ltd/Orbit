@@ -37,12 +37,12 @@ function MainView({ path, changeTitleCallback } : MainViewProps) {
     setChannel(event.channelID);
     GETMessages(event.channelID, (decrypt: IMessageProps[]) => {
       setMessages(decrypt);
-      console.log(decrypt);
     });
   }
 
   Events.on("NewMessage", (message: IMessageProps) => {
     messages.push(message);
+    console.log(messages);
     setMessages(messages);
   });
 
