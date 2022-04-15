@@ -15,6 +15,7 @@ import type { ChannelListProps } from "Components/Channels/ChannelList/ChannelLi
 import { GETChannel, GETMessages, GETUserChannels } from "NSLib/APIEvents";
 import { IMessageProps } from "Interfaces/IMessageProps";
 import { MessageCanvasProps } from "Components/Messages/MessageCanvas/MessageCanvas";
+import { Events } from "Init/WebsocketEventInit";
 
 interface MainViewProps extends View {
   path: MainViewRoutes
@@ -37,6 +38,11 @@ function MainView({ path, changeTitleCallback } : MainViewProps) {
       console.log(decrypt);
     });
   }
+
+  Events.on("NewMessage", (message: IMessageProps) => {
+    messages.push(message);
+    setMessages(messages);
+  });
 
   const channelData: ChannelListProps = {
     channels: channels,
@@ -69,7 +75,7 @@ function MainView({ path, changeTitleCallback } : MainViewProps) {
   const page = () => {
     switch (path) {
       case MainViewRoutes.Chat:
-        return (<ChatPage channelData={channelData} messageData={messageData} changeTitleCallback={changeTitleCallback} />);
+        return (<ChatPage channelData={channelData} messageData={messageData} channel_uuid={channelUUID} changeTitleCallback={changeTitleCallback} />);
       case MainViewRoutes.Settings:
         return (<SettingsPage changeTitleCallback={changeTitleCallback} />);
       default:

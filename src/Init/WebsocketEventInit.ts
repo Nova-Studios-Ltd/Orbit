@@ -1,9 +1,11 @@
+import NCEvents from "NSLib/NCEvents";
 import { SettingsManager } from "NSLib/SettingsManager";
 import IWebSocketEvent from "../Interfaces/IWebsocketEvent";
 import { GETKey, GETKeystore, GETMessage } from "../NSLib/APIEvents";
 import NCWebsocket from "../NSLib/NCWebsocket";
 
 const Manager = new SettingsManager();
+export const Events = new NCEvents();
 export default function WebsocketInit(Websocket: NCWebsocket) {
     Websocket.CreateEvent(-1, () => console.log("<Beat>"));
 
@@ -26,6 +28,8 @@ async function OnNewMessage(event: IWebSocketEvent) {
     const message = await GETMessage(event.Channel, event.Message);
     if (message === undefined) return;
     // TODO Implement message creation logic
+    Events.send("NewMessage", message);
+    console.log(message.content);
 }
 
 async function OnDeleteMessage(event: IWebSocketEvent) {

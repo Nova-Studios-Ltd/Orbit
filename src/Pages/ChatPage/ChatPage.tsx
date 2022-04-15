@@ -6,13 +6,16 @@ import MessageInput, { MessageInputChangeEvent, MessageInputSendEvent } from "Co
 import ChannelList, { ChannelListProps } from "Components/Channels/ChannelList/ChannelList";
 
 import type { Page } from "DataTypes/Components";
+import { SENDMessage } from "NSLib/APIEvents";
+import MessageAttachment from "DataTypes/MessageAttachment";
 
 interface ChatPageProps extends Page {
   channelData?: ChannelListProps
   messageData?: MessageCanvasProps
+  channel_uuid?: string
 }
 
-function ChatPage({ channelData, messageData }: ChatPageProps) {
+function ChatPage({ channelData, messageData, channel_uuid }: ChatPageProps) {
   const [MessageInputValue, setMessageInputValue] = useState("");
 
   const MessageInputChangedHandler = (event: MessageInputChangeEvent) => {
@@ -22,6 +25,11 @@ function ChatPage({ channelData, messageData }: ChatPageProps) {
 
   const MessageInputSendHandler = (event: MessageInputSendEvent) => {
     // TODO: Handle sending messages here (you can get the message from either the state (MessageInputValue) or from the event itself)
+    if (channel_uuid === undefined || event.value === undefined) return;
+    SENDMessage(channel_uuid, event.value, [] as MessageAttachment[], (sent: boolean) => {
+      if (sent)
+        console.log("Message sent");
+    });
   }
 
   return (

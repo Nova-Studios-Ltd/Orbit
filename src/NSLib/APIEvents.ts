@@ -92,8 +92,15 @@ async function DecryptMessage(message: IMessageProps) : Promise<IMessageProps> {
     const Manager = new SettingsManager();
     const key = await DecryptBase64WithPriv(Manager.User.keyPair.PrivateKey, new Base64String(message.encryptedKeys[Manager.User.uuid]));
     if (message.content.length !== 0) {
-      // HACK Please fix this, it is only to make the client work with old keys
-      const decryptedMessage = await DecryptBase64(Base64String.CreateBase64String(FromBase64String(FromUint8Array(key.Uint8Array))), new AESMemoryEncryptData(message.iv, message.content));
+      // HACK Please for the love of all that is good fix this, it is only to make the client work with old keys and is jank af
+      let decryptedMessage = undefined;
+      try {
+        decryptedMessage = await DecryptBase64(Base64String.CreateBase64String(FromBase64String(FromUint8Array(key.Uint8Array))), new AESMemoryEncryptData(message.iv, message.content));
+      }
+      catch {
+        // This is the correct way to do it
+        decryptedMessage = await DecryptBase64(key, new AESMemoryEncryptData(message.iv, message.content));
+      }
       message.content = decryptedMessage.String;
     }
     for (let a = 0; a < message.attachments.length; a++) {
@@ -160,7 +167,7 @@ export function SENDMessage(channel_uuid: string, contents: string, rawAttachmen
               }
           }
           encKeys[Manager.User.uuid] = (await EncryptBase64WithPub(Manager.User.keyPair.PublicKey, messageKey)).Base64;
-          const mPost = await POST(`/Message/${channel_uuid}/Messages`, ContentType.JSON, JSON.stringify({Content: encryptedMessage.content as string, IV: encryptedMessage.iv, EncryptedKeys: encKeys, Attachments: attachments}))
+          const mPost = await POST(`/Message/${channel_uuid}/Messages`, ContentType.JSON, JSON.stringify({Content: encryptedMessage.content as string, IV: encryptedMessage.iv, EncryptedKeys: encKeys, Attachments: attachments}), Manager.User.token)
           if (mPost.status === 200) callback(true);
           else callback(false);
           return;
