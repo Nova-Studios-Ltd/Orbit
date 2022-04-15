@@ -1,19 +1,19 @@
 import { ContentType, POST } from "../NSLib/NCAPI";
-import { DecryptBase64StringUsingAES, GenerateSHA256Hash } from "../NSLib/NCEncryption";
 import NCWebsocket from "../NSLib/NCWebsocket";
 import { SettingsManager } from "../NSLib/SettingsManager";
 import IUserLoginData from "../Interfaces/IUserLoginData";
-import { AESMemoryEncryptData, RSAMemoryKeyPair } from "../NSLib/NCEncrytUtil";
+import { RSAMemoryKeyPair } from "../NSLib/NCEncrytUtil";
 import { GETKeystore, GETUser } from "../NSLib/APIEvents";
 import WebsocketInit from "./WebsocketEventInit";
-import { FromBase64String, FromUint8Array, ToBase64String, ToUint8Array } from "../NSLib/Base64";
+import { ToBase64String, ToUint8Array } from "../NSLib/Base64";
 import { LoginStatus } from "DataTypes/Enums";
+import { DecryptBase64, GenerateBase64SHA256 } from "NSLib/NCEncryptionBeta";
 
 export const Manager = new SettingsManager();
 let Websocket;
 
 export async function LoginNewUser(email: string, password: string) : Promise<LoginStatus> {
-  const shaPass = await GenerateSHA256Hash(password);
+  const shaPass = await GenerateBase64SHA256(password);
 
   // Attempt to log user in
   const loginResp = await POST("Auth/Login", ContentType.JSON, JSON.stringify({password: shaPass, email: email}));
@@ -27,7 +27,7 @@ export async function LoginNewUser(email: string, password: string) : Promise<Lo
   // Stored user secruity information (Keypair, token, uuid)
   Manager.User.token = ud.token;
   Manager.User.uuid = ud.uuid;
-  Manager.User.keyPair = new RSAMemoryKeyPair(await DecryptBase64StringUsingAES(shaPass, ud.key), ud.publicKey);
+  Manager.User.keyPair = new RSAMemoryKeyPair((await DecryptBase64(shaPass, ud.key)).String, ud.publicKey);
   console.log(Manager.User.keyPair);
 
   // Store keypair

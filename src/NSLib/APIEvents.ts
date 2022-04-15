@@ -8,7 +8,7 @@ import { GetImageDimensions } from "./Util";
 import Dimensions from "../DataTypes/Dimensions";
 import IUserData from "../Interfaces/IUserData";
 import { SettingsManager } from "./SettingsManager";
-import { Base64String, FromBase64String, FromUint8Array, ToBase64String, ToUint8Array } from "./Base64";
+import { Base64String, FromBase64String, FromUint8Array } from "./Base64";
 import { DecryptBase64, DecryptBase64WithPriv, DecryptUint8Array, EncryptBase64, EncryptBase64WithPub, EncryptUint8Array, GenerateBase64Key } from "./NCEncryptionBeta";
 
 

@@ -15,6 +15,7 @@ import type { ChannelClickEvent } from "Components/Channels/Channel/Channel";
 import type { ChannelListProps } from "Components/Channels/ChannelList/ChannelList";
 import { GETChannel, GETMessages, GETUserChannels } from "NSLib/APIEvents";
 import { IMessageProps } from "Interfaces/IMessageProps";
+import { MessageCanvasProps } from "Components/Messages/MessageCanvas/MessageCanvas";
 
 interface MainViewProps extends View {
   path: MainViewRoutes
@@ -32,7 +33,6 @@ function MainView({ path, changeTitleCallback } : MainViewProps) {
     console.log("Channel clicked: ", event);
     if (event.channelID === undefined) return;
     setChannel(event.channelID);
-    // TODO: Prepare to load channel messages
     GETMessages(event.channelID, (decrypt: IMessageProps[]) => {
       setMessages(decrypt);
       console.log(decrypt);
@@ -43,6 +43,10 @@ function MainView({ path, changeTitleCallback } : MainViewProps) {
     channels: channels,
     onChannelClick: onChannelClick
   } // TODO: Convert this to state
+
+  const messageData: MessageCanvasProps = {
+    messages: messages
+  }
 
   useEffect(() => {
     AutoLogin().then((result: boolean) => {
@@ -66,7 +70,7 @@ function MainView({ path, changeTitleCallback } : MainViewProps) {
   const page = () => {
     switch (path) {
       case MainViewRoutes.Chat:
-        return (<ChatPage channelData={channelData} changeTitleCallback={changeTitleCallback} />);
+        return (<ChatPage channelData={channelData} messageData={messageData} changeTitleCallback={changeTitleCallback} />);
       case MainViewRoutes.Settings:
         return (<SettingsPage changeTitleCallback={changeTitleCallback} />);
       default:

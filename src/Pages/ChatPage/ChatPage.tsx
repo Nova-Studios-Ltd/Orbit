@@ -2,7 +2,7 @@ import { Button, TextField } from "@mui/material";
 import { useState } from "react";
 
 import PageContainer from "Components/Containers/PageContainer/PageContainer";
-import MessageCanvas from "Components/Messages/MessageCanvas/MessageCanvas";
+import MessageCanvas, { MessageCanvasProps } from "Components/Messages/MessageCanvas/MessageCanvas";
 import MessageInput, { MessageInputChangeEvent, MessageInputSendEvent } from "Components/Input/MessageInput/MessageInput";
 import ChannelList, { ChannelListProps } from "Components/Channels/ChannelList/ChannelList";
 
@@ -11,9 +11,10 @@ import type { ChangeEvent } from "react";
 
 interface ChatPageProps extends Page {
   channelData?: ChannelListProps
+  messageData?: MessageCanvasProps
 }
 
-function ChatPage({ channelData }: ChatPageProps) {
+function ChatPage({ channelData, messageData }: ChatPageProps) {
   const [MessageInputValue, setMessageInputValue] = useState("");
 
   const MessageInputChangedHandler = (event: MessageInputChangeEvent) => {
@@ -32,7 +33,7 @@ function ChatPage({ channelData }: ChatPageProps) {
           <ChannelList channels={channelData?.channels} onChannelClick={channelData?.onChannelClick} />
         </div>
         <div className="ChatPageContainerRight">
-          <MessageCanvas />
+          <MessageCanvas messages={messageData?.messages}/>
           <MessageInput value={MessageInputValue} onChange={MessageInputChangedHandler} onSend={MessageInputSendHandler} />
         </div>
       </div>

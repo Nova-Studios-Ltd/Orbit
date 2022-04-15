@@ -2,12 +2,13 @@ import React, { useState } from "react";
 import { Button, Card, Link, TextField, Typography, useTheme } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
-import { EncryptStringUsingAES, GenerateRSAKeyPair, GenerateSHA256Hash } from "NSLib/NCEncryption";
 import { ContentType, NCAPIResponse, POST } from "NSLib/NCAPI";
 import { RegisterPayload, RegPayloadKey } from "DataTypes/RegisterPayload";
 
 import type { Page } from "DataTypes/Components";
 import { RegisterStatus } from "DataTypes/Enums";
+import { EncryptBase64, GenerateBase64SHA256, GenerateRSAKeyPair } from "NSLib/NCEncryptionBeta";
+import { Base64String } from "NSLib/Base64";
 
 interface RegisterPageProps extends Page {
 
@@ -32,10 +33,10 @@ function RegisterPage({ HelpPopup, widthConstrained }: RegisterPageProps) {
       setFailStatus(RegisterStatus.RSAFailed);
       return;
     }
-    const hashPassword = await GenerateSHA256Hash(password);
-    const encPriv = await EncryptStringUsingAES(hashPassword, keypair.PrivateKey);
+    const hashPassword = await GenerateBase64SHA256(password);
+    const encPriv = await EncryptBase64(hashPassword, Base64String.CreateBase64String(keypair.PrivateKey));
 
-    POST("Register", ContentType.JSON, JSON.stringify(new RegisterPayload(username, hashPassword, email, new RegPayloadKey(encPriv.content as string, encPriv.iv, keypair.PublicKey)))).then((response: NCAPIResponse) => {
+    POST("Register", ContentType.JSON, JSON.stringify(new RegisterPayload(username, hashPassword.Base64, email, new RegPayloadKey(encPriv.content as string, encPriv.iv, keypair.PublicKey)))).then((response: NCAPIResponse) => {
       if (response.status === 200) {
         navigate("/login");
         setFailStatus(RegisterStatus.Success);

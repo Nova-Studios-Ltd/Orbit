@@ -17,8 +17,8 @@ function MessageCanvas({ messages }: MessageCanvasProps) {
     if (messages && messages.length > 0) {
       return messages.map((message, index) => {
         // TODO: Map message instances to component props
-        return (<Message />)
-      });
+        return (<Message content={message.content} avatarURL={message.avatar} author={message.author} timestamp={message.timestamp}/>)
+      }).reverse();
     }
   }
 
