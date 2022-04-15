@@ -22,8 +22,6 @@ export async function LoginNewUser(email: string, password: string) : Promise<Lo
   else if (loginResp.status === 500) return LoginStatus.ServerError;
   const ud = loginResp.payload as IUserLoginData;
 
-  console.log(typeof ud.key.content);
-
   // Stored user secruity information (Keypair, token, uuid)
   Manager.User.token = ud.token;
   Manager.User.uuid = ud.uuid;
