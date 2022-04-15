@@ -1,3 +1,6 @@
+/**
+ * Interface representing Electrons IPCRenderer/IPCMain object
+ */
 export interface IPCRenderer {
   send: (channel: string, ...data: any[]) => void,
   on: (channel: string, func: (...args: any[]) => void) => void,
@@ -7,14 +10,42 @@ export interface IPCRenderer {
   sendSync: (channel: string, ...data: any[]) => any;
 }
 
+/**
+ * Class respresenting a uploaded file
+ */
+export class NCFile {
+  readonly FileContents: Uint8Array;
+  readonly FilePath: string;
+  readonly Filename: string;
+
+  constructor(fileContents: Uint8Array, filePath: string, filename: string) {
+    this.FileContents = fileContents;
+    this.FilePath = filePath;
+    this.Filename = filename;
+  }
+}
+
+/**
+ * Checks if the client is loaded in a Electron instance
+ * @returns True if loaded in a Electron instance, else false
+ */
 export function IsElectron() : boolean {
   return (window as any).electron !== undefined;
 }
 
+/**
+ * Retreive IPCRenderer
+ * @returns A IPCRenderer object
+ */
 export function GetIPCRenderer() : IPCRenderer {
   return (window as any).electron.ipcRenderer as IPCRenderer;
 }
 
+/**
+ * Triggers a file download, automaticly handles switching to native
+ * @param file Blob containing the file contents
+ * @param filename Optional name
+ */
 export async function DownloadFile(file: Blob, filename = "unknown") {
   if (IsElectron()) {
     GetIPCRenderer().send("SaveFile", new Uint8Array(await file.arrayBuffer()), filename);
@@ -28,7 +59,11 @@ export async function DownloadFile(file: Blob, filename = "unknown") {
   }
 }
 
-export function UploadFile(): Promise<FileList> {
+/**
+ * Triggers a file upload, automaticly handles switching to native
+ * @returns A Promise containing a NCFile array
+ */
+export function UploadFile(): Promise<NCFile[]> {
   return new Promise(async (resolve) => {
     if (IsElectron()) {
       resolve(await GetIPCRenderer().invoke("UploadFile"))
@@ -38,10 +73,32 @@ export function UploadFile(): Promise<FileList> {
       file.multiple = true;
       file.type = 'file';
       file.click();
-      file.onchange = () => {
+      file.onchange = async () => {
         if (file.files === null || file.files.length === 0) return;
-        resolve(file.files);
+        const files = [] as NCFile[];
+        for (let ff = 0; ff < file.files.length; ff++) {
+          const f = file.files[ff];
+          files.push(new NCFile(new Uint8Array(await f.arrayBuffer()), "N/A", f.name));
+        }
+        resolve(files);
       }
     }
   })
+}
+
+export function FetchFileFromClipboard(ev: ClipboardEvent) : Promise<Uint8Array> {
+  return new Promise(async (resolve) => {
+    if (IsElectron()) {
+      resolve(await GetIPCRenderer().invoke("GetClipboard"));
+    }
+    else {
+      const clipboardItems = ev.clipboardData?.items;
+      const items = [].slice.call(clipboardItems).filter(function (item: DataTransferItem) {
+        return item.type.indexOf('image') !== -1;
+      }) as DataTransferItem[];
+      const buf = await items[0].getAsFile()?.arrayBuffer();
+      if (buf === undefined) return;
+      resolve(new Uint8Array(buf));
+    }
+  });
 }

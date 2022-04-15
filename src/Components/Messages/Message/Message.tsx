@@ -15,7 +15,7 @@ function Message({ content, avatarURL, author, timestamp }: MessageProps) {
   return (
     <div className="MessageContainer" style={{ backgroundColor: theme.palette.background.paper }}>
       <div className="Message_Left">
-          <Avatar src={`${avatarURL}&${Date.now()}`} />
+          <Avatar src={`${avatarURL}`} />
         </div>
         <div className="Message_Right">
           <div className="Message_Right_Header">
