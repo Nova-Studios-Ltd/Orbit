@@ -24,7 +24,7 @@ export default class NCEvents {
   }
 
   on(channel: string, func: (...args: any[]) => void): boolean {
-    if (this.Events.containsKey(channel)) return false;
+    //if (this.Events.containsKey(channel)) return false;
     this.Events.setValue(channel, new Event(false, func));
     return true;
   }
