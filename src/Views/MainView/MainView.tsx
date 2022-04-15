@@ -40,10 +40,10 @@ function MainView({ path, changeTitleCallback } : MainViewProps) {
     });
   }
 
-  Events.on("NewMessage", (message: IMessageProps) => {
+  console.log(Events.on("NewMessage", (message: IMessageProps) => {
     const m = messages;
     setMessages([...m, message]);
-  });
+  }));
 
   const channelData: ChannelListProps = {
     channels: channels,
