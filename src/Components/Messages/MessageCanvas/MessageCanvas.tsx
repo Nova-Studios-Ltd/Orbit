@@ -20,8 +20,7 @@ function MessageCanvas({ className, innerClassName, messages }: MessageCanvasPro
   const messagesArray = () => {
     if (messages && messages.length > 0) {
       return messages.map((message, index) => {
-        // TODO: Map message instances to component props
-        return (<Message content={message.content} avatarURL={message.avatar} author={message.author} timestamp={message.timestamp}/>)
+        return (<Message key={message.message_Id} content={message.content} avatarURL={message.avatar} author={message.author} timestamp={message.timestamp}/>)
       }).reverse();
     }
   }
