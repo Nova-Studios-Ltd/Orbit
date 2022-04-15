@@ -30,8 +30,10 @@ function ChatPage({ channelData, messageData, channel_uuid, selectedChannel }: C
     // TODO: Handle sending messages here (you can get the message from either the state (MessageInputValue) or from the event itself)
     if (channel_uuid === undefined || event.value === undefined) return;
     SENDMessage(channel_uuid, event.value, [] as MessageAttachment[], (sent: boolean) => {
-      if (sent)
+      if (sent) {
         console.log("Message sent");
+        setMessageInputValue("");
+      }
     });
   }
 

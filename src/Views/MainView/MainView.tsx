@@ -41,7 +41,8 @@ function MainView({ path, changeTitleCallback } : MainViewProps) {
   }
 
   Events.on("NewMessage", (message: IMessageProps) => {
-    setMessages([...messages, message]);
+    const m = messages;
+    setMessages([...m, message]);
   });
 
   const channelData: ChannelListProps = {
