@@ -10,7 +10,7 @@ export interface HelpPopupProps {
 }
 
 export interface NCComponent {
-
+  className?: string
 }
 
 export interface Page {

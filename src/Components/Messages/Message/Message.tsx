@@ -1,6 +1,7 @@
 import { Avatar, Typography, useTheme } from "@mui/material";
 
 import type { NCComponent } from "DataTypes/Components";
+import { useState } from "react";
 
 export interface MessageProps extends NCComponent {
   content?: string,
@@ -11,19 +12,24 @@ export interface MessageProps extends NCComponent {
 
 function Message({ content, avatarURL, author, timestamp }: MessageProps) {
   const theme = useTheme();
+  const [isHovering, setHoveringState] = useState(false);
+
+  const mouseHoverEventHandler = (isHovering: boolean) => {
+    setHoveringState(isHovering);
+  }
 
   return (
-    <div className="MessageContainer" style={{ backgroundColor: theme.palette.background.paper }}>
-      <div className="Message_Left">
-          <Avatar src={`${avatarURL}`} />
+    <div className="MessageContainer" style={{ backgroundColor: "transparent" }}>
+      <div className="MessageLeft">
+        <Avatar src={`${avatarURL}`} />
+      </div>
+      <div className="MessageRight" style={{ backgroundColor: isHovering ? theme.customPalette.customActions.messageHover : theme.customPalette.messageBackground }} onMouseEnter={() => mouseHoverEventHandler(true)} onMouseLeave={() => mouseHoverEventHandler(false)}>
+        <div className="MessageRightHeader">
+          <Typography className="MessageName" fontWeight="bold">{author}</Typography>
+          <Typography className="MessageTimestamp" variant="subtitle2">{timestamp}</Typography>
         </div>
-        <div className="Message_Right">
-          <div className="Message_Right_Header">
-            <Typography className="Message_Name" fontWeight="bold">{author}</Typography>
-            <Typography className="Message_Timestamp" variant="subtitle2">{timestamp}</Typography>
-          </div>
-          {content}
-        </div>
+        {content}
+      </div>
     </div>
   )
 }

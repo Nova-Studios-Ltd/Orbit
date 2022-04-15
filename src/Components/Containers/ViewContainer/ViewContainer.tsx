@@ -1,4 +1,5 @@
 import { useTheme } from "@mui/material";
+import useClassNames from "Hooks/useClassNames";
 
 import type { ReactNode } from "react";
 import type { NCComponent } from "DataTypes/Components";
@@ -6,21 +7,15 @@ import type { NCComponent } from "DataTypes/Components";
 export interface ViewContainerProps extends NCComponent {
   adaptive?: boolean,
   noPadding?: boolean,
-  className?: string,
   children: ReactNode
 }
 
 function ViewContainer({ adaptive, noPadding, className, children }: ViewContainerProps) {
   const theme = useTheme();
+  let classNames = useClassNames("ViewContainer", className);
 
   if (adaptive == null) {
     adaptive = true;
-  }
-
-  let classNames = "ViewContainer";
-
-  if (className && className.length > 0) {
-    classNames = classNames.concat(" ", className);
   }
 
   if (noPadding) {

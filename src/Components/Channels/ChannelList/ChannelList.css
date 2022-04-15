@@ -3,6 +3,7 @@
   flex-direction: column;
 
   padding: var(--global-padding);
+  box-sizing: border-box;
 
   height: 100%;
 }

@@ -1,7 +1,9 @@
-import { TextField, useTheme } from "@mui/material";
+import { IconButton, TextField, useTheme } from "@mui/material";
+import useClassNames from "Hooks/useClassNames";
+import { useTranslation } from "react-i18next";
 
 import type { NCComponent } from "DataTypes/Components";
-import type { ChangeEvent } from "react";
+import { ChangeEvent, useState } from "react";
 
 export interface MessageInputSendEvent {
   value?: string,
@@ -12,14 +14,17 @@ export interface MessageInputChangeEvent {
 }
 
 export interface MessageInputProps extends NCComponent {
-  className?: string,
   value?: string,
   onChange?: (event: MessageInputChangeEvent) => void
   onSend?: (event: MessageInputSendEvent) => void
 }
 
 function MessageInput({ className, value, onChange, onSend }: MessageInputProps) {
+  const Localizations_MessageInput = useTranslation("MessageInput").t;
   const theme = useTheme();
+  const classNames = useClassNames("MessageInputContainer", className);
+
+  const [TextFieldFocused, setTextFieldFocusedState] = useState(false);
 
   const onChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
     if (onChange) onChange({ value: event.target.value });
@@ -31,9 +36,14 @@ function MessageInput({ className, value, onChange, onSend }: MessageInputProps)
     }
   }
 
+  const inputFocusHandler = (isFocused: boolean) => {
+    setTextFieldFocusedState(isFocused);
+  }
+
   return (
-    <div className={`MessageInputContainer ${className}`} style={{ backgroundColor: theme.palette.background.paper }}>
-      <TextField variant="outlined" value={value} onChange={onChangeHandler} onKeyDown={onKeyDownHandler}/>
+    <div className={classNames} style={{ backgroundColor: theme.customPalette.messageInputBackground, borderColor: TextFieldFocused ? theme.palette.action.active : theme.palette.divider }}>
+      <input type="text" className="MessageInputField" placeholder={Localizations_MessageInput("TextField_Placeholder-TypeHerePrompt")} style={{ backgroundColor: "transparent", color: theme.palette.text.primary }} value={value} onFocus={() => inputFocusHandler(true)} onBlur={() => inputFocusHandler(false)} onChange={onChangeHandler} onKeyDown={onKeyDownHandler} />
+      <IconButton></IconButton>
     </div>
   )
 }

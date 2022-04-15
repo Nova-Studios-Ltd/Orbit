@@ -1,5 +1,24 @@
 .MessageInputContainer {
+  display: flex;
+  flex-direction: row;
 
+  box-sizing: border-box;
+  margin-bottom: var(--global-margin);
+  border: var(--global-border-thickness) solid;
+  border-radius: var(--global-border-radius);
+
+  height: 3.5rem;
+
+  transition: border-color 50ms linear;
+}
+
+.MessageInputField {
+  border: none;
+  outline: none;
+
+  text-indent: 5pt;
+
+  width: 100%;
 }
 
 @media only screen and (max-width: 600px) {

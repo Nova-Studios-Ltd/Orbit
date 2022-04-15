@@ -1,5 +1,34 @@
 .MessageContainer {
+  padding: var(--global-padding);
+  display: flex;
+  flex-direction: row;
 
+  transition: background-color 200ms ease;
+}
+
+.MessageLeft {
+  margin: var(--global-margin);
+}
+
+.MessageRight {
+  margin-left: 0.5rem;
+  align-self: center;
+  overflow-wrap: anywhere;
+  width: 100%;
+  padding: var(--global-padding);
+  border-radius: var(--global-border-radius);
+
+  transition: background-color 200ms linear;
+}
+
+.MessageRightHeader {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.MessageTimestamp, .MessageTimestampEdited {
+  margin-left: 5px !important;
 }
 
 @media only screen and (max-width: 600px) {
@@ -7,37 +36,3 @@
 
   }
 }
-
-.Message {
-  padding: 0.5rem;
-  display: flex;
-  flex-direction: row;
-
-  transition: background-color 200ms ease;
-}
-
-.Message_Left {
-  margin: 0.5rem;
-}
-
-.Message_Right {
-  margin-left: 0.5rem;
-  align-self: center;
-  overflow-wrap: anywhere;
-  width: 100%;
-  padding: 10px;
-  border-radius: 10px;
-
-  transition: background-color 200ms linear;
-}
-
-.Message_Right_Header {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-}
-
-.Message_Timestamp, .Message_Timestamp_Edited {
-  margin-left: 5px !important;
-}
-
