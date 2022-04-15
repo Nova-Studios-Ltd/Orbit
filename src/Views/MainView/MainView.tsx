@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { AutoLogin, Manager } from "Init/AuthHandler";
+import { AutoLogin } from "Init/AuthHandler";
 import { SettingsManager } from "NSLib/SettingsManager";
 
 import ViewContainer from "Components/Containers/ViewContainer/ViewContainer";
@@ -9,7 +9,6 @@ import SettingsPage from "Pages/SettingsPage/SettingsPage";
 
 import type { View } from "DataTypes/Components";
 import type { IRawChannelProps } from "Interfaces/IRawChannelProps";
-import { ChannelType } from "DataTypes/Enums";
 import { MainViewRoutes } from "DataTypes/Routes";
 import type { ChannelClickEvent } from "Components/Channels/Channel/Channel";
 import type { ChannelListProps } from "Components/Channels/ChannelList/ChannelList";

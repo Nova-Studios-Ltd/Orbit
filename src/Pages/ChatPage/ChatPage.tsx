@@ -1,4 +1,3 @@
-import { Button, TextField } from "@mui/material";
 import { useState } from "react";
 
 import PageContainer from "Components/Containers/PageContainer/PageContainer";
@@ -7,7 +6,6 @@ import MessageInput, { MessageInputChangeEvent, MessageInputSendEvent } from "Co
 import ChannelList, { ChannelListProps } from "Components/Channels/ChannelList/ChannelList";
 
 import type { Page } from "DataTypes/Components";
-import type { ChangeEvent } from "react";
 
 interface ChatPageProps extends Page {
   channelData?: ChannelListProps

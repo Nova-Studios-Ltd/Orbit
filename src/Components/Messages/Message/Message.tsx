@@ -1,4 +1,4 @@
-import { Avatar, IconButton, Typography, useTheme } from "@mui/material";
+import { Avatar, Typography, useTheme } from "@mui/material";
 
 import type { NCComponent } from "DataTypes/Components";
 
