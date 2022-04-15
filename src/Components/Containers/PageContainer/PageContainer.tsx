@@ -1,4 +1,5 @@
 import { useTheme } from "@mui/material";
+import useClassNames from "Hooks/useClassNames";
 
 import type { ReactNode } from "react";
 import type { NCComponent } from "DataTypes/Components";
@@ -6,21 +7,15 @@ import type { NCComponent } from "DataTypes/Components";
 export interface PageContainerProps extends NCComponent {
   adaptive?: boolean,
   noPadding?: boolean,
-  className?: string,
   children: ReactNode
 }
 
 function PageContainer({ adaptive, noPadding, className, children }: PageContainerProps) {
   const theme = useTheme();
+  let classNames = useClassNames("PageContainer", className);
 
   if (adaptive == null) {
     adaptive = true;
-  }
-
-  let classNames = "PageContainer";
-
-  if (className && className.length > 0) {
-    classNames = classNames.concat(" ", className);
   }
 
   if (noPadding) {

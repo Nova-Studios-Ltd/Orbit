@@ -13,17 +13,17 @@ function Message({ content, avatarURL, author, timestamp }: MessageProps) {
   const theme = useTheme();
 
   return (
-    <div className="MessageContainer" style={{ backgroundColor: theme.palette.background.paper }}>
-      <div className="Message_Left">
-          <Avatar src={`${avatarURL}&${Date.now()}`} />
+    <div className="MessageContainer" style={{ backgroundColor: "transparent" }}>
+      <div className="MessageLeft">
+        <Avatar src={`${avatarURL}&${Date.now()}`} />
+      </div>
+      <div className="MessageRight" style={{ backgroundColor: theme.customPalette.messageBackground }}>
+        <div className="MessageRightHeader">
+          <Typography className="MessageName" fontWeight="bold">{author}</Typography>
+          <Typography className="MessageTimestamp" variant="subtitle2">{timestamp}</Typography>
         </div>
-        <div className="Message_Right">
-          <div className="Message_Right_Header">
-            <Typography className="Message_Name" fontWeight="bold">{author}</Typography>
-            <Typography className="Message_Timestamp" variant="subtitle2">{timestamp}</Typography>
-          </div>
-          {content}
-        </div>
+        {content}
+      </div>
     </div>
   )
 }

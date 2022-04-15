@@ -31,8 +31,8 @@ function ChatPage({ channelData, messageData }: ChatPageProps) {
           <ChannelList channels={channelData?.channels} onChannelClick={channelData?.onChannelClick} />
         </div>
         <div className="ChatPageContainerRight">
-          <MessageCanvas messages={messageData?.messages}/>
-          <MessageInput value={MessageInputValue} onChange={MessageInputChangedHandler} onSend={MessageInputSendHandler} />
+          <MessageCanvas className="ChatPageContainerItem" messages={messageData?.messages}/>
+          <MessageInput className="ChatPageContainerItem" value={MessageInputValue} onChange={MessageInputChangedHandler} onSend={MessageInputSendHandler} />
         </div>
       </div>
     </PageContainer>

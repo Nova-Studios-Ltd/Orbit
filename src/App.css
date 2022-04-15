@@ -4,6 +4,7 @@
 
 :root {
   --global-border-radius: 5px;
+  --global-border-thickness: 1px;
   --global-padding: 10px;
   --global-margin: 10px;
 

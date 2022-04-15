@@ -25,7 +25,7 @@ function ChannelList({ channels, onChannelClick }: ChannelListProps) {
   const channelArray = () => {
     if (channels && channels.length > 0) {
       return channels.map((channel) => {
-        return (<Channel channelName={channel.channelName} channelID={channel.table_Id} channelIconSrc={channel.channelIcon} channelMembers={channel.members} isGroup={channel.channelType} onClick={onChannelClick} />);
+        return (<Channel key={channel.table_Id} channelName={channel.channelName} channelID={channel.table_Id} channelIconSrc={channel.channelIcon} channelMembers={channel.members} isGroup={channel.channelType} onClick={onChannelClick} />);
       });
     }
 

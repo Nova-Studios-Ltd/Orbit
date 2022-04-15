@@ -9,7 +9,9 @@ export const DarkTheme_Default = createTheme({
     }
   },
   customPalette: {
-    formBackground: "#212121E9"
+    formBackground: "#212121E9",
+    messageBackground: "#3C3E42",
+    messageInputBackground: "#3C3E42"
   }
 });
 
@@ -23,20 +25,26 @@ export const LightTheme_Default = createTheme({
     }
   },
   customPalette: {
-    formBackground: "#212121AA"
+    formBackground: "#212121AA",
+    messageBackground: "#454545",
+    messageInputBackground: "#3C3E42"
   }
 });
 
 declare module "@mui/material/styles" {
   interface Theme {
     customPalette: {
-      formBackground: string
+      formBackground: string,
+      messageBackground: string,
+      messageInputBackground: string
     };
   }
 
   interface ThemeOptions {
     customPalette?: {
-      formBackground: string
+      formBackground: string,
+      messageBackground: string,
+      messageInputBackground: string
     };
   }
 }
