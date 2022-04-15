@@ -11,6 +11,7 @@ export const DarkTheme_Default = createTheme({
   customPalette: {
     customActions: {
       messageHover: "#8A8F94",
+      channelActive: "#3C3E42"
     },
     formBackground: "#212121E9",
     messageBackground: "#3C3E42",
@@ -29,7 +30,8 @@ export const LightTheme_Default = createTheme({
   },
   customPalette: {
     customActions: {
-      messageHover: ""
+      messageHover: "",
+      channelActive: ""
     },
     formBackground: "",
     messageBackground: "",
@@ -41,7 +43,8 @@ declare module "@mui/material/styles" {
   interface Theme {
     customPalette: {
       customActions: {
-        messageHover: string
+        messageHover: string,
+        channelActive: string
       },
       formBackground: string,
       messageBackground: string,
@@ -52,7 +55,8 @@ declare module "@mui/material/styles" {
   interface ThemeOptions {
     customPalette: {
       customActions: {
-        messageHover: string
+        messageHover: string,
+        channelActive: string
       },
       formBackground: string,
       messageBackground: string,

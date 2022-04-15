@@ -1,0 +1,12 @@
+.MessageCanvasHeaderContainer {
+  display: flex;
+  flex-direction: row;
+
+  padding: var(--global-padding);
+}
+
+@media only screen and (max-width: 600px) {
+  .MessageCanvasHeaderContainer {
+
+  }
+}

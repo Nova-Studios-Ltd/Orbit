@@ -3,11 +3,10 @@ import useClassNames from "Hooks/useClassNames";
 
 import Message from "Components/Messages/Message/Message";
 
-import type { NCComponent } from "DataTypes/Components";
+import type { NCAPIComponent } from "DataTypes/Components";
 import type { IMessageProps } from "Interfaces/IMessageProps";
 
-
-export interface MessageCanvasProps extends NCComponent {
+export interface MessageCanvasProps extends NCAPIComponent {
   innerClassName?: string,
   messages?: IMessageProps[]
 }

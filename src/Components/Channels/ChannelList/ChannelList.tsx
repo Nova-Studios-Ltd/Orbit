@@ -3,15 +3,15 @@ import { useTranslation } from "react-i18next";
 
 import Channel, { ChannelClickEvent } from "Components/Channels/Channel/Channel";
 
-import type { NCComponent } from "DataTypes/Components";
+import type { NCAPIComponent } from "DataTypes/Components";
 import type { IRawChannelProps } from "Interfaces/IRawChannelProps";
 
-export interface ChannelListProps extends NCComponent {
+export interface ChannelListProps extends NCAPIComponent {
   channels?: IRawChannelProps[],
   onChannelClick?: (event: ChannelClickEvent) => void
 }
 
-function ChannelList({ channels, onChannelClick }: ChannelListProps) {
+function ChannelList({ channels, selectedChannel, onChannelClick }: ChannelListProps) {
   const Localizations_ChannelList = useTranslation("ChannelList").t;
   const theme = useTheme();
 
@@ -25,7 +25,8 @@ function ChannelList({ channels, onChannelClick }: ChannelListProps) {
   const channelArray = () => {
     if (channels && channels.length > 0) {
       return channels.map((channel) => {
-        return (<Channel key={channel.table_Id} channelName={channel.channelName} channelID={channel.table_Id} channelIconSrc={channel.channelIcon} channelMembers={channel.members} isGroup={channel.channelType} onClick={onChannelClick} />);
+        const isSelected = selectedChannel && (channel.table_Id === selectedChannel.table_Id);
+        return (<Channel key={channel.table_Id} channelName={channel.channelName} channelID={channel.table_Id} channelIconSrc={channel.channelIcon} channelMembers={channel.members} isGroup={channel.channelType} isSelected={isSelected} onClick={onChannelClick} />);
       });
     }
 

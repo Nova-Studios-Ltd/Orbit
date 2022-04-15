@@ -2,7 +2,7 @@ import { IconButton, TextField, useTheme } from "@mui/material";
 import useClassNames from "Hooks/useClassNames";
 import { useTranslation } from "react-i18next";
 
-import type { NCComponent } from "DataTypes/Components";
+import type { NCAPIComponent } from "DataTypes/Components";
 import { ChangeEvent, useState } from "react";
 
 export interface MessageInputSendEvent {
@@ -13,7 +13,7 @@ export interface MessageInputChangeEvent {
   value?: string,
 }
 
-export interface MessageInputProps extends NCComponent {
+export interface MessageInputProps extends NCAPIComponent {
   value?: string,
   onChange?: (event: MessageInputChangeEvent) => void
   onSend?: (event: MessageInputSendEvent) => void
