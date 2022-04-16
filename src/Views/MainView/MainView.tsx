@@ -14,7 +14,6 @@ import type { ChannelClickEvent } from "Components/Channels/Channel/Channel";
 import type { ChannelListProps } from "Components/Channels/ChannelList/ChannelList";
 import { GETChannel, GETMessages, GETUserChannels } from "NSLib/APIEvents";
 import { IMessageProps } from "Interfaces/IMessageProps";
-import { MessageCanvasProps } from "Components/Messages/MessageCanvas/MessageCanvas";
 import { Events } from "Init/WebsocketEventInit";
 
 interface MainViewProps extends View {
