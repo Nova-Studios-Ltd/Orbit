@@ -51,11 +51,10 @@ function MainView({ path, changeTitleCallback } : MainViewProps) {
     });
   }, [messages]);*/
 
-  Events.yeetEvent("NewMessage");
   Events.on("NewMessage", (message: IMessageProps) => {
-    console.log(messages);
-    console.log(messages);
-    setMessages([...messages, message]);
+    setMessages(prevState => {
+      return [...prevState, message];
+    });
   });
 
   const channelData: ChannelListProps = {

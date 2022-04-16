@@ -34,8 +34,4 @@ export default class NCEvents {
     if (this.Events.getValue(channel).once)
       this.Events.clear(channel);
   }
-
-  yeetEvent(channel: string) {
-    this.Events.clear(channel);
-  }
 }
