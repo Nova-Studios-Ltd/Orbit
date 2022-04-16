@@ -53,6 +53,7 @@ function MainView({ path, changeTitleCallback } : MainViewProps) {
 
   Events.on("NewMessage", (message: IMessageProps) => {
     setMessages(prevState => {
+      console.log(message);
       return [...prevState, message];
     });
   });
