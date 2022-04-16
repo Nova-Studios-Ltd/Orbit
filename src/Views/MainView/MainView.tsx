@@ -41,14 +41,14 @@ function MainView({ path, changeTitleCallback } : MainViewProps) {
   }
 
   useEffect(() => {
-    console.log(messages);
+    console.warn(messages);
     const m = messages;
     Events.on("NewMessage", (message: IMessageProps) => {
       console.log(m);
       console.log(messages);
       setMessages([...m, message]);
     });
-  });
+  }, [messages]);
 
   const channelData: ChannelListProps = {
     channels: channels,
