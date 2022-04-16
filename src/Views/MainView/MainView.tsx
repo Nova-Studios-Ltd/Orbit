@@ -42,8 +42,8 @@ function MainView({ path, changeTitleCallback } : MainViewProps) {
 
   useEffect(() => {
     console.log(messages);
+    const m = messages;
     Events.on("NewMessage", (message: IMessageProps) => {
-      const m = messages;
       console.log(m);
       console.log(messages);
       setMessages([...m, message]);
