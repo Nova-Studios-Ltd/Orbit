@@ -10,10 +10,11 @@ import type { Page } from "DataTypes/Components";
 import { SENDMessage } from "NSLib/APIEvents";
 import MessageAttachment from "DataTypes/MessageAttachment";
 import type { IRawChannelProps } from "Interfaces/IRawChannelProps";
+import { IMessageProps } from "Interfaces/IMessageProps";
 
 interface ChatPageProps extends Page {
   channelData?: ChannelListProps
-  messageData?: MessageCanvasProps
+  messageData?: IMessageProps[]
   channel_uuid?: string
   selectedChannel?: IRawChannelProps
 }
@@ -45,7 +46,7 @@ function ChatPage({ channelData, messageData, channel_uuid, selectedChannel }: C
         </div>
         <div className="ChatPageContainerRight">
           <MessageCanvasHeader selectedChannel={selectedChannel}></MessageCanvasHeader>
-          <MessageCanvas className="ChatPageContainerItem" messages={messageData?.messages}/>
+          <MessageCanvas className="ChatPageContainerItem" messages={messageData}/>
           <MessageInput className="ChatPageContainerItem" value={MessageInputValue} onChange={MessageInputChangedHandler} onSend={MessageInputSendHandler} />
         </div>
       </div>

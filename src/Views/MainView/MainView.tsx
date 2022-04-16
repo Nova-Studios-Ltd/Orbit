@@ -54,10 +54,6 @@ function MainView({ path, changeTitleCallback } : MainViewProps) {
     onChannelClick: onChannelClick
   }
 
-  const messageData: MessageCanvasProps = {
-    messages: messages
-  }
-
   useEffect(() => {
     AutoLogin().then((result: boolean) => {
       if (!result) navigate("/login");
@@ -80,7 +76,7 @@ function MainView({ path, changeTitleCallback } : MainViewProps) {
   const page = () => {
     switch (path) {
       case MainViewRoutes.Chat:
-        return (<ChatPage channelData={channelData} messageData={messageData} channel_uuid={channelUUID} changeTitleCallback={changeTitleCallback} selectedChannel={selectedChannel} />);
+        return (<ChatPage channelData={channelData} messageData={messages} channel_uuid={channelUUID} changeTitleCallback={changeTitleCallback} selectedChannel={selectedChannel} />);
       case MainViewRoutes.Settings:
         return (<SettingsPage changeTitleCallback={changeTitleCallback} />);
       default:
