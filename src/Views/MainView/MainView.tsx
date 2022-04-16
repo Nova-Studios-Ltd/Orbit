@@ -24,17 +24,17 @@ function MainView({ path, changeTitleCallback } : MainViewProps) {
 
   const [channels, setChannels] = useState([] as IRawChannelProps[]);
   const [selectedChannel, setSelectedChannel] = useState(null as unknown as IRawChannelProps);
-  const [channelUUID, setChannel] = useState("");
   const [messages, setMessages] = useState([] as IMessageProps[]);
 
   const onChannelClick = (event: ChannelClickEvent) => {
     console.log("Channel clicked: ", event);
     setSelectedChannel({ table_Id: event.channelID, channelName: event.channelName, channelIcon: event.channelIconSrc, members: event.channelMembers, channelType: event.isGroup } as IRawChannelProps);
-    if (event.channelID === undefined) return;
-    setChannel(event.channelID);
-    GETMessages(event.channelID, (decrypt: IMessageProps[]) => {
-      setMessages(decrypt);
-    });
+
+    if (event && event.channelID) {
+      GETMessages(event.channelID, (decrypt: IMessageProps[]) => {
+        setMessages(decrypt);
+      });
+    }
   }
 
   Events.on("NewMessage", (message: IMessageProps) => {
@@ -65,7 +65,7 @@ function MainView({ path, changeTitleCallback } : MainViewProps) {
   const page = () => {
     switch (path) {
       case MainViewRoutes.Chat:
-        return (<ChatPage channels={channels} onChannelClick={onChannelClick} messages={messages} channel_uuid={channelUUID} selectedChannel={selectedChannel} changeTitleCallback={changeTitleCallback}  />);
+        return (<ChatPage channels={channels} onChannelClick={onChannelClick} messages={messages} selectedChannel={selectedChannel} changeTitleCallback={changeTitleCallback} />);
       case MainViewRoutes.Settings:
         return (<SettingsPage changeTitleCallback={changeTitleCallback}  />);
       default:
