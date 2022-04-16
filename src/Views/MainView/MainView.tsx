@@ -40,21 +40,12 @@ function MainView({ path, changeTitleCallback } : MainViewProps) {
     });
   }
 
-  /*useEffect(() => {
-    console.warn(messages);
-    const m = messages;
-    Events.yeetEvent("NewMessage");
+  useEffect(() => {
     Events.on("NewMessage", (message: IMessageProps) => {
-      console.log(m);
-      console.log(messages);
-      setMessages([...m, message]);
-    });
-  }, [messages]);*/
-
-  Events.on("NewMessage", (message: IMessageProps) => {
-    setMessages(prevState => {
-      console.log(message);
-      return [...prevState, message];
+      setMessages(prevState => {
+        console.log(message);
+        return [...prevState, message];
+      });
     });
   });
 
