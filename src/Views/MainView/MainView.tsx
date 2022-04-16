@@ -40,10 +40,12 @@ function MainView({ path, changeTitleCallback } : MainViewProps) {
     });
   }
 
-  console.log(Events.on("NewMessage", (message: IMessageProps) => {
-    const m = messages;
-    setMessages([...m, message]);
-  }));
+  useEffect(() => {
+    Events.on("NewMessage", (message: IMessageProps) => {
+      const m = messages;
+      setMessages([...m, message]);
+    });
+  });
 
   const channelData: ChannelListProps = {
     channels: channels,
