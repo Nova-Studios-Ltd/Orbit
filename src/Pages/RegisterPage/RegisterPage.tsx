@@ -99,7 +99,7 @@ function RegisterPage({ HelpPopup, widthConstrained, changeTitleCallback }: Regi
   );
 
   return (
-    <div>
+    <div className="RegisterPageContainer">
       <Typography variant="h6" align="center">{Localizations_RegisterPage("Typography-FormCaption")}</Typography>
       <FormStatus />
       <form className="AuthForm RegisterForm" onSubmit={register}>

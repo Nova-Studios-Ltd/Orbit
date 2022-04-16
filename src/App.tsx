@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Popover, ThemeProvider } from "@mui/material";
+import { useEffect, useState } from "react";
+import { Menu, Popover, ThemeProvider } from "@mui/material";
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import i18n from "i18next";
 import { initReactI18next, useTranslation } from "react-i18next";
@@ -15,9 +15,11 @@ import MainView from "Views/MainView/MainView";
 
 import { AuthViewRoutes, MainViewRoutes } from "DataTypes/Routes";
 import type { ReactNode } from "react";
-import type { HelpPopupProps } from "DataTypes/Components";
+import type { ContextMenuProps, HelpPopupProps } from "DataTypes/Components";
+import type { ContextMenuItemProps } from "Components/Menus/ContextMenuItem/ContextMenuItem";
 
 import "./App.css";
+import ContextMenuItem from "Components/Menus/ContextMenuItem/ContextMenuItem";
 
 i18n.use(initReactI18next)
 .init({
@@ -33,11 +35,23 @@ function App() {
   const navigate = useNavigate();
   const Localizations_Common = useTranslation().t;
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [title, setTitle] = useState("");
   const [helpVisible, setHelpVisibility] = useState(false);
   const [helpAnchorEl, setHelpAnchor] = useState(null as unknown as Element);
   const [helpContent, setHelpContent] = useState(null as unknown as ReactNode);
+  const [contextMenuVisible, setContextMenuVisibility] = useState(false);
+  const [contextMenuAnchorEl, setContextMenuAnchor] = useState(null as unknown as Element);
+  const [contextMenuItems, setContextMenuItems] = useState(null as unknown as ContextMenuItemProps[]);
+
+  const closeHelpPopup = () => {
+    setHelpVisibility(false);
+    setHelpAnchor(null as unknown as Element);
+  }
+
+  const closeContextMenu = () => {
+    setContextMenuVisibility(false);
+    setContextMenuAnchor(null as unknown as Element);
+  }
 
   const HelpPopup: HelpPopupProps = {
     visible: helpVisible,
@@ -45,7 +59,26 @@ function App() {
     content: helpContent,
     setVisibility: setHelpVisibility,
     setAnchor: setHelpAnchor,
-    setContent: setHelpContent
+    setContent: setHelpContent,
+    closePopup: closeHelpPopup
+  };
+
+  const ContextMenu: ContextMenuProps = {
+    visible: contextMenuVisible,
+    anchorEl: contextMenuAnchorEl,
+    items: contextMenuItems,
+    setVisibility: setContextMenuVisibility,
+    setAnchor: setContextMenuAnchor,
+    setItems: setContextMenuItems,
+    closeMenu: closeContextMenu
+  };
+
+  const contextMenuItemsList = () => {
+    if (!contextMenuItems || contextMenuItems.length < 1) return null;
+
+    return contextMenuItems.map((item, index) => {
+      return (<ContextMenuItem key={index} className={item.className} ContextMenu={ContextMenu} persistOnClick={item.persistOnClick} icon={item.icon} onLeftClick={item.onLeftClick} onRightClick={item.onRightClick}>{item.children}</ContextMenuItem>)
+    });
   };
 
   Manager.ContainsCookie("LoggedIn").then(async (value: boolean) => {
@@ -76,15 +109,18 @@ function App() {
           <Route path="/" element={<AuthView widthConstrained={widthConstrained} changeTitleCallback={setTitle} path={AuthViewRoutes.Login} />} />
           <Route path="/login" element={<AuthView widthConstrained={widthConstrained} changeTitleCallback={setTitle} path={AuthViewRoutes.Login} />} />
           <Route path="/register" element={<AuthView widthConstrained={widthConstrained} changeTitleCallback={setTitle} HelpPopup={HelpPopup} path={AuthViewRoutes.Register} />} />
-          <Route path="/chat" element={<MainView widthConstrained={widthConstrained} changeTitleCallback={setTitle} path={MainViewRoutes.Chat} />} />
+          <Route path="/chat" element={<MainView widthConstrained={widthConstrained} ContextMenu={ContextMenu} changeTitleCallback={setTitle} path={MainViewRoutes.Chat} />} />
           <Route path="/settings" element={<MainView widthConstrained={widthConstrained} changeTitleCallback={setTitle} path={MainViewRoutes.Settings} />} />
         </Routes>
-        <Popover open={helpVisible} anchorEl={helpAnchorEl} onClose={() => {
+        <Popover className="GenericPopover" open={helpVisible} anchorEl={helpAnchorEl} onClose={() => {
           setHelpAnchor(null as unknown as Element);
           setHelpVisibility(false);
         }}>
           {helpContent}
         </Popover>
+        <Menu className="GenericContextMenu" PaperProps={{ className: "GenericContextMenuPaper" }} open={contextMenuVisible} anchorEl={contextMenuAnchorEl} onClose={() => closeContextMenu()}>
+          {contextMenuItemsList()}
+        </Menu>
       </ThemeProvider>
     </div>
   );

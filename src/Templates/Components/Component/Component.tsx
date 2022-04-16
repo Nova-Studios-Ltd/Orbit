@@ -1,7 +1,7 @@
 import { useTheme } from "@mui/material";
+import useClassNames from "Hooks/useClassNames";
 
 import type { NCComponent } from "DataTypes/Components";
-import useClassNames from "Hooks/useClassNames";
 
 export interface ComponentProps extends NCComponent {
 

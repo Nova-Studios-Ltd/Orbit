@@ -59,7 +59,8 @@ function AuthView({ path, widthConstrained, HelpPopup, changeTitleCallback } : A
     <ViewContainer className="AuthViewContainer" noPadding>
       <div className="AuthViewCenterContainer" style={{ backgroundImage: AuthViewCenterContainerBackground() }}>
         {!widthConstrained ? AuthViewBrandingContainer : null}
-        <div className="AuthViewFormContainer" style={{ backgroundColor: theme.customPalette.formBackground }}>
+        <div className="AuthViewFormContainer">
+          <div className="AuthViewFormContainerBackground" style={{ backgroundColor: theme.customPalette.formBackground }} />
           {widthConstrained ? AuthViewBrandingContainer : null}
           {page()}
         </div>

@@ -67,7 +67,7 @@ function LoginPage({ widthConstrained, changeTitleCallback }: LoginPageProps) {
   }
 
   return (
-    <div>
+    <div className="LoginPageContainer">
       <Typography variant="h6" align="center">{Localizations_LoginPage("Typography-FormCaption")}</Typography>
       <FormStatus />
       <form className="AuthForm LoginForm" onSubmit={login}>

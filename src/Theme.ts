@@ -6,16 +6,18 @@ export const DarkTheme_Default = createTheme({
     background: {
       default: "#292B2E",
       paper: "#212121",
-    }
+    },
   },
   customPalette: {
     customActions: {
       messageHover: "#8A8F94",
       channelActive: "#3C3E42"
     },
-    formBackground: "#212121E9",
+    contextMenuBackground: "#3C3E42",
+    contextMenuItemBackground: "#3C3E42",
+    formBackground: "#212121",
     messageBackground: "#3C3E42",
-    messageInputBackground: "#3C3E42"
+    messageInputBackground: "#3C3E42",
   }
 });
 
@@ -33,6 +35,8 @@ export const LightTheme_Default = createTheme({
       messageHover: "",
       channelActive: ""
     },
+    contextMenuBackground: "",
+    contextMenuItemBackground: "",
     formBackground: "",
     messageBackground: "",
     messageInputBackground: ""
@@ -46,6 +50,8 @@ declare module "@mui/material/styles" {
         messageHover: string,
         channelActive: string
       },
+      contextMenuBackground: string,
+      contextMenuItemBackground: string,
       formBackground: string,
       messageBackground: string,
       messageInputBackground: string,
@@ -58,6 +64,8 @@ declare module "@mui/material/styles" {
         messageHover: string,
         channelActive: string
       },
+      contextMenuBackground: string,
+      contextMenuItemBackground: string,
       formBackground: string,
       messageBackground: string,
       messageInputBackground: string,

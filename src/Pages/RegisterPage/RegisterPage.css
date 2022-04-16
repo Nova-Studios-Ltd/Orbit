@@ -1,3 +1,8 @@
+.RegisterPageContainer {
+  position: relative;
+  z-index: 1;
+}
+
 .RegisterForm {
 
 }
