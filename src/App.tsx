@@ -2,7 +2,8 @@ import { useState } from "react";
 import { Popover, ThemeProvider } from "@mui/material";
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import i18n from "i18next";
-import { initReactI18next } from "react-i18next";
+import { initReactI18next, useTranslation } from "react-i18next";
+import { Helmet } from "react-helmet";
 
 import { Manager } from "./Init/AuthHandler";
 import { DarkTheme_Default } from "Theme";
@@ -30,6 +31,7 @@ function App() {
   const [widthConstrained, setWidthConstrainedState] = useState(window.matchMedia("(max-width: 600px)").matches);
   const location = useLocation();
   const navigate = useNavigate();
+  const Localizations_Common = useTranslation().t;
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [title, setTitle] = useState("");
@@ -65,6 +67,9 @@ function App() {
 
   return (
     <div className="App">
+      <Helmet>
+        <title>{title && title.length > 0 ? `${Localizations_Common("AppTitle")} - ${title}` : Localizations_Common("AppTitle")}</title>
+      </Helmet>
       <ThemeProvider theme={DarkTheme_Default}>
         <Routes>
           <Route path="*" element={<ErrorView widthConstrained={widthConstrained} changeTitleCallback={setTitle} errorCode={404} />}></Route>

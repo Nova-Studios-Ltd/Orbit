@@ -1,4 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { SENDMessage } from "NSLib/APIEvents";
 
 import PageContainer from "Components/Containers/PageContainer/PageContainer";
 import MessageCanvas, { MessageCanvasProps } from "Components/Messages/MessageCanvas/MessageCanvas";
@@ -7,7 +9,6 @@ import MessageInput, { MessageInputChangeEvent, MessageInputSendEvent } from "Co
 import ChannelList, { ChannelListProps } from "Components/Channels/ChannelList/ChannelList";
 
 import type { Page } from "DataTypes/Components";
-import { SENDMessage } from "NSLib/APIEvents";
 import MessageAttachment from "DataTypes/MessageAttachment";
 import type { IRawChannelProps } from "Interfaces/IRawChannelProps";
 import type { ChannelClickEvent } from "Components/Channels/Channel/Channel";
@@ -20,8 +21,14 @@ interface ChatPageProps extends Page {
   onChannelClick?: (event: ChannelClickEvent) => void
 }
 
-function ChatPage({ channels, messages, selectedChannel, onChannelClick }: ChatPageProps) {
+function ChatPage({ channels, messages, selectedChannel, onChannelClick, changeTitleCallback }: ChatPageProps) {
+  const Localizations_ChatPage = useTranslation("ChatPage").t;
+
   const [MessageInputValue, setMessageInputValue] = useState("");
+
+  useEffect(() => {
+    if (changeTitleCallback && selectedChannel && selectedChannel.channelName) changeTitleCallback(`@${selectedChannel.channelName}`);
+  }, [changeTitleCallback, selectedChannel]);
 
   const MessageInputChangedHandler = (event: MessageInputChangeEvent) => {
     const value = event && event.value ? event.value : "";

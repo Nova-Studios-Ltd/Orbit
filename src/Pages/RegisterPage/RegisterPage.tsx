@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Card, Link, TextField, Typography, useTheme } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
@@ -14,7 +14,7 @@ interface RegisterPageProps extends Page {
 
 }
 
-function RegisterPage({ HelpPopup, widthConstrained }: RegisterPageProps) {
+function RegisterPage({ HelpPopup, widthConstrained, changeTitleCallback }: RegisterPageProps) {
   const Localizations_Common = useTranslation().t;
   const Localizations_RegisterPage = useTranslation("RegisterPage").t;
   const theme = useTheme();
@@ -24,6 +24,10 @@ function RegisterPage({ HelpPopup, widthConstrained }: RegisterPageProps) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [failureStatus, setFailStatus] = useState(RegisterStatus.PendingStatus);
+
+  useEffect(() => {
+    if (changeTitleCallback) changeTitleCallback(Localizations_RegisterPage("PageTitle"));
+  }, [Localizations_RegisterPage, changeTitleCallback]);
 
   const register = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
