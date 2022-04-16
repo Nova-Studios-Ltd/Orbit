@@ -14,12 +14,12 @@ import { IMessageProps } from "Interfaces/IMessageProps";
 
 interface ChatPageProps extends Page {
   channelData?: ChannelListProps
-  messageData?: IMessageProps[]
+  messages?: IMessageProps[]
   channel_uuid?: string
   selectedChannel?: IRawChannelProps
 }
 
-function ChatPage({ channelData, messageData, channel_uuid, selectedChannel }: ChatPageProps) {
+function ChatPage({ channelData, messages, channel_uuid, selectedChannel }: ChatPageProps) {
   const [MessageInputValue, setMessageInputValue] = useState("");
 
   const MessageInputChangedHandler = (event: MessageInputChangeEvent) => {
@@ -46,7 +46,7 @@ function ChatPage({ channelData, messageData, channel_uuid, selectedChannel }: C
         </div>
         <div className="ChatPageContainerRight">
           <MessageCanvasHeader selectedChannel={selectedChannel}></MessageCanvasHeader>
-          <MessageCanvas className="ChatPageContainerItem" messages={messageData}/>
+          <MessageCanvas className="ChatPageContainerItem" messages={messages}/>
           <MessageInput className="ChatPageContainerItem" value={MessageInputValue} onChange={MessageInputChangedHandler} onSend={MessageInputSendHandler} />
         </div>
       </div>

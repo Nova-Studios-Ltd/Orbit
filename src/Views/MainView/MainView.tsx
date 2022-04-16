@@ -40,13 +40,14 @@ function MainView({ path, changeTitleCallback } : MainViewProps) {
     });
   }
 
-  useEffect(() => {
-    Events.on("NewMessage", (message: IMessageProps) => {
-      setMessages(prevState => {
-        console.log(message);
-        return [...prevState, message];
-      });
+  Events.on("NewMessage", (message: IMessageProps) => {
+    setMessages(prevState => {
+      return [...prevState, message];
     });
+  });
+
+  useEffect(() => {
+
   });
 
   const channelData: ChannelListProps = {
@@ -76,7 +77,7 @@ function MainView({ path, changeTitleCallback } : MainViewProps) {
   const page = () => {
     switch (path) {
       case MainViewRoutes.Chat:
-        return (<ChatPage channelData={channelData} messageData={messages} channel_uuid={channelUUID} changeTitleCallback={changeTitleCallback} selectedChannel={selectedChannel} />);
+        return (<ChatPage channelData={channelData} messages={messages} channel_uuid={channelUUID} changeTitleCallback={changeTitleCallback} selectedChannel={selectedChannel} />);
       case MainViewRoutes.Settings:
         return (<SettingsPage changeTitleCallback={changeTitleCallback} />);
       default:
