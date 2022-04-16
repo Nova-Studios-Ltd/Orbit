@@ -20,7 +20,7 @@ function MessageCanvas({ className, innerClassName, messages }: MessageCanvasPro
     if (messages && messages.length > 0) {
       const date = Date.now();
       return messages.map((message, index) => {
-        return (<Message key={message.message_Id} content={message.content} avatarURL={`${message.avatar}&${date}`} author={message.author} timestamp={message.timestamp}/>)
+        return (<Message key={message.message_Id} content={message.content} avatarURL={message.avatar} author={message.author} timestamp={message.timestamp}/>)
       }).reverse();
     }
   }

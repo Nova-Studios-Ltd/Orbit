@@ -29,7 +29,6 @@ function ChatPage({ channels, messages, selectedChannel, onChannelClick }: ChatP
   }
 
   const MessageInputSendHandler = (event: MessageInputSendEvent) => {
-    // TODO: Handle sending messages here (you can get the message from either the state (MessageInputValue) or from the event itself)
     if (selectedChannel === undefined || event.value === undefined) return;
     SENDMessage(selectedChannel.table_Id, event.value, [] as MessageAttachment[], (sent: boolean) => {
       if (sent) {
