@@ -11,10 +11,8 @@ import type { View } from "DataTypes/Components";
 import type { IRawChannelProps } from "Interfaces/IRawChannelProps";
 import { MainViewRoutes } from "DataTypes/Routes";
 import type { ChannelClickEvent } from "Components/Channels/Channel/Channel";
-import type { ChannelListProps } from "Components/Channels/ChannelList/ChannelList";
 import { GETChannel, GETMessages, GETUserChannels } from "NSLib/APIEvents";
 import { IMessageProps } from "Interfaces/IMessageProps";
-import { MessageCanvasProps } from "Components/Messages/MessageCanvas/MessageCanvas";
 import { Events } from "Init/WebsocketEventInit";
 
 interface MainViewProps extends View {
@@ -40,14 +38,10 @@ function MainView({ path, changeTitleCallback } : MainViewProps) {
   }
 
   Events.on("NewMessage", (message: IMessageProps) => {
-    messages.push(message);
-    console.log(messages);
-    setMessages(messages);
+    setMessages(prevState => {
+      return [...prevState, message];
+    });
   });
-
-  const messageData: MessageCanvasProps = {
-    messages: messages
-  }
 
   useEffect(() => {
     AutoLogin().then((result: boolean) => {
@@ -71,7 +65,7 @@ function MainView({ path, changeTitleCallback } : MainViewProps) {
   const page = () => {
     switch (path) {
       case MainViewRoutes.Chat:
-        return (<ChatPage channels={channels} onChannelClick={onChannelClick} messageData={messageData} channel_uuid={channelUUID} selectedChannel={selectedChannel} changeTitleCallback={changeTitleCallback}  />);
+        return (<ChatPage channels={channels} onChannelClick={onChannelClick} messages={messages} channel_uuid={channelUUID} selectedChannel={selectedChannel} changeTitleCallback={changeTitleCallback}  />);
       case MainViewRoutes.Settings:
         return (<SettingsPage changeTitleCallback={changeTitleCallback}  />);
       default:

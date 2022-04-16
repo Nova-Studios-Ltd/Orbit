@@ -11,16 +11,16 @@ import { SENDMessage } from "NSLib/APIEvents";
 import MessageAttachment from "DataTypes/MessageAttachment";
 import type { IRawChannelProps } from "Interfaces/IRawChannelProps";
 import type { ChannelClickEvent } from "Components/Channels/Channel/Channel";
+import { IMessageProps } from "Interfaces/IMessageProps";
 
 interface ChatPageProps extends Page {
   channels?: IRawChannelProps[],
-  onChannelClick?: (event: ChannelClickEvent) => void,
-  messageData?: MessageCanvasProps
-  channel_uuid?: string
-  selectedChannel?: IRawChannelProps
+  messages?: IMessageProps[],
+  selectedChannel?: IRawChannelProps,
+  onChannelClick?: (event: ChannelClickEvent) => void
 }
 
-function ChatPage({ channels, onChannelClick, messageData, channel_uuid, selectedChannel }: ChatPageProps) {
+function ChatPage({ channels, messages, selectedChannel, onChannelClick }: ChatPageProps) {
   const [MessageInputValue, setMessageInputValue] = useState("");
 
   const MessageInputChangedHandler = (event: MessageInputChangeEvent) => {
@@ -30,10 +30,12 @@ function ChatPage({ channels, onChannelClick, messageData, channel_uuid, selecte
 
   const MessageInputSendHandler = (event: MessageInputSendEvent) => {
     // TODO: Handle sending messages here (you can get the message from either the state (MessageInputValue) or from the event itself)
-    if (channel_uuid === undefined || event.value === undefined) return;
-    SENDMessage(channel_uuid, event.value, [] as MessageAttachment[], (sent: boolean) => {
-      if (sent)
+    if (selectedChannel === undefined || event.value === undefined) return;
+    SENDMessage(selectedChannel.table_Id, event.value, [] as MessageAttachment[], (sent: boolean) => {
+      if (sent) {
         console.log("Message sent");
+        setMessageInputValue("");
+      }
     });
   }
 
@@ -45,7 +47,7 @@ function ChatPage({ channels, onChannelClick, messageData, channel_uuid, selecte
         </div>
         <div className="ChatPageContainerRight">
           <MessageCanvasHeader selectedChannel={selectedChannel}></MessageCanvasHeader>
-          <MessageCanvas className="ChatPageContainerItem" messages={messageData?.messages}/>
+          <MessageCanvas className="ChatPageContainerItem" messages={messages}/>
           <MessageInput className="ChatPageContainerItem" value={MessageInputValue} onChange={MessageInputChangedHandler} onSend={MessageInputSendHandler} />
         </div>
       </div>
