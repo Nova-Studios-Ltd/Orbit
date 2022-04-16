@@ -40,15 +40,23 @@ function MainView({ path, changeTitleCallback } : MainViewProps) {
     });
   }
 
-  useEffect(() => {
+  /*useEffect(() => {
     console.warn(messages);
     const m = messages;
+    Events.yeetEvent("NewMessage");
     Events.on("NewMessage", (message: IMessageProps) => {
       console.log(m);
       console.log(messages);
       setMessages([...m, message]);
     });
-  }, [messages]);
+  }, [messages]);*/
+
+  Events.yeetEvent("NewMessage");
+  Events.on("NewMessage", (message: IMessageProps) => {
+    console.log(messages);
+    console.log(messages);
+    setMessages([...messages, message]);
+  });
 
   const channelData: ChannelListProps = {
     channels: channels,
