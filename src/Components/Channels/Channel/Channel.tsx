@@ -37,7 +37,7 @@ function Channel({ channelName, channelID, channelIconSrc, channelMembers, isGro
         <Avatar className="ChannelIcon" src={channelIconSrc} />
       </div>
       <div className="ChannelRight">
-        <Typography>{channelName}</Typography>
+        <Typography variant="h6">{channelName}</Typography>
       </div>
     </ButtonBase>
   )

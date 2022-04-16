@@ -11,7 +11,6 @@ import type { View } from "DataTypes/Components";
 import type { IRawChannelProps } from "Interfaces/IRawChannelProps";
 import { MainViewRoutes } from "DataTypes/Routes";
 import type { ChannelClickEvent } from "Components/Channels/Channel/Channel";
-import type { ChannelListProps } from "Components/Channels/ChannelList/ChannelList";
 import { GETChannel, GETMessages, GETUserChannels } from "NSLib/APIEvents";
 import { IMessageProps } from "Interfaces/IMessageProps";
 import { Events } from "Init/WebsocketEventInit";
@@ -25,25 +24,18 @@ function MainView({ path, changeTitleCallback } : MainViewProps) {
 
   const [channels, setChannels] = useState([] as IRawChannelProps[]);
   const [selectedChannel, setSelectedChannel] = useState(null as unknown as IRawChannelProps);
-  const [channelUUID, setChannel] = useState("");
   const [messages, setMessages] = useState([] as IMessageProps[]);
-
 
   const onChannelClick = (event: ChannelClickEvent) => {
     console.log("Channel clicked: ", event);
     setSelectedChannel({ table_Id: event.channelID, channelName: event.channelName, channelIcon: event.channelIconSrc, members: event.channelMembers, channelType: event.isGroup } as IRawChannelProps);
-    if (event.channelID === undefined) return;
-    setChannel(event.channelID);
-    GETMessages(event.channelID, (decrypt: IMessageProps[]) => {
-      setMessages(decrypt);
-    });
-  }
 
-  Events.on("NewMessage", (message: IMessageProps) => {
-    setMessages(prevState => {
-      return [...prevState, message];
-    });
-  });
+    if (event && event.channelID) {
+      GETMessages(event.channelID, (decrypt: IMessageProps[]) => {
+        setMessages(decrypt);
+      });
+    }
+  }
 
   Events.on("DeleteMessage", (message: string) => {
     setMessages(prevState => {
@@ -55,10 +47,18 @@ function MainView({ path, changeTitleCallback } : MainViewProps) {
     })
   });
 
-  const channelData: ChannelListProps = {
-    channels: channels,
-    onChannelClick: onChannelClick
-  }
+  useEffect(() => {
+    Events.on("NewMessage", (message: IMessageProps) => {
+      setMessages(prevState => {
+        return [...prevState, message];
+      });
+    });
+
+    return (() => {
+      // TODO: add unsubscribe event for NewMessage on unmount
+    });
+  }, [messages]);
+
 
   useEffect(() => {
     AutoLogin().then((result: boolean) => {
@@ -82,9 +82,9 @@ function MainView({ path, changeTitleCallback } : MainViewProps) {
   const page = () => {
     switch (path) {
       case MainViewRoutes.Chat:
-        return (<ChatPage channelData={channelData} messages={messages} channel_uuid={channelUUID} changeTitleCallback={changeTitleCallback} selectedChannel={selectedChannel} />);
+        return (<ChatPage channels={channels} onChannelClick={onChannelClick} messages={messages} selectedChannel={selectedChannel} changeTitleCallback={changeTitleCallback} />);
       case MainViewRoutes.Settings:
-        return (<SettingsPage changeTitleCallback={changeTitleCallback} />);
+        return (<SettingsPage changeTitleCallback={changeTitleCallback}  />);
       default:
         console.warn("[MainView] Invalid Page");
         return null;
