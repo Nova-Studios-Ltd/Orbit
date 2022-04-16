@@ -10,15 +10,17 @@ import type { Page } from "DataTypes/Components";
 import { SENDMessage } from "NSLib/APIEvents";
 import MessageAttachment from "DataTypes/MessageAttachment";
 import type { IRawChannelProps } from "Interfaces/IRawChannelProps";
+import type { ChannelClickEvent } from "Components/Channels/Channel/Channel";
 
 interface ChatPageProps extends Page {
-  channelData?: ChannelListProps
+  channels?: IRawChannelProps[],
+  onChannelClick?: (event: ChannelClickEvent) => void,
   messageData?: MessageCanvasProps
   channel_uuid?: string
   selectedChannel?: IRawChannelProps
 }
 
-function ChatPage({ channelData, messageData, channel_uuid, selectedChannel }: ChatPageProps) {
+function ChatPage({ channels, onChannelClick, messageData, channel_uuid, selectedChannel }: ChatPageProps) {
   const [MessageInputValue, setMessageInputValue] = useState("");
 
   const MessageInputChangedHandler = (event: MessageInputChangeEvent) => {
@@ -39,7 +41,7 @@ function ChatPage({ channelData, messageData, channel_uuid, selectedChannel }: C
     <PageContainer noPadding>
       <div className="ChatPageContainer">
         <div className="ChatPageContainerLeft">
-          <ChannelList channels={channelData?.channels} onChannelClick={channelData?.onChannelClick} selectedChannel={selectedChannel} />
+          <ChannelList channels={channels} onChannelClick={onChannelClick} selectedChannel={selectedChannel} />
         </div>
         <div className="ChatPageContainerRight">
           <MessageCanvasHeader selectedChannel={selectedChannel}></MessageCanvasHeader>

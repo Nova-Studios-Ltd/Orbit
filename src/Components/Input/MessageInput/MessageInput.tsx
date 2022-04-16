@@ -42,7 +42,7 @@ function MessageInput({ className, value, onChange, onSend }: MessageInputProps)
 
   return (
     <div className={classNames} style={{ backgroundColor: theme.customPalette.messageInputBackground, borderColor: TextFieldFocused ? theme.palette.action.active : theme.palette.divider }}>
-      <input type="text" className="MessageInputField" placeholder={Localizations_MessageInput("TextField_Placeholder-TypeHerePrompt")} style={{ backgroundColor: "transparent", color: theme.palette.text.primary }} value={value} onFocus={() => inputFocusHandler(true)} onBlur={() => inputFocusHandler(false)} onChange={onChangeHandler} onKeyDown={onKeyDownHandler} />
+      <input type="text" className="MessageInputField" style={{ backgroundColor: "transparent", color: theme.palette.text.primary, fontSize: theme.typography.subtitle1.fontSize }} placeholder={Localizations_MessageInput("TextField_Placeholder-TypeHerePrompt")} value={value} onFocus={() => inputFocusHandler(true)} onBlur={() => inputFocusHandler(false)} onChange={onChangeHandler} onKeyDown={onKeyDownHandler} />
       <IconButton></IconButton>
     </div>
   )

@@ -4,6 +4,7 @@
 
   padding: var(--global-padding);
   box-sizing: border-box;
+  gap: var(--global-margin);
 
   height: 100%;
 }

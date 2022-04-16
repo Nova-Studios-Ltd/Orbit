@@ -29,7 +29,6 @@ function MainView({ path, changeTitleCallback } : MainViewProps) {
   const [channelUUID, setChannel] = useState("");
   const [messages, setMessages] = useState([] as IMessageProps[]);
 
-
   const onChannelClick = (event: ChannelClickEvent) => {
     console.log("Channel clicked: ", event);
     setSelectedChannel({ table_Id: event.channelID, channelName: event.channelName, channelIcon: event.channelIconSrc, members: event.channelMembers, channelType: event.isGroup } as IRawChannelProps);
@@ -45,11 +44,6 @@ function MainView({ path, changeTitleCallback } : MainViewProps) {
     console.log(messages);
     setMessages(messages);
   });
-
-  const channelData: ChannelListProps = {
-    channels: channels,
-    onChannelClick: onChannelClick
-  }
 
   const messageData: MessageCanvasProps = {
     messages: messages
@@ -77,9 +71,9 @@ function MainView({ path, changeTitleCallback } : MainViewProps) {
   const page = () => {
     switch (path) {
       case MainViewRoutes.Chat:
-        return (<ChatPage channelData={channelData} messageData={messageData} channel_uuid={channelUUID} changeTitleCallback={changeTitleCallback} selectedChannel={selectedChannel} />);
+        return (<ChatPage channels={channels} onChannelClick={onChannelClick} messageData={messageData} channel_uuid={channelUUID} selectedChannel={selectedChannel} changeTitleCallback={changeTitleCallback}  />);
       case MainViewRoutes.Settings:
-        return (<SettingsPage changeTitleCallback={changeTitleCallback} />);
+        return (<SettingsPage changeTitleCallback={changeTitleCallback}  />);
       default:
         console.warn("[MainView] Invalid Page");
         return null;

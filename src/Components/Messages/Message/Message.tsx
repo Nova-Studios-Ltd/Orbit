@@ -28,7 +28,7 @@ function Message({ content, avatarURL, author, timestamp }: MessageProps) {
           <Typography className="MessageName" fontWeight="bold">{author}</Typography>
           <Typography className="MessageTimestamp" variant="subtitle2">{timestamp}</Typography>
         </div>
-        {content}
+        <Typography variant="body1">{content}</Typography>
       </div>
     </div>
   )
