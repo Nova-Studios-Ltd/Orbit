@@ -37,11 +37,18 @@ function MainView({ path, changeTitleCallback } : MainViewProps) {
     }
   }
 
-  Events.on("NewMessage", (message: IMessageProps) => {
-    setMessages(prevState => {
-      return [...prevState, message];
+  useEffect(() => {
+    Events.on("NewMessage", (message: IMessageProps) => {
+      setMessages(prevState => {
+        return [...prevState, message];
+      });
     });
-  });
+
+    return (() => {
+      // TODO: add unsubscribe event for NewMessage on unmount
+    });
+  }, [messages]);
+
 
   useEffect(() => {
     AutoLogin().then((result: boolean) => {
