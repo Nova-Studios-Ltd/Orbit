@@ -7,33 +7,33 @@ import NCWebsocket from "../NSLib/NCWebsocket";
 const Manager = new SettingsManager();
 export const Events = new NCEvents();
 export default function WebsocketInit(Websocket: NCWebsocket) {
-    Websocket.CreateEvent(-1, () => console.log("<Beat>"));
+  Websocket.CreateEvent(-1, () => console.log("<Beat>"));
 
-    // Message
-    Websocket.CreateEvent(0, OnNewMessage);
-    Websocket.CreateEvent(1, OnDeleteMessage);
-    Websocket.CreateEvent(2, OnMessageEdit);
+  // Message
+  Websocket.CreateEvent(0, OnNewMessage);
+  Websocket.CreateEvent(1, OnDeleteMessage);
+  Websocket.CreateEvent(2, OnMessageEdit);
 
-    // Channel
-    Websocket.CreateEvent(3, OnCreateChannel);
-    Websocket.CreateEvent(4, OnDeleteChannel);
+  // Channel
+  Websocket.CreateEvent(3, OnCreateChannel);
+  Websocket.CreateEvent(4, OnDeleteChannel);
 
-    // Keystore
-    Websocket.CreateEvent(7, OnAddNewKey);
-    Websocket.CreateEvent(8, OnRemoveKey);
-    Websocket.CreateEvent(9, OnKeystoreReload);
+  // Keystore
+  Websocket.CreateEvent(7, OnAddNewKey);
+  Websocket.CreateEvent(8, OnRemoveKey);
+  Websocket.CreateEvent(9, OnKeystoreReload);
 }
 
 async function OnNewMessage(event: IWebSocketEvent) {
-    const message = await GETMessage(event.Channel, event.Message);
-    if (message === undefined) return;
-    // TODO Implement message creation logic
-    Events.send("NewMessage", message);
-    console.log(message.content);
+  const message = await GETMessage(event.Channel, event.Message);
+  if (message === undefined) return;
+  // TODO Implement message creation logic
+  Events.send("NewMessage", message);
 }
 
 async function OnDeleteMessage(event: IWebSocketEvent) {
-    // TODO Implement message removal logic
+  // TODO Implement message removal logic
+  Events.send("DeleteMessage", event.Message);
 }
 
 async function OnMessageEdit(event: IWebSocketEvent) {

@@ -45,8 +45,14 @@ function MainView({ path, changeTitleCallback } : MainViewProps) {
     });
   });
 
-  useEffect(() => {
-
+  Events.on("DeleteMessage", (message: string) => {
+    setMessages(prevState => {
+      const index = prevState.findIndex(e => e.message_Id === message);
+      if (index > -1) {
+        prevState.splice(index, 1);
+      }
+      return [...prevState];
+    })
   });
 
   const channelData: ChannelListProps = {
