@@ -39,7 +39,7 @@ function ChatPage({ ContextMenu, channels, messages, selectedChannel, onChannelE
   const MessageInputChangedHandler = (event: MessageInputChangeEvent) => {
     const value = event && event.value ? event.value : "";
     setMessageInputValue(value);
-  }
+  };
 
   const MessageInputSendHandler = (event: MessageInputSendEvent) => {
     if (selectedChannel === undefined || event.value === undefined || event.value === "") return;
@@ -48,14 +48,14 @@ function ChatPage({ ContextMenu, channels, messages, selectedChannel, onChannelE
         setMessageInputValue("");
       }
     });
-  }
+  };
 
   const handleFileUpload = () => {
     UploadFile().then((file) => {
       // TODO: Implement the actual "uploading to the server" part
       console.log(file);
     });
-  }
+  };
 
   return (
     <PageContainer noPadding>

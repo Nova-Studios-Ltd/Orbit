@@ -57,7 +57,7 @@ function MainView({ path, ContextMenu, changeTitleCallback } : MainViewProps) {
     console.log(`Request to delete message ${message.id}`);
     if (message.id === undefined) return;
     if (await DELETEMessage(selectedChannel.table_Id, message.id as string)) {
-      console.log(`Request to delete message ${message.id} succesful`);
+      console.log(`Request to delete message ${message.id} successful`);
     }
   };
 

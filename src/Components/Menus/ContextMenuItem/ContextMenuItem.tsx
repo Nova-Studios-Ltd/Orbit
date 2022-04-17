@@ -9,11 +9,12 @@ export interface ContextMenuItemProps extends NCComponent {
   children?: ReactNode,
   icon?: ReactSVGElement,
   persistOnClick?: boolean,
+  disabled?: boolean,
   onLeftClick?: () => void,
   onRightClick?: () => void,
 }
 
-function ContextMenuItem({ ContextMenu, className, children, icon, persistOnClick, onLeftClick, onRightClick }: ContextMenuItemProps) {
+function ContextMenuItem({ ContextMenu, className, children, icon, persistOnClick, disabled, onLeftClick, onRightClick }: ContextMenuItemProps) {
   const theme = useTheme();
   const classNames = useClassNames("ContextMenuItemContainer", className);
 
@@ -44,7 +45,7 @@ function ContextMenuItem({ ContextMenu, className, children, icon, persistOnClic
   }
 
   return (
-    <MenuItem className={classNames} style={{ backgroundColor: backgroundColor }} onClick={handleLeftClick} onContextMenu={handleRightClick} onMouseEnter={() => handleFocus(true)} onFocus={() => handleFocus(true)} onMouseLeave={() => handleFocus(false)} onBlur={() => handleFocus(false)}>
+    <MenuItem className={classNames} style={{ backgroundColor: backgroundColor }} disabled={disabled} onClick={handleLeftClick} onContextMenu={handleRightClick} onMouseEnter={() => handleFocus(true)} onFocus={() => handleFocus(true)} onMouseLeave={() => handleFocus(false)} onBlur={() => handleFocus(false)}>
       {icon}
       {children}
     </MenuItem>
