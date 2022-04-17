@@ -158,7 +158,7 @@ export function SENDMessage(channel_uuid: string, contents: string, rawAttachmen
               const attachment = rawAttachments[a];
               const imageSize = (await GetImageDimensions(attachment.contents)) || new Dimensions(0, 0);
               const re = await POSTFile(`/Channel/${channel_uuid}?width=${imageSize.width}&height=${imageSize.height}`, new Blob([(await EncryptUint8Array(messageKey, attachment.contents, new Base64String(encryptedMessage.iv))).content]), attachment.filename, Manager.User.token)
-              if (re.status === 200) attachments.push(resp.payload as string);
+              if (re.status === 200) attachments.push(re.payload as string);
           }
           const encKeys = {} as {[uuid: string]: string};
           for (let m = 0; m < channel.members.length; m++) {

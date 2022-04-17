@@ -126,16 +126,16 @@ export async function DELETE(endpoint: string, token?: string) : Promise<NCAPIRe
  * @returns A NCAPIResponse with the data from the NovaChat API
  */
 export async function POSTFile(endpoint: string, payload: Blob, filename: string, token?: string) : Promise<NCAPIResponse> {
-    const formData = new FormData();
-    formData.append("file", payload, filename);
-    const resp = await fetch(`https://api.novastudios.tk/${endpoint}`, {
-        method: "POST",
-        body: formData,
-        headers: {
-          "Authorization": token || ""
-        }
-    });
-    return new NCAPIResponse(resp.status, resp.statusText, resp.json());
+  const formData = new FormData();
+  formData.append("file", payload, filename);
+  const resp = await fetch(`https://api.novastudios.tk/${endpoint}`, {
+    method: "POST",
+    body: formData,
+    headers: {
+      "Authorization": token || ""
+    }
+  });
+  return new NCAPIResponse(resp.status, resp.statusText, await resp.text());
 }
 
 /**
