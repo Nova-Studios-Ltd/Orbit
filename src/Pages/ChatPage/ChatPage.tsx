@@ -10,7 +10,6 @@ import MessageAttachment from "DataTypes/MessageAttachment";
 import MessageCanvas from "Components/Messages/MessageCanvas/MessageCanvas";
 import MessageCanvasHeader from "Components/Headers/MessageCanvasHeader/MessageCanvasHeader";
 import MessageInput, { MessageInputChangeEvent, MessageInputSendEvent } from "Components/Input/MessageInput/MessageInput";
-import Channel from "Components/Channels/Channel/Channel";
 import ChannelList from "Components/Channels/ChannelList/ChannelList";
 
 import type { Page } from "DataTypes/Components";

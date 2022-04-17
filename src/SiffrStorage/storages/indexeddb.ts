@@ -6,7 +6,7 @@ class IndexedDB extends Storage {
 
   constructor(options: StorageOptions) {
     super(options);
-    return (<typeof IndexedDB>this.constructor)._matchingInstance<IndexedDB>(this);
+    return (this.constructor as typeof IndexedDB)._matchingInstance<IndexedDB>(this);
   }
 
   protected select(keys: string[]) {
