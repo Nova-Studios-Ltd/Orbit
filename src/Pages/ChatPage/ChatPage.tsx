@@ -24,6 +24,7 @@ interface ChatPageProps extends Page {
   messages?: IMessageProps[],
   selectedChannel?: IRawChannelProps,
   path?: ChatViewRoutes,
+  setSelectedChannel?: React.Dispatch<React.SetStateAction<IRawChannelProps>>,
   onChannelEdit?: (channel: ChannelProps) => void,
   onChannelDelete?: (channel: ChannelProps) => void,
   onChannelClick?: (channel: ChannelProps) => void,
@@ -31,7 +32,7 @@ interface ChatPageProps extends Page {
   onMessageDelete?: (message: MessageProps) => void
 }
 
-function ChatPage({ ContextMenu, channels, messages, selectedChannel, path, onChannelEdit, onChannelDelete, onChannelClick, onMessageEdit, onMessageDelete, changeTitleCallback }: ChatPageProps) {
+function ChatPage({ ContextMenu, channels, messages, selectedChannel, path, setSelectedChannel, onChannelEdit, onChannelDelete, onChannelClick, onMessageEdit, onMessageDelete, changeTitleCallback }: ChatPageProps) {
   const navigate = useNavigate();
   const theme = useTheme();
   const Localizations_ChatPage = useTranslation("ChatPage").t;
@@ -67,12 +68,17 @@ function ChatPage({ ContextMenu, channels, messages, selectedChannel, path, onCh
     });
   };
 
+  const navigateFriendsPage = () => {
+    if (setSelectedChannel) setSelectedChannel(null as unknown as IRawChannelProps);
+    navigate(MainViewRoutes.Friends);
+  }
+
   return (
     <PageContainer noPadding>
       <div className="ChatPageContainer">
         <div className="ChatPageContainerLeft">
           <div className="NavigationButtonContainer" style={{ backgroundColor: theme.palette.background.paper, borderColor: theme.palette.divider }}>
-            <AvatarTextButton onLeftClick={() => navigate(MainViewRoutes.Friends)}>[Friends]</AvatarTextButton>
+            <AvatarTextButton selected={path === ChatViewRoutes.Friends} onLeftClick={navigateFriendsPage}>[Friends]</AvatarTextButton>
           </div>
           <ChannelList ContextMenu={ContextMenu} channels={channels} onChannelEdit={onChannelEdit} onChannelDelete={onChannelDelete} onChannelClick={onChannelClick} selectedChannel={selectedChannel} />
         </div>
