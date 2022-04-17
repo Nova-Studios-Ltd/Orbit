@@ -128,9 +128,12 @@ export async function DELETE(endpoint: string, token?: string) : Promise<NCAPIRe
 export async function POSTFile(endpoint: string, payload: Blob, filename: string, token?: string) : Promise<NCAPIResponse> {
     const formData = new FormData();
     formData.append("file", payload, filename);
-    const resp = await fetch(`https://novastudios.tk/${endpoint}`, {
+    const resp = await fetch(`https://api.novastudios.tk/${endpoint}`, {
         method: "POST",
-        body: formData
+        body: formData,
+        headers: {
+          "Authorization": token || ""
+        }
     });
     return new NCAPIResponse(resp.status, resp.statusText, resp.json());
 }
@@ -146,7 +149,7 @@ export async function GETFile(endpoint: string, token?: string) : Promise<NCAPIR
   const resp = await fetch(`https://api.novastudios.tk/${endpoint}`, {
       method: "GET",
       headers: {
-          "Authorization": token || ""
+        "Authorization": token || ""
       }
   });
   return new NCAPIResponse(resp.status, resp.statusText, new Uint8Array(await resp.arrayBuffer()))

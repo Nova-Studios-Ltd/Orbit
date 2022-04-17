@@ -50,7 +50,7 @@ function ChatPage({ ContextMenu, channels, messages, selectedChannel, onChannelE
   };
 
   const MessageInputSendHandler = (event: MessageInputSendEvent) => {
-    if (selectedChannel === undefined || event.value === undefined || event.value === "") return;
+    if (selectedChannel === undefined || event.value === undefined || (event.value === "" && MessageAttachments.length === 0)) return;
     SENDMessage(selectedChannel.table_Id, event.value, MessageAttachments, (sent: boolean) => {
       if (sent) {
         setMessageInputValue("");

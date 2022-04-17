@@ -59,15 +59,15 @@ function Message({ ContextMenu, content, attachments, id, authorID, avatarURL, a
   }
 
   const mediaComponents = () => {
-    return <MessageMedia contentUrl="https://www.akc.org/wp-content/uploads/2018/05/samoyed-mother-dog-with-puppy-outdoors.jpg" />
+    //return <MessageMedia contentUrl="https://www.akc.org/wp-content/uploads/2018/05/samoyed-mother-dog-with-puppy-outdoors.jpg" />
 
-    /*if (attachments && attachments.length > 0) {
+    if (attachments && attachments.length > 0) {
       return attachments.map((attachment, index) => {
         return (
           <MessageMedia content={attachment.content} contentUrl={attachment.contentUrl} filename={attachment.filename} size={attachment.size} contentWidth={attachment.contentWidth} contentHeight={attachment.contentHeight} />
         )
       });
-    }*/
+    }
   }
 
   return (
