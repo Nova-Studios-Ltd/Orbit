@@ -6,6 +6,11 @@
   transition: background-color 200ms ease;
 }
 
+.MessageMediaContainer {
+  display: flex;
+  flex-direction: column;
+}
+
 .MessageLeft {
   margin: var(--global-margin);
 }

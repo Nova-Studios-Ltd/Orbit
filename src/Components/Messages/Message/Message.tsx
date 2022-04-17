@@ -59,13 +59,15 @@ function Message({ ContextMenu, content, attachments, id, authorID, avatarURL, a
   }
 
   const mediaComponents = () => {
-    if (attachments && attachments.length > 0) {
+    return <MessageMedia contentUrl="https://www.akc.org/wp-content/uploads/2018/05/samoyed-mother-dog-with-puppy-outdoors.jpg" />
+
+    /*if (attachments && attachments.length > 0) {
       return attachments.map((attachment, index) => {
         return (
           <MessageMedia content={attachment.content} contentUrl={attachment.contentUrl} filename={attachment.filename} size={attachment.size} contentWidth={attachment.contentWidth} contentHeight={attachment.contentHeight} />
         )
       });
-    }
+    }*/
   }
 
   return (
@@ -79,6 +81,9 @@ function Message({ ContextMenu, content, attachments, id, authorID, avatarURL, a
           <Typography className="MessageTimestamp" variant="subtitle2">{timestamp}</Typography>
         </div>
         <Typography variant="body1">{content}</Typography>
+        <div className="MessageMediaContainer">
+          {mediaComponents()}
+        </div>
       </div>
     </div>
   )

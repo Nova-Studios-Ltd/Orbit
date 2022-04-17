@@ -2,10 +2,9 @@ import { useTheme } from "@mui/material";
 import useClassNames from "Hooks/useClassNames";
 
 import type { NCComponent } from "DataTypes/Components";
-import type Dimensions from "DataTypes/Dimensions";
 
 export interface MessageMediaProps extends NCComponent {
-  content: Uint8Array,
+  content?: Uint8Array,
   contentUrl?: string,
   filename?: string,
   size?: number,
@@ -19,7 +18,7 @@ function MessageMedia({ className, content, contentUrl, filename, size, contentW
 
   return (
     <div className={classNames} style={{ backgroundColor: theme.palette.background.paper }}>
-      [Media]
+      <img src={contentUrl} alt={filename} />
     </div>
   )
 }
