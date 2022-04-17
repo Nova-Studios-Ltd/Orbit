@@ -18,7 +18,6 @@ export default class NCEvents {
   }
 
   once(channel: string, func: (...args: any[]) => void) : boolean {
-    if (this.Events.containsKey(channel)) return false;
     if (!this.Events.containsKey(channel)) {
       this.Events.setValue(channel, [] as Event[]);
     }
@@ -27,7 +26,6 @@ export default class NCEvents {
   }
 
   on(channel: string, func: (...args: any[]) => void): boolean {
-    if (this.Events.containsKey(channel)) return false;
     if (!this.Events.containsKey(channel)) {
       this.Events.setValue(channel, [] as Event[]);
     }
