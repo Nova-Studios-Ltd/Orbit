@@ -8,3 +8,8 @@ export enum MainViewRoutes {
   Friends = "/friends",
   Settings = "/settings"
 }
+
+export enum ChatViewRoutes {
+  Chat = "/chat",
+  Friends = "/friends"
+}

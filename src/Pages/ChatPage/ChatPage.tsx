@@ -7,23 +7,23 @@ import { NCFile, UploadFile } from "NSLib/ElectronAPI";
 
 import PageContainer from "Components/Containers/PageContainer/PageContainer";
 import MessageAttachment from "DataTypes/MessageAttachment";
-import MessageCanvas from "Components/Messages/MessageCanvas/MessageCanvas";
-import MessageCanvasHeader from "Components/Headers/MessageCanvasHeader/MessageCanvasHeader";
-import MessageInput, { MessageInputChangeEvent, MessageInputSendEvent } from "Components/Input/MessageInput/MessageInput";
 import ChannelList from "Components/Channels/ChannelList/ChannelList";
+import ChatView from "Views/ChatView/ChatView";
 
 import type { Page } from "DataTypes/Components";
 import type { IRawChannelProps } from "Interfaces/IRawChannelProps";
 import type { ChannelProps } from "Components/Channels/Channel/Channel";
 import type { IMessageProps } from "Interfaces/IMessageProps";
 import type { MessageProps } from "Components/Messages/Message/Message";
+import type { MessageInputChangeEvent, MessageInputSendEvent } from "Components/Input/MessageInput/MessageInput";
 import AvatarTextButton from "Components/Buttons/AvatarTextButton/AvatarTextButton";
-import { MainViewRoutes } from "DataTypes/Routes";
+import { ChatViewRoutes, MainViewRoutes } from "DataTypes/Routes";
 
 interface ChatPageProps extends Page {
   channels?: IRawChannelProps[],
   messages?: IMessageProps[],
   selectedChannel?: IRawChannelProps,
+  path?: ChatViewRoutes,
   onChannelEdit?: (channel: ChannelProps) => void,
   onChannelDelete?: (channel: ChannelProps) => void,
   onChannelClick?: (channel: ChannelProps) => void,
@@ -31,7 +31,7 @@ interface ChatPageProps extends Page {
   onMessageDelete?: (message: MessageProps) => void
 }
 
-function ChatPage({ ContextMenu, channels, messages, selectedChannel, onChannelEdit, onChannelDelete, onChannelClick, onMessageEdit, onMessageDelete, changeTitleCallback }: ChatPageProps) {
+function ChatPage({ ContextMenu, channels, messages, selectedChannel, path, onChannelEdit, onChannelDelete, onChannelClick, onMessageEdit, onMessageDelete, changeTitleCallback }: ChatPageProps) {
   const navigate = useNavigate();
   const theme = useTheme();
   const Localizations_ChatPage = useTranslation("ChatPage").t;
@@ -76,11 +76,7 @@ function ChatPage({ ContextMenu, channels, messages, selectedChannel, onChannelE
           </div>
           <ChannelList ContextMenu={ContextMenu} channels={channels} onChannelEdit={onChannelEdit} onChannelDelete={onChannelDelete} onChannelClick={onChannelClick} selectedChannel={selectedChannel} />
         </div>
-        <div className="ChatPageContainerRight">
-          <MessageCanvasHeader selectedChannel={selectedChannel}></MessageCanvasHeader>
-          <MessageCanvas className="ChatPageContainerItem" ContextMenu={ContextMenu} messages={messages} onMessageEdit={onMessageEdit} onMessageDelete={onMessageDelete} />
-          <MessageInput className="ChatPageContainerItem" value={MessageInputValue} onFileUpload={handleFileUpload} onChange={MessageInputChangedHandler} onSend={MessageInputSendHandler} />
-        </div>
+        <ChatView className="ChatPageContainerRight" messages={messages} selectedChannel={selectedChannel} MessageInputValue={MessageInputValue} MessageInputChangedHandler={MessageInputChangedHandler} MessageInputSendHandler={MessageInputSendHandler} onMessageEdit={onMessageEdit} onMessageDelete={onMessageDelete} path={path} />
       </div>
     </PageContainer>
   );
