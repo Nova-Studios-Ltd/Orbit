@@ -99,7 +99,7 @@ function App() {
   });
 
   return (
-    <div className="App">
+    <div className="App" onContextMenu={(event) => event.preventDefault()}>
       <Helmet>
         <title>{title && title.length > 0 ? `${Localizations_Common("AppTitle")} - ${title}` : Localizations_Common("AppTitle")}</title>
       </Helmet>
