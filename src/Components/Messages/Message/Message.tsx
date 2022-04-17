@@ -51,7 +51,7 @@ function Message({ ContextMenu, content, attachments, id, authorID, avatarURL, a
 
   const messageRightClickHandler = (event: React.MouseEvent<HTMLDivElement>) => {
     if (ContextMenu && event.currentTarget) {
-      ContextMenu.setAnchor(event.currentTarget);
+      ContextMenu.setAnchor({ x: event.clientX, y: event.clientY });
       ContextMenu.setItems(messageContextMenuItems);
       ContextMenu.setVisibility(true);
     }

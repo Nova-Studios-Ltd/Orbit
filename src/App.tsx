@@ -19,6 +19,7 @@ import { AuthViewRoutes, MainViewRoutes } from "DataTypes/Routes";
 import type { ReactNode } from "react";
 import type { ContextMenuProps, HelpPopupProps } from "DataTypes/Components";
 import type { ContextMenuItemProps } from "Components/Menus/ContextMenuItem/ContextMenuItem";
+import type { Coordinates } from "DataTypes/Types";
 
 import "./App.css";
 
@@ -41,8 +42,10 @@ function App() {
   const [helpAnchorEl, setHelpAnchor] = useState(null as unknown as Element);
   const [helpContent, setHelpContent] = useState(null as unknown as ReactNode);
   const [contextMenuVisible, setContextMenuVisibility] = useState(false);
-  const [contextMenuAnchorEl, setContextMenuAnchor] = useState(null as unknown as Element);
+  const [contextMenuAnchorPos, setContextMenuAnchor] = useState(null as unknown as Coordinates);
   const [contextMenuItems, setContextMenuItems] = useState(null as unknown as ContextMenuItemProps[]);
+
+  const contextMenuAnchorPosFiltered = { x: contextMenuAnchorPos ? contextMenuAnchorPos.x : 0, y: contextMenuAnchorPos ? contextMenuAnchorPos.y : 0 }
 
   const closeHelpPopup = () => {
     setHelpVisibility(false);
@@ -51,7 +54,7 @@ function App() {
 
   const closeContextMenu = () => {
     setContextMenuVisibility(false);
-    setContextMenuAnchor(null as unknown as Element);
+    setContextMenuAnchor(null as unknown as Coordinates);
   }
 
   const HelpPopup: HelpPopupProps = {
@@ -66,7 +69,7 @@ function App() {
 
   const ContextMenu: ContextMenuProps = {
     visible: contextMenuVisible,
-    anchorEl: contextMenuAnchorEl,
+    anchorPos: contextMenuAnchorPos,
     items: contextMenuItems,
     setVisibility: setContextMenuVisibility,
     setAnchor: setContextMenuAnchor,
@@ -122,7 +125,7 @@ function App() {
         }}>
           {helpContent}
         </Popover>
-        <Menu className="GenericContextMenu" PaperProps={{ className: "GenericContextMenuPaper" }} open={contextMenuVisible} anchorEl={contextMenuAnchorEl} onClose={() => closeContextMenu()}>
+        <Menu className="GenericContextMenu" PaperProps={{ className: "GenericContextMenuPaper" }} open={contextMenuVisible} anchorReference="anchorPosition" anchorPosition={{ top: contextMenuAnchorPosFiltered.y, left: contextMenuAnchorPosFiltered.x }} onClose={() => closeContextMenu()}>
           {contextMenuItemsList()}
         </Menu>
       </ThemeProvider>
