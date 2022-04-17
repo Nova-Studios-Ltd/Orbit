@@ -110,7 +110,7 @@ function MainView({ path, ContextMenu, HelpPopup, widthConstrained, changeTitleC
       case MainViewRoutes.Chat:
         return (<ChatPage ContextMenu={ContextMenu} widthConstrained={widthConstrained} HelpPopup={HelpPopup} changeTitleCallback={changeTitleCallback} channels={channels} onChannelEdit={onChannelEdit} onChannelDelete={onChannelDelete} onChannelClick={onChannelClick} onMessageEdit={onMessageEdit} onMessageDelete={onMessageDelete} messages={messages} selectedChannel={selectedChannel} path={ChatViewRoutes.Chat} />);
       case MainViewRoutes.Friends:
-        return (<ChatPage ContextMenu={ContextMenu} widthConstrained={widthConstrained} HelpPopup={HelpPopup} changeTitleCallback={changeTitleCallback} path={ChatViewRoutes.Friends} />);
+        return (<ChatPage ContextMenu={ContextMenu} widthConstrained={widthConstrained} HelpPopup={HelpPopup} changeTitleCallback={changeTitleCallback} channels={channels} onChannelEdit={onChannelEdit} onChannelDelete={onChannelDelete} onChannelClick={onChannelClick} onMessageEdit={onMessageEdit} onMessageDelete={onMessageDelete} messages={messages} selectedChannel={selectedChannel} path={ChatViewRoutes.Friends} />);
       case MainViewRoutes.Settings:
         return (<SettingsPage ContextMenu={ContextMenu} widthConstrained={widthConstrained} HelpPopup={HelpPopup} changeTitleCallback={changeTitleCallback}  />);
       default:

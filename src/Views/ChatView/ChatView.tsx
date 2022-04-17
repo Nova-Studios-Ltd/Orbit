@@ -5,6 +5,8 @@ import MessageCanvas from "Components/Messages/MessageCanvas/MessageCanvas";
 import MessageCanvasHeader from "Components/Headers/MessageCanvasHeader/MessageCanvasHeader";
 import MessageInput, { MessageInputChangeEvent, MessageInputSendEvent } from "Components/Input/MessageInput/MessageInput";
 
+import FriendPage from "Pages/FriendPage/FriendPage";
+
 import { ChatViewRoutes } from "DataTypes/Routes";
 import type { View } from "DataTypes/Components";
 import type { IMessageProps } from "Interfaces/IMessageProps";
@@ -37,7 +39,7 @@ function ChatView({ className, ContextMenu, HelpPopup, widthConstrained, path, m
           </>
         )
       case ChatViewRoutes.Friends:
-        break;
+        return (<FriendPage ContextMenu={ContextMenu} widthConstrained={widthConstrained} HelpPopup={HelpPopup} changeTitleCallback={changeTitleCallback} />);
       default:
         return null;
     }
