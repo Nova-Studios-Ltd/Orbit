@@ -1,6 +1,7 @@
 import type { IRawChannelProps } from "Interfaces/IRawChannelProps";
 import type { ContextMenuItemProps } from "Components/Menus/ContextMenuItem/ContextMenuItem";
 import type { ReactNode } from "react";
+import type { Coordinates } from "./Types";
 
 export interface HelpPopupProps {
   visible: boolean,
@@ -14,10 +15,10 @@ export interface HelpPopupProps {
 
 export interface ContextMenuProps {
   visible: boolean,
-  anchorEl?: Element,
+  anchorPos?: Coordinates,
   items?: ContextMenuItemProps[],
   setVisibility: React.Dispatch<React.SetStateAction<boolean>>,
-  setAnchor: React.Dispatch<React.SetStateAction<Element>>,
+  setAnchor: React.Dispatch<React.SetStateAction<Coordinates>>,
   setItems: React.Dispatch<React.SetStateAction<ContextMenuItemProps[]>>,
   closeMenu: () => void
 }

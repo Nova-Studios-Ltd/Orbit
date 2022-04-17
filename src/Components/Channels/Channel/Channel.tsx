@@ -35,7 +35,7 @@ function Channel({ ContextMenu, channelName, channelID, channelIconSrc, channelM
 
   const channelRightClickHandler = (event: React.MouseEvent<HTMLButtonElement>) => {
     if (ContextMenu && event.currentTarget) {
-      ContextMenu.setAnchor(event.currentTarget);
+      ContextMenu.setAnchor({ x: event.clientX, y: event.clientY });
       ContextMenu.setItems(channelContextMenuItems);
       ContextMenu.setVisibility(true);
     }
