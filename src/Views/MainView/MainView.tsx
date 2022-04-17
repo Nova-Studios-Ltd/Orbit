@@ -37,16 +37,6 @@ function MainView({ path, changeTitleCallback } : MainViewProps) {
     }
   }
 
-  Events.on("DeleteMessage", (message: string) => {
-    setMessages(prevState => {
-      const index = prevState.findIndex(e => e.message_Id === message);
-      if (index > -1) {
-        prevState.splice(index, 1);
-      }
-      return [...prevState];
-    })
-  });
-
   useEffect(() => {
     Events.on("NewMessage", (message: IMessageProps) => {
       setMessages(prevState => {
@@ -54,8 +44,19 @@ function MainView({ path, changeTitleCallback } : MainViewProps) {
       });
     });
 
+    Events.on("DeleteMessage", (message: string) => {
+      setMessages(prevState => {
+        const index = prevState.findIndex(e => e.message_Id === message);
+        if (index > -1) {
+          prevState.splice(index, 1);
+        }
+        return [...prevState];
+      })
+    });
+
     return (() => {
-      // TODO: add unsubscribe event for NewMessage on unmount
+      Events.remove("NewMessage");
+      Events.remove("DeleteMessage");
     });
   }, [messages]);
 

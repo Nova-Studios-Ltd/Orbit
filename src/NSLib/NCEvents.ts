@@ -34,4 +34,8 @@ export default class NCEvents {
     if (this.Events.getValue(channel).once)
       this.Events.clear(channel);
   }
+
+  remove(channel: string) {
+    return this.Events.clear(channel);
+  }
 }
