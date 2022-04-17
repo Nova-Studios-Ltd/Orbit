@@ -18,8 +18,7 @@ function MessageMedia({ className, content, contentUrl, filename, size, contentW
 
   return (
     <div className={classNames} style={{ backgroundColor: theme.palette.background.paper }}>
-      <img src={(content !== undefined)? URL.createObjectURL(new Blob([content])): "https://www.akc.org/wp-content/uploads/2018/05/samoyed-mother-dog-with-puppy-outdoors.jpg"} alt={filename} />
-      <img className="MessageMediaImage" src={contentUrl} alt={filename} />
+      <img className="MessageMediaImage" src={(content !== undefined)? URL.createObjectURL(new Blob([content])): "https://www.akc.org/wp-content/uploads/2018/05/samoyed-mother-dog-with-puppy-outdoors.jpg"} alt={filename} />
     </div>
   )
 }

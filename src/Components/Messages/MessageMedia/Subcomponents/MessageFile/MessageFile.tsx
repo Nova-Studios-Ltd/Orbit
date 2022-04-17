@@ -1,5 +1,5 @@
 import { Icon, Typography, IconButton, useTheme } from "@mui/material";
-import { DownloadFile } from "NSLib/ElectronAPI";
+import { DownloadUint8ArrayFile } from "NSLib/ElectronAPI";
 import { Download as DownloadIcon, InsertDriveFile as FileIcon } from '@mui/icons-material';
 import useClassNames from "Hooks/useClassNames";
 
@@ -18,7 +18,7 @@ function MessageFile({ className, filename, filesize, content, url }: ComponentP
 
   const download = () => {
     if (content) {
-      DownloadFile(content, filename);
+      DownloadUint8ArrayFile(content, filename);
       return;
     }
     console.warn("File does not contain content to download");
