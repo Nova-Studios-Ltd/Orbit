@@ -1,17 +1,19 @@
 import { useTheme } from "@mui/material";
 import useClassNames from "Hooks/useClassNames";
 
-import Message from "Components/Messages/Message/Message";
+import Message, { MessageProps } from "Components/Messages/Message/Message";
 
 import type { NCAPIComponent } from "DataTypes/Components";
 import type { IMessageProps } from "Interfaces/IMessageProps";
 
 export interface MessageCanvasProps extends NCAPIComponent {
   innerClassName?: string,
-  messages?: IMessageProps[]
+  messages?: IMessageProps[],
+  onMessageEdit?: (message: MessageProps) => void,
+  onMessageDelete?: (message: MessageProps) => void
 }
 
-function MessageCanvas({ className, innerClassName, messages }: MessageCanvasProps) {
+function MessageCanvas({ className, ContextMenu, innerClassName, messages, onMessageEdit, onMessageDelete }: MessageCanvasProps) {
   const theme = useTheme();
   const classNames = useClassNames("MessageCanvasContainer", className);
   const innerClassNames = useClassNames("TheActualMessageCanvas", innerClassName);
@@ -20,7 +22,7 @@ function MessageCanvas({ className, innerClassName, messages }: MessageCanvasPro
     if (messages && messages.length > 0) {
       const date = Date.now();
       return messages.map((message, index) => {
-        return (<Message key={message.message_Id} content={message.content} avatarURL={message.avatar} author={message.author} timestamp={message.timestamp}/>)
+        return (<Message key={message.message_Id} ContextMenu={ContextMenu} content={message.content} id={message.message_Id} avatarURL={message.avatar} author={message.author} timestamp={message.timestamp} onMessageEdit={onMessageEdit} onMessageDelete={onMessageDelete} />)
       }).reverse();
     }
   }

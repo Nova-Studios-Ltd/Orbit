@@ -1,9 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, TextField, Typography, useTheme } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { LoginNewUser } from "Init/AuthHandler";
-
 
 import type { Page } from "DataTypes/Components";
 import { LoginStatus } from "DataTypes/Enums";
@@ -12,7 +11,7 @@ interface LoginPageProps extends Page {
 
 }
 
-function LoginPage({ widthConstrained }: LoginPageProps) {
+function LoginPage({ widthConstrained, changeTitleCallback }: LoginPageProps) {
   const Localizations_Common = useTranslation().t;
   const Localizations_LoginPage = useTranslation("LoginPage").t;
   const theme = useTheme();
@@ -21,6 +20,10 @@ function LoginPage({ widthConstrained }: LoginPageProps) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [failureStatus, setFailStatus] = useState(LoginStatus.PendingStatus);
+
+  useEffect(() => {
+    if (changeTitleCallback) changeTitleCallback(Localizations_LoginPage("PageTitle"));
+  }, [Localizations_LoginPage, changeTitleCallback]);
 
   const login = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -64,7 +67,7 @@ function LoginPage({ widthConstrained }: LoginPageProps) {
   }
 
   return (
-    <div>
+    <div className="LoginPageContainer">
       <Typography variant="h6" align="center">{Localizations_LoginPage("Typography-FormCaption")}</Typography>
       <FormStatus />
       <form className="AuthForm LoginForm" onSubmit={login}>

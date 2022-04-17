@@ -1,17 +1,19 @@
 import { Typography, useTheme } from "@mui/material";
 import { useTranslation } from "react-i18next";
 
-import Channel, { ChannelClickEvent } from "Components/Channels/Channel/Channel";
+import Channel, { ChannelProps } from "Components/Channels/Channel/Channel";
 
 import type { NCAPIComponent } from "DataTypes/Components";
 import type { IRawChannelProps } from "Interfaces/IRawChannelProps";
 
 export interface ChannelListProps extends NCAPIComponent {
   channels?: IRawChannelProps[],
-  onChannelClick?: (event: ChannelClickEvent) => void
+  onChannelEdit?: (channel: ChannelProps) => void,
+  onChannelDelete?: (channel: ChannelProps) => void,
+  onChannelClick?: (channel: ChannelProps) => void
 }
 
-function ChannelList({ channels, selectedChannel, onChannelClick }: ChannelListProps) {
+function ChannelList({ ContextMenu, channels, selectedChannel, onChannelEdit, onChannelDelete, onChannelClick }: ChannelListProps) {
   const Localizations_ChannelList = useTranslation("ChannelList").t;
   const theme = useTheme();
 
@@ -25,7 +27,7 @@ function ChannelList({ channels, selectedChannel, onChannelClick }: ChannelListP
   const channelArray = () => {
     if (channels && channels.length > 0) {
       return channels.map((channel) => {
-        return (<Channel key={channel.table_Id} channelName={channel.channelName} channelID={channel.table_Id} channelIconSrc={channel.channelIcon} channelMembers={channel.members} isGroup={channel.channelType} onClick={onChannelClick} />);
+        return (<Channel key={channel.table_Id} ContextMenu={ContextMenu} channelName={channel.channelName} channelID={channel.table_Id} channelIconSrc={channel.channelIcon} channelMembers={channel.members} isGroup={channel.channelType} onChannelEdit={onChannelEdit} onChannelDelete={onChannelDelete} onClick={onChannelClick} />);
       });
     }
 
