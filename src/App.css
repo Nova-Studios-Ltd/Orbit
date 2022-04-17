@@ -18,6 +18,16 @@ html, body, #root, .App {
   overflow: hidden;
 }
 
+::-webkit-scrollbar {
+  background-color: rgba(0, 0, 0, 0.1);
+  width: 0.65rem;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgb(150, 150, 150);
+  border-radius: 30px;
+}
+
 .BrandingImage {
   width: 192px;
   height: 192px;
