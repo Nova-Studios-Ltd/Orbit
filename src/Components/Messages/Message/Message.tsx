@@ -1,13 +1,19 @@
 import { Avatar, Typography, useTheme } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { useState } from "react";
+import useSettingsManager from "Hooks/useSettingsManager";
+
+import MessageMedia from "Components/Messages/MessageMedia/MessageMedia";
 
 import type { NCComponent } from "DataTypes/Components";
 import type { ContextMenuItemProps } from "Components/Menus/ContextMenuItem/ContextMenuItem";
+import type { IAttachmentProps } from "Interfaces/IAttachmentProps";
 
 export interface MessageProps extends NCComponent {
   content?: string,
+  attachments?: IAttachmentProps[],
   id?: string,
+  authorID?: string,
   avatarURL?: string,
   author?: string,
   timestamp?: string,
@@ -15,13 +21,14 @@ export interface MessageProps extends NCComponent {
   onMessageDelete?: (message: MessageProps) => void
 }
 
-function Message({ ContextMenu, content, id, avatarURL, author, timestamp, onMessageEdit, onMessageDelete }: MessageProps) {
+function Message({ ContextMenu, content, attachments, id, authorID, avatarURL, author, timestamp, onMessageEdit, onMessageDelete }: MessageProps) {
   const theme = useTheme();
+  const settingsManager = useSettingsManager();
   const filteredMessageProps: MessageProps = { content, id, avatarURL, author, timestamp };
   const Localizations_Message = useTranslation("Message").t;
   const [isHovering, setHoveringState] = useState(false);
 
-  const isOwnMessage = true; // TODO: Add check between message ownership and current logged in user
+  const isOwnMessage = authorID === settingsManager.User.uuid;
 
   const editMessage = () => {
     if (onMessageEdit) onMessageEdit(filteredMessageProps);
@@ -49,6 +56,16 @@ function Message({ ContextMenu, content, id, avatarURL, author, timestamp, onMes
       ContextMenu.setVisibility(true);
     }
     event.preventDefault();
+  }
+
+  const mediaComponents = () => {
+    if (attachments && attachments.length > 0) {
+      return attachments.map((attachment, index) => {
+        return (
+          <MessageMedia />
+        )
+      });
+    }
   }
 
   return (

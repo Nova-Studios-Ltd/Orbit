@@ -1,13 +1,16 @@
 import { useEffect, useState } from "react";
+import { useTheme } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { SENDMessage } from "NSLib/APIEvents";
 import { UploadFile } from "NSLib/ElectronAPI";
+import { useNavigate } from "react-router-dom";
 
 import PageContainer from "Components/Containers/PageContainer/PageContainer";
 import MessageAttachment from "DataTypes/MessageAttachment";
 import MessageCanvas from "Components/Messages/MessageCanvas/MessageCanvas";
 import MessageCanvasHeader from "Components/Headers/MessageCanvasHeader/MessageCanvasHeader";
 import MessageInput, { MessageInputChangeEvent, MessageInputSendEvent } from "Components/Input/MessageInput/MessageInput";
+import Channel from "Components/Channels/Channel/Channel";
 import ChannelList from "Components/Channels/ChannelList/ChannelList";
 
 import type { Page } from "DataTypes/Components";
@@ -15,6 +18,8 @@ import type { IRawChannelProps } from "Interfaces/IRawChannelProps";
 import type { ChannelProps } from "Components/Channels/Channel/Channel";
 import type { IMessageProps } from "Interfaces/IMessageProps";
 import type { MessageProps } from "Components/Messages/Message/Message";
+import AvatarTextButton from "Components/Buttons/AvatarTextButton/AvatarTextButton";
+import { MainViewRoutes } from "DataTypes/Routes";
 
 interface ChatPageProps extends Page {
   channels?: IRawChannelProps[],
@@ -28,6 +33,8 @@ interface ChatPageProps extends Page {
 }
 
 function ChatPage({ ContextMenu, channels, messages, selectedChannel, onChannelEdit, onChannelDelete, onChannelClick, onMessageEdit, onMessageDelete, changeTitleCallback }: ChatPageProps) {
+  const navigate = useNavigate();
+  const theme = useTheme();
   const Localizations_ChatPage = useTranslation("ChatPage").t;
 
   const [MessageInputValue, setMessageInputValue] = useState("");
@@ -61,6 +68,9 @@ function ChatPage({ ContextMenu, channels, messages, selectedChannel, onChannelE
     <PageContainer noPadding>
       <div className="ChatPageContainer">
         <div className="ChatPageContainerLeft">
+          <div className="NavigationButtonContainer" style={{ backgroundColor: theme.palette.background.paper, borderColor: theme.palette.divider }}>
+            <AvatarTextButton onLeftClick={() => navigate(MainViewRoutes.Friends)}>[Friends]</AvatarTextButton>
+          </div>
           <ChannelList ContextMenu={ContextMenu} channels={channels} onChannelEdit={onChannelEdit} onChannelDelete={onChannelDelete} onChannelClick={onChannelClick} selectedChannel={selectedChannel} />
         </div>
         <div className="ChatPageContainerRight">

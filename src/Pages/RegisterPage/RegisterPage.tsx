@@ -9,6 +9,7 @@ import type { Page } from "DataTypes/Components";
 import { RegisterStatus } from "DataTypes/Enums";
 import { EncryptBase64, GenerateBase64SHA256, GenerateRSAKeyPair } from "NSLib/NCEncryptionBeta";
 import { Base64String } from "NSLib/Base64";
+import { AuthViewRoutes } from "DataTypes/Routes";
 
 interface RegisterPageProps extends Page {
 
@@ -42,7 +43,7 @@ function RegisterPage({ HelpPopup, widthConstrained, changeTitleCallback }: Regi
 
     POST("Register", ContentType.JSON, JSON.stringify(new RegisterPayload(username, hashPassword.Base64, email, new RegPayloadKey(encPriv.content as string, encPriv.iv, keypair.PublicKey)))).then((response: NCAPIResponse) => {
       if (response.status === 200) {
-        navigate("/login");
+        navigate(AuthViewRoutes.Login);
         setFailStatus(RegisterStatus.Success);
       }
       else if (response.status === 409) {

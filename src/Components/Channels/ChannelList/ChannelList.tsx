@@ -27,7 +27,8 @@ function ChannelList({ ContextMenu, channels, selectedChannel, onChannelEdit, on
   const channelArray = () => {
     if (channels && channels.length > 0) {
       return channels.map((channel) => {
-        return (<Channel key={channel.table_Id} ContextMenu={ContextMenu} channelName={channel.channelName} channelID={channel.table_Id} channelIconSrc={channel.channelIcon} channelMembers={channel.members} isGroup={channel.channelType} onChannelEdit={onChannelEdit} onChannelDelete={onChannelDelete} onClick={onChannelClick} />);
+        const isSelected = channel.table_Id === selectedChannel?.table_Id;
+        return (<Channel key={channel.table_Id} ContextMenu={ContextMenu} channelName={channel.channelName} channelID={channel.table_Id} channelIconSrc={channel.channelIcon} channelMembers={channel.members} isGroup={channel.channelType} isSelected={isSelected} onChannelEdit={onChannelEdit} onChannelDelete={onChannelDelete} onClick={onChannelClick} />);
       });
     }
 

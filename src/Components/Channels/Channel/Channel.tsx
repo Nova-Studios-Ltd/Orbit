@@ -1,9 +1,11 @@
 import { Avatar, ButtonBase, Typography, useTheme } from "@mui/material";
 import { useTranslation } from "react-i18next";
+import { useState } from "react";
 
 import type { NCComponent } from "DataTypes/Components";
 import { ChannelType } from "DataTypes/Enums";
 import { ContextMenuItemProps } from "Components/Menus/ContextMenuItem/ContextMenuItem";
+import AvatarTextButton from "Components/Buttons/AvatarTextButton/AvatarTextButton";
 
 export interface ChannelProps extends NCComponent {
   channelName?: string,
@@ -41,14 +43,9 @@ function Channel({ ContextMenu, channelName, channelID, channelIconSrc, channelM
   }
 
   return (
-    <ButtonBase className="ChannelContainer" style={{ backgroundColor: isSelected ? theme.customPalette.customActions.channelActive : theme.palette.background.paper }} onClick={channelClickHandler} onContextMenu={channelRightClickHandler}>
-      <div className="ChannelLeft">
-        <Avatar className="ChannelIcon" src={channelIconSrc} />
-      </div>
-      <div className="ChannelRight">
-        <Typography variant="h6">{channelName}</Typography>
-      </div>
-    </ButtonBase>
+    <AvatarTextButton iconSrc={channelIconSrc} selected={isSelected} onLeftClick={channelClickHandler} onRightClick={channelRightClickHandler}>
+      {channelName}
+    </AvatarTextButton>
   )
 }
 

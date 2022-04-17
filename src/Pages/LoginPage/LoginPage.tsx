@@ -6,6 +6,7 @@ import { LoginNewUser } from "Init/AuthHandler";
 
 import type { Page } from "DataTypes/Components";
 import { LoginStatus } from "DataTypes/Enums";
+import { MainViewRoutes } from "DataTypes/Routes";
 
 interface LoginPageProps extends Page {
 
@@ -30,7 +31,7 @@ function LoginPage({ widthConstrained, changeTitleCallback }: LoginPageProps) {
     console.log("Logging in")
 
     LoginNewUser(email, password).then((status: LoginStatus) => {
-      if (status === LoginStatus.Success) navigate("/chat");
+      if (status === LoginStatus.Success) navigate(MainViewRoutes.Chat);
       else setFailStatus(status);
     });
   }

@@ -9,6 +9,8 @@ import { Manager } from "./Init/AuthHandler";
 import { DarkTheme_Default } from "Theme";
 import { Localizations } from "Localization/Localizations";
 
+import ContextMenuItem from "Components/Menus/ContextMenuItem/ContextMenuItem";
+
 import AuthView from "Views/AuthView/AuthView";
 import ErrorView from "Views/ErrorView/ErrorView";
 import MainView from "Views/MainView/MainView";
@@ -19,7 +21,6 @@ import type { ContextMenuProps, HelpPopupProps } from "DataTypes/Components";
 import type { ContextMenuItemProps } from "Components/Menus/ContextMenuItem/ContextMenuItem";
 
 import "./App.css";
-import ContextMenuItem from "Components/Menus/ContextMenuItem/ContextMenuItem";
 
 i18n.use(initReactI18next)
 .init({
@@ -73,6 +74,13 @@ function App() {
     closeMenu: closeContextMenu
   };
 
+  const GenericViewProps = {
+    ContextMenu: ContextMenu,
+    widthConstrained: widthConstrained,
+    HelpPopup: HelpPopup,
+    changeTitleCallback: setTitle
+  }
+
   const contextMenuItemsList = () => {
     if (!contextMenuItems || contextMenuItems.length < 1) return null;
 
@@ -85,7 +93,7 @@ function App() {
     if (!value) return;
     if (!location.pathname.toLowerCase().includes("/chat")) {
       Manager.WriteCookie("LoggedIn", "false");
-      navigate("/chat");
+      navigate(MainViewRoutes.Chat);
     }
   });
 
@@ -100,12 +108,13 @@ function App() {
       </Helmet>
       <ThemeProvider theme={DarkTheme_Default}>
         <Routes>
-          <Route path="*" element={<ErrorView widthConstrained={widthConstrained} changeTitleCallback={setTitle} errorCode={404} />}></Route>
-          <Route path="/" element={<AuthView widthConstrained={widthConstrained} changeTitleCallback={setTitle} path={AuthViewRoutes.Login} />} />
-          <Route path="/login" element={<AuthView widthConstrained={widthConstrained} changeTitleCallback={setTitle} path={AuthViewRoutes.Login} />} />
-          <Route path="/register" element={<AuthView widthConstrained={widthConstrained} changeTitleCallback={setTitle} HelpPopup={HelpPopup} path={AuthViewRoutes.Register} />} />
-          <Route path="/chat" element={<MainView widthConstrained={widthConstrained} ContextMenu={ContextMenu} changeTitleCallback={setTitle} path={MainViewRoutes.Chat} />} />
-          <Route path="/settings" element={<MainView widthConstrained={widthConstrained} changeTitleCallback={setTitle} path={MainViewRoutes.Settings} />} />
+          <Route path="*" element={<ErrorView {...GenericViewProps} errorCode={404} />}></Route>
+          <Route path="/" element={<AuthView {...GenericViewProps} path={AuthViewRoutes.Login} />} />
+          <Route path={AuthViewRoutes.Login} element={<AuthView {...GenericViewProps} path={AuthViewRoutes.Login} />} />
+          <Route path={AuthViewRoutes.Register} element={<AuthView {...GenericViewProps} path={AuthViewRoutes.Register} />} />
+          <Route path={MainViewRoutes.Chat} element={<MainView {...GenericViewProps} path={MainViewRoutes.Chat} />} />
+          <Route path={MainViewRoutes.Friends} element={<MainView {...GenericViewProps} path={MainViewRoutes.Friends} />} />
+          <Route path={MainViewRoutes.Settings} element={<MainView {...GenericViewProps} path={MainViewRoutes.Settings} />} />
         </Routes>
         <Popover className="GenericPopover" open={helpVisible} anchorEl={helpAnchorEl} onClose={() => {
           setHelpAnchor(null as unknown as Element);

@@ -7,6 +7,7 @@ import { DELETEMessage, GETChannel, GETMessages, GETUserChannels } from "NSLib/A
 
 import ViewContainer from "Components/Containers/ViewContainer/ViewContainer";
 import ChatPage from "Pages/ChatPage/ChatPage";
+import FriendPage from "Pages/FriendPage/FriendPage";
 import SettingsPage from "Pages/SettingsPage/SettingsPage";
 
 import type { View } from "DataTypes/Components";
@@ -14,13 +15,13 @@ import type { IRawChannelProps } from "Interfaces/IRawChannelProps";
 import type { ChannelProps } from "Components/Channels/Channel/Channel";
 import type { IMessageProps } from "Interfaces/IMessageProps";
 import type { MessageProps } from "Components/Messages/Message/Message";
-import { MainViewRoutes } from "DataTypes/Routes";
+import { AuthViewRoutes, MainViewRoutes } from "DataTypes/Routes";
 
 interface MainViewProps extends View {
   path: MainViewRoutes
 }
 
-function MainView({ path, ContextMenu, changeTitleCallback } : MainViewProps) {
+function MainView({ path, ContextMenu, HelpPopup, widthConstrained, changeTitleCallback } : MainViewProps) {
   const navigate = useNavigate();
 
   const [channels, setChannels] = useState([] as IRawChannelProps[]);
@@ -87,7 +88,7 @@ function MainView({ path, ContextMenu, changeTitleCallback } : MainViewProps) {
 
   useEffect(() => {
     AutoLogin().then((result: boolean) => {
-      if (!result) navigate("/login");
+      if (!result) navigate(AuthViewRoutes.Login);
     });
 
     GETUserChannels(async (channels: string[]) => {
@@ -107,9 +108,11 @@ function MainView({ path, ContextMenu, changeTitleCallback } : MainViewProps) {
   const page = () => {
     switch (path) {
       case MainViewRoutes.Chat:
-        return (<ChatPage ContextMenu={ContextMenu} channels={channels} onChannelEdit={onChannelEdit} onChannelDelete={onChannelDelete} onChannelClick={onChannelClick} onMessageEdit={onMessageEdit} onMessageDelete={onMessageDelete} messages={messages} selectedChannel={selectedChannel} changeTitleCallback={changeTitleCallback} />);
+        return (<ChatPage ContextMenu={ContextMenu} widthConstrained={widthConstrained} HelpPopup={HelpPopup} changeTitleCallback={changeTitleCallback} channels={channels} onChannelEdit={onChannelEdit} onChannelDelete={onChannelDelete} onChannelClick={onChannelClick} onMessageEdit={onMessageEdit} onMessageDelete={onMessageDelete} messages={messages} selectedChannel={selectedChannel} />);
+      case MainViewRoutes.Friends:
+        return (<FriendPage ContextMenu={ContextMenu} widthConstrained={widthConstrained} HelpPopup={HelpPopup} changeTitleCallback={changeTitleCallback} />);
       case MainViewRoutes.Settings:
-        return (<SettingsPage changeTitleCallback={changeTitleCallback}  />);
+        return (<SettingsPage ContextMenu={ContextMenu} widthConstrained={widthConstrained} HelpPopup={HelpPopup} changeTitleCallback={changeTitleCallback}  />);
       default:
         console.warn("[MainView] Invalid Page");
         return null;

@@ -20,9 +20,8 @@ function MessageCanvas({ className, ContextMenu, innerClassName, messages, onMes
 
   const messagesArray = () => {
     if (messages && messages.length > 0) {
-      const date = Date.now();
       return messages.map((message, index) => {
-        return (<Message key={message.message_Id} ContextMenu={ContextMenu} content={message.content} id={message.message_Id} avatarURL={message.avatar} author={message.author} timestamp={message.timestamp} onMessageEdit={onMessageEdit} onMessageDelete={onMessageDelete} />)
+        return (<Message key={message.message_Id} ContextMenu={ContextMenu} content={message.content} attachments={message.attachments} id={message.message_Id} authorID={message.author_UUID} avatarURL={message.avatar} author={message.author} timestamp={message.timestamp} onMessageEdit={onMessageEdit} onMessageDelete={onMessageDelete} />)
       }).reverse();
     }
   }

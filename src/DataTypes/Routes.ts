@@ -5,5 +5,6 @@ export enum AuthViewRoutes {
 
 export enum MainViewRoutes {
   Chat = "/chat",
+  Friends = "/friends",
   Settings = "/settings"
 }
