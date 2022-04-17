@@ -51,15 +51,15 @@ export async function GET(endpoint: string, token?: string) : Promise<NCAPIRespo
  * @returns A NCAPIResponse with the data from the NovaChat API
  */
 export async function POST(endpoint: string, content_type: ContentType, payload: string, token?: string) : Promise<NCAPIResponse> {
-    const resp = await fetch(`https://api.novastudios.tk/${endpoint}`, {
-        method: "POST",
-        headers: {
-            "Authorization": token || "",
-            "Content-Type": content_type
-        },
-        body: payload
-    });
-    return new NCAPIResponse(resp.status, resp.statusText, await resp.json());
+  const resp = await fetch(`https://api.novastudios.tk/${endpoint}`, {
+    method: "POST",
+    headers: {
+        "Authorization": token || "",
+        "Content-Type": content_type
+    },
+    body: payload
+  });
+  return new NCAPIResponse(resp.status, resp.statusText, await resp.json());
 }
 
 /**
@@ -125,9 +125,9 @@ export async function DELETE(endpoint: string, token?: string) : Promise<NCAPIRe
  * @param token Optional security token
  * @returns A NCAPIResponse with the data from the NovaChat API
  */
-export async function POSTFile(endpoint: string, payload: Blob, token?: string) : Promise<NCAPIResponse> {
+export async function POSTFile(endpoint: string, payload: Blob, filename: string, token?: string) : Promise<NCAPIResponse> {
     const formData = new FormData();
-    formData.append("file", payload);
+    formData.append("file", payload, filename);
     const resp = await fetch(`https://novastudios.tk/${endpoint}`, {
         method: "POST",
         body: formData

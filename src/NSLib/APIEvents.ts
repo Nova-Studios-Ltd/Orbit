@@ -106,8 +106,14 @@ async function DecryptMessage(message: IMessageProps) : Promise<IMessageProps> {
     const attachment = message.attachments[a];
     const content = await GETFile(attachment.contentUrl, Manager.User.token);
     // HACK Please fix this, it is only to make the client work with old keys
-    const decryptedContent = await DecryptUint8Array(Base64String.CreateBase64String(FromBase64String(FromUint8Array(key.Uint8Array))), new AESMemoryEncryptData( message.iv, content.payload as Uint8Array));
-    message.attachments[a].content = decryptedContent;
+    try {
+      const decryptedContent = await DecryptUint8Array(Base64String.CreateBase64String(FromBase64String(FromUint8Array(key.Uint8Array))), new AESMemoryEncryptData( message.iv, content.payload as Uint8Array));
+      message.attachments[a].content = decryptedContent;
+    }
+    catch {
+      const decryptedContent = await DecryptUint8Array(key, new AESMemoryEncryptData( message.iv, content.payload as Uint8Array));
+      message.attachments[a].content = decryptedContent;
+    }
   }
   return message;
 }
@@ -151,7 +157,7 @@ export function SENDMessage(channel_uuid: string, contents: string, rawAttachmen
           for (let a = 0; a < rawAttachments.length; a++) {
               const attachment = rawAttachments[a];
               const imageSize = (await GetImageDimensions(attachment.contents)) || new Dimensions(0, 0);
-              const re = await POSTFile(`Media/Channel/${channel_uuid}?width=${imageSize.width}&height=${imageSize.height}`, new Blob([(await EncryptUint8Array(messageKey, attachment.contents, new Base64String(encryptedMessage.iv))).content]))
+              const re = await POSTFile(`/Channel/${channel_uuid}?width=${imageSize.width}&height=${imageSize.height}`, new Blob([(await EncryptUint8Array(messageKey, attachment.contents, new Base64String(encryptedMessage.iv))).content]), attachment.filename)
               if (re.status === 200) attachments.push(resp.payload as string);
           }
           const encKeys = {} as {[uuid: string]: string};
