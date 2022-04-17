@@ -1,6 +1,5 @@
-import { Avatar, ButtonBase, Typography, useTheme } from "@mui/material";
+import { useTheme } from "@mui/material";
 import { useTranslation } from "react-i18next";
-import { useState } from "react";
 
 import type { NCComponent } from "DataTypes/Components";
 import { ChannelType } from "DataTypes/Enums";

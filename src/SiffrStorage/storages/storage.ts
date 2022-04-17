@@ -8,12 +8,12 @@ const defaultOptions: StorageOptions = {
   description: 'Sifrr Storage',
   size: 5 * 1024 * 1024,
   ttl: 0
-};
+};;
 
 abstract class Storage {
   static type: string;
 
-  type: string = (<typeof Storage>this.constructor).type;
+  type: string = (this.constructor as typeof Storage).type;
 
   name: string;
   version: string | number;
@@ -125,7 +125,7 @@ abstract class Storage {
           return data[key];
         }
       });
-    };
+  }; };
   }*/
 
   isSupported(force = true) {
@@ -143,7 +143,7 @@ abstract class Storage {
   }
 
   protected isEqual(other: { tableName: string; type: string }) {
-    if (this.tableName == other.tableName && this.type == other.type) {
+    if (this.tableName === other.tableName && this.type === other.type) {
       return true;
     } else {
       return false;
@@ -170,10 +170,10 @@ abstract class Storage {
     const all = this._all || [],
       length = all.length;
     for (let i = 0; i < length; i++) {
-      if (all[i].isEqual(otherInstance)) return <T>all[i];
+      if (all[i].isEqual(otherInstance)) return all[i] as T;
     }
     this._add(otherInstance);
-    return <T>otherInstance;
+    return otherInstance as T;
   }
 }
 

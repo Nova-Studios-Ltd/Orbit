@@ -4,13 +4,13 @@ import { StorageOptions } from './types';
 class LocalStorage extends Storage {
   constructor(options: StorageOptions) {
     super(options);
-    return (<typeof LocalStorage>this.constructor)._matchingInstance(this);
+    return (this.constructor as typeof LocalStorage)._matchingInstance(this);
   }
 
   protected select(keys: string[]) {
     const table = {} as {[key: string]: any};
     keys.forEach((k: string) => {
-      const v = (<typeof LocalStorage>this.constructor).parse(
+      const v = (this.constructor as typeof LocalStorage).parse(
         this.getLocalStorage().getItem(this.tableName + '/' + k) as string
       );
       if (v !== null) table[k] = v;
@@ -22,7 +22,7 @@ class LocalStorage extends Storage {
     for (const key in data) {
       this.getLocalStorage().setItem(
         this.tableName + '/' + key,
-        (<typeof LocalStorage>this.constructor).stringify(data[key])
+        (this.constructor as typeof LocalStorage).stringify(data[key])
       );
     }
     return true;
@@ -45,6 +45,7 @@ class LocalStorage extends Storage {
       Object.keys(this.getLocalStorage())
         .map(k => {
           if (k.indexOf(this.tableName) === 0) return k.slice(this.tableName.length + 1);
+          return undefined;
         })
         .filter(k => typeof k !== 'undefined') as string[]
     );

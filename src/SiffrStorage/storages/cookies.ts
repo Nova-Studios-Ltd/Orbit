@@ -8,13 +8,13 @@ const equal = '%3D',
 class Cookies extends Storage {
   constructor(options: StorageOptions) {
     super(options);
-    return (<typeof Cookies>this.constructor)._matchingInstance<Cookies>(this);
+    return (this.constructor as typeof Cookies)._matchingInstance<Cookies>(this);
   }
 
   protected upsert(data: object) {
     for (let key in data) {
       this.setStore(
-        `${this.tableName}/${key}=${(<typeof Storage>this.constructor)
+        `${this.tableName}/${key}=${(this.constructor as typeof Storage)
           .stringify((data as {[key: string]: any})[key])
           .replace(/=/g, equal)}; path=/`
       );
@@ -38,7 +38,7 @@ class Cookies extends Storage {
     result.split('; ').forEach(value => {
       let [k, v] = value.split('=');
       if (k.indexOf(this.tableName) === 0)
-        ans[k.slice(this.tableName.length + 1)] = (<typeof Storage>this.constructor).parse(
+        ans[k.slice(this.tableName.length + 1)] = (this.constructor as typeof Storage).parse(
           v.replace(equalRegex, '=')
         );
     });

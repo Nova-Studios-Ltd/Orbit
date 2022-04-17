@@ -6,9 +6,7 @@ import RegisterPage from "Pages/RegisterPage/RegisterPage";
 import ViewContainer from "Components/Containers/ViewContainer/ViewContainer";
 
 import type { View } from "DataTypes/Components";
-import { useEffect, useState } from "react";
 import GenerateRandomColor from "ColorGeneration";
-import { useLocation } from "react-router-dom";
 import { AuthViewRoutes } from "DataTypes/Routes";
 
 interface AuthViewProps extends View {
