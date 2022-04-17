@@ -9,7 +9,7 @@ export interface ComponentProps extends NCComponent {
   filename?: string,
   filesize?: number,
   content?: Uint8Array,
-  url: string
+  url?: string
 }
 
 function MessageFile({ className, filename, filesize, content, url }: ComponentProps) {
