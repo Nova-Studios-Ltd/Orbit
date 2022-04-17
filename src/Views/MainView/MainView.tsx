@@ -43,6 +43,7 @@ function MainView({ path, ContextMenu, HelpPopup, widthConstrained, changeTitleC
   const onChannelCreate = (recipient: string) => {
     console.log(`Request to create new channel with recipient ${recipient}`);
     // TODO: Add Channel creation logic here
+    // Convert recipient name to UUID
   };
 
   const onChannelEdit = (channel: ChannelProps) => {

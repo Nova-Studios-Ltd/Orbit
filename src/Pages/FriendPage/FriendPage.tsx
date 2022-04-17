@@ -1,4 +1,5 @@
-import { Button, Typography } from "@mui/material";
+import { Button, TextField, Typography } from "@mui/material";
+import React, { useState } from "react";
 
 import PageContainer from "Components/Containers/PageContainer/PageContainer";
 
@@ -9,16 +10,23 @@ interface ChatPageProps extends Page {
 }
 
 function FriendPage({ ContextMenu, HelpPopup, widthConstrained, changeTitleCallback, onChannelCreate }: ChatPageProps) {
+  const [RecipientField, setRecipientField] = useState("");
+
   const createChannel = () => {
     if (onChannelCreate) {
-      onChannelCreate("");
+      onChannelCreate(RecipientField);
     }
-  }
+  };
+
+  const handleRecipientFieldChanged = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setRecipientField(event.currentTarget.value);
+  };
 
   return (
-    <PageContainer noPadding>
-      <div className="FriendPageContainer">
-        <Button onClick={createChannel}>Create Channel</Button>
+    <PageContainer className="FriendPageContainer" noPadding>
+      <div className="CreateChannelContainer">
+        <TextField value={RecipientField} onChange={handleRecipientFieldChanged} />
+        <Button onClick={createChannel}>[Create Channel]</Button>
       </div>
     </PageContainer>
   );

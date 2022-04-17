@@ -1,6 +1,7 @@
 @import "ErrorPages/EStyles.css";
 
 @import "ChatPage/ChatPage.css";
+@import "FriendPage/FriendPage.css";
 @import "LoginPage/LoginPage.css";
 @import "RegisterPage/RegisterPage.css";
 @import "SettingsPage/SettingsPage.css";
