@@ -1,3 +1,5 @@
+import { ContentType } from "./NCAPI";
+
 /**
  * Interface representing Electrons IPCRenderer/IPCMain object
  */
@@ -86,6 +88,11 @@ export function UploadFile(): Promise<NCFile[]> {
   })
 }
 
+/**
+ * Fetches a files from the clipboard, automaticly handles switching to native
+ * @param ev Event from document.onpaste
+ * @returns A Uint8Array of png data
+ */
 export function FetchFileFromClipboard(ev: ClipboardEvent) : Promise<Uint8Array> {
   return new Promise(async (resolve) => {
     if (IsElectron()) {
@@ -101,4 +108,46 @@ export function FetchFileFromClipboard(ev: ClipboardEvent) : Promise<Uint8Array>
       resolve(new Uint8Array(buf));
     }
   });
+}
+
+/**
+ * Write a string of text to the clipboard, automaticly handles switching to native
+ * @param text Text to be written to the clipboard
+ * @returns True if write is succesful otherwise false
+ */
+export function WriteToClipboard(text: string) : Promise<boolean> {
+  return new Promise(async (resolve) => {
+    if (IsElectron()) {
+      resolve(await GetIPCRenderer().invoke("WriteTextClipboard", text));
+    }
+    else {
+      navigator.clipboard.writeText(text).then(() => {
+        resolve(true);
+      }, () => {
+        resolve(false);
+      });
+    }
+  });
+}
+
+/**
+ * Writes data to the clipboard, automaticly handles switching to native
+ * @param data A Uint8Array containing the data to be written to the clipboard
+ * @param content_type ContentType
+ * @returns True if write is succesful otherwise false
+ */
+export function WriteImageToClipboard(data: Uint8Array, content_type: ContentType) : Promise<boolean> {
+  return new Promise(async (resolve) => {
+    if (IsElectron()) {
+      resolve(await GetIPCRenderer().invoke("WriteClipboard", data, content_type))
+    }
+    else {
+      const item = [new ClipboardItem({[content_type]: new Blob([data])})];
+      navigator.clipboard.write(item).then(() => {
+        resolve(true);
+      }, () => {
+        resolve(false);
+      })
+    }
+  })
 }

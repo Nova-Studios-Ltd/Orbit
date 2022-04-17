@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { SENDMessage } from "NSLib/APIEvents";
-import { UploadFile } from "NSLib/ElectronAPI";
+import { NCFile, UploadFile } from "NSLib/ElectronAPI";
 
 import PageContainer from "Components/Containers/PageContainer/PageContainer";
 import MessageAttachment from "DataTypes/MessageAttachment";
@@ -31,6 +31,7 @@ function ChatPage({ ContextMenu, channels, messages, selectedChannel, onChannelE
   const Localizations_ChatPage = useTranslation("ChatPage").t;
 
   const [MessageInputValue, setMessageInputValue] = useState("");
+  const [MessageAttachments, setMessageAttachments] = useState([] as MessageAttachment[])
 
   useEffect(() => {
     if (changeTitleCallback && selectedChannel && selectedChannel.channelName) changeTitleCallback(`@${selectedChannel.channelName}`);
@@ -43,17 +44,20 @@ function ChatPage({ ContextMenu, channels, messages, selectedChannel, onChannelE
 
   const MessageInputSendHandler = (event: MessageInputSendEvent) => {
     if (selectedChannel === undefined || event.value === undefined || event.value === "") return;
-    SENDMessage(selectedChannel.table_Id, event.value, [] as MessageAttachment[], (sent: boolean) => {
+    SENDMessage(selectedChannel.table_Id, event.value, MessageAttachments, (sent: boolean) => {
       if (sent) {
         setMessageInputValue("");
+        setMessageAttachments([]);
       }
     });
   }
 
   const handleFileUpload = () => {
-    UploadFile().then((file) => {
-      // TODO: Implement the actual "uploading to the server" part
-      console.log(file);
+    UploadFile().then((files) => {
+      files.forEach((v: NCFile) => {
+        console.log(v.Filename);
+        setMessageAttachments([...MessageAttachments, new MessageAttachment(v.FileContents, v.Filename)]);
+      });
     });
   }
 
