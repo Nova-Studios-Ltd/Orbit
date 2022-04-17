@@ -55,6 +55,9 @@ function ChatPage({ ContextMenu, channels, messages, selectedChannel, onChannelE
       <div className="ChatPageContainer">
         <div className="ChatPageContainerLeft">
           <ChannelList ContextMenu={ContextMenu} channels={channels} onChannelEdit={onChannelEdit} onChannelDelete={onChannelDelete} onChannelClick={onChannelClick} selectedChannel={selectedChannel} />
+          <div className="">
+
+          </div>
         </div>
         <div className="ChatPageContainerRight">
           <MessageCanvasHeader selectedChannel={selectedChannel}></MessageCanvasHeader>

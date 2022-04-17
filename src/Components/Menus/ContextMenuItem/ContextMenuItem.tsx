@@ -1,4 +1,4 @@
-import React, { ReactNode } from "react";
+import React, { ReactNode, useState } from "react";
 import { MenuItem, useTheme } from "@mui/material";
 import useClassNames from "Hooks/useClassNames";
 
@@ -17,6 +17,8 @@ function ContextMenuItem({ ContextMenu, className, children, icon, persistOnClic
   const theme = useTheme();
   const classNames = useClassNames("ContextMenuItemContainer", className);
 
+  const [backgroundColor, setBackgroundColor] = useState(theme.customPalette.contextMenuItemBackground);
+
   if (persistOnClick === undefined) {
     persistOnClick = false;
   }
@@ -33,8 +35,16 @@ function ContextMenuItem({ ContextMenu, className, children, icon, persistOnClic
     ContextMenu?.closeMenu();
   }
 
+  const handleFocus = (isFocused: boolean) => {
+    if (isFocused) {
+      setBackgroundColor(theme.customPalette.customActions.contextMenuItemActive);
+    } else {
+      setBackgroundColor(theme.customPalette.contextMenuItemBackground);
+    }
+  }
+
   return (
-    <MenuItem className={classNames} style={{ backgroundColor: theme.customPalette.contextMenuItemBackground }} onClick={handleLeftClick} onContextMenu={handleRightClick}>
+    <MenuItem className={classNames} style={{ backgroundColor: backgroundColor }} onClick={handleLeftClick} onContextMenu={handleRightClick} onMouseEnter={() => handleFocus(true)} onFocus={() => handleFocus(true)} onMouseLeave={() => handleFocus(false)} onBlur={() => handleFocus(false)}>
       {icon}
       {children}
     </MenuItem>
