@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { AutoLogin } from "Init/AuthHandler";
 import { SettingsManager } from "NSLib/SettingsManager";
 import { Events } from "Init/WebsocketEventInit";
-import { GETChannel, GETMessages, GETUserChannels } from "NSLib/APIEvents";
+import { DELETEMessage, GETChannel, GETMessages, GETUserChannels } from "NSLib/APIEvents";
 
 import ViewContainer from "Components/Containers/ViewContainer/ViewContainer";
 import ChatPage from "Pages/ChatPage/ChatPage";
@@ -53,9 +53,12 @@ function MainView({ path, ContextMenu, changeTitleCallback } : MainViewProps) {
     // TODO: Add Message edit logic here
   };
 
-  const onMessageDelete = (message: MessageProps) => {
+  const onMessageDelete = async (message: MessageProps) => {
     console.log(`Request to delete message ${message.id}`);
-    // TODO: Add Message deletion logic here
+    if (message.id === undefined) return;
+    if (await DELETEMessage(selectedChannel.table_Id, message.id as string)) {
+      console.log(`Request to delete message ${message.id} succesful`);
+    }
   };
 
   useEffect(() => {
