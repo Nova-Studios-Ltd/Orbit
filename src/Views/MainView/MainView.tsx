@@ -61,7 +61,7 @@ function MainView({ path, ContextMenu, changeTitleCallback } : MainViewProps) {
   useEffect(() => {
     Events.on("NewMessage", (message: IMessageProps) => {
       setMessages(prevState => {
-        return [...prevState, message];
+        return [message, ...prevState];
       });
     });
 
