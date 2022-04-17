@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Menu, Popover, ThemeProvider } from "@mui/material";
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import i18n from "i18next";
@@ -87,11 +87,6 @@ function App() {
       Manager.WriteCookie("LoggedIn", "false");
       navigate("/chat");
     }
-    /*const loggedIn = await AutoLogin();
-    if (loggedIn && !location.pathname.toLowerCase().includes("/chat")) {
-      Manager.WriteCookie("LoggedIn", "false");
-      navigate("/chat");
-    }*/
   });
 
   window.addEventListener("resize", (event) => {

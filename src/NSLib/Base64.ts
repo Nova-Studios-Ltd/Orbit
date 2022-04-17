@@ -52,7 +52,7 @@ export class Base64String {
   private base64: string;
 
   constructor(base64: string) {
-    if (!IsBase64(base64)) throw new Error("'base64' is not valid base64 string");
+    if (!IsBase64(base64)) throw new Error("parameter 'base64' is not valid base64 string");
     this.base64 = base64;
   }
 

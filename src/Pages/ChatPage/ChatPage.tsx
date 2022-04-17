@@ -4,10 +4,10 @@ import { SENDMessage } from "NSLib/APIEvents";
 
 import PageContainer from "Components/Containers/PageContainer/PageContainer";
 import MessageAttachment from "DataTypes/MessageAttachment";
-import MessageCanvas, { MessageCanvasProps } from "Components/Messages/MessageCanvas/MessageCanvas";
+import MessageCanvas from "Components/Messages/MessageCanvas/MessageCanvas";
 import MessageCanvasHeader from "Components/Headers/MessageCanvasHeader/MessageCanvasHeader";
 import MessageInput, { MessageInputChangeEvent, MessageInputSendEvent } from "Components/Input/MessageInput/MessageInput";
-import ChannelList, { ChannelListProps } from "Components/Channels/ChannelList/ChannelList";
+import ChannelList from "Components/Channels/ChannelList/ChannelList";
 
 import type { Page } from "DataTypes/Components";
 import type { IRawChannelProps } from "Interfaces/IRawChannelProps";
@@ -41,10 +41,9 @@ function ChatPage({ ContextMenu, channels, messages, selectedChannel, onChannelE
   }
 
   const MessageInputSendHandler = (event: MessageInputSendEvent) => {
-    if (selectedChannel === undefined || event.value === undefined) return;
+    if (selectedChannel === undefined || event.value === undefined || event.value === "") return;
     SENDMessage(selectedChannel.table_Id, event.value, [] as MessageAttachment[], (sent: boolean) => {
       if (sent) {
-        console.log("Message sent");
         setMessageInputValue("");
       }
     });

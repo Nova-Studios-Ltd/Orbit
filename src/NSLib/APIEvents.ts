@@ -39,47 +39,47 @@ export function UPDATEUsername(user_uuid: string, newUsername: string, callback:
 }
 
 export function UPDATEPassword(user_uuid: string, newPassword: string, callback: (status: boolean, newPassword: string) => void) {
-    PATCH(`/User/${user_uuid}/Password`, ContentType.JSON, newPassword, new SettingsManager().User.token).then((resp: NCAPIResponse) => {
-        if (resp.status === 200) callback(true, newPassword);
-        else callback(false, "");
-    });
+  PATCH(`/User/${user_uuid}/Password`, ContentType.JSON, newPassword, new SettingsManager().User.token).then((resp: NCAPIResponse) => {
+    if (resp.status === 200) callback(true, newPassword);
+    else callback(false, "");
+  });
 }
 
 export function UPDATEEmail(user_uuid: string, newEmail: string, callback: (status: boolean, newEmail: string) => void) {
-    PATCH(`/User/${user_uuid}/Email`, ContentType.JSON, newEmail, new SettingsManager().User.token).then((resp: NCAPIResponse) => {
-        if (resp.status === 200) callback(true, newEmail);
-        else callback(false, "");
-    });
+  PATCH(`/User/${user_uuid}/Email`, ContentType.JSON, newEmail, new SettingsManager().User.token).then((resp: NCAPIResponse) => {
+    if (resp.status === 200) callback(true, newEmail);
+    else callback(false, "");
+  });
 }
 
 export function DELETEUser(user_uuid: string, callback: (status: boolean) => void) {
-    DELETE(`/User/${user_uuid}`, new SettingsManager().User.token).then((resp: NCAPIResponse) => {
-        if (resp.status === 200) callback(true);
-        else callback(false);
-    });
+  DELETE(`/User/${user_uuid}`, new SettingsManager().User.token).then((resp: NCAPIResponse) => {
+    if (resp.status === 200) callback(true);
+    else callback(false);
+  });
 }
 
 // User Keystore
 export async function GETKey(user_uuid: string, key_user_uuid: string) : Promise<string | undefined> {
-    const resp = await GET(`/User/${user_uuid}/Keystore/${key_user_uuid}`, new SettingsManager().User.token);
-    if (resp.status === 200) return resp.payload as string;
-    return undefined;
+  const resp = await GET(`/User/${user_uuid}/Keystore/${key_user_uuid}`, new SettingsManager().User.token);
+  if (resp.status === 200) return resp.payload as string;
+  return undefined;
 }
 
 export async function GETKeystore(user_uuid: string) : Promise<Dictionary<string> | undefined> {
-    const resp = await GET(`/User/${user_uuid}/Keystore`, new SettingsManager().User.token);
-    if (resp.status === 200) {
-        const d = new Dictionary<string>();
-        d._dict = resp.payload as Indexable<string>
-        return d;
-    }
-    return new Dictionary<string>();
+  const resp = await GET(`/User/${user_uuid}/Keystore`, new SettingsManager().User.token);
+  if (resp.status === 200) {
+    const d = new Dictionary<string>();
+    d._dict = resp.payload as Indexable<string>
+    return d;
+  }
+  return new Dictionary<string>();
 }
 
 export async function SETKey(user_uuid: string, key_user_uuid: string, key: string) : Promise<boolean> {
-    const resp = await POST(`/User/${user_uuid}/Keystore/${key_user_uuid}`, ContentType.JSON, key, new SettingsManager().User.token);
-    if (resp.status === 200) return true;
-    return false;
+  const resp = await POST(`/User/${user_uuid}/Keystore/${key_user_uuid}`, ContentType.JSON, key, new SettingsManager().User.token);
+  if (resp.status === 200) return true;
+  return false;
 }
 
 // Friend
@@ -87,30 +87,29 @@ export async function SETKey(user_uuid: string, key_user_uuid: string, key: stri
 
 
 // Messages
-
 async function DecryptMessage(message: IMessageProps) : Promise<IMessageProps> {
-    const Manager = new SettingsManager();
-    const key = await DecryptBase64WithPriv(Manager.User.keyPair.PrivateKey, new Base64String(message.encryptedKeys[Manager.User.uuid]));
-    if (message.content.length !== 0) {
-      // HACK Please for the love of all that is good fix this, it is only to make the client work with old keys and is jank af
-      let decryptedMessage = undefined;
-      try {
-        decryptedMessage = await DecryptBase64(Base64String.CreateBase64String(FromBase64String(FromUint8Array(key.Uint8Array))), new AESMemoryEncryptData(message.iv, message.content));
-      }
-      catch {
-        // This is the correct way to do it
-        decryptedMessage = await DecryptBase64(key, new AESMemoryEncryptData(message.iv, message.content));
-      }
-      message.content = decryptedMessage.String;
+  const Manager = new SettingsManager();
+  const key = await DecryptBase64WithPriv(Manager.User.keyPair.PrivateKey, new Base64String(message.encryptedKeys[Manager.User.uuid]));
+  if (message.content.length !== 0) {
+    // HACK Please for the love of all that is good fix this, it is only to make the client work with old keys and is jank af
+    let decryptedMessage = undefined;
+    try {
+      decryptedMessage = await DecryptBase64(Base64String.CreateBase64String(FromBase64String(FromUint8Array(key.Uint8Array))), new AESMemoryEncryptData(message.iv, message.content));
     }
-    for (let a = 0; a < message.attachments.length; a++) {
-      const attachment = message.attachments[a];
-      const content = await GETFile(attachment.contentUrl, Manager.User.token);
-      // HACK Please fix this, it is only to make the client work with old keys
-      const decryptedContent = await DecryptUint8Array(Base64String.CreateBase64String(FromBase64String(FromUint8Array(key.Uint8Array))), new AESMemoryEncryptData( message.iv, content.payload as Uint8Array));
-      message.attachments[a].content = decryptedContent;
+    catch {
+      // This is the correct way to do it
+      decryptedMessage = await DecryptBase64(key, new AESMemoryEncryptData(message.iv, message.content));
     }
-    return message;
+    message.content = decryptedMessage.String;
+  }
+  for (let a = 0; a < message.attachments.length; a++) {
+    const attachment = message.attachments[a];
+    const content = await GETFile(attachment.contentUrl, Manager.User.token);
+    // HACK Please fix this, it is only to make the client work with old keys
+    const decryptedContent = await DecryptUint8Array(Base64String.CreateBase64String(FromBase64String(FromUint8Array(key.Uint8Array))), new AESMemoryEncryptData( message.iv, content.payload as Uint8Array));
+    message.attachments[a].content = decryptedContent;
+  }
+  return message;
 }
 
 export async function GETMessage(channel_uuid: string, message_id: string) : Promise<undefined | IMessageProps> {
