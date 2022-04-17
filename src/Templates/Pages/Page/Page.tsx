@@ -6,9 +6,11 @@ interface PageProps extends Page {
 
 }
 
-function Page({ ContextMenu, HelpPopup, widthConstrained, changeTitleCallback }: PageProps) {
+function Page({ className, ContextMenu, HelpPopup, widthConstrained, changeTitleCallback }: PageProps) {
+  const classNames = useClassNames("ViewContainer", className);
+
   return (
-    <PageContainer noPadding>
+    <PageContainer className={classNames} noPadding>
       <div className="PageContainer">
 
       </div>

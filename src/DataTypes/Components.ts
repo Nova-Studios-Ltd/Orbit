@@ -34,6 +34,7 @@ export interface NCAPIComponent extends NCComponent {
 }
 
 export interface Page {
+  className?: string,
   HelpPopup?: HelpPopupProps,
   ContextMenu?: ContextMenuProps,
   widthConstrained?: boolean,
@@ -41,6 +42,7 @@ export interface Page {
 }
 
 export interface View {
+  className?: string,
   path?: unknown,
   HelpPopup?: HelpPopupProps,
   ContextMenu?: ContextMenuProps,
