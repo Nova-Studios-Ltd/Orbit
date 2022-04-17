@@ -110,8 +110,7 @@ function RegisterPage({ HelpPopup, widthConstrained, changeTitleCallback }: Regi
         <TextField id="passwordField" className="RegisterFormItem" type="password" required label={Localizations_RegisterPage("TextField_Label-Password")} placeholder={Localizations_RegisterPage("TextField_Placeholder-Password")} value={password} onChange={TextFieldChanged} helperText={
           <>
             <Typography variant="caption" color="red">{Localizations_RegisterPage("TextField_HelperText-ForgottenPasswordWarning").toUpperCase()}</Typography>
-            <br />
-            <Link underline="none" style={{ cursor: "pointer" }} onClick={(event) => {
+            <Link underline="none" style={{ cursor: "pointer", marginLeft: 8 }} onClick={(event) => {
               if (HelpPopup) {
                 HelpPopup.setAnchor(event.currentTarget);
                 HelpPopup.setContent(E2ELearnMore);
