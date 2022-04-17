@@ -30,6 +30,7 @@ function MainView({ path, ContextMenu, HelpPopup, widthConstrained, changeTitleC
 
   const onChannelClick = (channel: ChannelProps) => {
     console.log("Channel clicked: ", channel);
+    navigate(MainViewRoutes.Chat);
     setSelectedChannel({ table_Id: channel.channelID, channelName: channel.channelName, channelIcon: channel.channelIconSrc, members: channel.channelMembers, channelType: channel.isGroup } as IRawChannelProps);
 
     if (channel && channel.channelID) {
