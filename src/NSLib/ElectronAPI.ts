@@ -45,10 +45,28 @@ export function GetIPCRenderer() : IPCRenderer {
 
 /**
  * Triggers a file download, automaticly handles switching to native
+ * @param file Uint8Array containing the file contents
+ * @param filename Optional name
+ */
+export async function DownloadUint8ArrayFile(file: Uint8Array, filename = "unknown") {
+  if (IsElectron()) {
+    GetIPCRenderer().send("SaveFile", file, filename);
+  }
+  else {
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(new Blob([file]));
+    link.href = url;
+    link.download = url;
+    link.click();
+  }
+}
+
+/**
+ * Triggers a file download, automaticly handles switching to native
  * @param file Blob containing the file contents
  * @param filename Optional name
  */
-export async function DownloadFile(file: Blob, filename = "unknown") {
+ export async function DownloadBlobFile(file: Blob, filename = "unknown") {
   if (IsElectron()) {
     GetIPCRenderer().send("SaveFile", new Uint8Array(await file.arrayBuffer()), filename);
   }
@@ -60,6 +78,8 @@ export async function DownloadFile(file: Blob, filename = "unknown") {
     link.click();
   }
 }
+
+
 
 /**
  * Triggers a file upload, automaticly handles switching to native
