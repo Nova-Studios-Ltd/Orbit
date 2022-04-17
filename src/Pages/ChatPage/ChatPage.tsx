@@ -40,7 +40,7 @@ function ChatPage({ ContextMenu, channels, messages, selectedChannel, onChannelE
   const MessageInputChangedHandler = (event: MessageInputChangeEvent) => {
     const value = event && event.value ? event.value : "";
     setMessageInputValue(value);
-  }
+  };
 
   const MessageInputSendHandler = (event: MessageInputSendEvent) => {
     if (selectedChannel === undefined || event.value === undefined || event.value === "") return;
@@ -50,7 +50,7 @@ function ChatPage({ ContextMenu, channels, messages, selectedChannel, onChannelE
         setMessageAttachments([]);
       }
     });
-  }
+  };
 
   const handleFileUpload = () => {
     UploadFile().then((files) => {
@@ -59,7 +59,7 @@ function ChatPage({ ContextMenu, channels, messages, selectedChannel, onChannelE
         setMessageAttachments([...MessageAttachments, new MessageAttachment(v.FileContents, v.Filename)]);
       });
     });
-  }
+  };
 
   return (
     <PageContainer noPadding>

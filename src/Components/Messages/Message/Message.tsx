@@ -21,14 +21,21 @@ function Message({ ContextMenu, content, id, avatarURL, author, timestamp, onMes
   const Localizations_Message = useTranslation("Message").t;
   const [isHovering, setHoveringState] = useState(false);
 
+  const isOwnMessage = true; // TODO: Add check between message ownership and current logged in user
+
   const editMessage = () => {
     if (onMessageEdit) onMessageEdit(filteredMessageProps);
     // TODO: Add message editing UI logic here
   }
 
+  const copyMessage = () => {
+    // TODO: Implement copying content to clipboard
+  }
+
   const messageContextMenuItems: ContextMenuItemProps[] = [
-    { children: Localizations_Message("ContextMenuItem-Edit"), onLeftClick: () => editMessage()},
-    { children: Localizations_Message("ContextMenuItem-Delete"), onLeftClick: () => { if (onMessageDelete) onMessageDelete(filteredMessageProps) }}
+    { children: Localizations_Message("ContextMenuItem-Copy"), onLeftClick: () => copyMessage()},
+    { disabled: !isOwnMessage, children: Localizations_Message("ContextMenuItem-Edit"), onLeftClick: () => editMessage()},
+    { disabled: !isOwnMessage, children: Localizations_Message("ContextMenuItem-Delete"), onLeftClick: () => { if (onMessageDelete) onMessageDelete(filteredMessageProps) }}
   ]
 
   const mouseHoverEventHandler = (isHovering: boolean) => {
