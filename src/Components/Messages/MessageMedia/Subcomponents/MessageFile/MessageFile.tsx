@@ -1,6 +1,6 @@
-import { Icon, Typography, IconButton } from "@mui/material";
+import { Icon, Typography, IconButton, useTheme } from "@mui/material";
+import { DownloadFile } from "NSLib/ElectronAPI";
 import { Download as DownloadIcon, InsertDriveFile as FileIcon } from '@mui/icons-material';
-import { useTheme } from "@mui/material";
 import useClassNames from "Hooks/useClassNames";
 
 import type { NCComponent } from "DataTypes/Components";
@@ -17,7 +17,11 @@ function MessageFile({ className, filename, filesize, content, url }: ComponentP
   const classNames = useClassNames("MessageFileContainer", className);
 
   const download = () => {
-
+    if (content) {
+      DownloadFile(content, filename);
+      return;
+    }
+    console.warn("File does not contain content to download");
   };
 
   return (
