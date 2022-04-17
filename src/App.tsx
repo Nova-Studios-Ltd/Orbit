@@ -83,9 +83,9 @@ function App() {
 
   Manager.ContainsCookie("LoggedIn").then(async (value: boolean) => {
     if (!value) return;
-    if (!location.pathname.toLowerCase().includes("/chat")) {
+    if (location.pathname.toLowerCase().includes(AuthViewRoutes.Login) || location.pathname.toLowerCase().includes(AuthViewRoutes.Register)) {
       Manager.WriteCookie("LoggedIn", "false");
-      navigate("/chat");
+      navigate(MainViewRoutes.Chat);
     }
   });
 
@@ -102,8 +102,8 @@ function App() {
         <Routes>
           <Route path="*" element={<ErrorView widthConstrained={widthConstrained} changeTitleCallback={setTitle} errorCode={404} />}></Route>
           <Route path="/" element={<AuthView widthConstrained={widthConstrained} changeTitleCallback={setTitle} path={AuthViewRoutes.Login} />} />
-          <Route path="/login" element={<AuthView widthConstrained={widthConstrained} changeTitleCallback={setTitle} path={AuthViewRoutes.Login} />} />
-          <Route path="/register" element={<AuthView widthConstrained={widthConstrained} changeTitleCallback={setTitle} HelpPopup={HelpPopup} path={AuthViewRoutes.Register} />} />
+          <Route path={AuthViewRoutes.Login} element={<AuthView widthConstrained={widthConstrained} changeTitleCallback={setTitle} path={AuthViewRoutes.Login} />} />
+          <Route path={AuthViewRoutes.Register} element={<AuthView widthConstrained={widthConstrained} changeTitleCallback={setTitle} HelpPopup={HelpPopup} path={AuthViewRoutes.Register} />} />
           <Route path="/chat" element={<MainView widthConstrained={widthConstrained} ContextMenu={ContextMenu} changeTitleCallback={setTitle} path={MainViewRoutes.Chat} />} />
           <Route path="/settings" element={<MainView widthConstrained={widthConstrained} changeTitleCallback={setTitle} path={MainViewRoutes.Settings} />} />
         </Routes>
