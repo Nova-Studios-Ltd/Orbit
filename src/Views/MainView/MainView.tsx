@@ -40,6 +40,11 @@ function MainView({ path, ContextMenu, HelpPopup, widthConstrained, changeTitleC
     }
   }
 
+  const onChannelCreate = (recipient: string) => {
+    console.log(`Request to create new channel with recipient ${recipient}`);
+    // TODO: Add Channel creation logic here
+  };
+
   const onChannelEdit = (channel: ChannelProps) => {
     console.log(`Request to edit channel ${channel.channelName}`);
     // TODO: Add Channel edit logic here
@@ -61,6 +66,23 @@ function MainView({ path, ContextMenu, HelpPopup, widthConstrained, changeTitleC
     if (await DELETEMessage(selectedChannel.table_Id, message.id as string)) {
       console.log(`Request to delete message ${message.id} successful`);
     }
+  };
+
+  const ChatPageProps = {
+    ContextMenu: ContextMenu,
+    widthConstrained: widthConstrained,
+    HelpPopup: HelpPopup,
+    channels: channels,
+    messages: messages,
+    selectedChannel: selectedChannel,
+    setSelectedChannel: setSelectedChannel,
+    onChannelCreate: onChannelCreate,
+    onChannelEdit: onChannelEdit,
+    onChannelDelete: onChannelDelete,
+    onChannelClick: onChannelClick,
+    onMessageEdit: onMessageEdit,
+    onMessageDelete: onMessageDelete,
+    changeTitleCallback: changeTitleCallback
   };
 
   useEffect(() => {
@@ -109,11 +131,11 @@ function MainView({ path, ContextMenu, HelpPopup, widthConstrained, changeTitleC
   const page = () => {
     switch (path) {
       case MainViewRoutes.Chat:
-        return (<ChatPage ContextMenu={ContextMenu} widthConstrained={widthConstrained} HelpPopup={HelpPopup} changeTitleCallback={changeTitleCallback} channels={channels} setSelectedChannel={setSelectedChannel} onChannelEdit={onChannelEdit} onChannelDelete={onChannelDelete} onChannelClick={onChannelClick} onMessageEdit={onMessageEdit} onMessageDelete={onMessageDelete} messages={messages} selectedChannel={selectedChannel} path={ChatViewRoutes.Chat} />);
+        return (<ChatPage {...ChatPageProps} path={ChatViewRoutes.Chat} />);
       case MainViewRoutes.Friends:
-        return (<ChatPage ContextMenu={ContextMenu} widthConstrained={widthConstrained} HelpPopup={HelpPopup} changeTitleCallback={changeTitleCallback} channels={channels} setSelectedChannel={setSelectedChannel} onChannelEdit={onChannelEdit} onChannelDelete={onChannelDelete} onChannelClick={onChannelClick} onMessageEdit={onMessageEdit} onMessageDelete={onMessageDelete} messages={messages} selectedChannel={selectedChannel} path={ChatViewRoutes.Friends} />);
+        return (<ChatPage {...ChatPageProps} path={ChatViewRoutes.Friends} />);
       case MainViewRoutes.Settings:
-        return (<SettingsPage ContextMenu={ContextMenu} widthConstrained={widthConstrained} HelpPopup={HelpPopup} changeTitleCallback={changeTitleCallback}  />);
+        return (<SettingsPage ContextMenu={ContextMenu} widthConstrained={widthConstrained} HelpPopup={HelpPopup} changeTitleCallback={changeTitleCallback} />);
       default:
         console.warn("[MainView] Invalid Page");
         return null;

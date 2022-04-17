@@ -18,6 +18,7 @@ interface ChatViewProps extends View {
   messages?: IMessageProps[],
   selectedChannel?: IRawChannelProps,
   MessageInputValue?: string,
+  onChannelCreate?: (recipient: string) => void,
   MessageInputChangedHandler: (event: MessageInputChangeEvent) => void,
   MessageInputSendHandler: (event: MessageInputSendEvent) => void,
   handleFileUpload?: () => void,
@@ -25,7 +26,7 @@ interface ChatViewProps extends View {
   onMessageDelete?: (message: MessageProps) => void
 }
 
-function ChatView({ className, ContextMenu, HelpPopup, widthConstrained, path, messages, selectedChannel, MessageInputValue, MessageInputChangedHandler, MessageInputSendHandler, handleFileUpload, onMessageEdit, onMessageDelete, changeTitleCallback }: ChatViewProps) {
+function ChatView({ className, ContextMenu, HelpPopup, widthConstrained, path, messages, selectedChannel, MessageInputValue, onChannelCreate, MessageInputChangedHandler, MessageInputSendHandler, handleFileUpload, onMessageEdit, onMessageDelete, changeTitleCallback }: ChatViewProps) {
   const classNames = useClassNames("ChatViewContainer", className);
 
   const page = () => {
@@ -39,7 +40,7 @@ function ChatView({ className, ContextMenu, HelpPopup, widthConstrained, path, m
           </>
         )
       case ChatViewRoutes.Friends:
-        return (<FriendPage ContextMenu={ContextMenu} widthConstrained={widthConstrained} HelpPopup={HelpPopup} changeTitleCallback={changeTitleCallback} />);
+        return (<FriendPage ContextMenu={ContextMenu} widthConstrained={widthConstrained} HelpPopup={HelpPopup} changeTitleCallback={changeTitleCallback} onChannelCreate={onChannelCreate} />);
       default:
         return null;
     }

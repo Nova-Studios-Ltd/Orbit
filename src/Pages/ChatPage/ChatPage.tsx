@@ -25,6 +25,7 @@ interface ChatPageProps extends Page {
   selectedChannel?: IRawChannelProps,
   path?: ChatViewRoutes,
   setSelectedChannel?: React.Dispatch<React.SetStateAction<IRawChannelProps>>,
+  onChannelCreate?: (recipient: string) => void,
   onChannelEdit?: (channel: ChannelProps) => void,
   onChannelDelete?: (channel: ChannelProps) => void,
   onChannelClick?: (channel: ChannelProps) => void,
@@ -32,7 +33,7 @@ interface ChatPageProps extends Page {
   onMessageDelete?: (message: MessageProps) => void
 }
 
-function ChatPage({ ContextMenu, widthConstrained, channels, messages, selectedChannel, path, setSelectedChannel, onChannelEdit, onChannelDelete, onChannelClick, onMessageEdit, onMessageDelete, changeTitleCallback }: ChatPageProps) {
+function ChatPage({ ContextMenu, widthConstrained, channels, messages, selectedChannel, path, setSelectedChannel, onChannelCreate, onChannelEdit, onChannelDelete, onChannelClick, onMessageEdit, onMessageDelete, changeTitleCallback }: ChatPageProps) {
   const navigate = useNavigate();
   const theme = useTheme();
   const Localizations_ChatPage = useTranslation("ChatPage").t;
@@ -82,7 +83,7 @@ function ChatPage({ ContextMenu, widthConstrained, channels, messages, selectedC
           </div>
           <ChannelList ContextMenu={ContextMenu} channels={channels} onChannelEdit={onChannelEdit} onChannelDelete={onChannelDelete} onChannelClick={onChannelClick} selectedChannel={selectedChannel} />
         </div>
-        <ChatView className="ChatPageContainerRight" ContextMenu={ContextMenu} widthConstrained={widthConstrained} messages={messages} selectedChannel={selectedChannel} MessageInputValue={MessageInputValue} MessageInputChangedHandler={MessageInputChangedHandler} MessageInputSendHandler={MessageInputSendHandler} handleFileUpload={handleFileUpload} onMessageEdit={onMessageEdit} onMessageDelete={onMessageDelete} path={path} />
+        <ChatView className="ChatPageContainerRight" ContextMenu={ContextMenu} widthConstrained={widthConstrained} messages={messages} selectedChannel={selectedChannel} MessageInputValue={MessageInputValue} onChannelCreate={onChannelCreate} MessageInputChangedHandler={MessageInputChangedHandler} MessageInputSendHandler={MessageInputSendHandler} handleFileUpload={handleFileUpload} onMessageEdit={onMessageEdit} onMessageDelete={onMessageDelete} path={path} />
       </div>
     </PageContainer>
   );

@@ -1,20 +1,24 @@
-import { Typography } from "@mui/material";
+import { Button, Typography } from "@mui/material";
 
 import PageContainer from "Components/Containers/PageContainer/PageContainer";
-import MessageFile from "Components/Messages/MessageMedia/Subcomponents/MessageFile/MessageFile";
 
 import type { Page } from "DataTypes/Components";
 
 interface ChatPageProps extends Page {
-
+  onChannelCreate?: (recipient: string) => void,
 }
 
-function FriendPage({ ContextMenu, HelpPopup, widthConstrained, changeTitleCallback }: ChatPageProps) {
+function FriendPage({ ContextMenu, HelpPopup, widthConstrained, changeTitleCallback, onChannelCreate }: ChatPageProps) {
+  const createChannel = () => {
+    if (onChannelCreate) {
+      onChannelCreate("");
+    }
+  }
+
   return (
     <PageContainer noPadding>
       <div className="FriendPageContainer">
-        <Typography variant="body1">How Lonely</Typography>
-        <MessageFile filename="Test File" filesize={0} url="about:blank" />
+        <Button onClick={createChannel}>Create Channel</Button>
       </div>
     </PageContainer>
   );
