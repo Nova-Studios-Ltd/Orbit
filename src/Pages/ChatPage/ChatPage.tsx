@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { SENDMessage } from "NSLib/APIEvents";
+import { UploadFile } from "NSLib/ElectronAPI";
 
 import PageContainer from "Components/Containers/PageContainer/PageContainer";
 import MessageAttachment from "DataTypes/MessageAttachment";
@@ -49,6 +50,13 @@ function ChatPage({ ContextMenu, channels, messages, selectedChannel, onChannelE
     });
   }
 
+  const handleFileUpload = () => {
+    UploadFile().then((file) => {
+      // TODO: Implement the actual "uploading to the server" part
+      console.log(file);
+    });
+  }
+
   return (
     <PageContainer noPadding>
       <div className="ChatPageContainer">
@@ -58,7 +66,7 @@ function ChatPage({ ContextMenu, channels, messages, selectedChannel, onChannelE
         <div className="ChatPageContainerRight">
           <MessageCanvasHeader selectedChannel={selectedChannel}></MessageCanvasHeader>
           <MessageCanvas className="ChatPageContainerItem" ContextMenu={ContextMenu} messages={messages} onMessageEdit={onMessageEdit} onMessageDelete={onMessageDelete} />
-          <MessageInput className="ChatPageContainerItem" value={MessageInputValue} onChange={MessageInputChangedHandler} onSend={MessageInputSendHandler} />
+          <MessageInput className="ChatPageContainerItem" value={MessageInputValue} onFileUpload={handleFileUpload} onChange={MessageInputChangedHandler} onSend={MessageInputSendHandler} />
         </div>
       </div>
     </PageContainer>
