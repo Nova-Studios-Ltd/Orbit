@@ -26,7 +26,7 @@ export function GETUserChannels(callback: (channels: string[]) => void) {
 }
 
 export async function GETUserUUID(username: string, discriminator: string) : Promise<string | undefined> {
-    const resp = await GET(`/User/${username}/${discriminator}`, "");
+    const resp = await GET(`/User/${username}/${discriminator}/UUID`, "", false);
     if (resp.status === 200) return resp.payload;
     return undefined;
 }
@@ -91,29 +91,14 @@ async function DecryptMessage(message: IMessageProps) : Promise<IMessageProps> {
   const Manager = new SettingsManager();
   const key = await DecryptBase64WithPriv(Manager.User.keyPair.PrivateKey, new Base64String(message.encryptedKeys[Manager.User.uuid]));
   if (message.content.length !== 0) {
-    // HACK Please for the love of all that is good fix this, it is only to make the client work with old keys and is jank af
-    let decryptedMessage = undefined;
-    try {
-      decryptedMessage = await DecryptBase64(Base64String.CreateBase64String(FromBase64String(FromUint8Array(key.Uint8Array))), new AESMemoryEncryptData(message.iv, message.content));
-    }
-    catch {
-      // This is the correct way to do it
-      decryptedMessage = await DecryptBase64(key, new AESMemoryEncryptData(message.iv, message.content));
-    }
+    const  decryptedMessage = await DecryptBase64(key, new AESMemoryEncryptData(message.iv, message.content));
     message.content = decryptedMessage.String;
   }
   for (let a = 0; a < message.attachments.length; a++) {
     const attachment = message.attachments[a];
     const content = await GETFile(attachment.contentUrl, Manager.User.token);
-    // HACK Please fix this, it is only to make the client work with old keys
-    try {
-      const decryptedContent = await DecryptUint8Array(Base64String.CreateBase64String(FromBase64String(FromUint8Array(key.Uint8Array))), new AESMemoryEncryptData( message.iv, content.payload as Uint8Array));
-      message.attachments[a].content = decryptedContent;
-    }
-    catch {
-      const decryptedContent = await DecryptUint8Array(key, new AESMemoryEncryptData( message.iv, content.payload as Uint8Array));
-      message.attachments[a].content = decryptedContent;
-    }
+    const decryptedContent = await DecryptUint8Array(key, new AESMemoryEncryptData( message.iv, content.payload as Uint8Array));
+    message.attachments[a].content = decryptedContent;
   }
   return message;
 }
@@ -198,9 +183,9 @@ export async function DELETEMessage(channel_uuid: string, message_id: string) : 
 
 // Channels
 export async function GETChannel(channel_uuid: string) : Promise<IRawChannelProps | undefined> {
-    const resp = await GET(`/Channel/${channel_uuid}`, new SettingsManager().User.token);
-    if (resp.status === 200) return resp.payload as IRawChannelProps;
-    return undefined;
+  const resp = await GET(`/Channel/${channel_uuid}`, new SettingsManager().User.token);
+  if (resp.status === 200) return resp.payload as IRawChannelProps;
+  return undefined;
 }
 
 export function CREATEChannel(recipient_uuid: string, callback: (created: boolean) => void) {

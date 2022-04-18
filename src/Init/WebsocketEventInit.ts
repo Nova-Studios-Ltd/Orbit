@@ -1,7 +1,7 @@
 import NCEvents from "NSLib/NCEvents";
 import { SettingsManager } from "NSLib/SettingsManager";
 import IWebSocketEvent from "../Interfaces/IWebsocketEvent";
-import { GETKey, GETKeystore, GETMessage } from "../NSLib/APIEvents";
+import { GETChannel, GETKey, GETKeystore, GETMessage } from "../NSLib/APIEvents";
 import NCWebsocket from "../NSLib/NCWebsocket";
 
 const Manager = new SettingsManager();
@@ -41,7 +41,9 @@ async function OnMessageEdit(event: IWebSocketEvent) {
 }
 
 async function OnCreateChannel(event: IWebSocketEvent) {
-    // TODO Implement channel creation logic
+  const channel = await GETChannel(event.Channel);
+  if (channel === undefined) return;
+  Events.send("NewChannel", channel);
 }
 
 async function OnDeleteChannel(event: IWebSocketEvent) {

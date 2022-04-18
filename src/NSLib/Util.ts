@@ -34,3 +34,25 @@ export async function OpenCustomProto(url: string) : Promise<boolean> {
     }, 5000);
   })
 }
+
+export function ComputeCSSDims(image: Dimensions, desired: Dimensions) : Dimensions {
+  if (image.width <= 0 && image.width <= 0) return new Dimensions(0, 0);
+  const xRatio = image.width / desired.width;
+  const yRatio = image.height / desired.height;
+  const ratio = Math.max(xRatio, yRatio);
+
+  let nnx = Math.floor(image.width / ratio);
+  let nny = Math.floor(image.height / ratio);
+
+  if (image.width < desired.width && image.height < desired.width)
+  {
+    nnx = image.width;
+    nny = image.height;
+  }
+
+  return new Dimensions(nnx, nny);
+}
+
+export function isValidUsername(username: string) {
+  return new RegExp(/^([\S]{1,})#([0-9]{4}$)/g).test(username);
+}

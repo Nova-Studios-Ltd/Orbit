@@ -32,14 +32,17 @@ export enum ContentType {
  * @param token Optional security token
  * @returns A NCAPIResponse with the data from the NovaChat API
  */
-export async function GET(endpoint: string, token?: string) : Promise<NCAPIResponse> {
+export async function GET(endpoint: string, token?: string, json: boolean = true) : Promise<NCAPIResponse> {
   const resp = await fetch(`https://api.novastudios.tk/${endpoint}`, {
     method: "GET",
     headers: {
       "Authorization": token || ""
     }
   });
-  return new NCAPIResponse(resp.status, resp.statusText, await resp.json())
+  if (json)
+    return new NCAPIResponse(resp.status, resp.statusText, await resp.json());
+  else
+    return new NCAPIResponse(resp.status, resp.statusText, await resp.text());
 }
 
 /**

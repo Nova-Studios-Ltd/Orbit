@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { AutoLogin } from "Init/AuthHandler";
 import { SettingsManager } from "NSLib/SettingsManager";
 import { Events } from "Init/WebsocketEventInit";
-import { DELETEMessage, GETChannel, GETMessages, GETUserChannels } from "NSLib/APIEvents";
+import { CREATEChannel, DELETEMessage, GETChannel, GETMessages, GETUserChannels, GETUserUUID } from "NSLib/APIEvents";
 
 import ViewContainer from "Components/Containers/ViewContainer/ViewContainer";
 import ChatPage from "Pages/ChatPage/ChatPage";
@@ -16,6 +16,7 @@ import type { ChannelProps } from "Components/Channels/Channel/Channel";
 import type { IMessageProps } from "Interfaces/IMessageProps";
 import type { MessageProps } from "Components/Messages/Message/Message";
 import { AuthViewRoutes, ChatViewRoutes, MainViewRoutes } from "DataTypes/Routes";
+import { isValidUsername } from "NSLib/Util";
 
 interface MainViewProps extends View {
   path: MainViewRoutes
@@ -40,10 +41,14 @@ function MainView({ path, ContextMenu, HelpPopup, widthConstrained, changeTitleC
     }
   }
 
-  const onChannelCreate = (recipient: string) => {
+  const onChannelCreate = async (recipient: string) => {
     console.log(`Request to create new channel with recipient ${recipient}`);
-    // TODO: Add Channel creation logic here
-    // Convert recipient name to UUID
+    if (isValidUsername(recipient)) {
+      const ud = recipient.split("#");
+      const user = await GETUserUUID(ud[0], ud[1]);
+      if (user === undefined) return;
+      CREATEChannel(user, () => {});
+    }
   };
 
   const onChannelEdit = (channel: ChannelProps) => {
@@ -101,6 +106,10 @@ function MainView({ path, ContextMenu, HelpPopup, widthConstrained, changeTitleC
         }
         return [...prevState];
       })
+    });
+
+    Events.on("NewChannel", (channel: IRawChannelProps) => {
+      setChannels([...channels, channel]);
     });
 
     return (() => {
