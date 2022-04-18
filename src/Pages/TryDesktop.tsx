@@ -1,23 +1,27 @@
 import logo from '../logo.svg';
 import '../App.css';
-import { GetIPCRenderer } from '../NSLib/ElectronAPI';
-import { CustomLink } from './Components/CustomLink';
 
 export default function TD() {
     return (
       <div className="App">
         <header className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
+          <h2>
+            Orbit Web Client
+          </h2>
           <p>
-            Welcome to the homepage of Orbits Web Client, it's not ready yet so please be patient
+            Welcome to Orbit! Orbit is currently under development and is not ready yet. However, when it is, it will be live here.
           </p>
-          <a
+          <p>
+            In the meantime, perhaps give our <a
             className="App-link"
             href="https://novastudios.tk/NC3"
             rel="noopener noreferrer"
           >
-            Try Our Desktop Client
-          </a>
+            Desktop Client
+          </a> a try?
+          </p>
+          <caption>(nvm it's broken)</caption>
         </header>
       </div>
     );
