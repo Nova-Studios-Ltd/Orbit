@@ -28,7 +28,6 @@ function LoginPage({ widthConstrained, changeTitleCallback }: LoginPageProps) {
 
   const login = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    console.log("Logging in")
 
     LoginNewUser(email, password).then((status: LoginStatus) => {
       if (status === LoginStatus.Success) navigate(MainViewRoutes.Chat);

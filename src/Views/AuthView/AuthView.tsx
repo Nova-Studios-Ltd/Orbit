@@ -6,7 +6,7 @@ import RegisterPage from "Pages/RegisterPage/RegisterPage";
 import ViewContainer from "Components/Containers/ViewContainer/ViewContainer";
 
 import type { View } from "DataTypes/Components";
-import GenerateRandomColor from "ColorGeneration";
+import GenerateRandomColor from "NSLib/ColorGeneration";
 import { AuthViewRoutes } from "DataTypes/Routes";
 
 interface AuthViewProps extends View {

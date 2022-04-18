@@ -1,25 +1,11 @@
 @import "Subcomponents/MessageFile/MessageFile.css";
+@import "Subcomponents/MessageImage/MessageImage.css";
+@import "Subcomponents/MessageVideo/MessageVideo.css";
 
 .MessageMediaContainer {
   border-radius: var(--global-border-radius);
 
   width: 20rem;
-}
-
-.MessageMediaImage {
-  border-radius: var(--global-border-radius);
-
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-}
-
-.MessageMediaVideo {
-  border-radius: var(--global-border-radius);
-
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
 }
 
 @media only screen and (max-width: 600px) {

@@ -25,6 +25,9 @@ function MessageVideo({ className, contentRef, content, contentUrl, fileName, fi
   return (
     <div className={classNames} style={{ backgroundColor: theme.palette.background.paper }}>
       <video className="MessageMediaVideo" src={contentRef.current} />
+      <div className="MessageMediaVideoOverlay">
+
+      </div>
     </div>
   )
 }

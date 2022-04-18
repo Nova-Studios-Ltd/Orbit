@@ -9,6 +9,7 @@ import MessageImage from "./Subcomponents/MessageImage/MessageImage";
 import MessageVideo from "./Subcomponents/MessageVideo/MessageVideo";
 
 import type { NCComponent } from "DataTypes/Components";
+import MimeTypeParser, { FileType } from "NSLib/MimeTypeParser";
 
 export interface MessageMediaProps extends NCComponent {
   content?: Uint8Array,
@@ -40,10 +41,11 @@ function MessageMedia({ className, content, contentUrl, fileName, mimeType, file
 
   const mediaElement = () => {
     if (mimeType && mimeType.length > 0) {
-      switch (mimeType) {
-        case "image": // TODO: Change this to actually match image mime type
+      const parsedMimeType = new MimeTypeParser(mimeType).getGeneralizedFileType();
+      switch (parsedMimeType) {
+        case FileType.Image:
           return (<MessageImage contentRef={contentRef} content={content} contentUrl={contentUrl} fileName={fileName} mimeType={mimeType} fileSize={fileSize} contentWidth={contentWidth} contentHeight={contentHeight} />);
-        case "video": // TODO: Change this to actually match video mime type
+        case FileType.Video:
           return (<MessageVideo contentRef={contentRef} content={content} contentUrl={contentUrl} fileName={fileName} mimeType={mimeType} fileSize={fileSize} contentWidth={contentWidth} contentHeight={contentHeight} />);
         default:
           return (<MessageFile fileName={fileName} fileSize={fileSize} content={content} url={contentUrl} />);

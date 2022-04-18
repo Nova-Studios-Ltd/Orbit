@@ -1,9 +1,13 @@
 .MessageMediaImageContainer {
-
+  border-radius: var(--global-border-radius);
 }
 
 .MessageMediaImage {
+  border-radius: var(--global-border-radius);
 
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 
 .MessageMediaImageOverlay {
