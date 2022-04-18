@@ -30,7 +30,6 @@ function MainView({ path, ContextMenu, HelpPopup, widthConstrained, changeTitleC
   const [messages, setMessages] = useState([] as IMessageProps[]);
 
   const onChannelClick = (channel: ChannelProps) => {
-    console.log("Channel clicked: ", channel);
     navigate(MainViewRoutes.Chat);
     setSelectedChannel({ table_Id: channel.channelID, channelName: channel.channelName, channelIcon: channel.channelIconSrc, members: channel.channelMembers, channelType: channel.isGroup } as IRawChannelProps);
 
@@ -42,7 +41,6 @@ function MainView({ path, ContextMenu, HelpPopup, widthConstrained, changeTitleC
   }
 
   const onChannelCreate = async (recipient: string) => {
-    console.log(`Request to create new channel with recipient ${recipient}`);
     if (isValidUsername(recipient)) {
       const ud = recipient.split("#");
       const user = await GETUserUUID(ud[0], ud[1]);
@@ -67,7 +65,6 @@ function MainView({ path, ContextMenu, HelpPopup, widthConstrained, changeTitleC
   };
 
   const onMessageDelete = async (message: MessageProps) => {
-    console.log(`Request to delete message ${message.id}`);
     if (message.id === undefined) return;
     if (await DELETEMessage(selectedChannel.table_Id, message.id as string)) {
       console.log(`Request to delete message ${message.id} successful`);
@@ -135,8 +132,6 @@ function MainView({ path, ContextMenu, HelpPopup, widthConstrained, changeTitleC
     });
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  console.log(new SettingsManager().User);
 
   const page = () => {
     switch (path) {

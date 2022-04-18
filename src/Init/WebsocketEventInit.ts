@@ -4,7 +4,6 @@ import IWebSocketEvent from "../Interfaces/IWebsocketEvent";
 import { GETChannel, GETKey, GETKeystore, GETMessage } from "../NSLib/APIEvents";
 import NCWebsocket from "../NSLib/NCWebsocket";
 
-const Manager = new SettingsManager();
 export const Events = new NCEvents();
 export default function WebsocketInit(Websocket: NCWebsocket) {
   Websocket.CreateEvent(-1, () => console.log("<Beat>"));
@@ -51,18 +50,19 @@ async function OnDeleteChannel(event: IWebSocketEvent) {
 }
 
 async function OnAddNewKey(event: IWebSocketEvent) {
-    const key = await GETKey(Manager.User.uuid, event.keyUserUUID);
-    if (key === undefined) return;
-    Manager.WriteKey(event.keyUserUUID, key);
+  const key = await GETKey(event.keyUserUUID);
+  if (key === undefined) return;
+  new SettingsManager().WriteKey(event.keyUserUUID, key);
 }
 
 async function OnRemoveKey(event: IWebSocketEvent) {
-    Manager.ClearKey(event.keyUserUUID);
+  new SettingsManager().ClearKey(event.keyUserUUID);
 }
 
 async function OnKeystoreReload(event: IWebSocketEvent) {
-    const keystore = await GETKeystore(Manager.User.uuid);
-    if (keystore === undefined) return;
-    await Manager.ClearKeys();
-    Manager.LoadKeys(keystore);
+  const Manager = new SettingsManager();
+  const keystore = await GETKeystore();
+  if (keystore === undefined) return;
+  await Manager.ClearKeys();
+  Manager.LoadKeys(keystore);
 }

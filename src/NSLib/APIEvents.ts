@@ -31,43 +31,43 @@ export async function GETUserUUID(username: string, discriminator: string) : Pro
     return undefined;
 }
 
-export function UPDATEUsername(user_uuid: string, newUsername: string, callback: (status: boolean, newUsername: string) => void) {
-    PATCH(`/User/${user_uuid}/Username`, ContentType.JSON, newUsername, new SettingsManager().User.token).then((resp: NCAPIResponse) => {
+export function UPDATEUsername(newUsername: string, callback: (status: boolean, newUsername: string) => void) {
+    PATCH(`/User/@me/Username`, ContentType.JSON, newUsername, new SettingsManager().User.token).then((resp: NCAPIResponse) => {
         if (resp.status === 200) callback(true, newUsername);
         else callback(false, "");
     });
 }
 
-export function UPDATEPassword(user_uuid: string, newPassword: string, callback: (status: boolean, newPassword: string) => void) {
-  PATCH(`/User/${user_uuid}/Password`, ContentType.JSON, newPassword, new SettingsManager().User.token).then((resp: NCAPIResponse) => {
+export function UPDATEPassword(newPassword: string, callback: (status: boolean, newPassword: string) => void) {
+  PATCH(`/User/@me/Password`, ContentType.JSON, newPassword, new SettingsManager().User.token).then((resp: NCAPIResponse) => {
     if (resp.status === 200) callback(true, newPassword);
     else callback(false, "");
   });
 }
 
-export function UPDATEEmail(user_uuid: string, newEmail: string, callback: (status: boolean, newEmail: string) => void) {
-  PATCH(`/User/${user_uuid}/Email`, ContentType.JSON, newEmail, new SettingsManager().User.token).then((resp: NCAPIResponse) => {
+export function UPDATEEmail(newEmail: string, callback: (status: boolean, newEmail: string) => void) {
+  PATCH(`/User/@me/Email`, ContentType.JSON, newEmail, new SettingsManager().User.token).then((resp: NCAPIResponse) => {
     if (resp.status === 200) callback(true, newEmail);
     else callback(false, "");
   });
 }
 
-export function DELETEUser(user_uuid: string, callback: (status: boolean) => void) {
-  DELETE(`/User/${user_uuid}`, new SettingsManager().User.token).then((resp: NCAPIResponse) => {
+export function DELETEUser(callback: (status: boolean) => void) {
+  DELETE(`/User/@me`, new SettingsManager().User.token).then((resp: NCAPIResponse) => {
     if (resp.status === 200) callback(true);
     else callback(false);
   });
 }
 
 // User Keystore
-export async function GETKey(user_uuid: string, key_user_uuid: string) : Promise<string | undefined> {
-  const resp = await GET(`/User/${user_uuid}/Keystore/${key_user_uuid}`, new SettingsManager().User.token);
+export async function GETKey(key_user_uuid: string) : Promise<string | undefined> {
+  const resp = await GET(`/User/@me/Keystore/${key_user_uuid}`, new SettingsManager().User.token);
   if (resp.status === 200) return resp.payload as string;
   return undefined;
 }
 
-export async function GETKeystore(user_uuid: string) : Promise<Dictionary<string> | undefined> {
-  const resp = await GET(`/User/${user_uuid}/Keystore`, new SettingsManager().User.token);
+export async function GETKeystore() : Promise<Dictionary<string> | undefined> {
+  const resp = await GET(`/User/@me/Keystore`, new SettingsManager().User.token);
   if (resp.status === 200) {
     const d = new Dictionary<string>();
     d._dict = resp.payload as Indexable<string>
@@ -76,8 +76,8 @@ export async function GETKeystore(user_uuid: string) : Promise<Dictionary<string
   return new Dictionary<string>();
 }
 
-export async function SETKey(user_uuid: string, key_user_uuid: string, key: string) : Promise<boolean> {
-  const resp = await POST(`/User/${user_uuid}/Keystore/${key_user_uuid}`, ContentType.JSON, key, new SettingsManager().User.token);
+export async function SETKey(key_user_uuid: string, key: string) : Promise<boolean> {
+  const resp = await POST(`/User/@me/Keystore/${key_user_uuid}`, ContentType.JSON, key, new SettingsManager().User.token);
   if (resp.status === 200) return true;
   return false;
 }
@@ -157,7 +157,7 @@ export function SENDMessage(channel_uuid: string, contents: string, rawAttachmen
               }
           }
           encKeys[Manager.User.uuid] = (await EncryptBase64WithPub(Manager.User.keyPair.PublicKey, messageKey)).Base64;
-          const mPost = await POST(`/Message/${channel_uuid}/Messages`, ContentType.JSON, JSON.stringify({Content: encryptedMessage.content as string, IV: encryptedMessage.iv, EncryptedKeys: encKeys, Attachments: attachments}), Manager.User.token)
+          const mPost = await POST(`/Channel/${channel_uuid}/Messages`, ContentType.JSON, JSON.stringify({Content: encryptedMessage.content as string, IV: encryptedMessage.iv, EncryptedKeys: encKeys, Attachments: attachments}), Manager.User.token)
           if (mPost.status === 200) callback(true);
           else callback(false);
           return;

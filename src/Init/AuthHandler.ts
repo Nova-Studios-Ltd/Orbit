@@ -52,7 +52,7 @@ export async function AutoLogin() : Promise<boolean> {
   Websocket.OnTerminated = () => console.log("Terminated!");
 
   // Fetch users keystore
-  const keyResp = await GETKeystore(Manager.User.uuid);
+  const keyResp = await GETKeystore();
   if (keyResp === undefined) return false;
   Manager.ClearKeys();
   Manager.LoadKeys(keyResp);
