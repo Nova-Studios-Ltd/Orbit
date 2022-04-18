@@ -1,0 +1,19 @@
+.MessageMediaAudioContainer {
+  border-radius: var(--global-border-radius);
+}
+
+.MessageMediaAudio {
+  border-radius: var(--global-border-radius);
+
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.MessageMediaAudioOverlay {
+
+}
+
+@media only screen and (max-width: 600px) {
+
+}

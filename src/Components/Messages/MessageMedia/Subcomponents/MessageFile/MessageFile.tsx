@@ -2,6 +2,7 @@ import { Icon, Typography, IconButton, useTheme } from "@mui/material";
 import { DownloadUint8ArrayFile } from "NSLib/ElectronAPI";
 import { Download as DownloadIcon, InsertDriveFile as FileIcon } from '@mui/icons-material';
 import useClassNames from "Hooks/useClassNames";
+import { useTranslation } from "react-i18next";
 
 import type { NCComponent } from "DataTypes/Components";
 
@@ -13,6 +14,7 @@ export interface MessageFileProps extends NCComponent {
 }
 
 function MessageFile({ className, fileName, fileSize, content, url }: MessageFileProps) {
+  const Localizations_MessageFile = useTranslation("MessageFile").t;
   const theme = useTheme();
   const classNames = useClassNames("MessageFileContainer", className);
 
@@ -34,7 +36,7 @@ function MessageFile({ className, fileName, fileSize, content, url }: MessageFil
       <div className='MessageFileContainerRight'>
         <div className='MessageFileContainerTextSection'>
           <Typography variant='subtitle1'>{fileName}</Typography>
-          <Typography variant='caption'>{fileSize} bytes</Typography>
+          <Typography variant='caption'>{fileSize} {Localizations_MessageFile("Typography-UnitsByte")}</Typography>
         </div>
         <IconButton className='MessageFileContainerDownloadButton' onClick={download}><DownloadIcon /></IconButton>
       </div>

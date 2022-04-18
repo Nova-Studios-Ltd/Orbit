@@ -7,6 +7,8 @@
   border-radius: var(--global-border-radius) !important;
 
   width: 100%;
+
+  transition: background-color 100ms linear;
 }
 
 .AvatarTextButtonLeft {

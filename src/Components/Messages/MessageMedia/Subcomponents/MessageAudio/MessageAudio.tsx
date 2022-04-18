@@ -7,14 +7,14 @@ import useContentRef from "Hooks/useContentRef";
 import type { NCComponent } from "DataTypes/Components";
 import type { MessageMediaProps } from "../../MessageMedia";
 
-export interface MessageVideoProps extends MessageMediaProps {
+export interface MessageAudioProps extends MessageMediaProps {
 
 }
 
-function MessageVideo({ className, content, contentUrl, fileName, fileSize, mimeType, contentWidth, contentHeight }: MessageVideoProps) {
+function MessageAudio({ className, content, contentUrl, fileName, fileSize, mimeType, contentWidth, contentHeight }: MessageAudioProps) {
   const theme = useTheme();
   const contentRef = useContentRef(content, contentUrl);
-  const classNames = useClassNames("MessageMediaVideoContainer", className);
+  const classNames = useClassNames("MessageMediaAudioContainer", className);
 
   const download = () => {
     if (content) {
@@ -26,12 +26,12 @@ function MessageVideo({ className, content, contentUrl, fileName, fileSize, mime
 
   return (
     <div className={classNames} style={{ backgroundColor: theme.palette.background.paper }}>
-      <video className="MessageMediaVideo" controls src={contentRef.current} />
-      <div className="MessageMediaVideoOverlay">
+      <audio className="MessageMediaAudio" controls src={contentRef.current} />
+      <div className="MessageMediaAudioOverlay">
 
       </div>
     </div>
   )
 }
 
-export default MessageVideo;
+export default MessageAudio;

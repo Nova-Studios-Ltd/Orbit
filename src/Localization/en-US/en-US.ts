@@ -15,8 +15,11 @@ import E404_EN_US from "./Pages/ErrorPages/E404.json";
 // Components
 import Channel_EN_US from "./Components/Channels/Channel.json";
 import ChannelList_EN_US from "./Components/Channels/ChannelList.json";
-import Message_EN_US from "./Components/Messages/Message.json";
+
 import MessageInput_EN_US from "./Components/Input/MessageInput.json";
+
+import Message_EN_US from "./Components/Messages/Message.json";
+import MessageFile_EN_US from "./Components/Messages/MessageFile.json";
 
 export const Localizations_EN_US = {
   // Common
@@ -37,6 +40,9 @@ export const Localizations_EN_US = {
   // Components
   Channel: Channel_EN_US,
   ChannelList: ChannelList_EN_US,
-  Message: Message_EN_US,
+
   MessageInput: MessageInput_EN_US,
+
+  Message: Message_EN_US,
+  MessageFile: MessageFile_EN_US,
 };
