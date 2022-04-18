@@ -100,6 +100,7 @@ async function DecryptMessage(message: IMessageProps) : Promise<IMessageProps> {
     const decryptedContent = await DecryptUint8Array(key, new AESMemoryEncryptData( message.iv, content.payload as Uint8Array));
     message.attachments[a].content = decryptedContent;
   }
+  console.log(message);
   return message;
 }
 
