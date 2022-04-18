@@ -63,10 +63,10 @@ function MessageInput({ className, value, onFileUpload, onChange, onSend }: Mess
 
   return (
     <div className={classNames} style={{ backgroundColor: theme.customPalette.messageInputBackground, borderColor: TextFieldFocused ? theme.palette.action.active : theme.palette.divider }}>
-      <IconButton onClick={() => uploadFile()}><UploadIcon /></IconButton>
+      <IconButton title={Localizations_MessageInput("IconButton-Tooltip-UploadFile")} aria-label={Localizations_MessageInput("IconButton-Tooltip-UploadFile")} onClick={() => uploadFile()}><UploadIcon /></IconButton>
       <input type="text" className="MessageInputField" maxLength={MaxTextFieldCharLength} style={{ backgroundColor: "transparent", color: theme.palette.text.primary, fontSize: theme.typography.subtitle1.fontSize }} placeholder={Localizations_MessageInput("TextField_Placeholder-TypeHerePrompt")} value={value} onFocus={() => inputFocusHandler(true)} onBlur={() => inputFocusHandler(false)} onChange={onChangeHandler} onKeyDown={onKeyDownHandler} />
       {RemainingTextFieldCharLength < TextFieldCharLengthDisplayThreshold ? <Typography variant="caption" alignSelf="center">{RemainingTextFieldCharLength}</Typography> : null}
-      <IconButton onClick={() => sendMessage()}><SendIcon /></IconButton>
+      <IconButton title={Localizations_MessageInput("IconButton-Tooltip-SendMessage")} aria-label={Localizations_MessageInput("IconButton-Tooltip-SendMessage")} onClick={() => sendMessage()}><SendIcon /></IconButton>
     </div>
   )
 }
