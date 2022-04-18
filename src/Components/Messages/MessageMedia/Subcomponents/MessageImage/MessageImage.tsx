@@ -2,16 +2,18 @@ import { Icon, Typography, IconButton, useTheme } from "@mui/material";
 import { DownloadUint8ArrayFile } from "NSLib/ElectronAPI";
 import { Download as DownloadIcon, InsertDriveFile as FileIcon } from '@mui/icons-material';
 import useClassNames from "Hooks/useClassNames";
+import useContentRef from "Hooks/useContentRef";
 
 import type { NCComponent } from "DataTypes/Components";
 import type { MessageMediaProps } from "../../MessageMedia";
 
 export interface MessageImageProps extends MessageMediaProps {
-  contentRef: React.MutableRefObject<string>
+
 }
 
-function MessageImage({ className, contentRef, content, contentUrl, fileName, fileSize, mimeType, contentWidth, contentHeight }: MessageImageProps) {
+function MessageImage({ className, content, contentUrl, fileName, fileSize, mimeType, contentWidth, contentHeight }: MessageImageProps) {
   const theme = useTheme();
+  const contentRef = useContentRef(content, contentUrl);
   const classNames = useClassNames("MessageMediaImageContainer", className);
 
   const download = () => {

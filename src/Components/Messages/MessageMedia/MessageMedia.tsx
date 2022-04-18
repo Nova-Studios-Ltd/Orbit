@@ -1,5 +1,5 @@
 import { useTheme } from "@mui/material";
-import { useRef } from "react";
+import { memo, useRef } from "react";
 import useClassNames from "Hooks/useClassNames";
 import { ComputeCSSDims } from "NSLib/Util";
 import Dimensions from "DataTypes/Dimensions";
@@ -24,17 +24,9 @@ export interface MessageMediaProps extends NCComponent {
 function MessageMedia({ className, content, contentUrl, fileName, mimeType, fileSize, contentWidth, contentHeight }: MessageMediaProps) {
   const theme = useTheme();
   const classNames = useClassNames("MessageMediaContainer", className);
-  const contentRef = useRef("");
-  const isMedia = false; // Add check to see if mimetype matches valid media (image, video)
   let dimensions = {};
 
-  if (content) {
-    contentRef.current = URL.createObjectURL(new Blob([content]));
-  } else if (contentUrl) {
-    contentRef.current = contentUrl;
-  }
-
-  if (contentWidth && contentHeight && isMedia) {
+  if (contentWidth && contentHeight) {
     const size = ComputeCSSDims(new Dimensions(contentWidth, contentHeight), new Dimensions(575, 400));
     dimensions = { width: size.width > 0 ? size.width : "18rem", height: size.height > 0 ? size.height : "30rem" };
   }
@@ -44,9 +36,9 @@ function MessageMedia({ className, content, contentUrl, fileName, mimeType, file
       const parsedMimeType = new MimeTypeParser(mimeType).getGeneralizedFileType();
       switch (parsedMimeType) {
         case FileType.Image:
-          return (<MessageImage contentRef={contentRef} content={content} contentUrl={contentUrl} fileName={fileName} mimeType={mimeType} fileSize={fileSize} contentWidth={contentWidth} contentHeight={contentHeight} />);
+          return (<MessageImage content={content} contentUrl={contentUrl} fileName={fileName} mimeType={mimeType} fileSize={fileSize} contentWidth={contentWidth} contentHeight={contentHeight} />);
         case FileType.Video:
-          return (<MessageVideo contentRef={contentRef} content={content} contentUrl={contentUrl} fileName={fileName} mimeType={mimeType} fileSize={fileSize} contentWidth={contentWidth} contentHeight={contentHeight} />);
+          return (<MessageVideo content={content} contentUrl={contentUrl} fileName={fileName} mimeType={mimeType} fileSize={fileSize} contentWidth={contentWidth} contentHeight={contentHeight} />);
         default:
           return (<MessageFile fileName={fileName} fileSize={fileSize} content={content} url={contentUrl} />);
       }
@@ -61,4 +53,4 @@ function MessageMedia({ className, content, contentUrl, fileName, mimeType, file
   )
 }
 
-export default MessageMedia;
+export default memo(MessageMedia);
