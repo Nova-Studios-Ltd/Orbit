@@ -26,7 +26,7 @@ export function GETUserChannels(callback: (channels: string[]) => void) {
 }
 
 export async function GETUserUUID(username: string, discriminator: string) : Promise<string | undefined> {
-    const resp = await GET(`/User/${username}/${discriminator}`, "");
+    const resp = await GET(`/User/${username}/${discriminator}/UUID`, "", false);
     if (resp.status === 200) return resp.payload;
     return undefined;
 }
@@ -198,9 +198,9 @@ export async function DELETEMessage(channel_uuid: string, message_id: string) : 
 
 // Channels
 export async function GETChannel(channel_uuid: string) : Promise<IRawChannelProps | undefined> {
-    const resp = await GET(`/Channel/${channel_uuid}`, new SettingsManager().User.token);
-    if (resp.status === 200) return resp.payload as IRawChannelProps;
-    return undefined;
+  const resp = await GET(`/Channel/${channel_uuid}`, new SettingsManager().User.token);
+  if (resp.status === 200) return resp.payload as IRawChannelProps;
+  return undefined;
 }
 
 export function CREATEChannel(recipient_uuid: string, callback: (created: boolean) => void) {
