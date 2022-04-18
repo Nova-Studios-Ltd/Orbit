@@ -64,7 +64,7 @@ function Message({ ContextMenu, content, attachments, id, authorID, avatarURL, a
     if (attachments && attachments.length > 0) {
       return attachments.map((attachment, index) => {
         return (
-          <MessageMedia key={`${id}-${index}`} content={attachment.content} contentUrl={attachment.contentUrl} filename={attachment.filename} size={attachment.size} contentWidth={attachment.contentWidth} contentHeight={attachment.contentHeight} />
+          <MessageMedia key={`${id}-${index}`} content={attachment.content} contentUrl={attachment.contentUrl} fileName={attachment.filename} fileSize={attachment.size} mimeType={attachment.mimetype} contentWidth={attachment.contentWidth} contentHeight={attachment.contentHeight} />
         )
       });
     }

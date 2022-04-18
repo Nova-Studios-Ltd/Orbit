@@ -62,6 +62,7 @@ export async function POST(endpoint: string, content_type: ContentType, payload:
     },
     body: payload
   });
+  console.warn(resp);
   return new NCAPIResponse(resp.status, resp.statusText, await resp.json());
 }
 

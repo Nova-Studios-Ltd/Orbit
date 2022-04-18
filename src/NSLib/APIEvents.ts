@@ -157,7 +157,7 @@ export function SENDMessage(channel_uuid: string, contents: string, rawAttachmen
               }
           }
           encKeys[Manager.User.uuid] = (await EncryptBase64WithPub(Manager.User.keyPair.PublicKey, messageKey)).Base64;
-          const mPost = await POST(`/Message/${channel_uuid}/Messages`, ContentType.JSON, JSON.stringify({Content: encryptedMessage.content as string, IV: encryptedMessage.iv, EncryptedKeys: encKeys, Attachments: attachments}), Manager.User.token)
+          const mPost = await POST(`Channel/${channel_uuid}/Messages`, ContentType.JSON, JSON.stringify({Content: encryptedMessage.content as string, IV: encryptedMessage.iv, EncryptedKeys: encKeys, Attachments: attachments}), Manager.User.token)
           if (mPost.status === 200) callback(true);
           else callback(false);
           return;
