@@ -7,10 +7,10 @@ export enum FileType {
 }
 
 export default class MimeTypeParser {
-  readonly IMAGE_TYPES = "gif|jpe?g|bmp|png|webp";
-  readonly VIDEO_TYPES = "mp4|m4v|mkv|mov|avi";
-  readonly AUDIO_TYPES = "mp3|ogg|aac|m4a|m4r|mpeg";
-  readonly DOCUMENT_TYPES = "pdf|doc|docx|odt";
+  readonly IMAGE_TYPES = /(\/|\.)(gif|jpe?g|bmp|png|webp)($|\?)/gi;
+  readonly VIDEO_TYPES = /(\/|\.)(mp4|m4v|mkv|mov|avi)($|\?)/gi;
+  readonly AUDIO_TYPES = /(\/|\.)(mp3|ogg|aac|m4a|m4r|mpeg)($|\?)/gi;
+  readonly DOCUMENT_TYPES = /(\/|\.)(pdf|doc|docx|odt)($|\?)/gi;
   readonly IMAGE_REGEX: RegExp;
   readonly VIDEO_REGEX: RegExp;
   readonly AUDIO_REGEX: RegExp;
@@ -25,7 +25,7 @@ export default class MimeTypeParser {
     this.DOCUMENT_REGEX = new RegExp(this.DOCUMENT_TYPES);
   }
 
-  getGeneralizedFileType() {
+  getGeneralizedFileType() : FileType {
     if (this.IMAGE_REGEX.test(this.mimeTypeRaw)) {
       return FileType.Image;
     }
