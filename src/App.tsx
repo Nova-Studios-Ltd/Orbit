@@ -107,7 +107,6 @@ function App() {
 
   return (
     <div className="App" onContextMenu={(event) => event.preventDefault()}>
-      <button onClick={async () => {console.log(await GetMimeType("https://i.redd.it/ipcw4f3i68u81.jpg"));}}>Click me fool</button>
       <Helmet>
         <title>{title && title.length > 0 ? `${Localizations_Common("AppTitle")} - ${title}` : Localizations_Common("AppTitle")}</title>
       </Helmet>

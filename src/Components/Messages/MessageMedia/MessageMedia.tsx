@@ -19,10 +19,11 @@ export interface MessageMediaProps extends NCComponent {
   fileSize?: number,
   mimeType?: string,
   contentWidth?: number,
-  contentHeight?: number
+  contentHeight?: number,
+  isExternal?: boolean
 }
 
-function MessageMedia({ className, content, contentUrl, fileName, mimeType, fileSize, contentWidth, contentHeight }: MessageMediaProps) {
+function MessageMedia({ className, content, contentUrl, fileName, mimeType, fileSize, contentWidth, contentHeight, isExternal }: MessageMediaProps) {
   const theme = useTheme();
   const classNames = useClassNames("MessageMediaContainer", className);
   const isPreviewableMediaType = useRef(false);
@@ -47,6 +48,7 @@ function MessageMedia({ className, content, contentUrl, fileName, mimeType, file
       switch (parsedMimeType) {
         case FileType.Image:
           isPreviewableMediaType.current = true;
+          if (isExternal) return (<MessageImage contentUrl={contentUrl} fileName={fileName} mimeType={mimeType} fileSize={fileSize} contentWidth={contentWidth} contentHeight={contentHeight} />);
           return (<MessageImage content={content} contentUrl={contentUrl} fileName={fileName} mimeType={mimeType} fileSize={fileSize} contentWidth={contentWidth} contentHeight={contentHeight} />);
         case FileType.Video:
           isPreviewableMediaType.current = true;

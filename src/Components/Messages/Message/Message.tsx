@@ -1,13 +1,16 @@
 import { Avatar, Typography, useTheme } from "@mui/material";
 import { useTranslation } from "react-i18next";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import useSettingsManager from "Hooks/useSettingsManager";
 
 import MessageMedia from "Components/Messages/MessageMedia/MessageMedia";
 
 import type { NCComponent } from "DataTypes/Components";
 import type { ContextMenuItemProps } from "Components/Menus/ContextMenuItem/ContextMenuItem";
-import type { IAttachmentProps } from "Interfaces/IAttachmentProps";
+import { AttachmentProps, IAttachmentProps } from "Interfaces/IAttachmentProps";
+import { WriteToClipboard } from "NSLib/ElectronAPI";
+import { GetImageDimensions, GetMimeType } from "NSLib/ContentLinkUtil";
+import { FileType } from "NSLib/MimeTypeParser";
 
 export interface MessageProps extends NCComponent {
   content?: string,
@@ -27,8 +30,33 @@ function Message({ ContextMenu, content, attachments, id, authorID, avatarURL, a
   const filteredMessageProps: MessageProps = { content, id, avatarURL, author, timestamp };
   const Localizations_Message = useTranslation("Message").t;
   const [isHovering, setHoveringState] = useState(false);
+  const [allAttachments, setAttachments] = useState([] as IAttachmentProps[]);
 
   const isOwnMessage = authorID === settingsManager.User.uuid;
+
+
+  useEffect(() => {
+    if (attachments === undefined) return;
+    async function proccessMedia() {
+      // Handle getting links
+      if (content === undefined) return;
+      const att = [] as IAttachmentProps[];
+      const links = content.split(" ");
+      for (let i = 0; i < links.length; i++) {
+        const link = links[i];
+        if (link.match(/((https|http):\/\/[\S]*)/g) === null) continue;
+        const type = await GetMimeType(link);
+        if (type === FileType.Image) {
+          const size = await GetImageDimensions(link);
+          att.push(new AttachmentProps(link, new Uint8Array(), "Unknown", "image/png", 0, size.width, size.height, true));
+        }
+      }
+      if (attachments === undefined) return;
+      setAttachments([...att, ...attachments]);
+    }
+    proccessMedia();
+  }, []);
+
 
   const editMessage = () => {
     if (onMessageEdit) onMessageEdit(filteredMessageProps);
@@ -36,7 +64,8 @@ function Message({ ContextMenu, content, attachments, id, authorID, avatarURL, a
   }
 
   const copyMessage = () => {
-    // TODO: Implement copying content to clipboard
+    if (content === undefined) return;
+    WriteToClipboard(content);
   }
 
   const messageContextMenuItems: ContextMenuItemProps[] = [
@@ -59,12 +88,10 @@ function Message({ ContextMenu, content, attachments, id, authorID, avatarURL, a
   }
 
   const mediaComponents = () => {
-    //return <MessageMedia contentUrl="https://www.akc.org/wp-content/uploads/2018/05/samoyed-mother-dog-with-puppy-outdoors.jpg" />
-
-    if (attachments && attachments.length > 0) {
-      return attachments.map((attachment, index) => {
+    if (allAttachments && allAttachments.length > 0) {
+      return allAttachments.map((attachment, index) => {
         return (
-          <MessageMedia key={`${id}-${index}`} content={attachment.content} contentUrl={attachment.contentUrl} fileName={attachment.filename} fileSize={attachment.size} mimeType={attachment.mimeType} contentWidth={attachment.contentWidth} contentHeight={attachment.contentHeight} />
+          <MessageMedia key={`${id}-${index}`} content={attachment.content} contentUrl={attachment.contentUrl} fileName={attachment.filename} fileSize={attachment.size} mimeType={attachment.mimeType} contentWidth={attachment.contentWidth} contentHeight={attachment.contentHeight} isExternal={attachment.isExternal}/>
         )
       });
     }
