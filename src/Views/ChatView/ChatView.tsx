@@ -1,6 +1,7 @@
-import ViewContainer from "Components/Containers/ViewContainer/ViewContainer";
+import { useEffect, useRef } from "react";
 import useClassNames from "Hooks/useClassNames";
 
+import ViewContainer from "Components/Containers/ViewContainer/ViewContainer";
 import MessageCanvas from "Components/Messages/MessageCanvas/MessageCanvas";
 import MessageCanvasHeader from "Components/Headers/MessageCanvasHeader/MessageCanvasHeader";
 import MessageInput, { MessageInputChangeEvent, MessageInputSendEvent } from "Components/Input/MessageInput/MessageInput";
@@ -28,6 +29,16 @@ interface ChatViewProps extends View {
 
 function ChatView({ className, ContextMenu, HelpPopup, widthConstrained, path, messages, selectedChannel, MessageInputValue, onChannelCreate, MessageInputChangedHandler, MessageInputSendHandler, handleFileUpload, onMessageEdit, onMessageDelete, changeTitleCallback }: ChatViewProps) {
   const classNames = useClassNames("ChatViewContainer", className);
+  const canvasRef = useRef() as React.MutableRefObject<HTMLDivElement>;
+  const messageCount = useRef(0);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (canvas && messages && messageCount.current < messages.length) {
+      canvas.scroll({ top: canvas.scrollHeight, behavior: "smooth" });
+    }
+    if (messages) messageCount.current = messages.length;
+  }, [messages, messages?.length]);
 
   const page = () => {
     switch (path) {
@@ -35,7 +46,7 @@ function ChatView({ className, ContextMenu, HelpPopup, widthConstrained, path, m
         return (
           <>
             <MessageCanvasHeader selectedChannel={selectedChannel}></MessageCanvasHeader>
-            <MessageCanvas className="ChatPageContainerItem" ContextMenu={ContextMenu} messages={messages} onMessageEdit={onMessageEdit} onMessageDelete={onMessageDelete} />
+            <MessageCanvas className="ChatPageContainerItem" canvasRef={canvasRef} ContextMenu={ContextMenu} messages={messages} onMessageEdit={onMessageEdit} onMessageDelete={onMessageDelete} />
             <MessageInput className="ChatPageContainerItem" value={MessageInputValue} onFileUpload={handleFileUpload} onChange={MessageInputChangedHandler} onSend={MessageInputSendHandler} />
           </>
         )
