@@ -32,12 +32,18 @@ function ChatView({ className, ContextMenu, HelpPopup, widthConstrained, path, m
   const canvasRef = useRef() as React.MutableRefObject<HTMLDivElement>;
   const messageCount = useRef(0);
 
-  useEffect(() => {
+  const scrollCanvas = () => {
     const canvas = canvasRef.current;
-    if (canvas && messages && messageCount.current < messages.length) {
+    if (canvas) {
       canvas.scroll({ top: canvas.scrollHeight, behavior: "smooth" });
     }
-    if (messages) messageCount.current = messages.length;
+  }
+
+  useEffect(() => {
+    if (messages) {
+      if (messageCount.current < messages.length) scrollCanvas();
+      messageCount.current = messages.length;
+    }
   }, [messages, messages?.length]);
 
   const page = () => {
