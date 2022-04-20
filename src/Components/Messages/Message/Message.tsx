@@ -1,6 +1,6 @@
 import { Avatar, Typography, useTheme } from "@mui/material";
 import { useTranslation } from "react-i18next";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import useSettingsManager from "Hooks/useSettingsManager";
 
 import MessageMedia from "Components/Messages/MessageMedia/MessageMedia";
@@ -55,7 +55,7 @@ function Message({ ContextMenu, content, attachments, id, authorID, avatarURL, a
       setAttachments([...att, ...attachments]);
     }
     proccessMedia();
-  }, []);
+  });
 
 
   const editMessage = () => {
