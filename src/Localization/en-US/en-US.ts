@@ -6,6 +6,7 @@ import ErrorView_EN_US from "./Views/ErrorView.json";
 
 // Normal Pages
 import ChatPage_EN_US from "./Pages/ChatPage.json";
+import FriendPage_EN_US from "./Pages/FriendPage.json";
 import LoginPage_EN_US from "./Pages/LoginPage.json";
 import RegisterPage_EN_US from "./Pages/RegisterPage.json";
 
@@ -31,6 +32,7 @@ export const Localizations_EN_US = {
 
   // Pages
   ChatPage: ChatPage_EN_US,
+  FriendPage: FriendPage_EN_US,
   LoginPage: LoginPage_EN_US,
   RegisterPage: RegisterPage_EN_US,
 

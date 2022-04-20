@@ -83,7 +83,7 @@ function ChatPage({ ContextMenu, widthConstrained, channels, messages, selectedC
           </div>
           <ChannelList ContextMenu={ContextMenu} channels={channels} onChannelEdit={onChannelEdit} onChannelDelete={onChannelDelete} onChannelClick={onChannelClick} selectedChannel={selectedChannel} />
         </div>
-        <ChatView className="ChatPageContainerRight" ContextMenu={ContextMenu} widthConstrained={widthConstrained} messages={messages} selectedChannel={selectedChannel} MessageInputValue={MessageInputValue} onChannelCreate={onChannelCreate} MessageInputChangedHandler={MessageInputChangedHandler} MessageInputSendHandler={MessageInputSendHandler} handleFileUpload={handleFileUpload} onMessageEdit={onMessageEdit} onMessageDelete={onMessageDelete} path={path} />
+        <ChatView className="ChatPageContainerRight" ContextMenu={ContextMenu} widthConstrained={widthConstrained} changeTitleCallback={changeTitleCallback} messages={messages} selectedChannel={selectedChannel} MessageInputValue={MessageInputValue} onChannelCreate={onChannelCreate} MessageInputChangedHandler={MessageInputChangedHandler} MessageInputSendHandler={MessageInputSendHandler} handleFileUpload={handleFileUpload} onMessageEdit={onMessageEdit} onMessageDelete={onMessageDelete} path={path} />
       </div>
     </PageContainer>
   );
