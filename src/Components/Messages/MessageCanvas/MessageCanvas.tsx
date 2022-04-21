@@ -5,15 +5,17 @@ import Message, { MessageProps } from "Components/Messages/Message/Message";
 
 import type { NCAPIComponent } from "DataTypes/Components";
 import type { IMessageProps } from "Interfaces/IMessageProps";
+import { useRef } from "react";
 
 export interface MessageCanvasProps extends NCAPIComponent {
   innerClassName?: string,
   messages?: IMessageProps[],
+  canvasRef?: React.MutableRefObject<HTMLDivElement>,
   onMessageEdit?: (message: MessageProps) => void,
   onMessageDelete?: (message: MessageProps) => void
 }
 
-function MessageCanvas({ className, ContextMenu, innerClassName, messages, onMessageEdit, onMessageDelete }: MessageCanvasProps) {
+function MessageCanvas({ className, ContextMenu, innerClassName, messages, canvasRef, onMessageEdit, onMessageDelete }: MessageCanvasProps) {
   const theme = useTheme();
   const classNames = useClassNames("MessageCanvasContainer", className);
   const innerClassNames = useClassNames("TheActualMessageCanvas", innerClassName);
@@ -27,7 +29,7 @@ function MessageCanvas({ className, ContextMenu, innerClassName, messages, onMes
   }
 
   return (
-    <div className={classNames} style={{ backgroundColor: theme.palette.background.default }}>
+    <div className={classNames} style={{ backgroundColor: theme.palette.background.default }} ref={canvasRef}>
       <div className={innerClassNames}>
         {messagesArray()}
       </div>

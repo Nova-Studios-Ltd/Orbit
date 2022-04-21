@@ -1,5 +1,6 @@
 import { Button, TextField, Typography } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import PageContainer from "Components/Containers/PageContainer/PageContainer";
 
@@ -10,7 +11,12 @@ interface ChatPageProps extends Page {
 }
 
 function FriendPage({ ContextMenu, HelpPopup, widthConstrained, changeTitleCallback, onChannelCreate }: ChatPageProps) {
+  const Localizations_FriendPage = useTranslation("FriendPage").t;
   const [RecipientField, setRecipientField] = useState("");
+
+  useEffect(() => {
+    if (changeTitleCallback) changeTitleCallback(Localizations_FriendPage("PageTitle"));
+  }, [Localizations_FriendPage, changeTitleCallback]);
 
   const createChannel = () => {
     if (onChannelCreate) {

@@ -113,7 +113,7 @@ function MainView({ path, ContextMenu, HelpPopup, widthConstrained, changeTitleC
       Events.remove("NewMessage");
       Events.remove("DeleteMessage");
     });
-  }, [messages]);
+  }, [channels, messages]);
 
 
   useEffect(() => {
@@ -129,6 +129,8 @@ function MainView({ path, ContextMenu, HelpPopup, widthConstrained, changeTitleC
         loadedChannels.push(channel);
       }
       setChannels(loadedChannels);
+
+      if (loadedChannels[0]) onChannelClick(loadedChannels[0]); // Temporary channel preload
     });
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
