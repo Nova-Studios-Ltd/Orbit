@@ -50,6 +50,9 @@ function Message({ ContextMenu, content, attachments, id, authorID, avatarURL, a
           const size = await GetImageDimensions(link);
           att.push(new AttachmentProps(link, new Uint8Array(), "Unknown", "image/png", 0, size.width, size.height, true));
         }
+        else if (type === FileType.Video) {
+          att.push(new AttachmentProps(link, new Uint8Array(), "Unknown", "video/mp4", 0, 0, 0, true));
+        }
       }
       if (attachments === undefined) return;
       setAttachments([...att, ...attachments]);

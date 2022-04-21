@@ -52,6 +52,7 @@ function MessageMedia({ className, content, contentUrl, fileName, mimeType, file
           return (<MessageImage content={content} contentUrl={contentUrl} fileName={fileName} mimeType={mimeType} fileSize={fileSize} contentWidth={contentWidth} contentHeight={contentHeight} />);
         case FileType.Video:
           isPreviewableMediaType.current = true;
+          if (isExternal) return (<MessageVideo contentUrl={contentUrl} fileName={fileName} mimeType={mimeType} fileSize={fileSize} contentWidth={contentWidth} contentHeight={contentHeight} />);
           return (<MessageVideo content={content} contentUrl={contentUrl} fileName={fileName} mimeType={mimeType} fileSize={fileSize} contentWidth={contentWidth} contentHeight={contentHeight} />);
         case FileType.Audio:
           return (<MessageAudio content={content} contentUrl={contentUrl} fileName={fileName} mimeType={mimeType} fileSize={fileSize} contentWidth={contentWidth} contentHeight={contentHeight} />);
