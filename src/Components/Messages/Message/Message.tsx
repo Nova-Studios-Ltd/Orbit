@@ -58,7 +58,7 @@ function Message({ ContextMenu, content, attachments, id, authorID, avatarURL, a
       setAttachments([...att, ...attachments]);
     }
     proccessMedia();
-  });
+  }, []);
 
 
   const editMessage = () => {
