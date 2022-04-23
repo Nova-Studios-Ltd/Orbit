@@ -21,8 +21,8 @@ function AuthView({ path, widthConstrained, HelpPopup, changeTitleCallback } : A
 
   const AuthViewBrandingContainer = (
     <div className="AuthViewBrandingContainer">
-      <img className="BrandingImage" src="logo192.png" alt={Localizations_AuthView("Image_Alt-BrandingLogo")} />
-      <Typography className="BrandingTitle" variant="h3">{Localizations_Common("AppTitle")}</Typography>
+      <img className="BrandingImage" src="OrbitLogo.png" alt={Localizations_AuthView("Image_Alt-BrandingLogo")} />
+
     </div>
   );
 
