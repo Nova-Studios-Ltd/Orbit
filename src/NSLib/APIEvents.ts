@@ -10,6 +10,7 @@ import IUserData from "../Interfaces/IUserData";
 import { SettingsManager } from "./SettingsManager";
 import { Base64String } from "./Base64";
 import { DecryptBase64, DecryptBase64WithPriv, DecryptUint8Array, EncryptBase64, EncryptBase64WithPub, EncryptUint8Array, GenerateBase64Key } from "./NCEncryptionBeta";
+import { NCChannelCache } from "./NCCache";
 
 
 // User
@@ -100,29 +101,56 @@ async function DecryptMessage(message: IMessageProps) : Promise<IMessageProps> {
     const decryptedContent = await DecryptUint8Array(key, new AESMemoryEncryptData( message.iv, content.payload as Uint8Array));
     message.attachments[a].content = decryptedContent;
   }
-  //console.log(message);
   return message;
 }
 
-export async function GETMessage(channel_uuid: string, message_id: string) : Promise<undefined | IMessageProps> {
+export async function GETMessage(channel_uuid: string, message_id: string, bypass_cache = false) : Promise<undefined | IMessageProps> {
+  const cache = new NCChannelCache(channel_uuid);
+  if (!bypass_cache) {
+    const message = cache.GetMessage(message_id);
+    if ((await message).Satisfied) return (await message).Messages[0];
+  }
   const resp = await GET(`Channel/${channel_uuid}/Messages/${message_id}`, new SettingsManager().User.token);
   if (resp.status === 200) {
-      return await DecryptMessage(resp.payload as IMessageProps);
+    const m = await DecryptMessage(resp.payload as IMessageProps);;
+    cache.SetMessage(message_id, m)
+    return m;
   }
   return undefined;
 }
 
-export function GETMessages(channel_uuid: string, callback: (messages: IMessageProps[]) => void, limit = 30, before = 2147483647) {
-  GET(`Channel/${channel_uuid}/Messages?limit=${limit}&before=${before}`, new SettingsManager().User.token).then(async (resp: NCAPIResponse) => {
-    if (resp.status === 200) {
-      const rawMessages = resp.payload as IMessageProps[];
-      const decryptedMessages = [] as  IMessageProps[];
-      for (let m = 0; m < rawMessages.length; m++) {
-          decryptedMessages.push(await DecryptMessage(rawMessages[m]));
-      }
-      callback(decryptedMessages);
+export async function GETMessages(channel_uuid: string, callback: (messages: IMessageProps[]) => void, bypass_cache = false, limit = 30, after = -1, before = 2147483647) {
+  // Hit cache
+  const cache = new NCChannelCache(channel_uuid);
+  const messages = await cache.GetMessages(limit, before);
+  if (messages.Satisfied && !bypass_cache) {
+    callback(messages.Messages);
+  }
+  else {
+    if (bypass_cache) {
+      messages.Count = 0;
+      messages.Messages = [];
     }
-  });
+    // If cache is missed or is incomplete (or bypassed)
+    let newLimit = limit - messages.Count;
+    let newBefore = messages.Last_Id;
+    if (messages.Count === 0) {
+      newLimit = limit;
+      newBefore = before;
+    }
+    GET(`Channel/${channel_uuid}/Messages?limit=${newLimit}&after=${after}&before=${newBefore}`, new SettingsManager().User.token).then(async (resp: NCAPIResponse) => {
+      if (resp.status === 200) {
+        const rawMessages = resp.payload as IMessageProps[];
+        const decryptedMessages = [] as  IMessageProps[];
+        for (let m = 0; m < rawMessages.length; m++) {
+          const message = await DecryptMessage(rawMessages[m]);
+          decryptedMessages.push(message);
+          if (!bypass_cache) cache.SetMessage(message.message_Id, message);
+        }
+        callback([...messages.Messages, ...decryptedMessages]);
+      }
+    });
+  }
 }
 
 export function SENDMessage(channel_uuid: string, contents: string, rawAttachments: MessageAttachment[], callback: (sent: boolean) => void) {

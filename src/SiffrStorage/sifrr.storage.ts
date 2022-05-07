@@ -58,6 +58,7 @@ export {
   LocalStorage,
   Cookies,
   JsonStorage,
+  Storage,
   getStorage,
   storages as availableStores
 };

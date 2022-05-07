@@ -98,8 +98,13 @@ abstract class Storage {
     return Promise.resolve(this.deleteAll());
   }
 
+  allSync(): object {
+    const d = this.getStore() as SavedDataObject;
+    return parseGetData(d, this.del.bind(this));
+  }
+
   getSync(key: string) : object {
-    const d = (this.select(parseKey(key)) as SavedDataObject)
+    const d = (this.select(parseKey(key)) as SavedDataObject);
     return parseGetData(d, this.del.bind(this));
   }
 

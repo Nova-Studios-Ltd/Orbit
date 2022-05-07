@@ -1,13 +1,13 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AutoLogin } from "Init/AuthHandler";
-import { SettingsManager } from "NSLib/SettingsManager";
+//import { SettingsManager } from "NSLib/SettingsManager";
 import { Events } from "Init/WebsocketEventInit";
 import { CREATEChannel, DELETEMessage, GETChannel, GETMessages, GETUserChannels, GETUserUUID } from "NSLib/APIEvents";
 
 import ViewContainer from "Components/Containers/ViewContainer/ViewContainer";
 import ChatPage from "Pages/ChatPage/ChatPage";
-import FriendPage from "Pages/FriendPage/FriendPage";
+//import FriendPage from "Pages/FriendPage/FriendPage";
 import SettingsPage from "Pages/SettingsPage/SettingsPage";
 
 import type { View } from "DataTypes/Components";
@@ -16,7 +16,9 @@ import type { ChannelProps } from "Components/Channels/Channel/Channel";
 import type { IMessageProps } from "Interfaces/IMessageProps";
 import type { MessageProps } from "Components/Messages/Message/Message";
 import { AuthViewRoutes, ChatViewRoutes, MainViewRoutes } from "DataTypes/Routes";
-import { isValidUsername } from "NSLib/Util";
+import { CacheValid, HasChannelCache, isValidUsername } from "NSLib/Util";
+import { GenerateBase64SHA256 } from "NSLib/NCEncryptionBeta";
+import { NCChannelCache } from "NSLib/NCCache";
 
 interface MainViewProps extends View {
   path: MainViewRoutes
@@ -28,15 +30,45 @@ function MainView({ path, ContextMenu, HelpPopup, widthConstrained, changeTitleC
   const [channels, setChannels] = useState([] as IRawChannelProps[]);
   const [selectedChannel, setSelectedChannel] = useState(null as unknown as IRawChannelProps);
   const [messages, setMessages] = useState([] as IMessageProps[]);
+  const session = useRef("");
 
-  const onChannelClick = (channel: ChannelProps) => {
+
+  const onChannelClick = async (channel: ChannelProps) => {
     navigate(MainViewRoutes.Chat);
     setSelectedChannel({ table_Id: channel.channelID, channelName: channel.channelName, channelIcon: channel.channelIconSrc, members: channel.channelMembers, channelType: channel.isGroup } as IRawChannelProps);
 
     if (channel && channel.channelID) {
-      GETMessages(channel.channelID, (decrypt: IMessageProps[]) => {
-        setMessages(decrypt);
-      });
+      if (await HasChannelCache(channel.channelID) && !await CacheValid(channel.channelID, session.current)) {
+        const cache = new NCChannelCache(channel.channelID);
+        GETMessages(channel.channelID, async (messages: IMessageProps[]) => {
+          const m_id = (await cache.GetMessages(1)).Messages[0].message_Id;
+          if (messages[0].message_Id !== m_id) {
+            if (await cache.CacheValid()) {
+              const limit = parseInt(messages[0].message_Id) - parseInt(m_id);
+              if (channel.channelID === undefined) return;
+              GETMessages(channel.channelID, (decrypt: IMessageProps[]) => {
+                setMessages(decrypt);
+              }, false, limit, parseInt(m_id), parseInt(messages[0].message_Id) + 1);
+            }
+            cache.ClearCache();
+            if (channel.channelID === undefined) return;
+            GETMessages(channel.channelID, (decrypt: IMessageProps[]) => {
+              setMessages(decrypt);
+            });
+          }
+          else {
+            if (channel.channelID === undefined) return;
+            GETMessages(channel.channelID, (decrypt: IMessageProps[]) => {
+              setMessages(decrypt);
+            });
+          }
+        }, true, 1);
+      }
+      else {
+        GETMessages(channel.channelID, (decrypt: IMessageProps[]) => {
+          setMessages(decrypt);
+        });
+      }
     }
   }
 
@@ -117,6 +149,10 @@ function MainView({ path, ContextMenu, HelpPopup, widthConstrained, changeTitleC
 
 
   useEffect(() => {
+    (async () => {
+      session.current = (await GenerateBase64SHA256(Date.now().toString())).Base64;
+    })();
+
     AutoLogin().then((result: boolean) => {
       if (!result) navigate(AuthViewRoutes.Login);
     });

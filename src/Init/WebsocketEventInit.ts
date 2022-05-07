@@ -36,7 +36,7 @@ async function OnDeleteMessage(event: IWebSocketEvent) {
 }
 
 async function OnMessageEdit(event: IWebSocketEvent) {
-    // TODO Implement message edit logic
+  // TODO Implement message edit logic
 }
 
 async function OnCreateChannel(event: IWebSocketEvent) {
@@ -46,7 +46,7 @@ async function OnCreateChannel(event: IWebSocketEvent) {
 }
 
 async function OnDeleteChannel(event: IWebSocketEvent) {
-    // TODO Implement channel removal logic
+  // TODO Implement channel removal logic
 }
 
 async function OnAddNewKey(event: IWebSocketEvent) {

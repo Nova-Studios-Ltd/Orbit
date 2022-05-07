@@ -22,8 +22,6 @@ import type { ContextMenuItemProps } from "Components/Menus/ContextMenuItem/Cont
 import type { Coordinates } from "DataTypes/Types";
 
 import "./App.css";
-import { GetMimeType } from "NSLib/ContentLinkUtil";
-
 i18n.use(initReactI18next)
 .init({
   resources: Localizations,
