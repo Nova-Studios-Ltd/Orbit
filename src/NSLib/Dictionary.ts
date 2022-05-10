@@ -94,4 +94,8 @@ export class Dictionary<V> implements IDictionary<V> {
       callback(new KeyValuePair<V>(key, this._dict[key]));
     }
   }
+
+  keys() : string[] {
+    return Object.keys(this._dict);
+  }
 }

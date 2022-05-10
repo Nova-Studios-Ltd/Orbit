@@ -153,6 +153,11 @@ export async function GETMessages(channel_uuid: string, callback: (messages: IMe
   }
 }
 
+export async function GETMessageEditTimestamps(channel_uuid: string, limit = 30, after = -1, before = 2147483647) : Promise<Dictionary<string>> {
+  const resp = await GET(`/Channel/${channel_uuid}/Messages/EditTimestamps?limit=${limit}&after=${after}&before=${before}`, new SettingsManager().User.token);
+  return new Dictionary(resp.payload as Indexable<string>);
+}
+
 export function SENDMessage(channel_uuid: string, contents: string, rawAttachments: MessageAttachment[], callback: (sent: boolean) => void) {
   const Manager = new SettingsManager();
   GET(`/Channel/${channel_uuid}`, Manager.User.token).then(async (resp: NCAPIResponse) => {

@@ -1,3 +1,4 @@
+import { NCChannelCache } from "NSLib/NCCache";
 import NCEvents from "NSLib/NCEvents";
 import { SettingsManager } from "NSLib/SettingsManager";
 import IWebSocketEvent from "../Interfaces/IWebsocketEvent";
@@ -24,15 +25,17 @@ export default function WebsocketInit(Websocket: NCWebsocket) {
 }
 
 async function OnNewMessage(event: IWebSocketEvent) {
-  const message = await GETMessage(event.Channel, event.Message);
+  const message = await GETMessage(event.Channel, event.Message, true);
   if (message === undefined) return;
-  // TODO Implement message creation logic
   Events.send("NewMessage", message);
+  // Add message to cache
+  new NCChannelCache(event.Channel).SetMessage(event.Message, message);
 }
 
 async function OnDeleteMessage(event: IWebSocketEvent) {
-  // TODO Implement message removal logic
   Events.send("DeleteMessage", event.Message);
+  // Clear message from cache
+  new NCChannelCache(event.Channel).RemoveMessage(event.Message);
 }
 
 async function OnMessageEdit(event: IWebSocketEvent) {
