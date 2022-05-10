@@ -1,5 +1,7 @@
 import { IMessageProps } from "Interfaces/IMessageProps";
 import { getStorage } from "SiffrStorage/sifrr.storage";
+import { Dictionary } from "./Dictionary";
+import { GenerateBase64SHA256 } from "./NCEncryptionBeta"
 
 
 export class NCChannelCacheResult {
@@ -72,12 +74,41 @@ export class NCChannelCache {
     return new NCChannelCacheResult(messages, messages.length, parseInt(lastID), curLim === limit)
   }
 
+  async GetOldestMessage() : Promise<NCChannelCacheResult> {
+    const keys = (await this.CurrentCache.keys() as string[]).reverse();
+    const id = keys[keys.length - 1];
+    return new NCChannelCacheResult([(await this.GetMessage(id)).Messages[0]], 1, parseInt(id), true);
+  }
+
+  async GetMessageEditTimestamps() : Promise<Dictionary<string>> {
+    const keys = (await this.CurrentCache.keys() as string[]).reverse();
+    keys.splice(keys.indexOf("LastAccess"), 1);
+    keys.splice(keys.indexOf("Session"), 1);
+    const timestamps = new Dictionary<string>();
+    for (let k = 0; k < keys.length; k++) {
+      const key = keys[k];
+      timestamps.setValue(key, (await this.GetMessage(key)).Messages[0].editedTimestamp)
+    }
+    return timestamps
+  }
+
+  RemoveMessage(id: string) {
+    this.CurrentCache.del(id);
+  }
+
   ClearCache() {
     this.CurrentCache.clear();
   }
 
-  SetMessage(id: string, message: IMessageProps) {
+  async SetMessage(id: string, message: IMessageProps) {
     this.CurrentCache.setSync(id, message);
     this.CurrentCache.setSync("LastAccess", Date.now())
+
+    // Check cache size and remove oldest message
+    const keys = (await this.CurrentCache.keys() as string[]).reverse();
+    keys.splice(keys.indexOf("LastAccess"), 1);
+    keys.splice(keys.indexOf("Session", 1));
+    if (keys.length > 100)
+      this.CurrentCache.del(keys[0]);
   }
 }

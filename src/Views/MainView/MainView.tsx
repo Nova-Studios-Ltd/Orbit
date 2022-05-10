@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { AutoLogin } from "Init/AuthHandler";
 //import { SettingsManager } from "NSLib/SettingsManager";
 import { Events } from "Init/WebsocketEventInit";
-import { CREATEChannel, DELETEMessage, GETChannel, GETMessages, GETUserChannels, GETUserUUID } from "NSLib/APIEvents";
+import { CREATEChannel, DELETEMessage, GETChannel, GETMessage, GETMessageEditTimestamps, GETMessages, GETUserChannels, GETUserUUID } from "NSLib/APIEvents";
 
 import ViewContainer from "Components/Containers/ViewContainer/ViewContainer";
 import ChatPage from "Pages/ChatPage/ChatPage";
@@ -41,6 +41,7 @@ function MainView({ path, ContextMenu, HelpPopup, widthConstrained, changeTitleC
       if (await HasChannelCache(channel.channelID) && !await CacheValid(channel.channelID, session.current)) {
         const cache = new NCChannelCache(channel.channelID);
         GETMessages(channel.channelID, async (messages: IMessageProps[]) => {
+          // Get any new messages we may have missed while offline
           const m_id = (await cache.GetMessages(1)).Messages[0].message_Id;
           if (messages[0].message_Id !== m_id) {
             if (await cache.CacheValid()) {
@@ -48,13 +49,15 @@ function MainView({ path, ContextMenu, HelpPopup, widthConstrained, changeTitleC
               if (channel.channelID === undefined) return;
               GETMessages(channel.channelID, (decrypt: IMessageProps[]) => {
                 setMessages(decrypt);
-              }, false, limit, parseInt(m_id), parseInt(messages[0].message_Id) + 1);
+              }, false, limit, parseInt(m_id) - 1, parseInt(messages[0].message_Id) + 1);
             }
-            cache.ClearCache();
-            if (channel.channelID === undefined) return;
-            GETMessages(channel.channelID, (decrypt: IMessageProps[]) => {
-              setMessages(decrypt);
-            });
+            else {
+              cache.ClearCache();
+              if (channel.channelID === undefined) return;
+              GETMessages(channel.channelID, (decrypt: IMessageProps[]) => {
+                setMessages(decrypt);
+              });
+            }
           }
           else {
             if (channel.channelID === undefined) return;
@@ -62,6 +65,29 @@ function MainView({ path, ContextMenu, HelpPopup, widthConstrained, changeTitleC
               setMessages(decrypt);
             });
           }
+          // Now for the fun part... Updating edited messages...
+          const oldest = (await cache.GetOldestMessage()).Last_Id;
+          const limit = parseInt(messages[0].message_Id) - oldest;
+          const remoteTimestamps = await GETMessageEditTimestamps(channel.channelID, limit, oldest - 1, parseInt(messages[0].message_Id) + 1);
+          const localTimestamps = await cache.GetMessageEditTimestamps();
+
+          const keys = remoteTimestamps.keys();
+          for (let k = 0; k < keys.length; k++) {
+            const key = keys[k];
+            if (!localTimestamps.containsKey(key) && channel.channelID !== undefined) {
+              const message = await GETMessage(channel.channelID, key, true);
+              if (message === undefined) continue;
+              console.log(`Cache for channel '${channel.channelID}' missing message with id '${message.message_Id}'. Updating...`);
+              continue;
+            }
+            if (remoteTimestamps.getValue(key) !== localTimestamps.getValue(key) && channel.channelID !== undefined) {
+              const message = await GETMessage(channel.channelID, key, true);
+              if (message === undefined) continue;
+              console.log(`Message iwth id '${message.message_Id}' is out of date. Updating...`);
+              cache.SetMessage(key, message);
+            }
+          }
+
         }, true, 1);
       }
       else {
