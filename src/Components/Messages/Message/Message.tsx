@@ -1,4 +1,4 @@
-import { Avatar, Typography, useTheme } from "@mui/material";
+import { Avatar, TextField, Typography, useTheme } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { useEffect, useState } from "react";
 import useSettingsManager from "Hooks/useSettingsManager";
@@ -37,7 +37,7 @@ function Message({ ContextMenu, content, attachments, id, authorID, avatarURL, a
 
   useEffect(() => {
     if (attachments === undefined) return;
-    async function proccessMedia() {
+    async function processMedia() {
       // Handle getting links
       if (content === undefined) return;
       const att = [] as IAttachmentProps[];
@@ -57,7 +57,7 @@ function Message({ ContextMenu, content, attachments, id, authorID, avatarURL, a
       if (attachments === undefined) return;
       setAttachments([...att, ...attachments]);
     }
-    proccessMedia();
+    processMedia();
   }, []);
 
 
@@ -114,6 +114,7 @@ function Message({ ContextMenu, content, attachments, id, authorID, avatarURL, a
         <div className="MessageMediaContainer">
           {mediaComponents()}
         </div>
+        <TextField className="MessageEditField" />
       </div>
     </div>
   )

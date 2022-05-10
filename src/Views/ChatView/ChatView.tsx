@@ -18,16 +18,14 @@ interface ChatViewProps extends View {
   path?: ChatViewRoutes,
   messages?: IMessageProps[],
   selectedChannel?: IRawChannelProps,
-  MessageInputValue?: string,
   onChannelCreate?: (recipient: string) => void,
-  MessageInputChangedHandler: (event: MessageInputChangeEvent) => void,
   MessageInputSendHandler: (event: MessageInputSendEvent) => void,
   handleFileUpload?: () => void,
   onMessageEdit?: (message: MessageProps) => void,
   onMessageDelete?: (message: MessageProps) => void
 }
 
-function ChatView({ className, ContextMenu, HelpPopup, widthConstrained, path, messages, selectedChannel, MessageInputValue, onChannelCreate, MessageInputChangedHandler, MessageInputSendHandler, handleFileUpload, onMessageEdit, onMessageDelete, changeTitleCallback }: ChatViewProps) {
+function ChatView({ className, ContextMenu, HelpPopup, widthConstrained, path, messages, selectedChannel, onChannelCreate, MessageInputSendHandler, handleFileUpload, onMessageEdit, onMessageDelete, changeTitleCallback }: ChatViewProps) {
   const classNames = useClassNames("ChatViewContainer", className);
   const canvasRef = useRef() as React.MutableRefObject<HTMLDivElement>;
   const messageCount = useRef(0);
@@ -53,7 +51,7 @@ function ChatView({ className, ContextMenu, HelpPopup, widthConstrained, path, m
           <>
             <MessageCanvasHeader selectedChannel={selectedChannel}></MessageCanvasHeader>
             <MessageCanvas className="ChatPageContainerItem" canvasRef={canvasRef} ContextMenu={ContextMenu} messages={messages} onMessageEdit={onMessageEdit} onMessageDelete={onMessageDelete} />
-            <MessageInput className="ChatPageContainerItem" value={MessageInputValue} onFileUpload={handleFileUpload} onChange={MessageInputChangedHandler} onSend={MessageInputSendHandler} />
+            <MessageInput className="ChatPageContainerItem" onFileUpload={handleFileUpload} onSend={MessageInputSendHandler} />
           </>
         )
       case ChatViewRoutes.Friends:
