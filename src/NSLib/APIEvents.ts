@@ -92,7 +92,7 @@ async function DecryptMessage(message: IMessageProps) : Promise<IMessageProps> {
   const Manager = new SettingsManager();
   const key = await DecryptBase64WithPriv(Manager.User.keyPair.PrivateKey, new Base64String(message.encryptedKeys[Manager.User.uuid]));
   if (message.content.length !== 0) {
-    const  decryptedMessage = await DecryptBase64(key, new AESMemoryEncryptData(message.iv, message.content));
+    const decryptedMessage = await DecryptBase64(key, new AESMemoryEncryptData(message.iv, message.content));
     message.content = decryptedMessage.String;
   }
   for (let a = 0; a < message.attachments.length; a++) {
