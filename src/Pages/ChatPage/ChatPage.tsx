@@ -38,24 +38,17 @@ function ChatPage({ ContextMenu, widthConstrained, channels, messages, selectedC
   const theme = useTheme();
   const Localizations_ChatPage = useTranslation("ChatPage").t;
 
-  const [MessageInputValue, setMessageInputValue] = useState("");
   const [MessageAttachments, setMessageAttachments] = useState([] as MessageAttachment[])
 
   useEffect(() => {
     if (changeTitleCallback && selectedChannel && selectedChannel.channelName) changeTitleCallback(`@${selectedChannel.channelName}`);
   }, [changeTitleCallback, selectedChannel]);
 
-  const MessageInputChangedHandler = (event: MessageInputChangeEvent) => {
-    const value = event && event.value ? event.value : "";
-    setMessageInputValue(value);
-  };
-
   const MessageInputSendHandler = (event: MessageInputSendEvent) => {
     if (selectedChannel === undefined || event.value === undefined || (event.value === "" && MessageAttachments.length === 0)) return;
     SENDMessage(selectedChannel.table_Id, event.value, MessageAttachments, (sent: boolean) => {
       if (sent) {
-        setMessageInputValue("");
-        setMessageAttachments([]);
+
       }
     });
   };
@@ -83,7 +76,7 @@ function ChatPage({ ContextMenu, widthConstrained, channels, messages, selectedC
           </div>
           <ChannelList ContextMenu={ContextMenu} channels={channels} onChannelEdit={onChannelEdit} onChannelDelete={onChannelDelete} onChannelClick={onChannelClick} selectedChannel={selectedChannel} />
         </div>
-        <ChatView className="ChatPageContainerRight" ContextMenu={ContextMenu} widthConstrained={widthConstrained} changeTitleCallback={changeTitleCallback} messages={messages} selectedChannel={selectedChannel} MessageInputValue={MessageInputValue} onChannelCreate={onChannelCreate} MessageInputChangedHandler={MessageInputChangedHandler} MessageInputSendHandler={MessageInputSendHandler} handleFileUpload={handleFileUpload} onMessageEdit={onMessageEdit} onMessageDelete={onMessageDelete} path={path} />
+        <ChatView className="ChatPageContainerRight" ContextMenu={ContextMenu} widthConstrained={widthConstrained} changeTitleCallback={changeTitleCallback} messages={messages} selectedChannel={selectedChannel} onChannelCreate={onChannelCreate} MessageInputSendHandler={MessageInputSendHandler} handleFileUpload={handleFileUpload} onMessageEdit={onMessageEdit} onMessageDelete={onMessageDelete} path={path} />
       </div>
     </PageContainer>
   );
