@@ -28,7 +28,7 @@ export const LightTheme_Default = createTheme({
   palette: {
     mode: "light",
     background: {
-      default: "",
+      default: GenerateRandomHexColor(),
       paper: GenerateRandomHexColor(),
     }
   },
