@@ -114,7 +114,7 @@ function Message({ ContextMenu, content, attachments, id, authorID, avatarURL, a
         <div className="MessageMediaContainer">
           {mediaComponents()}
         </div>
-        <TextField className="MessageEditField" />
+        <TextField className="MessageEditField" style={{display: "none"}} />
       </div>
     </div>
   )

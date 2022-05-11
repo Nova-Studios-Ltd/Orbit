@@ -1,4 +1,5 @@
 import { createTheme } from "@mui/material";
+import { GenerateRandomHexColor } from "NSLib/ColorGeneration";
 
 export const DarkTheme_Default = createTheme({
   palette: {
@@ -28,20 +29,20 @@ export const LightTheme_Default = createTheme({
     mode: "light",
     background: {
       default: "",
-      paper: "",
+      paper: GenerateRandomHexColor(),
     }
   },
   customPalette: {
     customActions: {
-      active: "",
-      messageHover: "",
-      contextMenuItemActive: ""
+      active: GenerateRandomHexColor(),
+      messageHover: GenerateRandomHexColor(),
+      contextMenuItemActive: GenerateRandomHexColor()
     },
-    contextMenuBackground: "",
-    contextMenuItemBackground: "",
-    formBackground: "",
-    messageBackground: "",
-    messageInputBackground: ""
+    contextMenuBackground: GenerateRandomHexColor(),
+    contextMenuItemBackground: GenerateRandomHexColor(),
+    formBackground: GenerateRandomHexColor(),
+    messageBackground: GenerateRandomHexColor(),
+    messageInputBackground: GenerateRandomHexColor()
   }
 });
 

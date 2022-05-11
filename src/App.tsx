@@ -6,7 +6,7 @@ import { initReactI18next, useTranslation } from "react-i18next";
 import { Helmet } from "react-helmet";
 
 import { Manager } from "./Init/AuthHandler";
-import { DarkTheme_Default } from "Theme";
+import { DarkTheme_Default, LightTheme_Default } from "Theme";
 import { Localizations } from "Localization/Localizations";
 
 import ContextMenuItem from "Components/Menus/ContextMenuItem/ContextMenuItem";
@@ -108,7 +108,7 @@ function App() {
       <Helmet>
         <title>{title && title.length > 0 ? `${Localizations_Common("AppTitle")} - ${title}` : Localizations_Common("AppTitle")}</title>
       </Helmet>
-      <ThemeProvider theme={DarkTheme_Default}>
+      <ThemeProvider theme={LightTheme_Default}>
         <Routes>
           <Route path="*" element={<ErrorView {...GenericViewProps} errorCode={404} />}></Route>
           <Route path="/" element={<AuthView {...GenericViewProps} path={AuthViewRoutes.Login} />} />
