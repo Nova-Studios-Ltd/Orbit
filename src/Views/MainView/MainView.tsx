@@ -87,7 +87,12 @@ function MainView({ path, ContextMenu, HelpPopup, widthConstrained, changeTitleC
               cache.SetMessage(key, message);
             }
           }
-
+          const kkeys = localTimestamps.keys();
+          for (let k = 0; k < kkeys.length; k++) {
+            const key = kkeys[k];
+            if (remoteTimestamps.containsKey(key)) continue;
+            cache.RemoveMessage(key);
+          }
         }, true, 1);
       }
       else {
