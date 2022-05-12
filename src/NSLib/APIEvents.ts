@@ -11,6 +11,7 @@ import { SettingsManager } from "./SettingsManager";
 import { Base64String } from "./Base64";
 import { DecryptBase64, DecryptBase64WithPriv, DecryptUint8Array, EncryptBase64, EncryptBase64WithPub, EncryptUint8Array, GenerateBase64Key } from "./NCEncryptionBeta";
 import { NCChannelCache } from "./NCCache";
+import { HasFlag } from "./NCFlags";
 
 
 // User
@@ -105,6 +106,7 @@ async function DecryptMessage(message: IMessageProps) : Promise<IMessageProps> {
 }
 
 export async function GETMessage(channel_uuid: string, message_id: string, bypass_cache = false) : Promise<undefined | IMessageProps> {
+  if (HasFlag("no-cache")) bypass_cache = true;
   const cache = new NCChannelCache(channel_uuid);
   if (!bypass_cache) {
     const message = cache.GetMessage(message_id);
@@ -120,6 +122,7 @@ export async function GETMessage(channel_uuid: string, message_id: string, bypas
 }
 
 export async function GETMessages(channel_uuid: string, callback: (messages: IMessageProps[]) => void, bypass_cache = false, limit = 30, after = -1, before = 2147483647) {
+  if (HasFlag("no-cache")) bypass_cache = true;
   // Hit cache
   const cache = new NCChannelCache(channel_uuid);
   const messages = await cache.GetMessages(limit, before);

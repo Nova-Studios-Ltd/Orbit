@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Menu, Popover, ThemeProvider } from "@mui/material";
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import i18n from "i18next";
@@ -6,7 +6,7 @@ import { initReactI18next, useTranslation } from "react-i18next";
 import { Helmet } from "react-helmet";
 
 import { Manager } from "./Init/AuthHandler";
-import { DarkTheme_Default, LightTheme_Default } from "Theme";
+import { DarkTheme_Default, LightTheme_Default, WTFTheme_Default } from "Theme";
 import { Localizations } from "Localization/Localizations";
 
 import ContextMenuItem from "Components/Menus/ContextMenuItem/ContextMenuItem";
@@ -30,7 +30,6 @@ i18n.use(initReactI18next)
 });
 
 function App() {
-
   const [widthConstrained, setWidthConstrainedState] = useState(window.matchMedia("(max-width: 600px)").matches);
   const location = useLocation();
   const navigate = useNavigate();
@@ -45,6 +44,7 @@ function App() {
   const [contextMenuItems, setContextMenuItems] = useState(null as unknown as ContextMenuItemProps[]);
 
   const contextMenuAnchorPosFiltered = { x: contextMenuAnchorPos ? contextMenuAnchorPos.x : 0, y: contextMenuAnchorPos ? contextMenuAnchorPos.y : 0 }
+
 
   const closeHelpPopup = () => {
     setHelpVisibility(false);
@@ -92,7 +92,7 @@ function App() {
   };
 
   Manager.ContainsCookie("LoggedIn").then(async (value: boolean) => {
-    if (!value) return;
+    if (value) return;
     if (location.pathname.toLowerCase().includes(AuthViewRoutes.Login) || location.pathname.toLowerCase().includes(AuthViewRoutes.Register)) {
       Manager.WriteCookie("LoggedIn", "false");
       navigate(MainViewRoutes.Chat);
@@ -108,7 +108,7 @@ function App() {
       <Helmet>
         <title>{title && title.length > 0 ? `${Localizations_Common("AppTitle")} - ${title}` : Localizations_Common("AppTitle")}</title>
       </Helmet>
-      <ThemeProvider theme={LightTheme_Default}>
+      <ThemeProvider theme={DarkTheme_Default}>
         <Routes>
           <Route path="*" element={<ErrorView {...GenericViewProps} errorCode={404} />}></Route>
           <Route path="/" element={<AuthView {...GenericViewProps} path={AuthViewRoutes.Login} />} />
