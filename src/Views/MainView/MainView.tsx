@@ -19,6 +19,7 @@ import { AuthViewRoutes, ChatViewRoutes, MainViewRoutes } from "DataTypes/Routes
 import { CacheValid, HasChannelCache, isValidUsername } from "NSLib/Util";
 import { GenerateBase64SHA256 } from "NSLib/NCEncryptionBeta";
 import { NCChannelCache } from "NSLib/NCCache";
+import { HasFlag } from "NSLib/NCFlags";
 
 interface MainViewProps extends View {
   path: MainViewRoutes
@@ -38,7 +39,7 @@ function MainView({ path, ContextMenu, HelpPopup, widthConstrained, changeTitleC
     setSelectedChannel({ table_Id: channel.channelID, channelName: channel.channelName, channelIcon: channel.channelIconSrc, members: channel.channelMembers, channelType: channel.isGroup } as IRawChannelProps);
 
     if (channel && channel.channelID) {
-      if (await HasChannelCache(channel.channelID) && !await CacheValid(channel.channelID, session.current)) {
+      if (await HasChannelCache(channel.channelID) && !await CacheValid(channel.channelID, session.current) && !HasFlag("no-cache")) {
         const cache = new NCChannelCache(channel.channelID);
         GETMessages(channel.channelID, async (messages: IMessageProps[]) => {
           // Get any new messages we may have missed while offline

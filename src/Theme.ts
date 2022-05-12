@@ -1,5 +1,5 @@
 import { createTheme } from "@mui/material";
-import { GenerateRandomHexColor } from "NSLib/ColorGeneration";
+import GenerateRandomColor, { GenerateRandomHexColor } from "NSLib/ColorGeneration";
 
 export const DarkTheme_Default = createTheme({
   palette: {
@@ -28,21 +28,43 @@ export const LightTheme_Default = createTheme({
   palette: {
     mode: "light",
     background: {
-      default: GenerateRandomHexColor(),
-      paper: GenerateRandomHexColor(),
+      default: "",
+      paper: "",
     }
   },
   customPalette: {
     customActions: {
-      active: GenerateRandomHexColor(),
-      messageHover: GenerateRandomHexColor(),
-      contextMenuItemActive: GenerateRandomHexColor()
+      active: "",
+      messageHover: "",
+      contextMenuItemActive: ""
     },
-    contextMenuBackground: GenerateRandomHexColor(),
-    contextMenuItemBackground: GenerateRandomHexColor(),
-    formBackground: GenerateRandomHexColor(),
-    messageBackground: GenerateRandomHexColor(),
-    messageInputBackground: GenerateRandomHexColor()
+    contextMenuBackground: "",
+    contextMenuItemBackground: "",
+    formBackground: "",
+    messageBackground: "",
+    messageInputBackground: ""
+  }
+});
+
+export const WTFTheme_Default = createTheme({
+  palette: {
+    mode: "light",
+    background: {
+      default: GenerateRandomColor(),
+      paper: GenerateRandomColor(),
+    }
+  },
+  customPalette: {
+    customActions: {
+      active: GenerateRandomColor(),
+      messageHover: GenerateRandomColor(),
+      contextMenuItemActive: GenerateRandomColor()
+    },
+    contextMenuBackground: GenerateRandomColor(),
+    contextMenuItemBackground: GenerateRandomColor(),
+    formBackground: GenerateRandomColor(),
+    messageBackground: GenerateRandomColor(),
+    messageInputBackground: GenerateRandomColor()
   }
 });
 

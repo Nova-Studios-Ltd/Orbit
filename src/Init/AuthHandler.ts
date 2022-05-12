@@ -8,6 +8,7 @@ import WebsocketInit from "./WebsocketEventInit";
 import { ToBase64String, ToUint8Array } from "../NSLib/Base64";
 import { LoginStatus } from "DataTypes/Enums";
 import { DecryptBase64, GenerateBase64SHA256 } from "NSLib/NCEncryptionBeta";
+import { HasFlag } from "NSLib/NCFlags";
 
 export const Manager = new SettingsManager();
 let Websocket;
@@ -46,19 +47,21 @@ export async function AutoLogin() : Promise<boolean> {
   Manager.User.discriminator = userResp.discriminator;
   Manager.User.username = userResp.username;
 
-  // Setup websocket
-  Websocket = new NCWebsocket(`api.novastudios.tk/Events/Listen?user_uuid=${Manager.User.uuid}`, Manager.User.token, false);
-  Websocket.OnConnected = () => console.log("Connected!");
-  Websocket.OnTerminated = () => console.log("Terminated!");
+  if (!HasFlag("no-websocket")) {
+    // Setup websocket
+    Websocket = new NCWebsocket(`api.novastudios.tk/Events/Listen?user_uuid=${Manager.User.uuid}`, Manager.User.token, false);
+    Websocket.OnConnected = () => console.log("Connected!");
+    Websocket.OnTerminated = () => console.log("Terminated!");
+
+    // Init Websocket Events
+    WebsocketInit(Websocket);
+  }
 
   // Fetch users keystore
   const keyResp = await GETKeystore();
   if (keyResp === undefined) return false;
   Manager.ClearKeys();
   Manager.LoadKeys(keyResp);
-
-  // Init Websocket Events
-  WebsocketInit(Websocket);
 
   Manager.WriteCookie("LoggedIn", "true");
 
