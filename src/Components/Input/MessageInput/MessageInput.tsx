@@ -6,13 +6,14 @@ import { Send as SendIcon, UploadFile as UploadIcon } from "@mui/icons-material"
 
 import type { NCAPIComponent } from "DataTypes/Components";
 import { ChangeEvent, useEffect, useState } from "react";
+import TextCombo, { TextComboChangeEvent, TextComboSubmitEvent } from "../TextCombo/TextCombo";
 
-export interface MessageInputSendEvent {
-  value?: string,
+export interface MessageInputSendEvent extends TextComboSubmitEvent {
+
 }
 
-export interface MessageInputChangeEvent {
-  value?: string,
+export interface MessageInputChangeEvent extends TextComboChangeEvent {
+
 }
 
 export interface MessageInputProps extends NCAPIComponent {
@@ -21,25 +22,14 @@ export interface MessageInputProps extends NCAPIComponent {
   onSend?: (event: MessageInputSendEvent) => void
 }
 
-const MaxTextFieldCharLength = 4000; // How many characters remaining before it is shown
-const TextFieldCharLengthDisplayThreshold = Math.floor(MaxTextFieldCharLength * 0.2); // How many characters remaining before it is shown
-
 function MessageInput({ className, onFileUpload, onChange, onSend }: MessageInputProps) {
   const Localizations_MessageInput = useTranslation("MessageInput").t;
   const theme = useTheme();
   const classNames = useClassNames("MessageInputContainer", className);
 
-  const [TextFieldValue, setTextFieldValue] = useState("");
-  const [TextFieldFocused, setTextFieldFocusedState] = useState(false);
-  const [TextFieldCharLength, setTextFieldCharLength] = useState(0);
+  const [TextFieldValue, setTextFieldValue] = useState("" as string | undefined);
 
-  const RemainingTextFieldCharLength = MaxTextFieldCharLength - TextFieldCharLength;
-
-  useEffect(() => {
-    if (TextFieldValue) setTextFieldCharLength(TextFieldValue.length);
-  }, [TextFieldValue]);
-
-  const sendMessage = () => {
+  const sendMessage = (event: MessageInputSendEvent) => {
     if (onSend) onSend({ value: TextFieldValue });
     setTextFieldValue("");
   };
@@ -48,28 +38,19 @@ function MessageInput({ className, onFileUpload, onChange, onSend }: MessageInpu
     if (onFileUpload) onFileUpload();
   };
 
-  const onChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
-    setTextFieldValue(event.target.value);
-    if (onChange) onChange({ value: event.target.value });
-  };
-
-  const onKeyDownHandler = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key.toLowerCase() === "enter") {
-      sendMessage();
-    }
-  };
-
-  const inputFocusHandler = (isFocused: boolean) => {
-    setTextFieldFocusedState(isFocused);
+  const onChangeHandler = (event: MessageInputChangeEvent) => {
+    if (onChange) onChange({ value: event.value });
+    setTextFieldValue(event.value);
   };
 
   return (
-    <div className={classNames} style={{ backgroundColor: theme.customPalette.messageInputBackground, borderColor: TextFieldFocused ? theme.palette.action.active : theme.palette.divider }}>
-      <IconButton title={Localizations_MessageInput("IconButton-Tooltip-UploadFile")} aria-label={Localizations_MessageInput("IconButton-Tooltip-UploadFile")} onClick={() => uploadFile()}><UploadIcon /></IconButton>
-      <input type="text" className="MessageInputField" maxLength={MaxTextFieldCharLength} style={{ backgroundColor: "transparent", color: theme.palette.text.primary, fontSize: theme.typography.subtitle1.fontSize }} placeholder={Localizations_MessageInput("TextField_Placeholder-TypeHerePrompt")} value={TextFieldValue} onFocus={() => inputFocusHandler(true)} onBlur={() => inputFocusHandler(false)} onChange={onChangeHandler} onKeyDown={onKeyDownHandler} />
-      {RemainingTextFieldCharLength < TextFieldCharLengthDisplayThreshold ? <Typography variant="caption" alignSelf="center">{RemainingTextFieldCharLength}</Typography> : null}
-      <IconButton title={Localizations_MessageInput("IconButton-Tooltip-SendMessage")} aria-label={Localizations_MessageInput("IconButton-Tooltip-SendMessage")} onClick={() => sendMessage()}><SendIcon /></IconButton>
-    </div>
+    <TextCombo className={classNames} textFieldPlaceholder={Localizations_MessageInput("TextField_Placeholder-TypeHerePrompt")} value={TextFieldValue} onChange={onChangeHandler} onSubmit={sendMessage}
+      childrenLeft={
+        <>
+          <IconButton title={Localizations_MessageInput("IconButton-Tooltip-UploadFile")} aria-label={Localizations_MessageInput("IconButton-Tooltip-UploadFile")} onClick={() => uploadFile()}><UploadIcon /></IconButton>
+        </>
+      }
+    />
   )
 }
 

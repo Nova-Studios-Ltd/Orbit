@@ -1,5 +1,6 @@
 {
   "IconButton-Title-UploadFile": "Upload File",
   "IconButton-Title-SendMessage": "Send",
-  "TextField_Placeholder-TypeHerePrompt": "Type a Message"
+  "TextField_Placeholder-TypeHerePrompt": "Type a Message",
+  "IconButton-Tooltip-UploadFile": "Upload File"
 }

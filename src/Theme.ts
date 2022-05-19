@@ -19,7 +19,7 @@ export const DarkTheme_Default = createTheme({
     contextMenuItemBackground: "#3C3E42",
     formBackground: "#212121",
     messageBackground: "#3C3E42",
-    messageInputBackground: "#3C3E42",
+    TextComboBackground: "#3C3E42",
   }
 });
 
@@ -42,7 +42,7 @@ export const LightTheme_Default = createTheme({
     contextMenuItemBackground: "",
     formBackground: "",
     messageBackground: "",
-    messageInputBackground: ""
+    TextComboBackground: ""
   }
 });
 
@@ -64,7 +64,7 @@ export const WTFTheme_Default = createTheme({
     contextMenuItemBackground: GenerateRandomColor(),
     formBackground: GenerateRandomColor(),
     messageBackground: GenerateRandomColor(),
-    messageInputBackground: GenerateRandomColor()
+    TextComboBackground: GenerateRandomColor()
   }
 });
 
@@ -80,7 +80,7 @@ declare module "@mui/material/styles" {
       contextMenuItemBackground: string,
       formBackground: string,
       messageBackground: string,
-      messageInputBackground: string,
+      TextComboBackground: string,
     }
   }
 
@@ -95,7 +95,7 @@ declare module "@mui/material/styles" {
       contextMenuItemBackground: string,
       formBackground: string,
       messageBackground: string,
-      messageInputBackground: string,
+      TextComboBackground: string,
     },
   }
 }

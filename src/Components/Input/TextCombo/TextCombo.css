@@ -1,4 +1,4 @@
-.MessageInputContainer {
+.TextComboContainer {
   display: flex;
   flex-direction: row;
 
@@ -13,7 +13,7 @@
   transition: border-color 50ms linear;
 }
 
-.MessageInputField {
+.TextComboField {
   border: none;
   outline: none;
 
@@ -22,8 +22,20 @@
   width: 100%;
 }
 
+.TextComboBefore {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.TextComboAfter {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
 @media only screen and (max-width: 600px) {
-  .MessageInputContainer {
+  .TextComboContainer {
 
   }
 }

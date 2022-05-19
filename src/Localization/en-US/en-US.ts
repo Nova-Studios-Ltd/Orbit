@@ -18,6 +18,7 @@ import Channel_EN_US from "./Components/Channels/Channel.json";
 import ChannelList_EN_US from "./Components/Channels/ChannelList.json";
 
 import MessageInput_EN_US from "./Components/Input/MessageInput.json";
+import TextCombo_EN_US from "./Components/Input/TextCombo.json";
 
 import Message_EN_US from "./Components/Messages/Message.json";
 import MessageFile_EN_US from "./Components/Messages/MessageFile.json";
@@ -44,6 +45,7 @@ export const Localizations_EN_US = {
   ChannelList: ChannelList_EN_US,
 
   MessageInput: MessageInput_EN_US,
+  TextCombo: TextCombo_EN_US,
 
   Message: Message_EN_US,
   MessageFile: MessageFile_EN_US,

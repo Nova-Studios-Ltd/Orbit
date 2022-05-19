@@ -1,9 +1,11 @@
-import { Avatar, TextField, Typography, useTheme } from "@mui/material";
+import { Avatar, IconButton, TextField, Typography, useTheme } from "@mui/material";
+import { Close as CloseIcon } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import useSettingsManager from "Hooks/useSettingsManager";
 
 import MessageMedia from "Components/Messages/MessageMedia/MessageMedia";
+import TextCombo, { TextComboChangeEvent, TextComboSubmitEvent } from "Components/Input/TextCombo/TextCombo";
 
 import type { NCComponent } from "DataTypes/Components";
 import type { ContextMenuItemProps } from "Components/Menus/ContextMenuItem/ContextMenuItem";
@@ -29,11 +31,13 @@ function Message({ ContextMenu, content, attachments, id, authorID, avatarURL, a
   const settingsManager = useSettingsManager();
   const filteredMessageProps: MessageProps = { content, id, avatarURL, author, timestamp };
   const Localizations_Message = useTranslation("Message").t;
-  const [isHovering, setHoveringState] = useState(false);
-  const [allAttachments, setAttachments] = useState([] as IAttachmentProps[]);
 
   const isOwnMessage = authorID === settingsManager.User.uuid;
 
+  const [isHovering, setHoveringState] = useState(false);
+  const [isEditing, setEditingState] = useState(false);
+  const [editFieldValue, setEditFieldValue] = useState("" as string | undefined);
+  const [allAttachments, setAttachments] = useState([] as IAttachmentProps[]);
 
   useEffect(() => {
     if (attachments === undefined) return;
@@ -61,9 +65,14 @@ function Message({ ContextMenu, content, attachments, id, authorID, avatarURL, a
   }, []);
 
 
-  const editMessage = () => {
+  const startEditMessage = () => {
+    setEditingState(true);
+    setEditFieldValue(content);
+  }
+
+  const finishEditMessage = (event: TextComboSubmitEvent) => {
     if (onMessageEdit) onMessageEdit(filteredMessageProps);
-    // TODO: Add message editing UI logic here
+    setEditingState(false);
   }
 
   const copyMessage = () => {
@@ -73,9 +82,13 @@ function Message({ ContextMenu, content, attachments, id, authorID, avatarURL, a
 
   const messageContextMenuItems: ContextMenuItemProps[] = [
     { children: Localizations_Message("ContextMenuItem-Copy"), onLeftClick: () => copyMessage()},
-    { disabled: !isOwnMessage, children: Localizations_Message("ContextMenuItem-Edit"), onLeftClick: () => editMessage()},
+    { disabled: !isOwnMessage, children: Localizations_Message("ContextMenuItem-Edit"), onLeftClick: () => startEditMessage()},
     { disabled: !isOwnMessage, children: Localizations_Message("ContextMenuItem-Delete"), onLeftClick: () => { if (onMessageDelete) onMessageDelete(filteredMessageProps) }}
   ]
+
+  const editMessageFieldChangedHandler = (event: TextComboChangeEvent) => {
+    setEditFieldValue(event.value);
+  }
 
   const mouseHoverEventHandler = (isHovering: boolean) => {
     setHoveringState(isHovering);
@@ -114,7 +127,12 @@ function Message({ ContextMenu, content, attachments, id, authorID, avatarURL, a
         <div className="MessageMediaContainer">
           {mediaComponents()}
         </div>
-        <TextField className="MessageEditField" style={{display: "none"}} />
+        {isEditing ? <TextCombo className="MessageEditField" value={editFieldValue} textFieldPlaceholder={content} onChange={editMessageFieldChangedHandler} onSubmit={finishEditMessage} onDismiss={() => setEditingState(false)}
+          childrenRight={
+            <>
+              <IconButton onClick={() => setEditingState(false)}><CloseIcon /></IconButton>
+            </>
+          } /> : null}
       </div>
     </div>
   )
