@@ -71,6 +71,7 @@ function Message({ ContextMenu, content, attachments, id, authorID, avatarURL, a
   }
 
   const finishEditMessage = (event: TextComboSubmitEvent) => {
+    filteredMessageProps.content = event.value;
     if (onMessageEdit) onMessageEdit(filteredMessageProps);
     setEditingState(false);
   }

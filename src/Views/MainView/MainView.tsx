@@ -124,7 +124,7 @@ function MainView({ path, ContextMenu, HelpPopup, widthConstrained, changeTitleC
   };
 
   const onMessageEdit = async (message: MessageProps) => {
-    console.log(`Request to edit message ${message.id}`);
+    console.log(`Request to edit message ${message.id}. New Message: ${message.content}`);
     console.log(message.content);
     if (message.id === undefined) return;
     if (await EDITMessage(selectedChannel.table_Id, message.id, message.content || "")) {
