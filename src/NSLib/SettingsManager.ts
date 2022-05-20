@@ -3,6 +3,7 @@ import { Dictionary, KeyValuePair } from "./Dictionary";
 
 //const Storage = require("@sifrr/storage");
 import { getStorage } from "SiffrStorage/sifrr.storage";
+import { GETKey } from "./APIEvents";
 
 export class SettingsManager {
   private SettingsStorage: any;
@@ -71,7 +72,13 @@ export class SettingsManager {
     return this.Keystore.set(user_uuid, pubKey);
   }
 
-  async ReadKey(user_uuid: string) : Promise<string> {
+  async ReadKey(user_uuid: string) : Promise<string | undefined> {
+    // Check if key is in keystore, if this is false, check the remote server. This is last resort if the websocket didnt update the keystore on it's own
+    // TODO Further investigate why keystore isnt (in thery) updating
+    if (!await this.ContainsKey(user_uuid)) {
+      console.log(`Keystore did not contain key for user ${user_uuid}. Attempting fetch from server...`);
+      return GETKey(user_uuid);
+    }
     return (await this.Keystore.get(user_uuid))[user_uuid] as string;
   }
 

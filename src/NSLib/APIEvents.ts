@@ -12,8 +12,6 @@ import { Base64String } from "./Base64";
 import { DecryptBase64, DecryptBase64WithPriv, DecryptUint8Array, EncryptBase64, EncryptBase64WithPub, EncryptUint8Array, GenerateBase64Key } from "./NCEncryptionBeta";
 import { NCChannelCache } from "./NCCache";
 import { HasFlag } from "./NCFlags";
-import GenerateRandomColor from "./ColorGeneration";
-
 
 // User
 export async function GETUser(user_uuid: string) : Promise<IUserData | undefined> {
@@ -173,6 +171,7 @@ export function SENDMessage(channel_uuid: string, contents: string, rawAttachmen
               callback(false);
               return;
           }
+          console.log(channel.members);
           // Generate Key and Encrypt Message
           const messageKey = await GenerateBase64Key(32);
           const encryptedMessage = await EncryptBase64(messageKey, Base64String.CreateBase64String(contents));
@@ -191,8 +190,8 @@ export function SENDMessage(channel_uuid: string, contents: string, rawAttachmen
               if (member !== Manager.User.uuid) {
                   const pubKey = await Manager.ReadKey(member);
                   if (pubKey !== undefined) {
-                      const encryptedKey = await EncryptBase64WithPub(pubKey, messageKey);
-                      encKeys[member] = encryptedKey.Base64;
+                    const encryptedKey = await EncryptBase64WithPub(pubKey, messageKey);
+                    encKeys[member] = encryptedKey.Base64;
                   }
               }
           }

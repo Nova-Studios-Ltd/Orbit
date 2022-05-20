@@ -22,6 +22,7 @@ import type { ContextMenuItemProps } from "Components/Menus/ContextMenuItem/Cont
 import type { Coordinates } from "DataTypes/Types";
 
 import "./App.css";
+import { SettingsManager } from "NSLib/SettingsManager";
 i18n.use(initReactI18next)
 .init({
   resources: Localizations,
@@ -105,6 +106,9 @@ function App() {
 
   return (
     <div className="App" onContextMenu={(event) => event.preventDefault()}>
+      <button onClick={async () => {
+        console.log(await new SettingsManager().ReadKey("d"));
+      }}></button>
       <Helmet>
         <title>{title && title.length > 0 ? `${Localizations_Common("AppTitle")} - ${title}` : Localizations_Common("AppTitle")}</title>
       </Helmet>
