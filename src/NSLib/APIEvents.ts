@@ -2,7 +2,7 @@ import { IRawChannelProps } from "../Interfaces/IRawChannelProps";
 import { IMessageProps } from "../Interfaces/IMessageProps";
 import MessageAttachment from "../DataTypes/MessageAttachment";
 import { Dictionary, Indexable } from "./Dictionary";
-import { ContentType, DELETE, GET, GETFile, NCAPIResponse, PATCH, POST, POSTFile } from "./NCAPI";
+import { ContentType, DELETE, GET, GETFile, NCAPIResponse, PATCH, POST, POSTFile, PUT } from "./NCAPI";
 import { AESMemoryEncryptData } from "./NCEncrytUtil";
 import { GetImageDimensions } from "./Util";
 import Dimensions from "../DataTypes/Dimensions";
@@ -203,11 +203,13 @@ export function SENDMessage(channel_uuid: string, contents: string, rawAttachmen
   });
 }
 
-export async function EDITMessage(channel_uuid: string, message_id: string, message: string, encryptedKeys: {[uuid: string]: string;}, iv: string) : Promise<boolean> {
+export async function EDITMessage(channel_uuid: string, message_id: string, message: string) : Promise<boolean> {
   const Manager = new SettingsManager();
-  const key = await DecryptBase64WithPriv(Manager.User.keyPair.PrivateKey, new Base64String(encryptedKeys[Manager.User.uuid]));
-  const c = await EncryptBase64(key, Base64String.CreateBase64String(message), new Base64String(iv));
-  const resp = await POST(`Channel/${channel_uuid}/Messages/${message_id}`, ContentType.JSON, JSON.stringify({content: c.content}), Manager.User.token);
+  const oldMessage = await GETMessage(channel_uuid, message_id);
+  if (oldMessage === undefined) return false;
+  const key = await DecryptBase64WithPriv(Manager.User.keyPair.PrivateKey, new Base64String(oldMessage.encryptedKeys[Manager.User.uuid]));
+  const c = await EncryptBase64(key, Base64String.CreateBase64String(message), new Base64String(oldMessage.iv));
+  const resp = await PUT(`Channel/${channel_uuid}/Messages/${message_id}`, ContentType.JSON, JSON.stringify({content: c.content}), Manager.User.token);
   if (resp.status === 200) return true;
   return false;
 }

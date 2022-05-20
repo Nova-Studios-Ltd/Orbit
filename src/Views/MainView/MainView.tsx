@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { AutoLogin } from "Init/AuthHandler";
 //import { SettingsManager } from "NSLib/SettingsManager";
 import { Events } from "Init/WebsocketEventInit";
-import { CREATEChannel, DELETEMessage, GETChannel, GETMessage, GETMessageEditTimestamps, GETMessages, GETUserChannels, GETUserUUID } from "NSLib/APIEvents";
+import { CREATEChannel, DELETEMessage, EDITMessage, GETChannel, GETMessage, GETMessageEditTimestamps, GETMessages, GETUserChannels, GETUserUUID } from "NSLib/APIEvents";
 
 import ViewContainer from "Components/Containers/ViewContainer/ViewContainer";
 import ChatPage from "Pages/ChatPage/ChatPage";
@@ -123,9 +123,13 @@ function MainView({ path, ContextMenu, HelpPopup, widthConstrained, changeTitleC
     // TODO: Add Channel deletion logic here
   };
 
-  const onMessageEdit = (message: MessageProps) => {
+  const onMessageEdit = async (message: MessageProps) => {
     console.log(`Request to edit message ${message.id}`);
-    // TODO: Add Message edit logic here
+    console.log(message.content);
+    if (message.id === undefined) return;
+    if (await EDITMessage(selectedChannel.table_Id, message.id, message.content || "")) {
+      console.log(`Request to edit message ${message.id} successful`);
+    }
   };
 
   const onMessageDelete = async (message: MessageProps) => {

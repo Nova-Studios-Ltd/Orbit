@@ -44,6 +44,7 @@ function ChatView({ className, ContextMenu, HelpPopup, widthConstrained, path, m
     }
   }, [messages, messages?.length]);
 
+  // This
   const page = () => {
     switch (path) {
       case ChatViewRoutes.Chat:
