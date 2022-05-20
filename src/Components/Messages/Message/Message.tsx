@@ -128,7 +128,7 @@ function Message({ ContextMenu, content, attachments, id, authorID, avatarURL, a
         <div className="MessageMediaContainer">
           {mediaComponents()}
         </div>
-        {isEditing ? <TextCombo className="MessageEditField" value={editFieldValue} textFieldPlaceholder={content} onChange={editMessageFieldChangedHandler} onSubmit={finishEditMessage} onDismiss={() => setEditingState(false)}
+        {isEditing ? <TextCombo className="MessageEditField" autoFocus value={editFieldValue} textFieldPlaceholder={content} onChange={editMessageFieldChangedHandler} onSubmit={finishEditMessage} onDismiss={() => setEditingState(false)}
           childrenRight={
             <>
               <IconButton onClick={() => setEditingState(false)}><CloseIcon /></IconButton>
