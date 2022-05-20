@@ -125,7 +125,6 @@ function MainView({ path, ContextMenu, HelpPopup, widthConstrained, changeTitleC
 
   const onMessageEdit = async (message: MessageProps) => {
     console.log(`Request to edit message ${message.id}. New Message: ${message.content}`);
-    console.log(message.content);
     if (message.id === undefined) return;
     if (await EDITMessage(selectedChannel.table_Id, message.id, message.content || "")) {
       console.log(`Request to edit message ${message.id} successful`);
@@ -173,6 +172,16 @@ function MainView({ path, ContextMenu, HelpPopup, widthConstrained, changeTitleC
       })
     });
 
+    Events.on("EditMessage", (message: IMessageProps) => {
+      setMessages(prevState => {
+        const index = prevState.findIndex(e => e.message_Id === message.message_Id);
+        if (index > -1) {
+          prevState[index] = message;
+        }
+        return [...prevState];
+      });
+    });
+
     Events.on("NewChannel", (channel: IRawChannelProps) => {
       setChannels([...channels, channel]);
     });
@@ -180,6 +189,7 @@ function MainView({ path, ContextMenu, HelpPopup, widthConstrained, changeTitleC
     return (() => {
       Events.remove("NewMessage");
       Events.remove("DeleteMessage");
+      Events.remove("EditMessage");
     });
   }, [channels, messages]);
 

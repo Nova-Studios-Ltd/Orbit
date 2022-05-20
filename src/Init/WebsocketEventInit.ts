@@ -39,7 +39,11 @@ async function OnDeleteMessage(event: IWebSocketEvent) {
 }
 
 async function OnMessageEdit(event: IWebSocketEvent) {
-  // TODO Implement message edit logic
+  const message = await GETMessage(event.Channel, event.Message, true);
+  if (message === undefined) return;
+  Events.send("EditMessage", message);
+  // Update message in cache
+  new NCChannelCache(event.Channel).SetMessage(event.Message, message);
 }
 
 async function OnCreateChannel(event: IWebSocketEvent) {

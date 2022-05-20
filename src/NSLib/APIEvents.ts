@@ -12,6 +12,7 @@ import { Base64String } from "./Base64";
 import { DecryptBase64, DecryptBase64WithPriv, DecryptUint8Array, EncryptBase64, EncryptBase64WithPub, EncryptUint8Array, GenerateBase64Key } from "./NCEncryptionBeta";
 import { NCChannelCache } from "./NCCache";
 import { HasFlag } from "./NCFlags";
+import GenerateRandomColor from "./ColorGeneration";
 
 
 // User
@@ -91,7 +92,9 @@ export async function SETKey(key_user_uuid: string, key: string) : Promise<boole
 // Messages
 async function DecryptMessage(message: IMessageProps) : Promise<IMessageProps> {
   const Manager = new SettingsManager();
-  const key = await DecryptBase64WithPriv(Manager.User.keyPair.PrivateKey, new Base64String(message.encryptedKeys[Manager.User.uuid]));
+  const keyData = message.encryptedKeys[Manager.User.uuid];
+  if (keyData === undefined) return {message_Id: message.message_Id, content: "Failed to read message"} as IMessageProps;
+  const key = await DecryptBase64WithPriv(Manager.User.keyPair.PrivateKey, new Base64String(keyData));
   if (message.content.length !== 0) {
     const decryptedMessage = await DecryptBase64(key, new AESMemoryEncryptData(message.iv, message.content));
     message.content = decryptedMessage.String;
@@ -122,7 +125,7 @@ export async function GETMessage(channel_uuid: string, message_id: string, bypas
 }
 
 export async function GETMessages(channel_uuid: string, callback: (messages: IMessageProps[]) => void, bypass_cache = false, limit = 30, after = -1, before = 2147483647) {
-  if (HasFlag("no-cache")) bypass_cache = true;
+  //if (HasFlag("no-cache")) bypass_cache = true;
   // Hit cache
   const cache = new NCChannelCache(channel_uuid);
   const messages = await cache.GetMessages(limit, before);
