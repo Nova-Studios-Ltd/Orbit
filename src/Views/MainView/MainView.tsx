@@ -124,7 +124,7 @@ function MainView({ path, ContextMenu, HelpPopup, widthConstrained, changeTitleC
   };
 
   const onMessageEdit = (message: MessageProps) => {
-    console.log(`Request to edit message ${message.id}`);
+    console.log(`Request to edit message ${message.id}. New Message: ${message.content}`);
     // TODO: Add Message edit logic here
   };
 
