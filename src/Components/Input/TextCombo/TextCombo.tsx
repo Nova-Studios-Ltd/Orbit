@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 import { Send as SendIcon, UploadFile as UploadIcon } from "@mui/icons-material";
 
 import type { NCAPIComponent } from "DataTypes/Components";
-import { ChangeEvent, useEffect, useState, ReactNode } from "react";
+import { ChangeEvent, useEffect, useState, ReactNode, useRef } from "react";
 
 export interface TextComboSubmitEvent {
   value?: string,
@@ -26,12 +26,13 @@ export interface TextComboProps extends NCAPIComponent {
   submitButton?: boolean,
   maxLength?: number,
   textFieldPlaceholder?: string,
+  autoFocus?: boolean,
   onChange?: (event: TextComboChangeEvent) => void,
   onDismiss?: (event: TextComboDismissEvent) => void,
   onSubmit?: (event: TextComboSubmitEvent) => void
 }
 
-function TextCombo({ className, childrenLeft, childrenRight, value, submitButton, maxLength, textFieldPlaceholder, onChange, onDismiss, onSubmit }: TextComboProps) {
+function TextCombo({ className, childrenLeft, childrenRight, value, submitButton, maxLength, textFieldPlaceholder, autoFocus, onChange, onDismiss, onSubmit }: TextComboProps) {
   const Localizations_TextCombo = useTranslation("TextCombo").t;
   const theme = useTheme();
   const classNames = useClassNames("TextComboContainer", className);
@@ -41,11 +42,15 @@ function TextCombo({ className, childrenLeft, childrenRight, value, submitButton
   const [TextFieldFocused, setTextFieldFocusedState] = useState(false);
   const [TextFieldCharLength, setTextFieldCharLength] = useState(0);
 
+  const TextFieldRef = useRef() as React.MutableRefObject<HTMLInputElement>;
+
   const RemainingTextFieldCharLength = MaxTextFieldCharLength - TextFieldCharLength;
 
   useEffect(() => {
     if (value) setTextFieldCharLength(value.length);
-  }, [value]);
+
+    if (autoFocus && TextFieldRef.current) TextFieldRef.current.focus();
+  }, [autoFocus, value]);
 
   const submit = () => {
     if (onSubmit) onSubmit({ value });
@@ -79,7 +84,7 @@ function TextCombo({ className, childrenLeft, childrenRight, value, submitButton
       <div className="TextComboBefore">
         {childrenLeft}
       </div>
-      <input type="text" className="TextComboField" maxLength={MaxTextFieldCharLength} style={{ backgroundColor: "transparent", color: theme.palette.text.primary, fontSize: theme.typography.subtitle1.fontSize }} placeholder={textFieldPlaceholder} value={value} onFocus={() => inputFocusHandler(true)} onBlur={() => inputFocusHandler(false)} onChange={onChangeHandler} onKeyDown={onKeyDownHandler} />
+      <input type="text" className="TextComboField" ref={TextFieldRef} maxLength={MaxTextFieldCharLength} style={{ backgroundColor: "transparent", color: theme.palette.text.primary, fontSize: theme.typography.subtitle1.fontSize }} placeholder={textFieldPlaceholder} value={value} onFocus={() => inputFocusHandler(true)} onBlur={() => inputFocusHandler(false)} onChange={onChangeHandler} onKeyDown={onKeyDownHandler} />
       <div className="TextComboAfter">
         {RemainingTextFieldCharLength < TextFieldCharLengthDisplayThreshold ? <Typography variant="caption" alignSelf="center">{RemainingTextFieldCharLength}</Typography> : null}
         {childrenRight}
