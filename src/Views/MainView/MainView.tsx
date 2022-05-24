@@ -17,7 +17,7 @@ import type { IMessageProps } from "Interfaces/IMessageProps";
 import type { MessageProps } from "Components/Messages/Message/Message";
 import { AuthViewRoutes, ChatViewRoutes, MainViewRoutes } from "DataTypes/Routes";
 import { CacheValid, HasChannelCache, isValidUsername } from "NSLib/Util";
-import { GenerateBase64SHA256 } from "NSLib/NCEncryptionBeta";
+import { GenerateBase64SHA256 } from "NSLib/NCEncryption";
 import { NCChannelCache } from "NSLib/NCCache";
 import { HasFlag } from "NSLib/NCFlags";
 
@@ -35,7 +35,7 @@ function MainView({ path, ContextMenu, HelpPopup, widthConstrained, changeTitleC
 
 
   const onChannelClick = async (channel: ChannelProps) => {
-    navigate(MainViewRoutes.Chat);
+    //navigate(MainViewRoutes.Chat);
     setSelectedChannel({ table_Id: channel.channelID, channelName: channel.channelName, channelIcon: channel.channelIconSrc, members: channel.channelMembers, channelType: channel.isGroup } as IRawChannelProps);
 
     if (channel && channel.channelID) {

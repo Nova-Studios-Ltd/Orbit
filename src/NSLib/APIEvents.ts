@@ -9,9 +9,10 @@ import Dimensions from "../DataTypes/Dimensions";
 import IUserData from "../Interfaces/IUserData";
 import { SettingsManager } from "./SettingsManager";
 import { Base64String } from "./Base64";
-import { DecryptBase64, DecryptBase64WithPriv, DecryptUint8Array, EncryptBase64, EncryptBase64WithPub, EncryptUint8Array, GenerateBase64Key } from "./NCEncryptionBeta";
+import { DecryptBase64, DecryptBase64WithPriv, DecryptUint8Array, EncryptBase64, EncryptBase64WithPub, EncryptUint8Array, GenerateBase64Key } from "./NCEncryption";
 import { NCChannelCache } from "./NCCache";
 import { HasFlag } from "./NCFlags";
+import FailedUpload, { FailReason } from "DataTypes/FailedUpload";
 
 // User
 export async function GETUser(user_uuid: string) : Promise<IUserData | undefined> {
@@ -123,7 +124,7 @@ export async function GETMessage(channel_uuid: string, message_id: string, bypas
 }
 
 export async function GETMessages(channel_uuid: string, callback: (messages: IMessageProps[]) => void, bypass_cache = false, limit = 30, after = -1, before = 2147483647) {
-  //if (HasFlag("no-cache")) bypass_cache = true;
+  if (HasFlag("no-cache")) bypass_cache = true;
   // Hit cache
   const cache = new NCChannelCache(channel_uuid);
   const messages = await cache.GetMessages(limit, before);
@@ -162,13 +163,13 @@ export async function GETMessageEditTimestamps(channel_uuid: string, limit = 30,
   return new Dictionary(resp.payload as Indexable<string>);
 }
 
-export function SENDMessage(channel_uuid: string, contents: string, rawAttachments: MessageAttachment[], callback: (sent: boolean) => void) {
+export function SENDMessage(channel_uuid: string, contents: string, rawAttachments: MessageAttachment[], callback: (sent: boolean, failedUploads: FailedUpload[]) => void) {
   const Manager = new SettingsManager();
   GET(`/Channel/${channel_uuid}`, Manager.User.token).then(async (resp: NCAPIResponse) => {
       if (resp.status === 200) {
           const channel = resp.payload as IRawChannelProps;
           if (channel.members === undefined) {
-              callback(false);
+              callback(false, [] as FailedUpload[]);
               return;
           }
           console.log(channel.members);
@@ -178,11 +179,13 @@ export function SENDMessage(channel_uuid: string, contents: string, rawAttachmen
 
           // Handle Attachments
           const attachments = [] as string[];
+          const failedUploads = [] as FailedUpload[];
           for (let a = 0; a < rawAttachments.length; a++) {
               const attachment = rawAttachments[a];
               const imageSize = (await GetImageDimensions(attachment.contents)) || new Dimensions(0, 0);
               const re = await POSTFile(`/Channel/${channel_uuid}?width=${imageSize.width}&height=${imageSize.height}`, new Blob([(await EncryptUint8Array(messageKey, attachment.contents, new Base64String(encryptedMessage.iv))).content]), attachment.filename, Manager.User.token)
               if (re.status === 200) attachments.push(re.payload as string);
+              else failedUploads.push(new FailedUpload(re.status as FailReason, attachment.filename, attachment.id));
           }
           const encKeys = {} as {[uuid: string]: string};
           for (let m = 0; m < channel.members.length; m++) {
@@ -197,11 +200,11 @@ export function SENDMessage(channel_uuid: string, contents: string, rawAttachmen
           }
           encKeys[Manager.User.uuid] = (await EncryptBase64WithPub(Manager.User.keyPair.PublicKey, messageKey)).Base64;
           const mPost = await POST(`/Channel/${channel_uuid}/Messages`, ContentType.JSON, JSON.stringify({Content: encryptedMessage.content as string, IV: encryptedMessage.iv, EncryptedKeys: encKeys, Attachments: attachments}), Manager.User.token)
-          if (mPost.status === 200) callback(true);
-          else callback(false);
+          if (mPost.status === 200 || failedUploads.length === 0) callback(true, [] as FailedUpload[]);
+          else callback(false, failedUploads);
           return;
       }
-      callback(false);
+      callback(false, [] as FailedUpload[]);
   });
 }
 
@@ -217,9 +220,9 @@ export async function EDITMessage(channel_uuid: string, message_id: string, mess
 }
 
 export async function DELETEMessage(channel_uuid: string, message_id: string) : Promise<boolean> {
-    const resp = await DELETE(`Channel/${channel_uuid}/Messages/${message_id}`, new SettingsManager().User.token);
-    if (resp.status === 200) return true;
-    return false;
+  const resp = await DELETE(`Channel/${channel_uuid}/Messages/${message_id}`, new SettingsManager().User.token);
+  if (resp.status === 200) return true;
+  return false;
 }
 
 // Channels

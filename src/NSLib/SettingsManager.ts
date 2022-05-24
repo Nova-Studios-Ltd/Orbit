@@ -74,7 +74,7 @@ export class SettingsManager {
 
   async ReadKey(user_uuid: string) : Promise<string | undefined> {
     // Check if key is in keystore, if this is false, check the remote server. This is last resort if the websocket didnt update the keystore on it's own
-    // TODO Further investigate why keystore isnt (in thery) updating
+    // TODO Further investigate why keystore isnt (in theroy) updating
     if (!await this.ContainsKey(user_uuid)) {
       console.log(`Keystore did not contain key for user ${user_uuid}. Attempting fetch from server...`);
       return GETKey(user_uuid);

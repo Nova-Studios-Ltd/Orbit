@@ -6,7 +6,7 @@ import { initReactI18next, useTranslation } from "react-i18next";
 import { Helmet } from "react-helmet";
 
 import { Manager } from "./Init/AuthHandler";
-import { DarkTheme_Default, LightTheme_Default, WTFTheme_Default } from "Theme";
+import { DarkTheme_Default } from "Theme";
 import { Localizations } from "Localization/Localizations";
 
 import ContextMenuItem from "Components/Menus/ContextMenuItem/ContextMenuItem";
@@ -23,6 +23,8 @@ import type { Coordinates } from "DataTypes/Types";
 
 import "./App.css";
 import { SettingsManager } from "NSLib/SettingsManager";
+import DebugButton from "Components/Buttons/DebugButtom/DebugButton";
+import { GetUrlFlag, HasFlag } from "NSLib/NCFlags";
 i18n.use(initReactI18next)
 .init({
   resources: Localizations,
@@ -106,9 +108,6 @@ function App() {
 
   return (
     <div className="App" onContextMenu={(event) => event.preventDefault()}>
-      <button onClick={async () => {
-        console.log(await new SettingsManager().ReadKey("d"));
-      }}></button>
       <Helmet>
         <title>{title && title.length > 0 ? `${Localizations_Common("AppTitle")} - ${title}` : Localizations_Common("AppTitle")}</title>
       </Helmet>

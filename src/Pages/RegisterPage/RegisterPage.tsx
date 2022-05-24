@@ -7,7 +7,7 @@ import { RegisterPayload, RegPayloadKey } from "DataTypes/RegisterPayload";
 
 import type { Page } from "DataTypes/Components";
 import { RegisterStatus } from "DataTypes/Enums";
-import { EncryptBase64, GenerateBase64SHA256, GenerateRSAKeyPair } from "NSLib/NCEncryptionBeta";
+import { EncryptBase64, GenerateBase64SHA256, GenerateRSAKeyPair } from "NSLib/NCEncryption";
 import { Base64String } from "NSLib/Base64";
 import { AuthViewRoutes } from "DataTypes/Routes";
 

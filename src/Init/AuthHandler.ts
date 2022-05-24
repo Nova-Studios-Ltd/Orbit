@@ -7,7 +7,7 @@ import { GETKeystore, GETUser } from "../NSLib/APIEvents";
 import WebsocketInit from "./WebsocketEventInit";
 import { ToBase64String, ToUint8Array } from "../NSLib/Base64";
 import { LoginStatus } from "DataTypes/Enums";
-import { DecryptBase64, GenerateBase64SHA256 } from "NSLib/NCEncryptionBeta";
+import { DecryptBase64, GenerateBase64SHA256 } from "NSLib/NCEncryption";
 import { HasFlag } from "NSLib/NCFlags";
 
 export const Manager = new SettingsManager();

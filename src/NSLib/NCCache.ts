@@ -1,7 +1,7 @@
 import { IMessageProps } from "Interfaces/IMessageProps";
 import { getStorage } from "SiffrStorage/sifrr.storage";
 import { Dictionary } from "./Dictionary";
-import { GenerateBase64SHA256 } from "./NCEncryptionBeta"
+import { GenerateBase64SHA256 } from "./NCEncryption"
 
 
 export class NCChannelCacheResult {
