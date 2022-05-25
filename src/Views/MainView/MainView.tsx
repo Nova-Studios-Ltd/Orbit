@@ -43,6 +43,10 @@ function MainView({ path, ContextMenu, HelpPopup, widthConstrained, changeTitleC
         const cache = new NCChannelCache(channel.channelID);
         GETMessages(channel.channelID, async (messages: IMessageProps[]) => {
           // Get any new messages we may have missed while offline
+          if (messages.length === 0) {
+            setMessages([]);
+            return;
+          }
           const m_id = (await cache.GetMessages(1)).Messages[0].message_Id;
           if (messages[0].message_Id !== m_id) {
             if (await cache.CacheValid()) {
