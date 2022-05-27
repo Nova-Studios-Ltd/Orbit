@@ -179,7 +179,6 @@ export function SENDMessage(channel_uuid: string, contents: string, rawAttachmen
 
           // Handle Attachments
           const postToken = await GET(`/Channel/${channel_uuid}/RequestContentToken?uploads=${rawAttachments.length}`, Manager.User.token, false);
-          console.log(postToken);
           if (postToken.status !== 200) return;
           const attachments = [] as string[];
           const failedUploads = [] as FailedUpload[];
