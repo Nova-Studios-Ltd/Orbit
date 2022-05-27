@@ -1,4 +1,4 @@
-import { Avatar, IconButton, TextField, Typography, useTheme } from "@mui/material";
+import { Avatar, IconButton, Typography, useTheme } from "@mui/material";
 import { Close as CloseIcon } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
 import React, { useEffect, useState } from "react";
@@ -52,6 +52,7 @@ function Message({ ContextMenu, content, attachments, id, authorID, avatarURL, a
         const type = await GetMimeType(link);
         if (type === FileType.Image) {
           const size = await GetImageDimensions(link);
+          if (size.height === -1) continue;
           att.push(new AttachmentProps(link, new Uint8Array(), "Unknown", "image/png", 0, size.width, size.height, true));
         }
         else if (type === FileType.Video) {
@@ -62,7 +63,7 @@ function Message({ ContextMenu, content, attachments, id, authorID, avatarURL, a
       setAttachments([...att, ...attachments]);
     }
     processMedia();
-  }, []);
+  }, [attachments, content]);
 
 
   const startEditMessage = () => {

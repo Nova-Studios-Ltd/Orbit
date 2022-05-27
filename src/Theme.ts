@@ -1,5 +1,13 @@
 import { createTheme } from "@mui/material";
+import { Theme } from "@mui/material/styles/createTheme";
 import GenerateRandomColor, { GenerateRandomHexColor } from "NSLib/ColorGeneration";
+
+// Just a temp thing
+export function ThemeSelector(themeName: string) : Theme {
+  if (themeName === "DarkTheme_Default") return DarkTheme_Default;
+  if (themeName === "LightTheme_Default") return LightTheme_Default;
+  else return WTFTheme_Default;
+}
 
 export const DarkTheme_Default = createTheme({
   palette: {

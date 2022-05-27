@@ -53,7 +53,7 @@ async function OnCreateChannel(event: IWebSocketEvent) {
 }
 
 async function OnDeleteChannel(event: IWebSocketEvent) {
-  // TODO Implement channel removal logic
+  Events.send("DeleteChannel", event.Channel);
 }
 
 async function OnAddNewKey(event: IWebSocketEvent) {

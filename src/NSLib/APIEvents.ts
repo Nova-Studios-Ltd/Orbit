@@ -63,7 +63,7 @@ export function DELETEUser(callback: (status: boolean) => void) {
 
 // User Keystore
 export async function GETKey(key_user_uuid: string) : Promise<string | undefined> {
-  const resp = await GET(`/User/@me/Keystore/${key_user_uuid}`, new SettingsManager().User.token);
+  const resp = await GET(`/User/@me/Keystore/${key_user_uuid}`, new SettingsManager().User.token, false);
   if (resp.status === 200) return resp.payload as string;
   return undefined;
 }

@@ -41,7 +41,7 @@ function RegisterPage({ HelpPopup, widthConstrained, changeTitleCallback }: Regi
     const hashPassword = await GenerateBase64SHA256(password);
     const encPriv = await EncryptBase64(hashPassword, Base64String.CreateBase64String(keypair.PrivateKey));
 
-    POST("Register", ContentType.JSON, JSON.stringify(new RegisterPayload(username, hashPassword.Base64, email, new RegPayloadKey(encPriv.content as string, encPriv.iv, keypair.PublicKey)))).then((response: NCAPIResponse) => {
+    POST("Auth/Register", ContentType.JSON, JSON.stringify(new RegisterPayload(username, hashPassword.Base64, email, new RegPayloadKey(encPriv.content as string, encPriv.iv, keypair.PublicKey))), undefined, false).then((response: NCAPIResponse) => {
       if (response.status === 200) {
         navigate(AuthViewRoutes.Login);
         setFailStatus(RegisterStatus.Success);

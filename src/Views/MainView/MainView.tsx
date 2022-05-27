@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { AutoLogin } from "Init/AuthHandler";
 //import { SettingsManager } from "NSLib/SettingsManager";
 import { Events } from "Init/WebsocketEventInit";
-import { CREATEChannel, DELETEMessage, EDITMessage, GETChannel, GETMessage, GETMessageEditTimestamps, GETMessages, GETUserChannels, GETUserUUID } from "NSLib/APIEvents";
+import { CREATEChannel, DELETEChannel, DELETEMessage, EDITMessage, GETChannel, GETMessage, GETMessageEditTimestamps, GETMessages, GETUserChannels, GETUserUUID } from "NSLib/APIEvents";
 
 import ViewContainer from "Components/Containers/ViewContainer/ViewContainer";
 import ChatPage from "Pages/ChatPage/ChatPage";
@@ -27,6 +27,7 @@ interface MainViewProps extends View {
 
 function MainView({ path, ContextMenu, HelpPopup, widthConstrained, changeTitleCallback } : MainViewProps) {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [channels, setChannels] = useState([] as IRawChannelProps[]);
   const [selectedChannel, setSelectedChannel] = useState(null as unknown as IRawChannelProps);
@@ -35,7 +36,8 @@ function MainView({ path, ContextMenu, HelpPopup, widthConstrained, changeTitleC
 
 
   const onChannelClick = async (channel: ChannelProps) => {
-    //navigate(MainViewRoutes.Chat);
+    if (!location.pathname.includes("chat"))
+      navigate(`${MainViewRoutes.Chat}${location.search}`);
     setSelectedChannel({ table_Id: channel.channelID, channelName: channel.channelName, channelIcon: channel.channelIconSrc, members: channel.channelMembers, channelType: channel.isGroup } as IRawChannelProps);
 
     if (channel && channel.channelID) {
@@ -124,7 +126,10 @@ function MainView({ path, ContextMenu, HelpPopup, widthConstrained, changeTitleC
 
   const onChannelDelete = (channel: ChannelProps) => {
     console.log(`Request to delete channel ${channel.channelName}`);
-    // TODO: Add Channel deletion logic here
+    if (channel.channelID === undefined) return;
+    DELETEChannel(channel.channelID, (deleted: boolean) => {
+      console.log(`Request to delete channel ${channel.channelID} succesful`);
+    });
   };
 
   const onMessageEdit = async (message: MessageProps) => {
@@ -173,7 +178,7 @@ function MainView({ path, ContextMenu, HelpPopup, widthConstrained, changeTitleC
           prevState.splice(index, 1);
         }
         return [...prevState];
-      })
+      });
     });
 
     Events.on("EditMessage", (message: IMessageProps) => {
@@ -188,6 +193,17 @@ function MainView({ path, ContextMenu, HelpPopup, widthConstrained, changeTitleC
 
     Events.on("NewChannel", (channel: IRawChannelProps) => {
       setChannels([...channels, channel]);
+    });
+
+    Events.on("DeleteChannel", (channel: string) => {
+      setChannels(prevState => {
+        const index = prevState.findIndex(e => e.table_Id === channel);
+        if (index > -1) {
+          prevState.splice(index, 1);
+        }
+        return [...prevState];
+      });
+      setMessages([]);
     });
 
     return (() => {

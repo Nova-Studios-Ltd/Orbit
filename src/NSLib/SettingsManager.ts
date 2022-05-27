@@ -77,7 +77,10 @@ export class SettingsManager {
     // TODO Further investigate why keystore isnt (in theroy) updating
     if (!await this.ContainsKey(user_uuid)) {
       console.log(`Keystore did not contain key for user ${user_uuid}. Attempting fetch from server...`);
-      return GETKey(user_uuid);
+      const key = await GETKey(user_uuid);
+      if (key === undefined) return undefined;
+      await this.WriteKey(user_uuid, key);
+      return key;
     }
     return (await this.Keystore.get(user_uuid))[user_uuid] as string;
   }
