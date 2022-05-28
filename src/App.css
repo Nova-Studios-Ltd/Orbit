@@ -66,3 +66,11 @@ html, body, #root, .App {
 .GenericPopover {
 
 }
+
+.ToastHolder {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+
+  margin: var(--global-margin);
+}

@@ -1,4 +1,4 @@
-import { useTheme } from "@mui/material";
+import { Typography, useTheme } from "@mui/material";
 import useClassNames from "Hooks/useClassNames";
 
 import type { NCComponent } from "DataTypes/Components";
@@ -12,8 +12,13 @@ function Toast({ className }: ToastProps) {
   const classNames = useClassNames("ToastContainer", className);
 
   return (
-    <div className={classNames} style={{ backgroundColor: theme.palette.background.paper }}>
+    <div className={classNames} style={{ backgroundColor: theme.palette.background.paper, color: theme.palette.text.primary }}>
+      <div className="ToastHeader">
+        <Typography variant="h5">I am a toast!</Typography>
+      </div>
+      <div className="ToastBody">
 
+      </div>
     </div>
   )
 }
