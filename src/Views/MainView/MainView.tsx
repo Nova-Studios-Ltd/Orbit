@@ -192,7 +192,11 @@ function MainView(props: MainViewProps) {
     });
 
     Events.on("NewChannel", (channel: IRawChannelProps) => {
-      setChannels([...channels, channel]);
+      setChannels(prevState => {
+        const index = prevState.findIndex(c => c.table_Id === channel.table_Id);
+        if (index > -1) return [...prevState]
+        return [...prevState, channel]}
+      );
     });
 
     Events.on("DeleteChannel", (channel: string) => {
