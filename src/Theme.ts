@@ -28,6 +28,7 @@ export const DarkTheme_Default = createTheme({
     formBackground: "#212121",
     messageBackground: "#3C3E42",
     TextComboBackground: "#3C3E42",
+    FileUploadSummaryItemBackground: "#212121",
   }
 });
 
@@ -50,7 +51,8 @@ export const LightTheme_Default = createTheme({
     contextMenuItemBackground: "",
     formBackground: "",
     messageBackground: "",
-    TextComboBackground: ""
+    TextComboBackground: "",
+    FileUploadSummaryItemBackground: ""
   }
 });
 
@@ -72,7 +74,8 @@ export const WTFTheme_Default = createTheme({
     contextMenuItemBackground: GenerateRandomColor(),
     formBackground: GenerateRandomColor(),
     messageBackground: GenerateRandomColor(),
-    TextComboBackground: GenerateRandomColor()
+    TextComboBackground: GenerateRandomColor(),
+    FileUploadSummaryItemBackground: GenerateRandomColor(),
   }
 });
 
@@ -89,6 +92,7 @@ declare module "@mui/material/styles" {
       formBackground: string,
       messageBackground: string,
       TextComboBackground: string,
+      FileUploadSummaryItemBackground: string,
     }
   }
 
@@ -104,6 +108,7 @@ declare module "@mui/material/styles" {
       formBackground: string,
       messageBackground: string,
       TextComboBackground: string,
+      FileUploadSummaryItemBackground: string,
     },
   }
 }

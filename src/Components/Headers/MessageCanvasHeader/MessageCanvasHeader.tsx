@@ -12,6 +12,8 @@ function MessageCanvasHeader({ className, selectedChannel }: MessageCanvasHeader
   const theme = useTheme();
   const classNames = useClassNames("MessageCanvasHeaderContainer", className);
 
+  if (!selectedChannel) return null;
+
   return (
     <div className={classNames} style={{ backgroundColor: theme.palette.background.paper }}>
       <Typography variant="h5">{selectedChannel?.channelName}</Typography>

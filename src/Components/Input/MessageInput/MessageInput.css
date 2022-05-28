@@ -1,24 +1,22 @@
 .MessageInputContainer {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
 
   box-sizing: border-box;
-  margin-bottom: var(--global-margin);
-  border: var(--global-border-thickness) solid;
   border-radius: var(--global-border-radius);
   margin-top: var(--global-margin);
+}
 
-  height: 3.5rem;
+.FileUploadSummaryContainer {
+  display: flex;
+  flex-direction: row;
+  overflow-x: auto;
+  overflow-y: hidden;
 
-  transition: border-color 50ms linear;
+  margin-bottom: var(--global-margin);
 }
 
 .MessageInputField {
-  border: none;
-  outline: none;
-
-  text-indent: 5pt;
-
   width: 100%;
 }
 

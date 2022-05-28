@@ -12,7 +12,7 @@ interface ErrorViewProps extends View {
   errorCode: number
 }
 
-function ErrorView({ errorCode } : ErrorViewProps) {
+function ErrorView({ errorCode }: ErrorViewProps) {
   const Localizations_ErrorView = useTranslation("ErrorView").t;
   const navigate = useNavigate();
 

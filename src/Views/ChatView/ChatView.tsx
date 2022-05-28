@@ -13,20 +13,23 @@ import type { View } from "DataTypes/Components";
 import type { IMessageProps } from "Interfaces/IMessageProps";
 import type { MessageProps } from "Components/Messages/Message/Message";
 import type { IRawChannelProps } from "Interfaces/IRawChannelProps";
+import type MessageAttachment from "DataTypes/MessageAttachment";
 
 interface ChatViewProps extends View {
   path?: ChatViewRoutes,
   messages?: IMessageProps[],
+  attachments?: MessageAttachment[],
   selectedChannel?: IRawChannelProps,
   onChannelCreate?: (recipient: string) => void,
   MessageInputSendHandler: (event: MessageInputSendEvent) => void,
-  handleFileUpload?: () => void,
+  onFileUpload?: () => void,
+  onFileRemove?: (id: string) => void,
   onMessageEdit?: (message: MessageProps) => void,
   onMessageDelete?: (message: MessageProps) => void
 }
 
-function ChatView({ className, ContextMenu, HelpPopup, widthConstrained, path, messages, selectedChannel, onChannelCreate, MessageInputSendHandler, handleFileUpload, onMessageEdit, onMessageDelete, changeTitleCallback }: ChatViewProps) {
-  const classNames = useClassNames("ChatViewContainer", className);
+function ChatView(props: ChatViewProps) {
+  const classNames = useClassNames("ChatViewContainer", props.className);
   const canvasRef = useRef() as React.MutableRefObject<HTMLDivElement>;
   const messageCount = useRef(0);
 
@@ -38,25 +41,25 @@ function ChatView({ className, ContextMenu, HelpPopup, widthConstrained, path, m
   }
 
   useEffect(() => {
-    if (messages) {
-      if (messageCount.current < messages.length) scrollCanvas();
-      messageCount.current = messages.length;
+    if (props.messages) {
+      if (messageCount.current < props.messages.length) scrollCanvas();
+      messageCount.current = props.messages.length;
     }
-  }, [messages, messages?.length]);
+  }, [props.messages, props.messages?.length]);
 
   // This
   const page = () => {
-    switch (path) {
+    switch (props.path) {
       case ChatViewRoutes.Chat:
         return (
           <>
-            <MessageCanvasHeader selectedChannel={selectedChannel}></MessageCanvasHeader>
-            <MessageCanvas className="ChatPageContainerItem" canvasRef={canvasRef} ContextMenu={ContextMenu} messages={messages} onMessageEdit={onMessageEdit} onMessageDelete={onMessageDelete} />
-            <MessageInput className="ChatPageContainerItem" onFileUpload={handleFileUpload} onSend={MessageInputSendHandler} />
+            <MessageCanvasHeader selectedChannel={props.selectedChannel}></MessageCanvasHeader>
+            <MessageCanvas className="ChatPageContainerItem" canvasRef={canvasRef} ContextMenu={props.ContextMenu} messages={props.messages} onMessageEdit={props.onMessageEdit} onMessageDelete={props.onMessageDelete} />
+            <MessageInput className="ChatPageContainerItem" attachments={props.attachments} onFileRemove={props.onFileRemove} onFileUpload={props.onFileUpload} onSend={props.MessageInputSendHandler} />
           </>
         )
       case ChatViewRoutes.Friends:
-        return (<FriendPage ContextMenu={ContextMenu} widthConstrained={widthConstrained} HelpPopup={HelpPopup} changeTitleCallback={changeTitleCallback} onChannelCreate={onChannelCreate} />);
+        return (<FriendPage ContextMenu={props.ContextMenu} widthConstrained={props.widthConstrained} HelpPopup={props.HelpPopup} changeTitleCallback={props.changeTitleCallback} onChannelCreate={props.onChannelCreate} />);
       default:
         return null;
     }

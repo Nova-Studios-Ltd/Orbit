@@ -13,7 +13,7 @@ interface AuthViewProps extends View {
   path: AuthViewRoutes
 }
 
-function AuthView({ path, widthConstrained, HelpPopup, changeTitleCallback } : AuthViewProps) {
+function AuthView(props: AuthViewProps) {
   const Localizations_Common = useTranslation().t;
   const Localizations_AuthView = useTranslation("AuthView").t;
   const theme = useTheme();
@@ -37,15 +37,15 @@ function AuthView({ path, widthConstrained, HelpPopup, changeTitleCallback } : A
       return AuthViewCenterContainerBackgroundGradient;
     }
 
-    return widthConstrained ? theme.customPalette.formBackground : theme.palette.background.default;
+    return props.widthConstrained ? theme.customPalette.formBackground : theme.palette.background.default;
   };
 
   const page = () => {
-    switch (path) {
+    switch (props.path) {
       case AuthViewRoutes.Login:
-        return (<LoginPage changeTitleCallback={changeTitleCallback} />);
+        return (<LoginPage changeTitleCallback={props.changeTitleCallback} />);
       case AuthViewRoutes.Register:
-        return (<RegisterPage changeTitleCallback={changeTitleCallback} HelpPopup={HelpPopup} />);
+        return (<RegisterPage changeTitleCallback={props.changeTitleCallback} HelpPopup={props.HelpPopup} />);
       default:
         console.warn("[AuthView] Invalid Page");
         return null;
@@ -55,10 +55,10 @@ function AuthView({ path, widthConstrained, HelpPopup, changeTitleCallback } : A
   return (
     <ViewContainer className="AuthViewContainer" noPadding>
       <div className="AuthViewCenterContainer" style={{ backgroundImage: AuthViewCenterContainerBackground() }}>
-        {!widthConstrained ? AuthViewBrandingContainer : null}
+        {!props.widthConstrained ? AuthViewBrandingContainer : null}
         <div className="AuthViewFormContainer">
           <div className="AuthViewFormContainerBackground" style={{ backgroundColor: theme.customPalette.formBackground }} />
-          {widthConstrained ? AuthViewBrandingContainer : null}
+          {props.widthConstrained ? AuthViewBrandingContainer : null}
           {page()}
         </div>
       </div>
