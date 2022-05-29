@@ -27,6 +27,13 @@ export class NCFile {
   }
 }
 
+export enum NotificationType {
+  Info,
+  Success,
+  Warning,
+  Error
+}
+
 /**
  * Checks if the client is loaded in a Electron instance
  * @returns True if loaded in a Electron instance, else false
@@ -154,7 +161,7 @@ export function WriteToClipboard(text: string) : Promise<boolean> {
  * Writes data to the clipboard, automaticly handles switching to native
  * @param data A Uint8Array containing the data to be written to the clipboard
  * @param content_type ContentType
- * @returns True if write is succesful otherwise false
+ * @returns True if write is successful otherwise false
  */
 export function WriteImageToClipboard(data: Uint8Array, content_type: ContentType) : Promise<boolean> {
   return new Promise(async (resolve) => {
@@ -167,7 +174,17 @@ export function WriteImageToClipboard(data: Uint8Array, content_type: ContentTyp
         resolve(true);
       }, () => {
         resolve(false);
-      })
+      });
     }
   })
+}
+
+
+export function TriggerNotification(title: string, body: string, type: NotificationType) {
+  if (IsElectron()) {
+    GetIPCRenderer().send("Notification", title, body, type)
+  }
+  else {
+
+  }
 }
