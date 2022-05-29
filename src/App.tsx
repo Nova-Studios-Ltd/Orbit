@@ -92,6 +92,7 @@ function App() {
     if (!contextMenuItems || contextMenuItems.length < 1) return null;
 
     return contextMenuItems.map((item, index) => {
+      if (item.hide) return null;
       return (<ContextMenuItem key={index} className={item.className} ContextMenu={ContextMenu} disabled={item.disabled} persistOnClick={item.persistOnClick} icon={item.icon} onLeftClick={item.onLeftClick} onRightClick={item.onRightClick}>{item.children}</ContextMenuItem>)
     });
   };
@@ -133,7 +134,7 @@ function App() {
           {contextMenuItemsList()}
         </Menu>
         <div className="ToastHolder">
-          <Toast />
+
         </div>
       </ThemeProvider>
     </div>

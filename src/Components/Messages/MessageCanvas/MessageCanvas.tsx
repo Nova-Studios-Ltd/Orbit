@@ -15,21 +15,21 @@ export interface MessageCanvasProps extends NCAPIComponent {
   onMessageDelete?: (message: MessageProps) => void
 }
 
-function MessageCanvas({ className, ContextMenu, innerClassName, messages, canvasRef, onMessageEdit, onMessageDelete }: MessageCanvasProps) {
+function MessageCanvas(props: MessageCanvasProps) {
   const theme = useTheme();
-  const classNames = useClassNames("MessageCanvasContainer", className);
-  const innerClassNames = useClassNames("TheActualMessageCanvas", innerClassName);
+  const classNames = useClassNames("MessageCanvasContainer", props.className);
+  const innerClassNames = useClassNames("TheActualMessageCanvas", props.innerClassName);
 
   const messagesArray = () => {
-    if (messages && messages.length > 0) {
-      return messages.map((message, index) => {
-        return (<Message key={message.message_Id} ContextMenu={ContextMenu} content={message.content} attachments={message.attachments} id={message.message_Id} authorID={message.author_UUID} avatarURL={message.avatar} author={message.author} timestamp={message.timestamp} onMessageEdit={onMessageEdit} onMessageDelete={onMessageDelete} />)
+    if (props.messages && props.messages.length > 0) {
+      return props.messages.map((message, index) => {
+        return (<Message key={message.message_Id} ContextMenu={props.ContextMenu} content={message.content} attachments={message.attachments} id={message.message_Id} authorID={message.author_UUID} avatarURL={message.avatar} author={message.author} timestamp={message.timestamp} editedTimestamp={message.editedTimestamp} isEdited={message.edited} onMessageEdit={props.onMessageEdit} onMessageDelete={props.onMessageDelete} />)
       }).reverse();
     }
   }
 
   return (
-    <div className={classNames} style={{ backgroundColor: theme.palette.background.default }} ref={canvasRef}>
+    <div className={classNames} style={{ backgroundColor: theme.palette.background.default }} ref={props.canvasRef}>
       <div className={innerClassNames}>
         {messagesArray()}
       </div>
