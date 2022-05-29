@@ -6,14 +6,18 @@ import { initReactI18next, useTranslation } from "react-i18next";
 import { Helmet } from "react-helmet";
 
 import { Manager } from "./Init/AuthHandler";
-import { DarkTheme_Default, ThemeSelector } from "Theme";
+import { SettingsManager } from "NSLib/SettingsManager";
+import { GetUrlFlag, HasFlag } from "NSLib/NCFlags";
+import { ThemeSelector } from "Theme";
 import { Localizations } from "Localization/Localizations";
-
-import ContextMenuItem from "Components/Menus/ContextMenuItem/ContextMenuItem";
 
 import AuthView from "Views/AuthView/AuthView";
 import ErrorView from "Views/ErrorView/ErrorView";
 import MainView from "Views/MainView/MainView";
+
+import ContextMenuItem from "Components/Menus/ContextMenuItem/ContextMenuItem";
+import DebugButton from "Components/Buttons/DebugButtom/DebugButton";
+import Toast from "Components/Toast/Toast";
 
 import { AuthViewRoutes, MainViewRoutes } from "DataTypes/Routes";
 import type { ReactNode } from "react";
@@ -22,9 +26,7 @@ import type { ContextMenuItemProps } from "Components/Menus/ContextMenuItem/Cont
 import type { Coordinates } from "DataTypes/Types";
 
 import "./App.css";
-import { SettingsManager } from "NSLib/SettingsManager";
-import DebugButton from "Components/Buttons/DebugButtom/DebugButton";
-import { GetUrlFlag, HasFlag } from "NSLib/NCFlags";
+
 i18n.use(initReactI18next)
 .init({
   resources: Localizations,
@@ -130,6 +132,9 @@ function App() {
         <Menu className="GenericContextMenu" PaperProps={{ className: "GenericContextMenuPaper" }} open={contextMenuVisible} anchorReference="anchorPosition" anchorPosition={{ top: contextMenuAnchorPosFiltered.y, left: contextMenuAnchorPosFiltered.x }} onClose={() => closeContextMenu()}>
           {contextMenuItemsList()}
         </Menu>
+        <div className="ToastHolder">
+          <Toast />
+        </div>
       </ThemeProvider>
     </div>
   );

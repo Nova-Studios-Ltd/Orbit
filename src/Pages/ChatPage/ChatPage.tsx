@@ -33,7 +33,7 @@ interface ChatPageProps extends Page {
   onMessageDelete?: (message: MessageProps) => void
 }
 
-function ChatPage({ ContextMenu, widthConstrained, channels, messages, selectedChannel, path, setSelectedChannel, onChannelCreate, onChannelEdit, onChannelDelete, onChannelClick, onMessageEdit, onMessageDelete, changeTitleCallback }: ChatPageProps) {
+function ChatPage(props: ChatPageProps) {
   const navigate = useNavigate();
   const theme = useTheme();
   const Localizations_ChatPage = useTranslation("ChatPage").t;
@@ -41,14 +41,14 @@ function ChatPage({ ContextMenu, widthConstrained, channels, messages, selectedC
   const [MessageAttachments, setMessageAttachments] = useState([] as MessageAttachment[])
 
   useEffect(() => {
-    if (changeTitleCallback && selectedChannel && selectedChannel.channelName) changeTitleCallback(`@${selectedChannel.channelName}`);
-  }, [changeTitleCallback, selectedChannel]);
+    if (props.changeTitleCallback && props.selectedChannel && props.selectedChannel.channelName) props.changeTitleCallback(`@${props.selectedChannel.channelName}`);
+  }, [props, props.changeTitleCallback, props.selectedChannel]);
 
   const MessageInputSendHandler = (event: MessageInputSendEvent) => {
-    if (selectedChannel === undefined || event.value === undefined || (event.value === "" && MessageAttachments.length === 0)) return;
-    SENDMessage(selectedChannel.table_Id, event.value, MessageAttachments, (sent: boolean) => {
+    if (props.selectedChannel === undefined || event.value === undefined || (event.value === "" && MessageAttachments.length === 0)) return;
+    SENDMessage(props.selectedChannel.table_Id, event.value, MessageAttachments, (sent: boolean) => {
       if (sent) {
-
+        setMessageAttachments([] as MessageAttachment[]);
       }
     });
   };
@@ -62,8 +62,19 @@ function ChatPage({ ContextMenu, widthConstrained, channels, messages, selectedC
     });
   };
 
+  const handleFileRemove = (id: string) => {
+    const updatedMessageAttachments = [];
+    for (let i = 0; i < MessageAttachments.length; i++) {
+      if (MessageAttachments[i].id !== id) {
+        updatedMessageAttachments.push(MessageAttachments[i]);
+      }
+    }
+
+    setMessageAttachments(updatedMessageAttachments);
+  };
+
   const navigateFriendsPage = () => {
-    if (setSelectedChannel) setSelectedChannel(null as unknown as IRawChannelProps);
+    if (props.setSelectedChannel) props.setSelectedChannel(null as unknown as IRawChannelProps);
     navigate(MainViewRoutes.Friends);
   }
 
@@ -72,11 +83,11 @@ function ChatPage({ ContextMenu, widthConstrained, channels, messages, selectedC
       <div className="ChatPageContainer">
         <div className="ChatPageContainerLeft">
           <div className="NavigationButtonContainer" style={{ backgroundColor: theme.palette.background.paper, borderColor: theme.palette.divider }}>
-            <AvatarTextButton selected={path === ChatViewRoutes.Friends} onLeftClick={navigateFriendsPage}>[Friends]</AvatarTextButton>
+            <AvatarTextButton selected={props.path === ChatViewRoutes.Friends} onLeftClick={navigateFriendsPage}>[Friends]</AvatarTextButton>
           </div>
-          <ChannelList ContextMenu={ContextMenu} channels={channels} onChannelEdit={onChannelEdit} onChannelDelete={onChannelDelete} onChannelClick={onChannelClick} selectedChannel={selectedChannel} />
+          <ChannelList ContextMenu={props.ContextMenu} channels={props.channels} onChannelEdit={props.onChannelEdit} onChannelDelete={props.onChannelDelete} onChannelClick={props.onChannelClick} selectedChannel={props.selectedChannel} />
         </div>
-        <ChatView className="ChatPageContainerRight" ContextMenu={ContextMenu} widthConstrained={widthConstrained} changeTitleCallback={changeTitleCallback} messages={messages} selectedChannel={selectedChannel} onChannelCreate={onChannelCreate} MessageInputSendHandler={MessageInputSendHandler} handleFileUpload={handleFileUpload} onMessageEdit={onMessageEdit} onMessageDelete={onMessageDelete} path={path} />
+        <ChatView className="ChatPageContainerRight" ContextMenu={props.ContextMenu} widthConstrained={props.widthConstrained} path={props.path} attachments={MessageAttachments} onFileRemove={handleFileRemove} changeTitleCallback={props.changeTitleCallback} messages={props.messages} selectedChannel={props.selectedChannel} onChannelCreate={props.onChannelCreate} MessageInputSendHandler={MessageInputSendHandler} onFileUpload={handleFileUpload} onMessageEdit={props.onMessageEdit} onMessageDelete={props.onMessageDelete} />
       </div>
     </PageContainer>
   );

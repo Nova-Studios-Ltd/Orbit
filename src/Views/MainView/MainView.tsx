@@ -25,7 +25,7 @@ interface MainViewProps extends View {
   path: MainViewRoutes
 }
 
-function MainView({ path, ContextMenu, HelpPopup, widthConstrained, changeTitleCallback } : MainViewProps) {
+function MainView(props: MainViewProps) {
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -148,9 +148,9 @@ function MainView({ path, ContextMenu, HelpPopup, widthConstrained, changeTitleC
   };
 
   const ChatPageProps = {
-    ContextMenu: ContextMenu,
-    widthConstrained: widthConstrained,
-    HelpPopup: HelpPopup,
+    ContextMenu: props.ContextMenu,
+    widthConstrained: props.widthConstrained,
+    HelpPopup: props.HelpPopup,
     channels: channels,
     messages: messages,
     selectedChannel: selectedChannel,
@@ -161,7 +161,7 @@ function MainView({ path, ContextMenu, HelpPopup, widthConstrained, changeTitleC
     onChannelClick: onChannelClick,
     onMessageEdit: onMessageEdit,
     onMessageDelete: onMessageDelete,
-    changeTitleCallback: changeTitleCallback
+    changeTitleCallback: props.changeTitleCallback
   };
 
   useEffect(() => {
@@ -242,13 +242,13 @@ function MainView({ path, ContextMenu, HelpPopup, widthConstrained, changeTitleC
   }, []);
 
   const page = () => {
-    switch (path) {
+    switch (props.path) {
       case MainViewRoutes.Chat:
         return (<ChatPage {...ChatPageProps} path={ChatViewRoutes.Chat} />);
       case MainViewRoutes.Friends:
         return (<ChatPage {...ChatPageProps} path={ChatViewRoutes.Friends} />);
       case MainViewRoutes.Settings:
-        return (<SettingsPage ContextMenu={ContextMenu} widthConstrained={widthConstrained} HelpPopup={HelpPopup} changeTitleCallback={changeTitleCallback} />);
+        return (<SettingsPage ContextMenu={props.ContextMenu} widthConstrained={props.widthConstrained} HelpPopup={props.HelpPopup} changeTitleCallback={props.changeTitleCallback} />);
       default:
         console.warn("[MainView] Invalid Page");
         return null;

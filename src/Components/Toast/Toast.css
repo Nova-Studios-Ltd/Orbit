@@ -1,5 +1,24 @@
 .ToastContainer {
+  display: flex;
+  flex-direction: column;
 
+  padding: var(--global-padding);
+  border-radius: var(--global-border-radius);
+
+  width: 25rem;
+  height: 5rem;
+}
+
+.ToastHeader {
+  display: flex;
+  flex-direction: column;
+}
+
+.ToastBody {
+  display: flex;
+  flex-direction: column;
+
+  margin-top: var(--global-margin);
 }
 
 @media only screen and (max-width: 600px) {
