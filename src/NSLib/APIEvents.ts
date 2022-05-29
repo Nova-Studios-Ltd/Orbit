@@ -234,7 +234,7 @@ export async function GETChannel(channel_uuid: string) : Promise<IRawChannelProp
 }
 
 export function CREATEChannel(recipient_uuid: string, callback: (created: boolean) => void) {
-  POST(`Channel/CreateChannel?recipient_uuid=${recipient_uuid}`, ContentType.EMPTY, "", new SettingsManager().User.token).then((resp: NCAPIResponse) => {
+  POST(`Channel/CreateChannel?recipient_uuid=${recipient_uuid}`, ContentType.EMPTY, "", new SettingsManager().User.token, false).then((resp: NCAPIResponse) => {
     if (resp.status === 200) callback(true);
     else callback(false);
   });

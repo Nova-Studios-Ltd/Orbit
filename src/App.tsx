@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { Menu, Popover, ThemeProvider } from "@mui/material";
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import i18n from "i18next";
@@ -6,8 +6,7 @@ import { initReactI18next, useTranslation } from "react-i18next";
 import { Helmet } from "react-helmet";
 
 import { Manager } from "./Init/AuthHandler";
-import { SettingsManager } from "NSLib/SettingsManager";
-import { GetUrlFlag, HasFlag } from "NSLib/NCFlags";
+import { GetUrlFlag } from "NSLib/NCFlags";
 import { ThemeSelector } from "Theme";
 import { Localizations } from "Localization/Localizations";
 
@@ -16,8 +15,6 @@ import ErrorView from "Views/ErrorView/ErrorView";
 import MainView from "Views/MainView/MainView";
 
 import ContextMenuItem from "Components/Menus/ContextMenuItem/ContextMenuItem";
-import DebugButton from "Components/Buttons/DebugButtom/DebugButton";
-import Toast from "Components/Toast/Toast";
 
 import { AuthViewRoutes, MainViewRoutes } from "DataTypes/Routes";
 import type { ReactNode } from "react";
