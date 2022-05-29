@@ -10,6 +10,7 @@ export interface ContextMenuItemProps extends NCComponent {
   icon?: ReactSVGElement,
   persistOnClick?: boolean,
   disabled?: boolean,
+  hide?: boolean,
   onLeftClick?: () => void,
   onRightClick?: () => void,
 }

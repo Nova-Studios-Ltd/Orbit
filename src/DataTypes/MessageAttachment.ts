@@ -8,10 +8,10 @@ export default class MessageAttachment {
 
     constructor(contents: Uint8Array, filename: string) {
         this.contents = contents;
+        this.id = "";
         GenerateBase64SHA256(filename).then((id: Base64String) => {
             this.id = id.Base64;
         });
-        this.id = "";
         this.filename = filename;
     }
 }

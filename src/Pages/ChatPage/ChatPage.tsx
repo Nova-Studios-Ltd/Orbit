@@ -55,14 +55,23 @@ function ChatPage(props: ChatPageProps) {
 
   const handleFileUpload = () => {
     UploadFile().then((files) => {
-      files.forEach((v: NCFile) => {
-        console.log(v.Filename);
-        setMessageAttachments([...MessageAttachments, new MessageAttachment(v.FileContents, v.Filename)]);
-      });
+      const newAttachmentList: MessageAttachment[] = [];
+
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        newAttachmentList.push(new MessageAttachment(file.FileContents, file.Filename));
+      }
+
+      setMessageAttachments([...MessageAttachments, ...newAttachmentList]);
     });
   };
 
-  const handleFileRemove = (id: string) => {
+  const handleFileRemove = (id?: string) => {
+    if (!id) {
+      setMessageAttachments([]);
+      return;
+    }
+
     const updatedMessageAttachments = [];
     for (let i = 0; i < MessageAttachments.length; i++) {
       if (MessageAttachments[i].id !== id) {

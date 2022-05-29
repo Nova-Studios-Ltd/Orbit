@@ -23,7 +23,7 @@ interface ChatViewProps extends View {
   onChannelCreate?: (recipient: string) => void,
   MessageInputSendHandler: (event: MessageInputSendEvent) => void,
   onFileUpload?: () => void,
-  onFileRemove?: (id: string) => void,
+  onFileRemove?: (id?: string) => void,
   onMessageEdit?: (message: MessageProps) => void,
   onMessageDelete?: (message: MessageProps) => void
 }

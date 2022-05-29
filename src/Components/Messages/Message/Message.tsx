@@ -22,17 +22,19 @@ export interface MessageProps extends NCComponent {
   avatarURL?: string,
   author?: string,
   timestamp?: string,
+  editedTimestamp?: string,
+  isEdited?: boolean,
   onMessageEdit?: (message: MessageProps) => void,
   onMessageDelete?: (message: MessageProps) => void
 }
 
-function Message({ ContextMenu, content, attachments, id, authorID, avatarURL, author, timestamp, onMessageEdit, onMessageDelete }: MessageProps) {
+function Message(props: MessageProps) {
   const theme = useTheme();
   const settingsManager = useSettingsManager();
-  const filteredMessageProps: MessageProps = { content, id, avatarURL, author, timestamp };
+  const filteredMessageProps: MessageProps = { content: props.content, id: props.id, avatarURL: props.avatarURL, author: props.author, timestamp: props.timestamp };
   const Localizations_Message = useTranslation("Message").t;
 
-  const isOwnMessage = authorID === settingsManager.User.uuid;
+  const isOwnMessage = props.authorID === settingsManager.User.uuid;
 
   const [isHovering, setHoveringState] = useState(false);
   const [isEditing, setEditingState] = useState(false);
@@ -40,12 +42,12 @@ function Message({ ContextMenu, content, attachments, id, authorID, avatarURL, a
   const [allAttachments, setAttachments] = useState([] as IAttachmentProps[]);
 
   useEffect(() => {
-    if (attachments === undefined) return;
+    if (props.attachments === undefined) return;
     async function processMedia() {
       // Handle getting links
-      if (content === undefined) return;
+      if (props.content === undefined) return;
       const att = [] as IAttachmentProps[];
-      const links = content.split(" ");
+      const links = props.content.split(" ");
       for (let i = 0; i < links.length; i++) {
         const link = links[i];
         if (link.match(/((https|http):\/\/[\S]*)/g) === null) continue;
@@ -59,33 +61,33 @@ function Message({ ContextMenu, content, attachments, id, authorID, avatarURL, a
           att.push(new AttachmentProps(link, new Uint8Array(), "Unknown", "video/mp4", 0, 0, 0, true));
         }
       }
-      if (attachments === undefined) return;
-      setAttachments([...att, ...attachments]);
+      if (props.attachments === undefined) return;
+      setAttachments([...att, ...props.attachments]);
     }
     processMedia();
-  }, [attachments, content]);
+  }, [props, props.attachments, props.content]);
 
 
   const startEditMessage = () => {
     setEditingState(true);
-    setEditFieldValue(content);
+    setEditFieldValue(props.content);
   }
 
   const finishEditMessage = (event: TextComboSubmitEvent) => {
     filteredMessageProps.content = event.value;
-    if (onMessageEdit) onMessageEdit(filteredMessageProps);
+    if (props.onMessageEdit) props.onMessageEdit(filteredMessageProps);
     setEditingState(false);
   }
 
   const copyMessage = () => {
-    if (content === undefined) return;
-    WriteToClipboard(content);
+    if (props.content === undefined) return;
+    WriteToClipboard(props.content);
   }
 
   const messageContextMenuItems: ContextMenuItemProps[] = [
     { children: Localizations_Message("ContextMenuItem-Copy"), onLeftClick: () => copyMessage()},
-    { disabled: !isOwnMessage, children: Localizations_Message("ContextMenuItem-Edit"), onLeftClick: () => startEditMessage()},
-    { disabled: !isOwnMessage, children: Localizations_Message("ContextMenuItem-Delete"), onLeftClick: () => { if (onMessageDelete) onMessageDelete(filteredMessageProps) }}
+    { hide: !isOwnMessage, children: Localizations_Message("ContextMenuItem-Edit"), onLeftClick: () => startEditMessage()},
+    { hide: !isOwnMessage, children: Localizations_Message("ContextMenuItem-Delete"), onLeftClick: () => { if (props.onMessageDelete) props.onMessageDelete(filteredMessageProps) }}
   ]
 
   const editMessageFieldChangedHandler = (event: TextComboChangeEvent) => {
@@ -97,10 +99,10 @@ function Message({ ContextMenu, content, attachments, id, authorID, avatarURL, a
   }
 
   const messageRightClickHandler = (event: React.MouseEvent<HTMLDivElement>) => {
-    if (ContextMenu && event.currentTarget) {
-      ContextMenu.setAnchor({ x: event.clientX, y: event.clientY });
-      ContextMenu.setItems(messageContextMenuItems);
-      ContextMenu.setVisibility(true);
+    if (props.ContextMenu && event.currentTarget) {
+      props.ContextMenu.setAnchor({ x: event.clientX, y: event.clientY });
+      props.ContextMenu.setItems(messageContextMenuItems);
+      props.ContextMenu.setVisibility(true);
     }
     event.preventDefault();
   }
@@ -109,7 +111,7 @@ function Message({ ContextMenu, content, attachments, id, authorID, avatarURL, a
     if (allAttachments && allAttachments.length > 0) {
       return allAttachments.map((attachment, index) => {
         return (
-          <MessageMedia key={`${id}-${index}`} content={attachment.content} contentUrl={attachment.contentUrl} fileName={attachment.filename} fileSize={attachment.size} mimeType={attachment.mimeType} contentWidth={attachment.contentWidth} contentHeight={attachment.contentHeight} isExternal={attachment.isExternal}/>
+          <MessageMedia key={`${props.id}-${index}`} content={attachment.content} contentUrl={attachment.contentUrl} fileName={attachment.filename} fileSize={attachment.size} mimeType={attachment.mimeType} contentWidth={attachment.contentWidth} contentHeight={attachment.contentHeight} isExternal={attachment.isExternal}/>
         )
       });
     }
@@ -118,18 +120,19 @@ function Message({ ContextMenu, content, attachments, id, authorID, avatarURL, a
   return (
     <div className="MessageContainer" style={{ backgroundColor: "transparent" }}>
       <div className="MessageLeft">
-        <Avatar src={`${avatarURL}`} />
+        <Avatar src={`${props.avatarURL}`} />
       </div>
       <div className="MessageRight" style={{ backgroundColor: isHovering ? theme.customPalette.customActions.messageHover : theme.customPalette.messageBackground }} onMouseEnter={() => mouseHoverEventHandler(true)} onMouseLeave={() => mouseHoverEventHandler(false)} onContextMenu={messageRightClickHandler}>
         <div className="MessageRightHeader">
-          <Typography className="MessageName" fontWeight="bold">{author}</Typography>
-          <Typography className="MessageTimestamp" variant="subtitle2">{timestamp}</Typography>
+          <Typography className="MessageName" fontWeight="bold">{props.author}</Typography>
+          <Typography className="MessageTimestamp" variant="subtitle2">{props.timestamp}</Typography>
+          {props.isEdited ? <Typography className="MessageTimestampEdited" variant="subtitle2">({Localizations_Message("Typography-TimestampEdited")} {props.editedTimestamp})</Typography> : null}
         </div>
-        <Typography variant="body1">{content}</Typography>
-        <div className="MessageMediaContainer">
+        <Typography variant="body1">{props.content}</Typography>
+        <div className="MessageMediaParentContainer">
           {mediaComponents()}
         </div>
-        {isEditing ? <TextCombo className="MessageEditField" autoFocus value={editFieldValue} textFieldPlaceholder={content} onChange={editMessageFieldChangedHandler} onSubmit={finishEditMessage} onDismiss={() => setEditingState(false)}
+        {isEditing ? <TextCombo className="MessageEditField" autoFocus value={editFieldValue} textFieldPlaceholder={props.content} onChange={editMessageFieldChangedHandler} onSubmit={finishEditMessage} onDismiss={() => setEditingState(false)}
           childrenRight={
             <>
               <IconButton onClick={() => setEditingState(false)}><CloseIcon /></IconButton>

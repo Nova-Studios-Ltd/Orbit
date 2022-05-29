@@ -1,6 +1,5 @@
 {
-  "IconButton-Title-UploadFile": "Upload File",
-  "IconButton-Title-SendMessage": "Send",
   "TextField_Placeholder-TypeHerePrompt": "Type a Message",
-  "IconButton-Tooltip-UploadFile": "Upload File"
+  "IconButton-Tooltip-UploadFile": "Upload File",
+  "IconButton-Tooltip-ClearAttachments": "Clear Pending Attachments"
 }

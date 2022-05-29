@@ -6,7 +6,7 @@
   transition: background-color 200ms ease;
 }
 
-.MessageMediaContainer {
+.MessageMediaParentContainer {
   display: flex;
   flex-direction: column;
 }

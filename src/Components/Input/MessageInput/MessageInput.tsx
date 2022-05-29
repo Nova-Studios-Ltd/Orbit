@@ -3,7 +3,7 @@ import useClassNames from "Hooks/useClassNames";
 import { useTranslation } from "react-i18next";
 import MessageAttachment from "DataTypes/MessageAttachment";
 
-import { Send as SendIcon, UploadFile as UploadIcon } from "@mui/icons-material";
+import { Delete as DeleteIcon, Send as SendIcon, UploadFile as UploadIcon } from "@mui/icons-material";
 
 import type { NCAPIComponent } from "DataTypes/Components";
 import { ChangeEvent, useEffect, useState } from "react";
@@ -21,7 +21,7 @@ export interface MessageInputChangeEvent extends TextComboChangeEvent {
 export interface MessageInputProps extends NCAPIComponent {
   attachments?: MessageAttachment[],
   onFileUpload?: () => void,
-  onFileRemove?: (id: string) => void,
+  onFileRemove?: (id?: string) => void,
   onChange?: (event: MessageInputChangeEvent) => void,
   onSend?: (event: MessageInputSendEvent) => void
 }
@@ -31,15 +31,21 @@ function MessageInput({ className, attachments, onFileUpload, onFileRemove, onCh
   const theme = useTheme();
   const classNames = useClassNames("MessageInputContainer", className);
 
+  const hasAttachments = attachments && attachments.length > 0 ? true : false;
+
   const [TextFieldValue, setTextFieldValue] = useState("" as string | undefined);
 
   const summaryItems = () => {
     if (!attachments) return null;
 
     return attachments.map((attachment) => {
-      return <FileUploadSummaryItem key={attachment.id} fileHandle={attachment} onFileRemove={onFileRemove} />
+      return <FileUploadSummaryItem key={attachment.filename} fileHandle={attachment} onFileRemove={onFileRemove} />
     });
   }
+
+  const clearAttachments = () => {
+    if (onFileRemove) onFileRemove(undefined);
+  };
 
   const sendMessage = (event: MessageInputSendEvent) => {
     if (onSend) onSend({ value: TextFieldValue });
@@ -64,6 +70,7 @@ function MessageInput({ className, attachments, onFileUpload, onFileRemove, onCh
         childrenLeft={
           <>
             <IconButton title={Localizations_MessageInput("IconButton-Tooltip-UploadFile")} aria-label={Localizations_MessageInput("IconButton-Tooltip-UploadFile")} onClick={() => uploadFile()}><UploadIcon /></IconButton>
+            {hasAttachments ? <IconButton title={Localizations_MessageInput("IconButton-Tooltip-ClearAttachments")} aria-label={Localizations_MessageInput("IconButton-Tooltip-ClearAttachments")} onClick={() => clearAttachments()}><DeleteIcon /></IconButton> : null}
           </>
         }
       />
