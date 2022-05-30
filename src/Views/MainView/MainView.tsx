@@ -16,7 +16,7 @@ import MessageAttachment from "DataTypes/MessageAttachment";
 import ChannelList from "Components/Channels/ChannelList/ChannelList";
 import AvatarTextButton from "Components/Buttons/AvatarTextButton/AvatarTextButton";
 import MessageCanvas from "Components/Messages/MessageCanvas/MessageCanvas";
-import MessageCanvasHeader from "Components/Headers/MessageCanvasHeader/MessageCanvasHeader";
+import GenericHeader from "Components/Headers/GenericHeader/GenericHeader";
 import MessageInput, { MessageInputChangeEvent, MessageInputSendEvent } from "Components/Input/MessageInput/MessageInput";
 import FriendView from "Views/FriendView/FriendView";
 import SettingsView from "Views/SettingsView/SettingsView";
@@ -108,6 +108,11 @@ function MainView(props: MainViewProps) {
   const navigateFriendsPage = () => {
     setSelectedChannel(null as unknown as IRawChannelProps);
     navigate(MainViewRoutes.Friends);
+  }
+
+  const navigateSettingsPage = () => {
+    setSelectedChannel(null as unknown as IRawChannelProps);
+    navigate(MainViewRoutes.Settings);
   }
 
   const onChannelClick = async (channel: ChannelProps) => {
@@ -304,7 +309,7 @@ function MainView(props: MainViewProps) {
       case MainViewRoutes.Chat:
         return (
           <>
-            <MessageCanvasHeader sharedProps={props.sharedProps} selectedChannel={selectedChannel}></MessageCanvasHeader>
+            <GenericHeader sharedProps={props.sharedProps} title={selectedChannel?.channelName} />
             <MessageCanvas className="MainViewContainerItem" sharedProps={props.sharedProps} canvasRef={canvasRef} messages={messages} onMessageEdit={onMessageEdit} onMessageDelete={onMessageDelete} onLoadPriorMessages={onLoadPriorMessages} />
             <MessageInput className="MainViewContainerItem" sharedProps={props.sharedProps} attachments={MessageAttachments} onFileRemove={onFileRemove} onFileUpload={onFileUpload} onSend={MessageInputSendHandler} />
           </>
@@ -324,6 +329,7 @@ function MainView(props: MainViewProps) {
       <div className="MainViewContainer">
         <div className="MainViewContainerLeft">
           <div className="NavigationButtonContainer" style={{ backgroundColor: theme.palette.background.paper, borderColor: theme.palette.divider }}>
+            <AvatarTextButton selected={props.path === MainViewRoutes.Settings} onLeftClick={navigateSettingsPage}>[Settings]</AvatarTextButton>
             <AvatarTextButton selected={props.path === MainViewRoutes.Friends} onLeftClick={navigateFriendsPage}>[Friends]</AvatarTextButton>
           </div>
           <ChannelList sharedProps={props.sharedProps} channels={channels} onChannelEdit={onChannelEdit} onChannelDelete={onChannelDelete} onChannelClick={onChannelClick} selectedChannel={selectedChannel} />

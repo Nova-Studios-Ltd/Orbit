@@ -9,6 +9,7 @@ interface ViewProps extends View {
 }
 
 function View({ className, ContextMenu, HelpPopup, widthConstrained, path, changeTitleCallback }: ViewProps) {
+  const Localizations_View = useTranslation("View").t;
   const classNames = useClassNames("ViewContainer", className);
 
   const page = () => {

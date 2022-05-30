@@ -1,7 +1,7 @@
 import ViewContainer from "Components/Containers/ViewContainer/ViewContainer";
 import useClassNames from "Hooks/useClassNames";
 
-import FriendPage from "Views/FriendView/Pages/FriendPage/FriendPage";
+import DashboardPage from "Views/SettingsView/Pages/DashboardPage/DashboardPage";
 
 import type { View } from "DataTypes/Components";
 import { SettingsViewRoutes } from "DataTypes/Routes";
@@ -16,7 +16,7 @@ function SettingsView(props: SettingsViewProps) {
   const page = () => {
     switch (props.path) {
       case SettingsViewRoutes.Dashboard:
-        return <FriendPage />
+        return <DashboardPage />
       default:
         return null;
     }

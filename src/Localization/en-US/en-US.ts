@@ -28,7 +28,7 @@ import ChatPage_EN_US from "./Views/MainView/Pages/ChatPage.json";
 
 import SettingsView_EN_US from "./Views/SettingsView/SettingsView.json";
 
-import SettingsDashboardPage_EN_US from "./Views/SettingsView/Pages/SettingsDashboardPage.json";
+import DashboardPage_EN_US from "./Views/SettingsView/Pages/DashboardPage.json";
 
 // Components
 import Channel_EN_US from "./Components/Channels/Channel.json";
@@ -72,7 +72,7 @@ export const Localizations_EN_US = {
 
   SettingsView: SettingsView_EN_US,
 
-  SettingsDashboardPage: SettingsDashboardPage_EN_US,
+  DashboardPage: DashboardPage_EN_US,
 
   // Components
   Channel: Channel_EN_US,

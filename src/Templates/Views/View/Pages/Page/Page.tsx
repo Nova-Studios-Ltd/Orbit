@@ -9,15 +9,13 @@ interface PageProps extends Page {
 
 }
 
-function Page({ className, ContextMenu, HelpPopup, widthConstrained, changeTitleCallback }: PageProps) {
+function Page(props: PageProps) {
   const Localizations_Page = useTranslation("Page").t;
-  const classNames = useClassNames("PageContainer", className);
+  const classNames = useClassNames("PageContainer", props.className);
 
   return (
     <PageContainer className={classNames} noPadding>
-      <div className="PageContainer">
 
-      </div>
     </PageContainer>
   );
 }
