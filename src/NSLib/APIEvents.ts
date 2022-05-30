@@ -172,22 +172,25 @@ export function SENDMessage(channel_uuid: string, contents: string, rawAttachmen
               callback(false, [] as FailedUpload[]);
               return;
           }
-          console.log(channel.members);
           // Generate Key and Encrypt Message
           const messageKey = await GenerateBase64Key(32);
           const encryptedMessage = await EncryptBase64(messageKey, Base64String.CreateBase64String(contents));
 
           // Handle Attachments
-          const postToken = await GET(`/Channel/${channel_uuid}/RequestContentToken?uploads=${rawAttachments.length}`, Manager.User.token, false);
-          if (postToken.status !== 200) return;
-          const attachments = [] as string[];
           const failedUploads = [] as FailedUpload[];
-          for (let a = 0; a < rawAttachments.length; a++) {
-              const attachment = rawAttachments[a];
-              const imageSize = (await GetImageDimensions(attachment.contents)) || new Dimensions(0, 0);
-              const re = await POSTFile(`/Channel/${channel_uuid}?width=${imageSize.width}&height=${imageSize.height}&contentToken=${postToken.payload}`, new Blob([(await EncryptUint8Array(messageKey, attachment.contents, new Base64String(encryptedMessage.iv))).content]), attachment.filename, Manager.User.token)
-              if (re.status === 200) attachments.push(re.payload as string);
-              else failedUploads.push(new FailedUpload(re.status as FailReason, attachment.filename, attachment.id));
+          const attachments = [] as string[];
+          let token = "empty";
+          if (rawAttachments.length > 0) {
+            const postToken = await GET(`/Channel/${channel_uuid}/RequestContentToken?uploads=${rawAttachments.length}`, Manager.User.token, false);
+            token = postToken.payload;
+            if (postToken.status !== 200) return;
+            for (let a = 0; a < rawAttachments.length; a++) {
+                const attachment = rawAttachments[a];
+                const imageSize = (await GetImageDimensions(attachment.contents)) || new Dimensions(0, 0);
+                const re = await POSTFile(`/Channel/${channel_uuid}?width=${imageSize.width}&height=${imageSize.height}&contentToken=${token}`, new Blob([(await EncryptUint8Array(messageKey, attachment.contents, new Base64String(encryptedMessage.iv))).content]), attachment.filename, Manager.User.token)
+                if (re.status === 200) attachments.push(re.payload as string);
+                else failedUploads.push(new FailedUpload(re.status as FailReason, attachment.filename, attachment.id));
+            }
           }
           const encKeys = {} as {[uuid: string]: string};
           for (let m = 0; m < channel.members.length; m++) {
@@ -201,7 +204,7 @@ export function SENDMessage(channel_uuid: string, contents: string, rawAttachmen
               }
           }
           encKeys[Manager.User.uuid] = (await EncryptBase64WithPub(Manager.User.keyPair.PublicKey, messageKey)).Base64;
-          const mPost = await POST(`/Channel/${channel_uuid}/Messages?contentToken=${postToken.payload}`, ContentType.JSON, JSON.stringify({Content: encryptedMessage.content as string, IV: encryptedMessage.iv, EncryptedKeys: encKeys, Attachments: attachments}), Manager.User.token)
+          const mPost = await POST(`/Channel/${channel_uuid}/Messages?contentToken=${token}`, ContentType.JSON, JSON.stringify({Content: encryptedMessage.content as string, IV: encryptedMessage.iv, EncryptedKeys: encKeys, Attachments: attachments}), Manager.User.token)
           if (mPost.status === 200 || failedUploads.length === 0) callback(true, [] as FailedUpload[]);
           else callback(false, failedUploads);
           return;
