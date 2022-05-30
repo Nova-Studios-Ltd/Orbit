@@ -1,17 +1,34 @@
 import Common_EN_US from "./Common.json";
 
-// Views
-import AuthView_EN_US from "./Views/AuthView.json";
-import ErrorView_EN_US from "./Views/ErrorView.json";
+// Auth
+import AuthView_EN_US from "./Views/AuthView/AuthView.json";
 
-// Normal Pages
-import ChatPage_EN_US from "./Pages/ChatPage.json";
-import FriendPage_EN_US from "./Pages/FriendPage.json";
-import LoginPage_EN_US from "./Pages/LoginPage.json";
-import RegisterPage_EN_US from "./Pages/RegisterPage.json";
+import LoginPage_EN_US from "./Views/AuthView/Pages/LoginPage.json";
+import RegisterPage_EN_US from "./Views/AuthView/Pages/RegisterPage.json";
 
-// Error Pages
-import E404_EN_US from "./Pages/ErrorPages/E404.json";
+// Error
+
+import ErrorView_EN_US from "./Views/ErrorView/ErrorView.json";
+
+import E404_EN_US from "./Views/ErrorView/Pages//E404.json";
+
+// Friend
+
+import FriendView_EN_US from "./Views/FriendView/FriendView.json";
+
+import FriendListPage_EN_US from "./Views/FriendView/Pages/FriendListPage.json";
+
+// Main
+
+import MainView_EN_US from "./Views/MainView/MainView.json";
+
+import ChatPage_EN_US from "./Views/MainView/Pages/ChatPage.json";
+
+// Settings
+
+import SettingsView_EN_US from "./Views/SettingsView/SettingsView.json";
+
+import SettingsDashboardPage_EN_US from "./Views/SettingsView/Pages/SettingsDashboardPage.json";
 
 // Components
 import Channel_EN_US from "./Components/Channels/Channel.json";
@@ -27,18 +44,35 @@ export const Localizations_EN_US = {
   // Common
   translation: Common_EN_US,
 
-  // Views
+  // Auth
   AuthView: AuthView_EN_US,
-  ErrorView: ErrorView_EN_US,
 
-  // Pages
-  ChatPage: ChatPage_EN_US,
-  FriendPage: FriendPage_EN_US,
   LoginPage: LoginPage_EN_US,
   RegisterPage: RegisterPage_EN_US,
 
-  // Error Pages
+  // Error
+
+  ErrorView: ErrorView_EN_US,
+
   E404: E404_EN_US,
+
+  // Friend
+
+  FriendView: FriendView_EN_US,
+
+  FriendListPage: FriendListPage_EN_US,
+
+  // Main
+
+  MainView: MainView_EN_US,
+
+  ChatPage: ChatPage_EN_US,
+
+  // Settings
+
+  SettingsView: SettingsView_EN_US,
+
+  SettingsDashboardPage: SettingsDashboardPage_EN_US,
 
   // Components
   Channel: Channel_EN_US,
