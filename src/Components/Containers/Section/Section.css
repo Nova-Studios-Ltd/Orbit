@@ -1,6 +1,12 @@
 .SectionContainer {
   display: flex;
   flex-direction: column;
+
+  padding: var(--global-padding);
+}
+
+.SectionContainerItem {
+  margin-top: var(--global-margin);
 }
 
 @media only screen and (max-width: 600px) {

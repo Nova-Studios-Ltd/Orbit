@@ -1,6 +1,7 @@
-import { SyntheticEvent, useState } from "react";
+import { SyntheticEvent, useEffect, useState } from "react";
 import { Button, Tab, Tabs, TextField, Typography } from "@mui/material";
 import useClassNames from "Hooks/useClassNames";
+import { useTranslation } from "react-i18next";
 import { FriendViewRoutes } from "DataTypes/Routes";
 
 import ViewContainer from "Components/Containers/ViewContainer/ViewContainer";
@@ -15,7 +16,12 @@ interface FriendViewProps extends View {
 }
 
 function FriendView(props: FriendViewProps) {
+  const Localizations_FriendView = useTranslation("FriendView").t;
   const classNames = useClassNames("FriendViewContainer", props.className);
+
+  useEffect(() => {
+    if (props.sharedProps && props.sharedProps.changeTitleCallback) props.sharedProps.changeTitleCallback(Localizations_FriendView("ViewTitle"));
+  }, [Localizations_FriendView, props, props.sharedProps?.changeTitleCallback]);
 
   const [path, setPath] = useState(FriendViewRoutes.FriendsList);
 

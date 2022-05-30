@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { AutoLogin } from "Init/AuthHandler";
+import { AutoLogin, Logout } from "Init/AuthHandler";
 import { Events } from "Init/WebsocketEventInit";
 import { IconButton, useTheme } from "@mui/material";
 import { Menu as MenuIcon } from "@mui/icons-material";
@@ -10,6 +10,7 @@ import { GenerateBase64SHA256 } from "NSLib/NCEncryption";
 import { NCChannelCache } from "NSLib/NCCache";
 import { HasFlag } from "NSLib/NCFlags";
 import { UploadFile } from "NSLib/ElectronAPI";
+import { SettingsManager } from "NSLib/SettingsManager";
 import { CREATEChannel, DELETEChannel, DELETEMessage, EDITMessage, GETChannel, GETMessage, GETMessageEditTimestamps, GETMessages, GETUserChannels, GETUserUUID, SENDMessage } from "NSLib/APIEvents";
 
 import ViewContainer from "Components/Containers/ViewContainer/ViewContainer";
@@ -22,13 +23,12 @@ import MessageInput, { MessageInputSendEvent } from "Components/Input/MessageInp
 import FriendView from "Views/FriendView/FriendView";
 import SettingsView from "Views/SettingsView/SettingsView";
 
-import type { View } from "DataTypes/Components";
+import type { SharedProps, View } from "DataTypes/Components";
 import type { IRawChannelProps } from "Interfaces/IRawChannelProps";
 import type { ChannelProps } from "Components/Channels/Channel/Channel";
 import type { IMessageProps } from "Interfaces/IMessageProps";
 import type { MessageProps } from "Components/Messages/Message/Message";
 import { AuthViewRoutes, MainViewRoutes, SettingsViewRoutes } from "DataTypes/Routes";
-import { SettingsManager } from "NSLib/SettingsManager";
 
 interface MainViewProps extends View {
   path: MainViewRoutes
@@ -44,12 +44,20 @@ function MainView(props: MainViewProps) {
   const messageCount = useRef(0);
   const session = useRef("");
   const autoScroll = useRef(true);
+  const modifiedProps = props;
 
+  const [title, setTitle] = useState("");
   const [channels, setChannels] = useState([] as IRawChannelProps[]);
   const [selectedChannel, setSelectedChannel] = useState(null as unknown as IRawChannelProps);
   const [messages, setMessages] = useState([] as IMessageProps[]);
   const [MessageAttachments, setMessageAttachments] = useState([] as MessageAttachment[]);
   const [channelMenuOpen, setChannelMenuVisibility] = useState(true);
+
+  const changeTitleCallbackOverride = (_title: string) => {
+    if (props.path !== MainViewRoutes.Chat && title !== _title) setTitle(_title);
+  };
+
+  if (modifiedProps.sharedProps) modifiedProps.sharedProps.changeTitleCallback = changeTitleCallbackOverride;
 
   const scrollCanvas = () => {
     const canvas = canvasRef.current;
@@ -67,8 +75,15 @@ function MainView(props: MainViewProps) {
   }, [messages, messages.length]);
 
   useEffect(() => {
-    if (props.sharedProps && props.sharedProps.changeTitleCallback && selectedChannel && selectedChannel.channelName) props.sharedProps.changeTitleCallback(`@${selectedChannel.channelName}`);
-  }, [props, props.sharedProps?.changeTitleCallback, selectedChannel]);
+    if (!props.sharedProps || !props.sharedProps.changeTitleCallback) return;
+
+    if (props.path === MainViewRoutes.Chat) {
+      props.sharedProps.changeTitleCallback(`@${title}`);
+    }
+    else {
+      props.sharedProps.changeTitleCallback(title);
+    }
+  }, [props, props.sharedProps?.changeTitleCallback, title]);
 
   const MessageInputSendHandler = (event: MessageInputSendEvent) => {
     if (selectedChannel === undefined || event.value === undefined || (event.value === "" && MessageAttachments.length === 0)) return;
@@ -138,6 +153,7 @@ function MainView(props: MainViewProps) {
     if (!location.pathname.includes("chat"))
       navigate(`${MainViewRoutes.Chat}${location.search}`);
     setSelectedChannel({ table_Id: channel.channelID, channelName: channel.channelName, channelIcon: channel.channelIconSrc, members: channel.channelMembers, channelType: channel.isGroup } as IRawChannelProps);
+    if (channel.channelName) setTitle(channel.channelName);
     setChannelMenuVisibility(false);
 
     if (channel && channel.channelID) {
@@ -247,6 +263,11 @@ function MainView(props: MainViewProps) {
     }
   };
 
+  const onLogout = () => {
+    Logout();
+    navigate(AuthViewRoutes.Login);
+  }
+
   useEffect(() => {
     Events.on("NewMessage", (message: IMessageProps, channel_uuid: string) => {
       if (selectedChannel.table_Id !== channel_uuid) return;
@@ -330,15 +351,14 @@ function MainView(props: MainViewProps) {
       case MainViewRoutes.Chat:
         return (
           <>
-            <GenericHeader sharedProps={props.sharedProps} title={selectedChannel?.channelName} childrenLeft={props.sharedProps?.widthConstrained ? <IconButton onClick={() => onChannelMenuToggle()}><MenuIcon /></IconButton> : null} />
             <MessageCanvas className="MainViewContainerItem" sharedProps={props.sharedProps} canvasRef={canvasRef} messages={messages} onMessageEdit={onMessageEdit} onMessageDelete={onMessageDelete} onLoadPriorMessages={onLoadPriorMessages} />
             <MessageInput className="MainViewContainerItem" sharedProps={props.sharedProps} attachments={MessageAttachments} onFileRemove={onFileRemove} onFileUpload={onFileUpload} onSend={MessageInputSendHandler} />
           </>
         )
       case MainViewRoutes.Friends:
-        return (<FriendView onChannelCreate={onChannelCreate} />);
+        return (<FriendView sharedProps={modifiedProps.sharedProps} onChannelCreate={onChannelCreate} />);
       case MainViewRoutes.Settings:
-        return (<SettingsView path={SettingsViewRoutes.Dashboard} />);
+        return (<SettingsView sharedProps={modifiedProps.sharedProps} onLogout={onLogout} path={SettingsViewRoutes.Dashboard} />);
       default:
         console.warn("[MainView] Invalid Page");
         return null;
@@ -364,6 +384,7 @@ function MainView(props: MainViewProps) {
       <div className="MainViewContainer">
         {MainViewContainerLeft()}
         <div className="MainViewContainerRight">
+          <GenericHeader sharedProps={props.sharedProps} title={title} childrenLeft={props.sharedProps?.widthConstrained ? <IconButton onClick={() => onChannelMenuToggle()}><MenuIcon /></IconButton> : null} />
           {page()}
         </div>
       </div>
