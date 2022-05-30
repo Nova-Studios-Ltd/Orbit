@@ -24,9 +24,8 @@ export interface ContextMenuProps {
 }
 
 export interface NCComponent {
+  sharedProps?: SharedProps,
   className?: string,
-  HelpPopup?: HelpPopupProps,
-  ContextMenu?: ContextMenuProps
 }
 
 export interface NCAPIComponent extends NCComponent {
@@ -34,19 +33,20 @@ export interface NCAPIComponent extends NCComponent {
 }
 
 export interface Page {
+  sharedProps?: SharedProps,
   className?: string,
-  HelpPopup?: HelpPopupProps,
-  ContextMenu?: ContextMenuProps,
-  widthConstrained?: boolean,
-  changeTitleCallback?: (title: string) => void
 }
 
 export interface View {
+  sharedProps?: SharedProps,
   className?: string,
   path?: unknown,
+  pageSpecificProps?: unknown
+}
+
+export interface SharedProps {
   HelpPopup?: HelpPopupProps,
   ContextMenu?: ContextMenuProps,
   widthConstrained?: boolean,
-  pageSpecificProps?: unknown,
   changeTitleCallback?: (title: string) => void
 }

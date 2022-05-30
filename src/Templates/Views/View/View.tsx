@@ -1,5 +1,5 @@
 import ViewContainer from "Components/Containers/ViewContainer/ViewContainer";
-import { useClassNames } from "Hooks/useClassNames";
+import useClassNames from "Hooks/useClassNames";
 
 import type { View } from "DataTypes/Components";
 import { ViewRoutes } from "DataTypes/Routes";

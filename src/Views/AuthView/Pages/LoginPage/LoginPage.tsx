@@ -12,7 +12,7 @@ interface LoginPageProps extends Page {
 
 }
 
-function LoginPage({ widthConstrained, changeTitleCallback }: LoginPageProps) {
+function LoginPage(props: LoginPageProps) {
   const Localizations_Common = useTranslation().t;
   const Localizations_LoginPage = useTranslation("LoginPage").t;
   const theme = useTheme();
@@ -23,8 +23,8 @@ function LoginPage({ widthConstrained, changeTitleCallback }: LoginPageProps) {
   const [failureStatus, setFailStatus] = useState(LoginStatus.PendingStatus);
 
   useEffect(() => {
-    if (changeTitleCallback) changeTitleCallback(Localizations_LoginPage("PageTitle"));
-  }, [Localizations_LoginPage, changeTitleCallback]);
+    if (props.sharedProps && props.sharedProps.changeTitleCallback) props.sharedProps.changeTitleCallback(Localizations_LoginPage("PageTitle"));
+  }, [Localizations_LoginPage, props, props.sharedProps?.changeTitleCallback]);
 
   const login = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();

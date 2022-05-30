@@ -1,8 +1,8 @@
 import { Typography, useTheme } from "@mui/material";
 import { useTranslation } from "react-i18next";
 
-import LoginPage from "Pages/LoginPage/LoginPage";
-import RegisterPage from "Pages/RegisterPage/RegisterPage";
+import LoginPage from "./Pages/LoginPage/LoginPage";
+import RegisterPage from "./Pages/RegisterPage/RegisterPage";
 import ViewContainer from "Components/Containers/ViewContainer/ViewContainer";
 
 import type { View } from "DataTypes/Components";
@@ -37,15 +37,15 @@ function AuthView(props: AuthViewProps) {
       return AuthViewCenterContainerBackgroundGradient;
     }
 
-    return props.widthConstrained ? theme.customPalette.formBackground : theme.palette.background.default;
+    return props.sharedProps?.widthConstrained ? theme.customPalette.formBackground : theme.palette.background.default;
   };
 
   const page = () => {
     switch (props.path) {
       case AuthViewRoutes.Login:
-        return (<LoginPage changeTitleCallback={props.changeTitleCallback} />);
+        return (<LoginPage sharedProps={props.sharedProps} />);
       case AuthViewRoutes.Register:
-        return (<RegisterPage changeTitleCallback={props.changeTitleCallback} HelpPopup={props.HelpPopup} />);
+        return (<RegisterPage sharedProps={props.sharedProps} />);
       default:
         console.warn("[AuthView] Invalid Page");
         return null;
@@ -55,10 +55,10 @@ function AuthView(props: AuthViewProps) {
   return (
     <ViewContainer className="AuthViewContainer" noPadding>
       <div className="AuthViewCenterContainer" style={{ backgroundImage: AuthViewCenterContainerBackground() }}>
-        {!props.widthConstrained ? AuthViewBrandingContainer : null}
+        {!props.sharedProps?.widthConstrained ? AuthViewBrandingContainer : null}
         <div className="AuthViewFormContainer">
           <div className="AuthViewFormContainerBackground" style={{ backgroundColor: theme.customPalette.formBackground }} />
-          {props.widthConstrained ? AuthViewBrandingContainer : null}
+          {props.sharedProps?.widthConstrained ? AuthViewBrandingContainer : null}
           {page()}
         </div>
       </div>

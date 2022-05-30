@@ -15,7 +15,7 @@ interface RegisterPageProps extends Page {
 
 }
 
-function RegisterPage({ HelpPopup, widthConstrained, changeTitleCallback }: RegisterPageProps) {
+function RegisterPage(props: RegisterPageProps) {
   const Localizations_Common = useTranslation().t;
   const Localizations_RegisterPage = useTranslation("RegisterPage").t;
   const theme = useTheme();
@@ -27,8 +27,8 @@ function RegisterPage({ HelpPopup, widthConstrained, changeTitleCallback }: Regi
   const [failureStatus, setFailStatus] = useState(RegisterStatus.PendingStatus);
 
   useEffect(() => {
-    if (changeTitleCallback) changeTitleCallback(Localizations_RegisterPage("PageTitle"));
-  }, [Localizations_RegisterPage, changeTitleCallback]);
+    if (props.sharedProps && props.sharedProps.changeTitleCallback) props.sharedProps.changeTitleCallback(Localizations_RegisterPage("PageTitle"));
+  }, [Localizations_RegisterPage, props, props.sharedProps?.changeTitleCallback]);
 
   const register = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -112,10 +112,10 @@ function RegisterPage({ HelpPopup, widthConstrained, changeTitleCallback }: Regi
           <>
             <Typography variant="caption" color="red">{Localizations_RegisterPage("TextField_HelperText-ForgottenPasswordWarning").toUpperCase()}</Typography>
             <Link underline="none" style={{ cursor: "pointer", marginLeft: 8 }} onClick={(event) => {
-              if (HelpPopup) {
-                HelpPopup.setAnchor(event.currentTarget);
-                HelpPopup.setContent(E2ELearnMore);
-                HelpPopup.setVisibility(true);
+              if (props.sharedProps && props.sharedProps.HelpPopup) {
+                props.sharedProps.HelpPopup.setAnchor(event.currentTarget);
+                props.sharedProps.HelpPopup.setContent(E2ELearnMore);
+                props.sharedProps.HelpPopup.setVisibility(true);
               }
             }}>{Localizations_RegisterPage("Link-LearnMore")}</Link>
           </>

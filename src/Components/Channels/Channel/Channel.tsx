@@ -18,32 +18,32 @@ export interface ChannelProps extends NCComponent {
   onClick?: (channel: ChannelProps) => void
 }
 
-function Channel({ ContextMenu, channelName, channelID, channelIconSrc, channelMembers, isGroup, isSelected, onChannelEdit, onChannelDelete, onClick }: ChannelProps) {
+function Channel(props: ChannelProps) {
   const theme = useTheme();
   const Localizations_Channel = useTranslation("Channel").t;
-  const filteredChannelProps: ChannelProps = { channelName, channelID, channelIconSrc, channelMembers, isGroup, isSelected };
+  const filteredChannelProps: ChannelProps = { channelName: props.channelName, channelID: props.channelID, channelIconSrc: props.channelIconSrc, channelMembers: props.channelMembers, isGroup: props.isGroup, isSelected: props.isSelected };
 
   const channelContextMenuItems: ContextMenuItemProps[] = [
-    { children: Localizations_Channel("ContextMenuItem-Edit"), onLeftClick: () => { if (onChannelEdit) onChannelEdit(filteredChannelProps) }},
-    { children: Localizations_Channel("ContextMenuItem-Delete"), onLeftClick: () => { if (onChannelDelete) onChannelDelete(filteredChannelProps) }}
+    { children: Localizations_Channel("ContextMenuItem-Edit"), onLeftClick: () => { if (props.onChannelEdit) props.onChannelEdit(filteredChannelProps) }},
+    { children: Localizations_Channel("ContextMenuItem-Delete"), onLeftClick: () => { if (props.onChannelDelete) props.onChannelDelete(filteredChannelProps) }}
   ]
 
-  const channelClickHandler = (event: React.MouseEvent<HTMLButtonElement>) => {
-    if (onClick) onClick(filteredChannelProps);
+  const onChannelLeftClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    if (props.onClick) props.onClick(filteredChannelProps);
   }
 
-  const channelRightClickHandler = (event: React.MouseEvent<HTMLButtonElement>) => {
-    if (ContextMenu && event.currentTarget) {
-      ContextMenu.setAnchor({ x: event.clientX, y: event.clientY });
-      ContextMenu.setItems(channelContextMenuItems);
-      ContextMenu.setVisibility(true);
+  const onChannelRightClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    if (props.sharedProps && props.sharedProps.ContextMenu && event.currentTarget) {
+      props.sharedProps.ContextMenu.setItems(channelContextMenuItems);
+      props.sharedProps.ContextMenu.setAnchor({ x: event.clientX, y: event.clientY });
+      props.sharedProps.ContextMenu.setVisibility(true);
     }
     event.preventDefault();
   }
 
   return (
-    <AvatarTextButton iconSrc={channelIconSrc} selected={isSelected} onLeftClick={channelClickHandler} onRightClick={channelRightClickHandler}>
-      {channelName}
+    <AvatarTextButton iconSrc={props.channelIconSrc} selected={props.isSelected} onLeftClick={onChannelLeftClick} onRightClick={onChannelRightClick}>
+      {props.channelName}
     </AvatarTextButton>
   )
 }

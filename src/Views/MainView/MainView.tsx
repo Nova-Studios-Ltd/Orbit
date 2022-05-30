@@ -1,39 +1,110 @@
 import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { AutoLogin } from "Init/AuthHandler";
-//import { SettingsManager } from "NSLib/SettingsManager";
 import { Events } from "Init/WebsocketEventInit";
-import { CREATEChannel, DELETEChannel, DELETEMessage, EDITMessage, GETChannel, GETMessage, GETMessageEditTimestamps, GETMessages, GETUserChannels, GETUserUUID } from "NSLib/APIEvents";
+import { useTheme } from "@mui/material";
+import { CacheValid, HasChannelCache, isValidUsername } from "NSLib/Util";
+import { GenerateBase64SHA256 } from "NSLib/NCEncryption";
+import { NCChannelCache } from "NSLib/NCCache";
+import { HasFlag } from "NSLib/NCFlags";
+import { UploadFile } from "NSLib/ElectronAPI";
+import { CREATEChannel, DELETEChannel, DELETEMessage, EDITMessage, GETChannel, GETMessage, GETMessageEditTimestamps, GETMessages, GETUserChannels, GETUserUUID, SENDMessage } from "NSLib/APIEvents";
 
 import ViewContainer from "Components/Containers/ViewContainer/ViewContainer";
-import ChatPage from "Pages/ChatPage/ChatPage";
-//import FriendPage from "Pages/FriendPage/FriendPage";
-import SettingsPage from "Pages/SettingsPage/SettingsPage";
+import MessageAttachment from "DataTypes/MessageAttachment";
+import ChannelList from "Components/Channels/ChannelList/ChannelList";
+import AvatarTextButton from "Components/Buttons/AvatarTextButton/AvatarTextButton";
+import MessageCanvas from "Components/Messages/MessageCanvas/MessageCanvas";
+import MessageCanvasHeader from "Components/Headers/MessageCanvasHeader/MessageCanvasHeader";
+import MessageInput, { MessageInputChangeEvent, MessageInputSendEvent } from "Components/Input/MessageInput/MessageInput";
+import FriendView from "Views/FriendView/FriendView";
+import SettingsView from "Views/SettingsView/SettingsView";
 
 import type { View } from "DataTypes/Components";
 import type { IRawChannelProps } from "Interfaces/IRawChannelProps";
 import type { ChannelProps } from "Components/Channels/Channel/Channel";
 import type { IMessageProps } from "Interfaces/IMessageProps";
 import type { MessageProps } from "Components/Messages/Message/Message";
-import { AuthViewRoutes, ChatViewRoutes, MainViewRoutes } from "DataTypes/Routes";
-import { CacheValid, HasChannelCache, isValidUsername } from "NSLib/Util";
-import { GenerateBase64SHA256 } from "NSLib/NCEncryption";
-import { NCChannelCache } from "NSLib/NCCache";
-import { HasFlag } from "NSLib/NCFlags";
+import { AuthViewRoutes, FriendViewRoutes, MainViewRoutes, SettingsViewRoutes } from "DataTypes/Routes";
 
 interface MainViewProps extends View {
   path: MainViewRoutes
 }
 
 function MainView(props: MainViewProps) {
+  const Localizations_MainView = useTranslation("MainView").t;
   const navigate = useNavigate();
   const location = useLocation();
+  const theme = useTheme();
+
+  const canvasRef = useRef() as React.MutableRefObject<HTMLDivElement>;
+  const messageCount = useRef(0);
+  const session = useRef("");
 
   const [channels, setChannels] = useState([] as IRawChannelProps[]);
   const [selectedChannel, setSelectedChannel] = useState(null as unknown as IRawChannelProps);
   const [messages, setMessages] = useState([] as IMessageProps[]);
-  const session = useRef("");
+  const [MessageAttachments, setMessageAttachments] = useState([] as MessageAttachment[]);
 
+  const scrollCanvas = () => {
+    const canvas = canvasRef.current;
+    if (canvas) {
+      canvas.scroll({ top: canvas.scrollHeight, behavior: "smooth" });
+    }
+  }
+
+  useEffect(() => {
+    if (messageCount.current < messages.length) scrollCanvas();
+    messageCount.current = messages.length;
+  }, [messages, messages.length]);
+
+  useEffect(() => {
+    if (props.sharedProps && props.sharedProps.changeTitleCallback && selectedChannel && selectedChannel.channelName) props.sharedProps.changeTitleCallback(`@${selectedChannel.channelName}`);
+  }, [props, props.sharedProps?.changeTitleCallback, selectedChannel]);
+
+  const MessageInputSendHandler = (event: MessageInputSendEvent) => {
+    if (selectedChannel === undefined || event.value === undefined || (event.value === "" && MessageAttachments.length === 0)) return;
+    SENDMessage(selectedChannel.table_Id, event.value, MessageAttachments, (sent: boolean) => {
+      if (sent) {
+        setMessageAttachments([] as MessageAttachment[]);
+      }
+    });
+  };
+
+  const onFileUpload = () => {
+    UploadFile().then((files) => {
+      const newAttachmentList: MessageAttachment[] = [];
+
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        newAttachmentList.push(new MessageAttachment(file.FileContents, file.Filename));
+      }
+
+      setMessageAttachments([...MessageAttachments, ...newAttachmentList]);
+    });
+  };
+
+  const onFileRemove = (id?: string) => {
+    if (!id) {
+      setMessageAttachments([]);
+      return;
+    }
+
+    const updatedMessageAttachments = [];
+    for (let i = 0; i < MessageAttachments.length; i++) {
+      if (MessageAttachments[i].id !== id) {
+        updatedMessageAttachments.push(MessageAttachments[i]);
+      }
+    }
+
+    setMessageAttachments(updatedMessageAttachments);
+  };
+
+  const navigateFriendsPage = () => {
+    setSelectedChannel(null as unknown as IRawChannelProps);
+    navigate(MainViewRoutes.Friends);
+  }
 
   const onChannelClick = async (channel: ChannelProps) => {
     if (!location.pathname.includes("chat"))
@@ -147,23 +218,6 @@ function MainView(props: MainViewProps) {
     }
   };
 
-  const ChatPageProps = {
-    ContextMenu: props.ContextMenu,
-    widthConstrained: props.widthConstrained,
-    HelpPopup: props.HelpPopup,
-    channels: channels,
-    messages: messages,
-    selectedChannel: selectedChannel,
-    setSelectedChannel: setSelectedChannel,
-    onChannelCreate: onChannelCreate,
-    onChannelEdit: onChannelEdit,
-    onChannelDelete: onChannelDelete,
-    onChannelClick: onChannelClick,
-    onMessageEdit: onMessageEdit,
-    onMessageDelete: onMessageDelete,
-    changeTitleCallback: props.changeTitleCallback
-  };
-
   useEffect(() => {
     Events.on("NewMessage", (message: IMessageProps) => {
       setMessages(prevState => {
@@ -244,11 +298,17 @@ function MainView(props: MainViewProps) {
   const page = () => {
     switch (props.path) {
       case MainViewRoutes.Chat:
-        return (<ChatPage {...ChatPageProps} path={ChatViewRoutes.Chat} />);
+        return (
+          <>
+            <MessageCanvasHeader sharedProps={props.sharedProps} selectedChannel={selectedChannel}></MessageCanvasHeader>
+            <MessageCanvas className="MainViewContainerItem" sharedProps={props.sharedProps} canvasRef={canvasRef} messages={messages} onMessageEdit={onMessageEdit} onMessageDelete={onMessageDelete} />
+            <MessageInput className="MainViewContainerItem" sharedProps={props.sharedProps} attachments={MessageAttachments} onFileRemove={onFileRemove} onFileUpload={onFileUpload} onSend={MessageInputSendHandler} />
+          </>
+        )
       case MainViewRoutes.Friends:
-        return (<ChatPage {...ChatPageProps} path={ChatViewRoutes.Friends} />);
+        return (<FriendView onChannelCreate={onChannelCreate} />);
       case MainViewRoutes.Settings:
-        return (<SettingsPage ContextMenu={props.ContextMenu} widthConstrained={props.widthConstrained} HelpPopup={props.HelpPopup} changeTitleCallback={props.changeTitleCallback} />);
+        return (<SettingsView path={SettingsViewRoutes.Dashboard} />);
       default:
         console.warn("[MainView] Invalid Page");
         return null;
@@ -257,7 +317,17 @@ function MainView(props: MainViewProps) {
 
   return (
     <ViewContainer>
-      {page()}
+      <div className="MainViewContainer">
+        <div className="MainViewContainerLeft">
+          <div className="NavigationButtonContainer" style={{ backgroundColor: theme.palette.background.paper, borderColor: theme.palette.divider }}>
+            <AvatarTextButton selected={props.path === MainViewRoutes.Friends} onLeftClick={navigateFriendsPage}>[Friends]</AvatarTextButton>
+          </div>
+          <ChannelList sharedProps={props.sharedProps} channels={channels} onChannelEdit={onChannelEdit} onChannelDelete={onChannelDelete} onChannelClick={onChannelClick} selectedChannel={selectedChannel} />
+        </div>
+        <div className="MainViewContainerRight">
+          {page()}
+        </div>
+      </div>
     </ViewContainer>
   );
 }

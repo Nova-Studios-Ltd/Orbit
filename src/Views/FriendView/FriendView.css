@@ -1,0 +1,11 @@
+@import "Pages/Pages.css";
+
+.FriendViewContainer {
+
+}
+
+@media only screen and (max-width: 600px) {
+  .FriendViewContainer {
+
+  }
+}
