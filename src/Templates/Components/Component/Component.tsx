@@ -7,9 +7,9 @@ export interface ComponentProps extends NCComponent {
 
 }
 
-function Component({ className }: ComponentProps) {
+function Component(props: ComponentProps) {
   const theme = useTheme();
-  const classNames = useClassNames("ComponentContainer", className);
+  const classNames = useClassNames("ComponentContainer", props.className);
 
   return (
     <div className={classNames} style={{ backgroundColor: theme.palette.background.paper }}>
