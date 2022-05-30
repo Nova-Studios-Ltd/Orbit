@@ -72,6 +72,10 @@ function MainView(props: MainViewProps) {
     });
   };
 
+  const onLoadPriorMessages = () => {
+    console.log(messages);
+  }
+
   const onFileUpload = () => {
     UploadFile().then((files) => {
       const newAttachmentList: MessageAttachment[] = [];
@@ -301,7 +305,7 @@ function MainView(props: MainViewProps) {
         return (
           <>
             <MessageCanvasHeader sharedProps={props.sharedProps} selectedChannel={selectedChannel}></MessageCanvasHeader>
-            <MessageCanvas className="MainViewContainerItem" sharedProps={props.sharedProps} canvasRef={canvasRef} messages={messages} onMessageEdit={onMessageEdit} onMessageDelete={onMessageDelete} />
+            <MessageCanvas className="MainViewContainerItem" sharedProps={props.sharedProps} canvasRef={canvasRef} messages={messages} onMessageEdit={onMessageEdit} onMessageDelete={onMessageDelete} onLoadPriorMessages={onLoadPriorMessages} />
             <MessageInput className="MainViewContainerItem" sharedProps={props.sharedProps} attachments={MessageAttachments} onFileRemove={onFileRemove} onFileUpload={onFileUpload} onSend={MessageInputSendHandler} />
           </>
         )
