@@ -99,10 +99,10 @@ function Message(props: MessageProps) {
   }
 
   const messageRightClickHandler = (event: React.MouseEvent<HTMLDivElement>) => {
-    if (props.ContextMenu && event.currentTarget) {
-      props.ContextMenu.setAnchor({ x: event.clientX, y: event.clientY });
-      props.ContextMenu.setItems(messageContextMenuItems);
-      props.ContextMenu.setVisibility(true);
+    if (props.sharedProps && props.sharedProps.ContextMenu && event.currentTarget) {
+      props.sharedProps.ContextMenu.setAnchor({ x: event.clientX, y: event.clientY });
+      props.sharedProps.ContextMenu.setItems(messageContextMenuItems);
+      props.sharedProps.ContextMenu.setVisibility(true);
     }
     event.preventDefault();
   }

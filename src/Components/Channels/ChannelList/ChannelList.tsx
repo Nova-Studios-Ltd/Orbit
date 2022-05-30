@@ -13,7 +13,7 @@ export interface ChannelListProps extends NCAPIComponent {
   onChannelClick?: (channel: ChannelProps) => void
 }
 
-function ChannelList({ ContextMenu, channels, selectedChannel, onChannelEdit, onChannelDelete, onChannelClick }: ChannelListProps) {
+function ChannelList(props: ChannelListProps) {
   const Localizations_ChannelList = useTranslation("ChannelList").t;
   const theme = useTheme();
 
@@ -25,10 +25,10 @@ function ChannelList({ ContextMenu, channels, selectedChannel, onChannelEdit, on
   );
 
   const channelArray = () => {
-    if (channels && channels.length > 0) {
-      return channels.map((channel) => {
-        const isSelected = channel.table_Id === selectedChannel?.table_Id;
-        return (<Channel key={channel.table_Id} ContextMenu={ContextMenu} channelName={channel.channelName} channelID={channel.table_Id} channelIconSrc={channel.channelIcon} channelMembers={channel.members} isGroup={channel.channelType} isSelected={isSelected} onChannelEdit={onChannelEdit} onChannelDelete={onChannelDelete} onClick={onChannelClick} />);
+    if (props.channels && props.channels.length > 0) {
+      return props.channels.map((channel) => {
+        const isSelected = channel.table_Id === props.selectedChannel?.table_Id;
+        return (<Channel key={channel.table_Id} sharedProps={props.sharedProps} channelName={channel.channelName} channelID={channel.table_Id} channelIconSrc={channel.channelIcon} channelMembers={channel.members} isGroup={channel.channelType} isSelected={isSelected} onChannelEdit={props.onChannelEdit} onChannelDelete={props.onChannelDelete} onClick={props.onChannelClick} />);
       });
     }
 

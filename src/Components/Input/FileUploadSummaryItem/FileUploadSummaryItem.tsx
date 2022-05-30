@@ -26,10 +26,6 @@ function FileUploadSummaryItem({ className, fileHandle, onFileRemove }: FileUplo
 
   const fileContentBlob = URL.createObjectURL(new Blob([fileContents]));
 
-  const onRemoveHandler = () => {
-    if (onFileRemove) onFileRemove(fileID);
-  }
-
   const onPreviewFail = () => {
     setPreviewableState(false);
   };
@@ -48,7 +44,7 @@ function FileUploadSummaryItem({ className, fileHandle, onFileRemove }: FileUplo
       </div>
       <div className="FileUploadSummaryItemRight">
         <Typography variant="subtitle2" noWrap>{fileName}</Typography>
-        <IconButton onClick={() => onRemoveHandler()}><CloseIcon /></IconButton>
+        <IconButton onClick={() => onFileRemove ? onFileRemove(fileID) : null}><CloseIcon /></IconButton>
       </div>
     </div>
   )

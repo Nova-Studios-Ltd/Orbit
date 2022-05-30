@@ -15,26 +15,24 @@ export interface ContextMenuItemProps extends NCComponent {
   onRightClick?: () => void,
 }
 
-function ContextMenuItem({ ContextMenu, className, children, icon, persistOnClick, disabled, onLeftClick, onRightClick }: ContextMenuItemProps) {
+function ContextMenuItem(props: ContextMenuItemProps) {
   const theme = useTheme();
-  const classNames = useClassNames("ContextMenuItemContainer", className);
+  const classNames = useClassNames("ContextMenuItemContainer", props.className);
+
+  const persistOnClick = props.persistOnClick === undefined ? false : true;
 
   const [backgroundColor, setBackgroundColor] = useState(theme.customPalette.contextMenuItemBackground);
 
-  if (persistOnClick === undefined) {
-    persistOnClick = false;
-  }
-
   const handleLeftClick = () => {
-    if (onLeftClick) onLeftClick();
-    if (persistOnClick) return;
-    ContextMenu?.closeMenu();
+    if (props.onLeftClick) props.onLeftClick();
+    if (props.persistOnClick) return;
+    props.sharedProps?.ContextMenu?.closeMenu();
   }
 
   const handleRightClick = () => {
-    if (onRightClick) onRightClick();
-    if (persistOnClick) return;
-    ContextMenu?.closeMenu();
+    if (props.onRightClick) props.onRightClick();
+    if (props.persistOnClick) return;
+    props.sharedProps?.ContextMenu?.closeMenu();
   }
 
   const handleFocus = (isFocused: boolean) => {
@@ -46,9 +44,9 @@ function ContextMenuItem({ ContextMenu, className, children, icon, persistOnClic
   }
 
   return (
-    <MenuItem className={classNames} style={{ backgroundColor: backgroundColor }} disabled={disabled} onClick={handleLeftClick} onContextMenu={handleRightClick} onMouseEnter={() => handleFocus(true)} onFocus={() => handleFocus(true)} onMouseLeave={() => handleFocus(false)} onBlur={() => handleFocus(false)}>
-      {icon}
-      {children}
+    <MenuItem className={classNames} style={{ backgroundColor: backgroundColor }} disabled={props.disabled} onClick={handleLeftClick} onContextMenu={handleRightClick} onMouseEnter={() => handleFocus(true)} onFocus={() => handleFocus(true)} onMouseLeave={() => handleFocus(false)} onBlur={() => handleFocus(false)}>
+      {props.icon}
+      {props.children}
     </MenuItem>
   )
 }

@@ -18,7 +18,7 @@ import ContextMenuItem from "Components/Menus/ContextMenuItem/ContextMenuItem";
 
 import { AuthViewRoutes, MainViewRoutes } from "DataTypes/Routes";
 import type { ReactNode } from "react";
-import type { ContextMenuProps, HelpPopupProps } from "DataTypes/Components";
+import type { ContextMenuProps, HelpPopupProps, SharedProps } from "DataTypes/Components";
 import type { ContextMenuItemProps } from "Components/Menus/ContextMenuItem/ContextMenuItem";
 import type { Coordinates } from "DataTypes/Types";
 
@@ -78,10 +78,10 @@ function App() {
     closeMenu: closeContextMenu
   };
 
-  const GenericViewProps = {
+  const SharedProps: SharedProps = {
+    HelpPopup: HelpPopup,
     ContextMenu: ContextMenu,
     widthConstrained: widthConstrained,
-    HelpPopup: HelpPopup,
     changeTitleCallback: setTitle
   }
 
@@ -90,7 +90,7 @@ function App() {
 
     return contextMenuItems.map((item, index) => {
       if (item.hide) return null;
-      return (<ContextMenuItem key={index} className={item.className} ContextMenu={ContextMenu} disabled={item.disabled} persistOnClick={item.persistOnClick} icon={item.icon} onLeftClick={item.onLeftClick} onRightClick={item.onRightClick}>{item.children}</ContextMenuItem>)
+      return (<ContextMenuItem key={index} sharedProps={SharedProps} className={item.className} disabled={item.disabled} persistOnClick={item.persistOnClick} icon={item.icon} onLeftClick={item.onLeftClick} onRightClick={item.onRightClick}>{item.children}</ContextMenuItem>)
     });
   };
 
@@ -113,13 +113,13 @@ function App() {
       </Helmet>
       <ThemeProvider theme={ThemeSelector(GetUrlFlag("theme") || "DarkTheme_Default")}>
         <Routes>
-          <Route path="*" element={<ErrorView {...GenericViewProps} errorCode={404} />}></Route>
-          <Route path="/" element={<AuthView {...GenericViewProps} path={AuthViewRoutes.Login} />} />
-          <Route path={AuthViewRoutes.Login} element={<AuthView {...GenericViewProps} path={AuthViewRoutes.Login} />} />
-          <Route path={AuthViewRoutes.Register} element={<AuthView {...GenericViewProps} path={AuthViewRoutes.Register} />} />
-          <Route path={MainViewRoutes.Chat} element={<MainView {...GenericViewProps} path={MainViewRoutes.Chat} />} />
-          <Route path={MainViewRoutes.Friends} element={<MainView {...GenericViewProps} path={MainViewRoutes.Friends} />} />
-          <Route path={MainViewRoutes.Settings} element={<MainView {...GenericViewProps} path={MainViewRoutes.Settings} />} />
+          <Route path="*" element={<ErrorView sharedProps={SharedProps} errorCode={404} />}></Route>
+          <Route path="/" element={<AuthView sharedProps={SharedProps} path={AuthViewRoutes.Login} />} />
+          <Route path={AuthViewRoutes.Login} element={<AuthView sharedProps={SharedProps} path={AuthViewRoutes.Login} />} />
+          <Route path={AuthViewRoutes.Register} element={<AuthView sharedProps={SharedProps} path={AuthViewRoutes.Register} />} />
+          <Route path={MainViewRoutes.Chat} element={<MainView sharedProps={SharedProps} path={MainViewRoutes.Chat} />} />
+          <Route path={MainViewRoutes.Friends} element={<MainView sharedProps={SharedProps} path={MainViewRoutes.Friends} />} />
+          <Route path={MainViewRoutes.Settings} element={<MainView sharedProps={SharedProps} path={MainViewRoutes.Settings} />} />
         </Routes>
         <Popover className="GenericPopover" open={helpVisible} anchorEl={helpAnchorEl} onClose={() => {
           setHelpAnchor(null as unknown as Element);

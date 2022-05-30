@@ -32,11 +32,11 @@ export interface TextComboProps extends NCAPIComponent {
   onSubmit?: (event: TextComboSubmitEvent) => void
 }
 
-function TextCombo({ className, childrenLeft, childrenRight, value, submitButton, maxLength, textFieldPlaceholder, autoFocus, onChange, onDismiss, onSubmit }: TextComboProps) {
+function TextCombo(props: TextComboProps) {
   const Localizations_TextCombo = useTranslation("TextCombo").t;
   const theme = useTheme();
-  const classNames = useClassNames("TextComboContainer", className);
-  const MaxTextFieldCharLength = maxLength ? maxLength : 4000; // How many characters remaining before it is shown
+  const classNames = useClassNames("TextComboContainer", props.className);
+  const MaxTextFieldCharLength = props.maxLength ? props.maxLength : 4000; // How many characters remaining before it is shown
   const TextFieldCharLengthDisplayThreshold = Math.floor(MaxTextFieldCharLength * 0.2); // How many characters remaining before it is shown
 
   const [TextFieldFocused, setTextFieldFocusedState] = useState(false);
@@ -47,21 +47,21 @@ function TextCombo({ className, childrenLeft, childrenRight, value, submitButton
   const RemainingTextFieldCharLength = MaxTextFieldCharLength - TextFieldCharLength;
 
   useEffect(() => {
-    if (value) setTextFieldCharLength(value.length);
+    if (props.value) setTextFieldCharLength(props.value.length);
 
-    if (autoFocus && TextFieldRef.current) TextFieldRef.current.focus();
-  }, [autoFocus, value]);
+    if (props.autoFocus && TextFieldRef.current) TextFieldRef.current.focus();
+  }, [props, props.autoFocus, props.value]);
 
   const submit = () => {
-    if (onSubmit) onSubmit({ value });
+    if (props.onSubmit) props.onSubmit({ value: props.value });
   };
 
   const dismiss = () => {
-    if (onDismiss) onDismiss({ value });
+    if (props.onDismiss) props.onDismiss({ value: props.value });
   }
 
   const onChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
-    if (onChange) onChange({ value: event.target.value });
+    if (props.onChange) props.onChange({ value: event.target.value });
   };
 
   const onKeyDownHandler = (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -82,13 +82,13 @@ function TextCombo({ className, childrenLeft, childrenRight, value, submitButton
   return (
     <div className={classNames} style={{ backgroundColor: theme.customPalette.TextComboBackground, borderColor: TextFieldFocused ? theme.palette.action.active : theme.palette.divider }}>
       <div className="TextComboBefore">
-        {childrenLeft}
+        {props.childrenLeft}
       </div>
-      <input type="text" className="TextComboField" ref={TextFieldRef} maxLength={MaxTextFieldCharLength} style={{ backgroundColor: "transparent", color: theme.palette.text.primary, fontSize: theme.typography.subtitle1.fontSize }} placeholder={textFieldPlaceholder} value={value} onFocus={() => inputFocusHandler(true)} onBlur={() => inputFocusHandler(false)} onChange={onChangeHandler} onKeyDown={onKeyDownHandler} />
+      <input type="text" className="TextComboField" ref={TextFieldRef} maxLength={MaxTextFieldCharLength} style={{ backgroundColor: "transparent", color: theme.palette.text.primary, fontSize: theme.typography.subtitle1.fontSize }} placeholder={props.textFieldPlaceholder} value={props.value} onFocus={() => inputFocusHandler(true)} onBlur={() => inputFocusHandler(false)} onChange={onChangeHandler} onKeyDown={onKeyDownHandler} />
       <div className="TextComboAfter">
         {RemainingTextFieldCharLength < TextFieldCharLengthDisplayThreshold ? <Typography variant="caption" alignSelf="center">{RemainingTextFieldCharLength}</Typography> : null}
-        {childrenRight}
-        {submitButton === false ? null : <IconButton title={Localizations_TextCombo("TextCombo-Tooltip-SubmitGeneric")} aria-label={Localizations_TextCombo("TextCombo-Tooltip-SubmitGeneric")} onClick={() => submit()}><SendIcon /></IconButton>}
+        {props.childrenRight}
+        {props.submitButton === false ? null : <IconButton title={Localizations_TextCombo("TextCombo-Tooltip-SubmitGeneric")} aria-label={Localizations_TextCombo("TextCombo-Tooltip-SubmitGeneric")} onClick={() => submit()}><SendIcon /></IconButton>}
       </div>
     </div>
   )

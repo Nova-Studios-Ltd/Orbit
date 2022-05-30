@@ -9,7 +9,11 @@ export enum MainViewRoutes {
   Settings = "/settings"
 }
 
-export enum ChatViewRoutes {
-  Chat = "/chat",
-  Friends = "/friends"
+export enum FriendViewRoutes {
+  FriendsList = "/list",
+  AddFriend = "/add"
+}
+
+export enum SettingsViewRoutes {
+  Dashboard = "/dash"
 }

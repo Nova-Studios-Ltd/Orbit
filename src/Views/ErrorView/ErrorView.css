@@ -1,3 +1,5 @@
+@import "Pages/Pages.css";
+
 .ErrorViewContainer {
   display: flex;
   flex-direction: column;

@@ -3,6 +3,7 @@ import useClassNames from "Hooks/useClassNames";
 
 import type { NCAPIComponent } from "DataTypes/Components";
 import type { IRawChannelProps } from "Interfaces/IRawChannelProps";
+import AvatarTextButton from "Components/Buttons/AvatarTextButton/AvatarTextButton";
 
 export interface MessageCanvasHeaderProps extends NCAPIComponent {
 
