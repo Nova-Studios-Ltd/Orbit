@@ -17,7 +17,7 @@ import ChannelList from "Components/Channels/ChannelList/ChannelList";
 import AvatarTextButton from "Components/Buttons/AvatarTextButton/AvatarTextButton";
 import MessageCanvas from "Components/Messages/MessageCanvas/MessageCanvas";
 import GenericHeader from "Components/Headers/GenericHeader/GenericHeader";
-import MessageInput, { MessageInputChangeEvent, MessageInputSendEvent } from "Components/Input/MessageInput/MessageInput";
+import MessageInput, { MessageInputSendEvent } from "Components/Input/MessageInput/MessageInput";
 import FriendView from "Views/FriendView/FriendView";
 import SettingsView from "Views/SettingsView/SettingsView";
 
@@ -26,7 +26,7 @@ import type { IRawChannelProps } from "Interfaces/IRawChannelProps";
 import type { ChannelProps } from "Components/Channels/Channel/Channel";
 import type { IMessageProps } from "Interfaces/IMessageProps";
 import type { MessageProps } from "Components/Messages/Message/Message";
-import { AuthViewRoutes, FriendViewRoutes, MainViewRoutes, SettingsViewRoutes } from "DataTypes/Routes";
+import { AuthViewRoutes, MainViewRoutes, SettingsViewRoutes } from "DataTypes/Routes";
 
 interface MainViewProps extends View {
   path: MainViewRoutes
@@ -73,7 +73,12 @@ function MainView(props: MainViewProps) {
   };
 
   const onLoadPriorMessages = () => {
-    console.log(messages);
+    const oldestID = parseInt(messages[messages.length - 1].message_Id);
+    GETMessages(selectedChannel.table_Id, (messages: IMessageProps[]) => {
+      setMessages(prevState => {
+        return [...prevState, ...messages];
+      })
+    }, false, 30, -1, oldestID);
   }
 
   const onFileUpload = () => {
