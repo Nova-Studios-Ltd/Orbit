@@ -68,6 +68,18 @@ export async function HasChannelCache(channel_uuid: string) : Promise<boolean> {
   else return false;
 }
 
+export async function ClearAllDatabases() {
+  const names = (await indexedDB.databases()).flatMap((v) => {
+    if (v.name !== undefined) return v.name;
+    return "";
+  });
+
+  for (let n = 0; n < names.length; n++) {
+    const name = names[n];
+    indexedDB.deleteDatabase(name);
+  }
+}
+
 export async function CacheValid(channel_uuid: string, session: string) : Promise<boolean> {
   const cache = new NCChannelCache(channel_uuid);
   if (await cache.ReadSession() === session && await cache.CacheValid()) return true;

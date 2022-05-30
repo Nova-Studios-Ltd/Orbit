@@ -10,6 +10,7 @@ import type { Page } from "DataTypes/Components";
 import { SettingsManager } from "NSLib/SettingsManager";
 import { NCFile, UploadFile, WriteToClipboard } from "NSLib/ElectronAPI";
 import { SETAvatar } from "NSLib/APIEvents";
+import { Logout } from "Init/AuthHandler";
 
 interface DashboardPageProps extends Page {
 
@@ -44,7 +45,7 @@ function DashboardPage(props: DashboardPageProps) {
             <Button disabled>Edit Username</Button>
             <Button disabled>Change Email</Button>
             <Button disabled>Change Password</Button>
-            <Button disabled>Logout</Button>
+            <Button onClick={() => Logout()}>Logout</Button>
           </Card>
         </Section>
         <Section title="Advanced">

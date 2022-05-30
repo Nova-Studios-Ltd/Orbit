@@ -9,6 +9,7 @@ import { ToBase64String, ToUint8Array } from "../NSLib/Base64";
 import { LoginStatus } from "DataTypes/Enums";
 import { DecryptBase64, GenerateBase64SHA256 } from "NSLib/NCEncryption";
 import { HasFlag } from "NSLib/NCFlags";
+import { ClearAllDatabases } from "NSLib/Util";
 
 export const Manager = new SettingsManager();
 let Websocket;
@@ -69,7 +70,7 @@ export async function AutoLogin() : Promise<boolean> {
 }
 
 export async function Logout() {
-  Manager.ClearKeys();
+  await ClearAllDatabases();
   Manager.ClearLocalStorage();
   Manager.ClearCookie("LoggedIn");
 }
