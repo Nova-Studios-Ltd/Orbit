@@ -44,7 +44,6 @@ function MainView(props: MainViewProps) {
   const messageCount = useRef(0);
   const session = useRef("");
   const autoScroll = useRef(true);
-  const modifiedProps = props;
 
   const [title, setTitle] = useState("");
   const [channels, setChannels] = useState([] as IRawChannelProps[]);
@@ -57,7 +56,10 @@ function MainView(props: MainViewProps) {
     if (props.path !== MainViewRoutes.Chat && title !== _title) setTitle(_title);
   };
 
-  if (modifiedProps.sharedProps) modifiedProps.sharedProps.changeTitleCallback = changeTitleCallbackOverride;
+  const modifiedSharedProps: SharedProps = {
+    ...props.sharedProps,
+    changeTitleCallback: changeTitleCallbackOverride
+  };
 
   const scrollCanvas = () => {
     const canvas = canvasRef.current;
@@ -76,6 +78,8 @@ function MainView(props: MainViewProps) {
 
   useEffect(() => {
     if (!props.sharedProps || !props.sharedProps.changeTitleCallback) return;
+
+    console.log(props.sharedProps);
 
     if (props.path === MainViewRoutes.Chat) {
       props.sharedProps.changeTitleCallback(`@${title}`);
@@ -137,16 +141,10 @@ function MainView(props: MainViewProps) {
     setMessageAttachments(updatedMessageAttachments);
   };
 
-  const navigateFriendsPage = () => {
+  const navigateToPage = (path: MainViewRoutes) => {
     setSelectedChannel(null as unknown as IRawChannelProps);
     setChannelMenuVisibility(false);
-    navigate(MainViewRoutes.Friends);
-  }
-
-  const navigateSettingsPage = () => {
-    setSelectedChannel(null as unknown as IRawChannelProps);
-    setChannelMenuVisibility(false);
-    navigate(MainViewRoutes.Settings);
+    navigate(path);
   }
 
   const onChannelClick = async (channel: ChannelProps) => {
@@ -356,9 +354,9 @@ function MainView(props: MainViewProps) {
           </>
         )
       case MainViewRoutes.Friends:
-        return (<FriendView sharedProps={modifiedProps.sharedProps} onChannelCreate={onChannelCreate} />);
+        return (<FriendView sharedProps={modifiedSharedProps} onChannelCreate={onChannelCreate} />);
       case MainViewRoutes.Settings:
-        return (<SettingsView sharedProps={modifiedProps.sharedProps} onLogout={onLogout} path={SettingsViewRoutes.Dashboard} />);
+        return (<SettingsView sharedProps={modifiedSharedProps} onLogout={onLogout} path={SettingsViewRoutes.Dashboard} />);
       default:
         console.warn("[MainView] Invalid Page");
         return null;
@@ -371,8 +369,8 @@ function MainView(props: MainViewProps) {
     return (
       <div className="MainViewContainerLeft">
         <div className="NavigationButtonContainer" style={{ backgroundColor: theme.palette.background.paper, borderColor: theme.palette.divider }}>
-          <AvatarTextButton selected={props.path === MainViewRoutes.Settings} onLeftClick={navigateSettingsPage} iconSrc={new SettingsManager().User.avatarSrc}>[Settings]</AvatarTextButton>
-          <AvatarTextButton selected={props.path === MainViewRoutes.Friends} onLeftClick={navigateFriendsPage}>[Friends]</AvatarTextButton>
+          <AvatarTextButton selected={props.path === MainViewRoutes.Settings} onLeftClick={() => navigateToPage(MainViewRoutes.Settings)} iconSrc={new SettingsManager().User.avatarSrc}>[Settings]</AvatarTextButton>
+          <AvatarTextButton selected={props.path === MainViewRoutes.Friends} onLeftClick={() => navigateToPage(MainViewRoutes.Friends)}>[Friends]</AvatarTextButton>
         </div>
         <ChannelList sharedProps={props.sharedProps} channels={channels} onChannelEdit={onChannelEdit} onChannelDelete={onChannelDelete} onChannelClick={onChannelClick} selectedChannel={selectedChannel} />
       </div>
