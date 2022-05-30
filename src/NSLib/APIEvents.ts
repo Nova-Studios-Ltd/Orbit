@@ -309,21 +309,21 @@ export function DELETEChannel(channel_uuid: string, callback: (deleted: boolean)
 // Media
 
 export function SETAvatar(user_uuid: string, file: Blob, callback: (set: boolean) => void) {
-    POSTFile(`/Media/Avatar/${user_uuid}`, file, new SettingsManager().User.token).then((resp: NCAPIResponse) => {
-        if (resp.status === 200) callback(true);
-        else callback(false);
-    });
+  POSTFile(`/User/${user_uuid}/Avatar`, file, "Unknown", new SettingsManager().User.token).then((resp: NCAPIResponse) => {
+    if (resp.status === 200) callback(true);
+    else callback(false);
+  });
 }
 
 export function SETChannelIcon(channel_uuid: string, file: Blob, callback: (set: boolean) => void) {
-    POSTFile(`/Media/Channel/${channel_uuid}`, file, new SettingsManager().User.token).then((resp: NCAPIResponse) => {
-        if (resp.status === 200) callback(true);
-        else callback(false);
-    });
+  POSTFile(`/Media/Channel/${channel_uuid}`, file, "Unknown", new SettingsManager().User.token).then((resp: NCAPIResponse) => {
+    if (resp.status === 200) callback(true);
+    else callback(false);
+  });
 }
 
 export async function GETChannelName(channel_uuid: string) : Promise<string | undefined> {
-    const resp = await GET(`/Channel/${channel_uuid}`, new SettingsManager().User.token);
-    if (resp.status === 200) return (resp.payload as IRawChannelProps).channelName;
-    return undefined;
+  const resp = await GET(`/Channel/${channel_uuid}`, new SettingsManager().User.token);
+  if (resp.status === 200) return (resp.payload as IRawChannelProps).channelName;
+  return undefined;
 }

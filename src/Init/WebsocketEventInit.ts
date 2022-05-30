@@ -27,7 +27,7 @@ export default function WebsocketInit(Websocket: NCWebsocket) {
 async function OnNewMessage(event: IWebSocketEvent) {
   const message = await GETMessage(event.Channel, event.Message, true);
   if (message === undefined) return;
-  Events.send("NewMessage", message);
+  Events.send("NewMessage", message, event.Channel);
   // Add message to cache
   new NCChannelCache(event.Channel).SetMessage(event.Message, message);
 }

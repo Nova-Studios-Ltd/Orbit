@@ -28,6 +28,7 @@ import type { ChannelProps } from "Components/Channels/Channel/Channel";
 import type { IMessageProps } from "Interfaces/IMessageProps";
 import type { MessageProps } from "Components/Messages/Message/Message";
 import { AuthViewRoutes, MainViewRoutes, SettingsViewRoutes } from "DataTypes/Routes";
+import { SettingsManager } from "NSLib/SettingsManager";
 
 interface MainViewProps extends View {
   path: MainViewRoutes
@@ -247,7 +248,8 @@ function MainView(props: MainViewProps) {
   };
 
   useEffect(() => {
-    Events.on("NewMessage", (message: IMessageProps) => {
+    Events.on("NewMessage", (message: IMessageProps, channel_uuid: string) => {
+      if (selectedChannel.table_Id !== channel_uuid) return;
       setMessages(prevState => {
         return [message, ...prevState];
       });
@@ -349,7 +351,7 @@ function MainView(props: MainViewProps) {
     return (
       <div className="MainViewContainerLeft">
         <div className="NavigationButtonContainer" style={{ backgroundColor: theme.palette.background.paper, borderColor: theme.palette.divider }}>
-          <AvatarTextButton selected={props.path === MainViewRoutes.Settings} onLeftClick={navigateSettingsPage}>[Settings]</AvatarTextButton>
+          <AvatarTextButton selected={props.path === MainViewRoutes.Settings} onLeftClick={navigateSettingsPage} iconSrc={new SettingsManager().User.avatarSrc}>[Settings]</AvatarTextButton>
           <AvatarTextButton selected={props.path === MainViewRoutes.Friends} onLeftClick={navigateFriendsPage}>[Friends]</AvatarTextButton>
         </div>
         <ChannelList sharedProps={props.sharedProps} channels={channels} onChannelEdit={onChannelEdit} onChannelDelete={onChannelDelete} onChannelClick={onChannelClick} selectedChannel={selectedChannel} />

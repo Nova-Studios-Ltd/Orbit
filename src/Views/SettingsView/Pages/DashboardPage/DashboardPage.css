@@ -8,6 +8,14 @@
   }
 }
 
+.Username {
+  color: white;
+}
+
+.Username:not(.Username:hover) {
+  color: white;
+}
+
 .Overlay {
   color: white;
   font-size: 100px;
@@ -20,14 +28,6 @@
   -ms-transform: translate(-50%, -50%);
   text-align: center;
 }
-
-/*.Overlay:hover {
-  color: #eee;
-}
-
-.Overlay:not(.Overlay:hover) {
-  color: transparent;
-}*/
 
 .OverlayContainer:hover .Overlay {
   color: #eee;

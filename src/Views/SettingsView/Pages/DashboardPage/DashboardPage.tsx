@@ -8,7 +8,7 @@ import Section from "Components/Containers/Section/Section";
 
 import type { Page } from "DataTypes/Components";
 import { SettingsManager } from "NSLib/SettingsManager";
-import { NCFile, UploadFile } from "NSLib/ElectronAPI";
+import { NCFile, UploadFile, WriteToClipboard } from "NSLib/ElectronAPI";
 import { SETAvatar } from "NSLib/APIEvents";
 
 interface DashboardPageProps extends Page {
@@ -25,7 +25,9 @@ function DashboardPage(props: DashboardPageProps) {
   const pickProfile = async () => {
     UploadFile().then((files: NCFile[]) => {
       if (files.length === 0) return;
-      SETAvatar(settings.User.uuid, new Blob([files[0].FileContents]), (set: boolean) => {});
+      SETAvatar(settings.User.uuid, new Blob([files[0].FileContents]), (set: boolean) => {
+        if (set) console.log("Avatar Set");
+      });
     });
   }
 
@@ -38,16 +40,18 @@ function DashboardPage(props: DashboardPageProps) {
               <Avatar sx={{ width: 128, height: 128 }} src={settings.User.avatarSrc.replace("64", "128")}/>
               <AddIcon fontSize="large" className="Overlay"/>
             </IconButton>
-            <Typography variant="h5">{usernameText}</Typography>
+            <Button className="Username" onClick={() => WriteToClipboard(usernameText)}><Typography variant="h5">{usernameText}</Typography></Button>
             <Button disabled>Edit Username</Button>
+            <Button disabled>Change Email</Button>
             <Button disabled>Change Password</Button>
             <Button disabled>Logout</Button>
           </Card>
         </Section>
         <Section title="Advanced">
-          <Button className="Settings_Section_Item" variant="outlined">Copy Token to Clipboard</Button>
+          <Button className="Settings_Section_Item" variant="outlined" onClick={() => WriteToClipboard(settings.ReadLocalStorageSync("Token"))}>Copy Token to Clipboard</Button>
           <Button id="deleteAccount" className="Settings_Section_Item" variant="outlined" color="error">Delete Account</Button>
         </Section>
+        <iframe title="Yes" src="https://open.spotify.com/embed/track/6k9rAAVAXdBPM0Msv3x45O"></iframe>
       </div>
     </PageContainer>
   );

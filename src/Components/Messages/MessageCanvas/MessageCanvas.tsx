@@ -33,7 +33,7 @@ function MessageCanvas(props: MessageCanvasProps) {
   const onScroll = () => {
     const scrollTop = props.canvasRef?.current.scrollTop;
     if (scrollTop !== undefined) {
-      if (scrollTop - lastScrollPos.current < -10 && scrollTop < 10 && props.onLoadPriorMessages !== undefined) {
+      if (scrollTop - lastScrollPos.current < -5 && scrollTop < 10 && props.onLoadPriorMessages !== undefined) {
         props.onLoadPriorMessages();
       }
       lastScrollPos.current = scrollTop;
