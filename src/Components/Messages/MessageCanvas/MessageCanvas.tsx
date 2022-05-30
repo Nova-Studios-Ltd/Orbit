@@ -30,22 +30,18 @@ function MessageCanvas(props: MessageCanvasProps) {
     }
   }
 
-  useEffect(() => {
-    if (props.canvasRef?.current !== undefined && props.canvasRef?.current.onscroll === null) {
-      props.canvasRef?.current.addEventListener("scroll", (ev) => {
-        const scrollTop = props.canvasRef?.current.scrollTop;
-        if (scrollTop !== undefined) {
-          if (scrollTop - lastScrollPos.current < -10 && scrollTop < 10 && props.onLoadPriorMessages !== undefined) {
-            props.onLoadPriorMessages();
-          }
-          lastScrollPos.current = scrollTop;
-        }
-      });
+  const onScroll = () => {
+    const scrollTop = props.canvasRef?.current.scrollTop;
+    if (scrollTop !== undefined) {
+      if (scrollTop - lastScrollPos.current < -10 && scrollTop < 10 && props.onLoadPriorMessages !== undefined) {
+        props.onLoadPriorMessages();
+      }
+      lastScrollPos.current = scrollTop;
     }
-  }, [props, props.canvasRef]);
+  };
 
   return (
-    <div className={classNames} style={{ backgroundColor: theme.palette.background.default }} ref={props.canvasRef}>
+    <div className={classNames} style={{ backgroundColor: theme.palette.background.default }} ref={props.canvasRef} onScroll={onScroll}>
       <div className={innerClassNames}>
         {messagesArray()}
       </div>
