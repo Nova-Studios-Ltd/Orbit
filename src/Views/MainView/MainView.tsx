@@ -41,6 +41,7 @@ function MainView(props: MainViewProps) {
   const canvasRef = useRef() as React.MutableRefObject<HTMLDivElement>;
   const messageCount = useRef(0);
   const session = useRef("");
+  const autoScroll = useRef(true);
 
   const [channels, setChannels] = useState([] as IRawChannelProps[]);
   const [selectedChannel, setSelectedChannel] = useState(null as unknown as IRawChannelProps);
@@ -49,8 +50,11 @@ function MainView(props: MainViewProps) {
 
   const scrollCanvas = () => {
     const canvas = canvasRef.current;
-    if (canvas) {
+    if (canvas && autoScroll.current) {
       canvas.scroll({ top: canvas.scrollHeight, behavior: "smooth" });
+    }
+    else {
+      autoScroll.current = true;
     }
   }
 
@@ -75,6 +79,7 @@ function MainView(props: MainViewProps) {
   const onLoadPriorMessages = () => {
     const oldestID = parseInt(messages[messages.length - 1].message_Id);
     GETMessages(selectedChannel.table_Id, (messages: IMessageProps[]) => {
+      autoScroll.current = false;
       setMessages(prevState => {
         return [...prevState, ...messages];
       })
