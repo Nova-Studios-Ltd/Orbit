@@ -33,8 +33,6 @@ i18n.use(initReactI18next)
 
 function App() {
   const [widthConstrained, setWidthConstrainedState] = useState(window.matchMedia("(max-width: 600px)").matches);
-  const location = useLocation();
-  const navigate = useNavigate();
   const Localizations_Common = useTranslation().t;
 
   const [title, setTitle] = useState("");
@@ -93,14 +91,6 @@ function App() {
       return (<ContextMenuItem key={index} sharedProps={SharedProps} className={item.className} disabled={item.disabled} persistOnClick={item.persistOnClick} icon={item.icon} onLeftClick={item.onLeftClick} onRightClick={item.onRightClick}>{item.children}</ContextMenuItem>)
     });
   };
-
-  Manager.ContainsCookie("LoggedIn").then(async (value: boolean) => {
-    if (value) return;
-    if (location.pathname.toLowerCase().includes(AuthViewRoutes.Login) || location.pathname.toLowerCase().includes(AuthViewRoutes.Register)) {
-      Manager.WriteCookie("LoggedIn", "false");
-      navigate(MainViewRoutes.Chat);
-    }
-  });
 
   window.addEventListener("resize", (event) => {
     setWidthConstrainedState(window.matchMedia("(max-width: 600px)").matches);

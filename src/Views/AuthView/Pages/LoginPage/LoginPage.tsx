@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Button, TextField, Typography, useTheme } from "@mui/material";
 import { useTranslation } from "react-i18next";
-import { Link as RouterLink, useNavigate } from "react-router-dom";
+import { Link as RouterLink, useLocation, useNavigate } from "react-router-dom";
 import { LoginNewUser } from "Init/AuthHandler";
 
 import type { Page } from "DataTypes/Components";
 import { LoginStatus } from "DataTypes/Enums";
-import { MainViewRoutes } from "DataTypes/Routes";
+import { AuthViewRoutes, MainViewRoutes } from "DataTypes/Routes";
+import { SettingsManager } from "NSLib/SettingsManager";
 
 interface LoginPageProps extends Page {
 
@@ -17,6 +18,7 @@ function LoginPage(props: LoginPageProps) {
   const Localizations_LoginPage = useTranslation("LoginPage").t;
   const theme = useTheme();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -34,6 +36,14 @@ function LoginPage(props: LoginPageProps) {
       else setFailStatus(status);
     });
   }
+
+  const Manager = new SettingsManager();
+  Manager.ContainsCookie("LoggedIn").then(async (value: boolean) => {
+    if (location.pathname.toLowerCase().includes(AuthViewRoutes.Login) || location.pathname.toLowerCase().includes(AuthViewRoutes.Register)) {
+      Manager.WriteCookie("LoggedIn", "false");
+      navigate(MainViewRoutes.Chat);
+    }
+  });
 
   const TextFieldChanged = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = event.currentTarget;
