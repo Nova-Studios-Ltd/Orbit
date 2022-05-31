@@ -1,5 +1,6 @@
-import { Avatar, ButtonBase, Typography, useTheme } from "@mui/material";
-import { useState, ReactNode } from "react";
+import { Avatar, ButtonBase, IconButton, Typography, useTheme } from "@mui/material";
+import { MoreHoriz as EllipsisIcon } from "@mui/icons-material";
+import React, { useState, ReactNode } from "react";
 
 import type { NCComponent } from "DataTypes/Components";
 import useClassNames from "Hooks/useClassNames";
@@ -15,12 +16,18 @@ export interface AvatarTextButtonProps extends NCComponent {
 function AvatarTextButton(props: AvatarTextButtonProps) {
   const theme = useTheme();
   const classNames = useClassNames("AvatarTextButtonContainer", props.className);
+  const isTouchCapable = props.sharedProps && props.sharedProps.isTouchCapable;
 
   const [isHovering, setHoveringState] = useState(false);
 
   const onMouseHover = (isHovering: boolean) => {
     setHoveringState(isHovering);
   }
+
+  const onEllipsisClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
+    if (props.onRightClick) props.onRightClick(event);
+  };
 
   return (
     <ButtonBase className={classNames} style={{ backgroundColor: props.selected || isHovering ? theme.customPalette.customActions.active : theme.palette.background.paper }} onClick={props.onLeftClick} onContextMenu={props.onRightClick} onMouseEnter={() => onMouseHover(true)} onMouseLeave={() => onMouseHover(false)}>
@@ -30,6 +37,10 @@ function AvatarTextButton(props: AvatarTextButtonProps) {
       <div className="AvatarTextButtonRight">
         <Typography variant="h6">{props.children}</Typography>
       </div>
+      {isTouchCapable ? (
+        <IconButton className="AvatarTextButtonEllipsis" onClick={onEllipsisClick}>
+          <EllipsisIcon />
+        </IconButton>) : null}
     </ButtonBase>
   )
 }

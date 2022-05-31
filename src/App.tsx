@@ -32,9 +32,10 @@ i18n.use(initReactI18next)
 });
 
 function App() {
-  const [widthConstrained, setWidthConstrainedState] = useState(window.matchMedia("(max-width: 600px)").matches);
   const Localizations_Common = useTranslation().t;
 
+  const [widthConstrained, setWidthConstrainedState] = useState(window.matchMedia("(max-width: 600px)").matches);
+  const [isTouchCapable, setTouchCapableState] = useState("ontouchstart" in window || navigator.maxTouchPoints > 0);
   const [title, setTitle] = useState("");
   const [helpVisible, setHelpVisibility] = useState(false);
   const [helpAnchorEl, setHelpAnchor] = useState(null as unknown as Element);
@@ -80,6 +81,7 @@ function App() {
     HelpPopup: HelpPopup,
     ContextMenu: ContextMenu,
     widthConstrained: widthConstrained,
+    isTouchCapable: isTouchCapable,
     changeTitleCallback: setTitle
   }
 
