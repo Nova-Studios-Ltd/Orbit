@@ -28,7 +28,6 @@ export async function LoginNewUser(email: string, password: string) : Promise<Lo
   Manager.User.token = ud.token;
   Manager.User.uuid = ud.uuid;
   Manager.User.keyPair = new RSAMemoryKeyPair((await DecryptBase64(shaPass, ud.key)).String, ud.publicKey);
-  console.log(Manager.User.keyPair);
 
   // Store keypair
   Manager.WriteLocalStorage("Keypair", ToBase64String(ToUint8Array(JSON.stringify(Manager.User.keyPair))));
@@ -71,6 +70,6 @@ export async function AutoLogin() : Promise<boolean> {
 
 export async function Logout() {
   await ClearAllDatabases();
-  Manager.ClearLocalStorage();
-  Manager.ClearCookie("LoggedIn");
+  await Manager.ClearLocalStorage();
+  await Manager.ClearCookies()
 }

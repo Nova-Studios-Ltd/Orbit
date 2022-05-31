@@ -9,10 +9,11 @@ import Dimensions from "../DataTypes/Dimensions";
 import IUserData from "../Interfaces/IUserData";
 import { SettingsManager } from "./SettingsManager";
 import { Base64String } from "./Base64";
-import { DecryptBase64, DecryptBase64WithPriv, DecryptUint8Array, EncryptBase64, EncryptBase64WithPub, EncryptUint8Array, GenerateBase64Key } from "./NCEncryption";
+import { DecryptBase64, DecryptBase64WithPriv, DecryptUint8Array, EncryptBase64, EncryptBase64WithPub, EncryptUint8Array, GenerateBase64Key, GenerateBase64SHA256 } from "./NCEncryption";
 import { NCChannelCache } from "./NCCache";
 import { HasFlag } from "./NCFlags";
 import FailedUpload, { FailReason } from "DataTypes/FailedUpload";
+import { PasswordPayloadKey, UpdatePasswordPayload } from "DataTypes/UpdatePasswordPayload";
 
 // User
 export async function GETUser(user_uuid: string) : Promise<IUserData | undefined> {
@@ -40,8 +41,12 @@ export function UPDATEUsername(newUsername: string, callback: (status: boolean, 
   });
 }
 
-export function UPDATEPassword(newPassword: string, callback: (status: boolean, newPassword: string) => void) {
-  PATCH(`/User/@me/Password`, ContentType.JSON, newPassword, new SettingsManager().User.token).then((resp: NCAPIResponse) => {
+export async function UPDATEPassword(newPassword: string, callback: (status: boolean, newPassword: string) => void) {
+  const manager = new SettingsManager();
+  const hashedPassword = await GenerateBase64SHA256(newPassword);
+  const privkey = await EncryptBase64(hashedPassword, Base64String.CreateBase64String(manager.User.keyPair.PrivateKey));
+  const payload = new UpdatePasswordPayload(hashedPassword.Base64, new PasswordPayloadKey(privkey.content as string, privkey.iv));
+  PATCH(`/User/@me/Password`, ContentType.JSON, JSON.stringify(payload), new SettingsManager().User.token).then((resp: NCAPIResponse) => {
     if (resp.status === 200) callback(true, newPassword);
     else callback(false, "");
   });

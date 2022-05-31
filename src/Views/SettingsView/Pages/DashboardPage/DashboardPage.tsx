@@ -9,7 +9,7 @@ import Section from "Components/Containers/Section/Section";
 import type { Page } from "DataTypes/Components";
 import { SettingsManager } from "NSLib/SettingsManager";
 import { NCFile, UploadFile, WriteToClipboard } from "NSLib/ElectronAPI";
-import { SETAvatar } from "NSLib/APIEvents";
+import { SETAvatar, UPDATEEmail, UPDATEPassword, UPDATEUsername } from "NSLib/APIEvents";
 
 interface DashboardPageProps extends Page {
   onLogout?: () => void
@@ -29,6 +29,30 @@ function DashboardPage(props: DashboardPageProps) {
       SETAvatar(settings.User.uuid, new Blob([files[0].FileContents]), (set: boolean) => {
         if (set) console.log("Avatar Set");
       });
+    });
+  }
+
+  const changePasswd = async () => {
+    return;
+    // TODO Actully allow updating password
+    UPDATEPassword("", (status: boolean, newPassword: string) => {
+
+    });
+  }
+
+  const changeUsername = async () => {
+    return;
+    // TODO Actully allow updating username
+    UPDATEUsername("", (status: boolean, newUsername: string) => {
+
+    });
+  }
+
+  const changeEmail = async () => {
+    return;
+    // TODO Actully allow updating email
+    UPDATEEmail("", (status: boolean, newUsername: string) => {
+
     });
   }
 

@@ -16,13 +16,15 @@ import MainView from "Views/MainView/MainView";
 
 import ContextMenuItem from "Components/Menus/ContextMenuItem/ContextMenuItem";
 
-import { AuthViewRoutes, MainViewRoutes } from "DataTypes/Routes";
+import { AuthViewRoutes, FriendViewRoutes, MainViewRoutes } from "DataTypes/Routes";
 import type { ReactNode } from "react";
 import type { ContextMenuProps, HelpPopupProps, SharedProps } from "DataTypes/Components";
 import type { ContextMenuItemProps } from "Components/Menus/ContextMenuItem/ContextMenuItem";
 import type { Coordinates } from "DataTypes/Types";
 
 import "./App.css";
+import DebugButton from "Components/Buttons/DebugButtom/DebugButton";
+import { SettingsManager } from "NSLib/SettingsManager";
 
 i18n.use(initReactI18next)
 .init({
@@ -108,7 +110,9 @@ function App() {
           <Route path={AuthViewRoutes.Login} element={<AuthView sharedProps={SharedProps} path={AuthViewRoutes.Login} />} />
           <Route path={AuthViewRoutes.Register} element={<AuthView sharedProps={SharedProps} path={AuthViewRoutes.Register} />} />
           <Route path={MainViewRoutes.Chat} element={<MainView sharedProps={SharedProps} path={MainViewRoutes.Chat} />} />
-          <Route path={MainViewRoutes.Friends} element={<MainView sharedProps={SharedProps} path={MainViewRoutes.Friends} />} />
+          <Route path={MainViewRoutes.Friends} element={<MainView sharedProps={SharedProps} path={MainViewRoutes.Friends} />}>
+            <Route path={FriendViewRoutes.FriendsList} element={<MainView sharedProps={SharedProps} path={MainViewRoutes.Friends} />} />
+          </Route>
           <Route path={MainViewRoutes.Settings} element={<MainView sharedProps={SharedProps} path={MainViewRoutes.Settings} />} />
         </Routes>
         <Popover className="GenericPopover" open={helpVisible} anchorEl={helpAnchorEl} onClose={() => {

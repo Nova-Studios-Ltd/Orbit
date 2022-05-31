@@ -63,6 +63,14 @@ export class SettingsManager {
     return (await this.Cookies.del(key));
   }
 
+  async ClearCookies() {
+    const cookies = await this.Cookies.keys();
+    for (let c = 0; c < cookies.length; c++) {
+      const cookie = cookies[c];
+      await this.ClearCookie(cookie);
+    }
+  }
+
   // Keystore
   async ContainsKey(user_uuid: string) : Promise<boolean> {
     return (await this.Keystore.get(user_uuid))[user_uuid] !== undefined;
