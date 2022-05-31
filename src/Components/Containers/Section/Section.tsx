@@ -2,10 +2,11 @@ import { useTheme, Typography } from "@mui/material";
 import useClassNames from "Hooks/useClassNames";
 
 import type { NCComponent } from "DataTypes/Components";
-import { Children, ReactNode } from "react";
+import { Children, CSSProperties, ReactNode } from "react";
 
 export interface SectionProps extends NCComponent {
   title?: string,
+  styles?: CSSProperties,
   children?: ReactNode
 }
 
@@ -26,7 +27,7 @@ function Section(props: SectionProps) {
   }
 
   return (
-    <div className={classNames} style={{ backgroundColor: theme.palette.background.paper }}>
+    <div className={classNames} style={props.styles}>
       <Typography className="SectionTitle" variant="h6">{props.title}</Typography>
       {items()}
     </div>

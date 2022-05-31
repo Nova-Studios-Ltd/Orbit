@@ -1,3 +1,5 @@
+import { useTheme } from "@mui/material";
+
 import ViewContainer from "Components/Containers/ViewContainer/ViewContainer";
 import useClassNames from "Hooks/useClassNames";
 
@@ -11,6 +13,7 @@ interface ViewProps extends View {
 function View({ className, ContextMenu, HelpPopup, widthConstrained, path, changeTitleCallback }: ViewProps) {
   const Localizations_View = useTranslation("View").t;
   const classNames = useClassNames("ViewContainer", className);
+  const theme = useTheme();
 
   const page = () => {
     switch (path) {

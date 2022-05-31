@@ -79,8 +79,6 @@ function MainView(props: MainViewProps) {
   useEffect(() => {
     if (!props.sharedProps || !props.sharedProps.changeTitleCallback) return;
 
-    console.log(props.sharedProps);
-
     if (props.path === MainViewRoutes.Chat) {
       props.sharedProps.changeTitleCallback(`@${title}`);
     }
