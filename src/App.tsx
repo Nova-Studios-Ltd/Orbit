@@ -96,7 +96,7 @@ function App() {
 
   Manager.ContainsCookie("LoggedIn").then(async (value: boolean) => {
     if (value) return;
-    if (location.pathname.toLowerCase().includes(AuthViewRoutes.Login) || location.pathname.toLowerCase().includes(AuthViewRoutes.Register)) {
+    if (location.pathname.toLowerCase().includes(AuthViewRoutes.Login)) {
       Manager.WriteCookie("LoggedIn", "false");
       navigate(MainViewRoutes.Chat);
     }
