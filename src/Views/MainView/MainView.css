@@ -37,6 +37,14 @@
   border-bottom-style: dashed;
 }
 
+.NavigationButtonContainerItem {
+  margin-top: var(--global-margin) !important;
+}
+
+.NavigationButtonContainerItem:first-child {
+  margin-top: 0 !important;
+}
+
 @media only screen and (max-width: 600px) {
 
 }

@@ -2,17 +2,20 @@ import { Avatar, Button, Card, IconButton, Typography, useTheme } from "@mui/mat
 import { Add as AddIcon } from "@mui/icons-material";
 import useClassNames from "Hooks/useClassNames";
 import { useTranslation } from "react-i18next";
+import { SETAvatar } from "NSLib/APIEvents";
+import { useState } from "react";
+import { SettingsManager } from "NSLib/SettingsManager";
 
 import PageContainer from "Components/Containers/PageContainer/PageContainer";
 import Section from "Components/Containers/Section/Section";
 
 import type { Page } from "DataTypes/Components";
-import { SettingsManager } from "NSLib/SettingsManager";
 import { NCFile, UploadFile, WriteToClipboard } from "NSLib/ElectronAPI";
-import { SETAvatar } from "NSLib/APIEvents";
 
 interface DashboardPageProps extends Page {
-  onLogout?: () => void
+  avatarNonce?: string,
+  onLogout?: () => void,
+  onAvatarChanged?: () => void
 }
 
 function DashboardPage(props: DashboardPageProps) {
@@ -23,11 +26,16 @@ function DashboardPage(props: DashboardPageProps) {
   const settings = new SettingsManager();
   const usernameText = `${settings.ReadCookieSync("Username")}#${settings.ReadCookieSync("Discriminator")}`;
 
+  const updateAvatar = () => {
+    if (props.onAvatarChanged) props.onAvatarChanged();
+  }
+
   const pickProfile = async () => {
     UploadFile().then((files: NCFile[]) => {
       if (files.length === 0) return;
       SETAvatar(settings.User.uuid, new Blob([files[0].FileContents]), (set: boolean) => {
         if (set) console.log("Avatar Set");
+        updateAvatar();
       });
     });
   }
@@ -37,7 +45,7 @@ function DashboardPage(props: DashboardPageProps) {
       <Section className="UserSection">
         <Card className="UserSectionCard">
           <IconButton className="OverlayContainer" onClick={pickProfile}>
-            <Avatar sx={{ width: 128, height: 128 }} src={settings.User.avatarSrc.replace("64", "128")}/>
+            <Avatar sx={{ width: 128, height: 128 }} src={`${settings.User.avatarSrc.replace("64", "128")}&nonce=${props.avatarNonce}`}/>
             <AddIcon fontSize="large" className="Overlay" color="inherit" />
           </IconButton>
           <Button color="inherit" style={{ textTransform: "none" }} onClick={() => WriteToClipboard(usernameText)}><Typography variant="h5">{usernameText}</Typography></Button>

@@ -9,8 +9,10 @@ import type { View } from "DataTypes/Components";
 import { SettingsViewRoutes } from "DataTypes/Routes";
 
 interface SettingsViewProps extends View {
-  path: SettingsViewRoutes
-  onLogout?: () => void
+  path: SettingsViewRoutes,
+  avatarNonce?: string,
+  onLogout?: () => void,
+  onAvatarChanged?: () => void
 }
 
 function SettingsView(props: SettingsViewProps) {
@@ -24,7 +26,7 @@ function SettingsView(props: SettingsViewProps) {
   const page = () => {
     switch (props.path) {
       case SettingsViewRoutes.Dashboard:
-        return <DashboardPage onLogout={props.onLogout} />
+        return <DashboardPage avatarNonce={props.avatarNonce} onAvatarChanged={props.onAvatarChanged} onLogout={props.onLogout} />
       default:
         return null;
     }
