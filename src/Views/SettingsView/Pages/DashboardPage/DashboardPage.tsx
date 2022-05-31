@@ -48,7 +48,7 @@ function DashboardPage(props: DashboardPageProps) {
             <Avatar sx={{ width: 128, height: 128 }} src={`${settings.User.avatarSrc.replace("64", "128")}&nonce=${props.avatarNonce}`}/>
             <AddIcon fontSize="large" className="Overlay" color="inherit" />
           </IconButton>
-          <Button color="inherit" style={{ textTransform: "none" }} onClick={() => WriteToClipboard(usernameText)}><Typography variant="h5">{usernameText}</Typography></Button>
+          <Button color="inherit" style={{ textTransform: "none" }} onClick={() => WriteToClipboard(usernameText)} onContextMenu={() => WriteToClipboard(settings.User.uuid)}><Typography variant="h5">{usernameText}</Typography></Button>
           <Button disabled>[Edit Username]</Button>
           <Button disabled>[Change Email]</Button>
           <Button disabled>[Change Password]</Button>
