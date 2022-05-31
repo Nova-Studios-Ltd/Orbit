@@ -34,6 +34,7 @@ function Message(props: MessageProps) {
   const filteredMessageProps: MessageProps = { content: props.content, id: props.id, avatarURL: props.avatarURL, author: props.author, timestamp: props.timestamp };
   const Localizations_Message = useTranslation("Message").t;
 
+  const isTouchCapable = props.sharedProps && props.sharedProps.isTouchCapable;
   const isOwnMessage = props.authorID === settingsManager.User.uuid;
 
   const [isHovering, setHoveringState] = useState(false);
@@ -107,6 +108,10 @@ function Message(props: MessageProps) {
     event.preventDefault();
   }
 
+  const messageLeftClickHandler = (event: React.MouseEvent<HTMLDivElement>) => {
+    if (isTouchCapable) messageRightClickHandler(event);
+  }
+
   const mediaComponents = () => {
     if (allAttachments && allAttachments.length > 0) {
       return allAttachments.map((attachment, index) => {
@@ -122,7 +127,7 @@ function Message(props: MessageProps) {
       <div className="MessageLeft">
         <Avatar src={`${props.avatarURL}`} />
       </div>
-      <div className="MessageRight" style={{ backgroundColor: isHovering ? theme.customPalette.customActions.messageHover : theme.customPalette.messageBackground }} onMouseEnter={() => mouseHoverEventHandler(true)} onMouseLeave={() => mouseHoverEventHandler(false)} onContextMenu={messageRightClickHandler}>
+      <div className="MessageRight" style={{ backgroundColor: isHovering ? theme.customPalette.customActions.messageHover : theme.customPalette.messageBackground }} onMouseEnter={() => mouseHoverEventHandler(true)} onMouseLeave={() => mouseHoverEventHandler(false)} onClick={messageLeftClickHandler} onContextMenu={messageRightClickHandler}>
         <div className="MessageRightHeader">
           <Typography className="MessageName" fontWeight="bold">{props.author}</Typography>
           <Typography className="MessageTimestamp" variant="subtitle2">{props.timestamp}</Typography>

@@ -51,6 +51,12 @@ function MainView(props: MainViewProps) {
   const [messages, setMessages] = useState([] as IMessageProps[]);
   const [MessageAttachments, setMessageAttachments] = useState([] as MessageAttachment[]);
   const [channelMenuOpen, setChannelMenuVisibility] = useState(true);
+  const [avatarNonce, setAvatarNonce] = useState(Date.now().toString());
+
+  const onAvatarChanged = () => {
+    const nonce = Date.now().toString();
+    setAvatarNonce(nonce);
+  }
 
   const changeTitleCallbackOverride = (_title: string) => {
     if (props.path !== MainViewRoutes.Chat && title !== _title) setTitle(_title);
@@ -356,7 +362,7 @@ function MainView(props: MainViewProps) {
       case MainViewRoutes.Friends:
         return (<FriendView sharedProps={modifiedSharedProps} onChannelCreate={onChannelCreate} />);
       case MainViewRoutes.Settings:
-        return (<SettingsView sharedProps={modifiedSharedProps} onLogout={onLogout} path={SettingsViewRoutes.Dashboard} />);
+        return (<SettingsView sharedProps={modifiedSharedProps} avatarNonce={avatarNonce} onAvatarChanged={onAvatarChanged} onLogout={onLogout} path={SettingsViewRoutes.Dashboard} />);
       default:
         console.warn("[MainView] Invalid Page");
         return null;
@@ -369,8 +375,8 @@ function MainView(props: MainViewProps) {
     return (
       <div className="MainViewContainerLeft">
         <div className="NavigationButtonContainer" style={{ backgroundColor: theme.palette.background.paper, borderColor: theme.palette.divider }}>
-          <AvatarTextButton selected={props.path === MainViewRoutes.Settings} onLeftClick={() => navigateToPage(MainViewRoutes.Settings)} iconSrc={new SettingsManager().User.avatarSrc}>[Settings]</AvatarTextButton>
-          <AvatarTextButton selected={props.path === MainViewRoutes.Friends} onLeftClick={() => navigateToPage(MainViewRoutes.Friends)}>[Friends]</AvatarTextButton>
+          <AvatarTextButton className="NavigationButtonContainerItem" selected={props.path === MainViewRoutes.Settings} onLeftClick={() => navigateToPage(MainViewRoutes.Settings)} iconSrc={`${new SettingsManager().User.avatarSrc}&nonce=${avatarNonce}`}>{Localizations_MainView("Typography-SettingsHeader")}</AvatarTextButton>
+          <AvatarTextButton className="NavigationButtonContainerItem" selected={props.path === MainViewRoutes.Friends} onLeftClick={() => navigateToPage(MainViewRoutes.Friends)}>{Localizations_MainView("Typography-FriendsHeader")}</AvatarTextButton>
         </div>
         <ChannelList sharedProps={props.sharedProps} channels={channels} onChannelEdit={onChannelEdit} onChannelDelete={onChannelDelete} onChannelClick={onChannelClick} selectedChannel={selectedChannel} />
       </div>
