@@ -44,15 +44,19 @@ function DashboardPage(props: DashboardPageProps) {
     <PageContainer className={classNames} noPadding>
       <Section className="UserSection">
         <Card className="UserSectionCard">
-          <IconButton className="OverlayContainer" onClick={pickProfile}>
-            <Avatar sx={{ width: 128, height: 128 }} src={`${settings.User.avatarSrc.replace("64", "128")}&nonce=${props.avatarNonce}`}/>
-            <AddIcon fontSize="large" className="Overlay" color="inherit" />
-          </IconButton>
-          <Button color="inherit" style={{ textTransform: "none" }} onClick={() => WriteToClipboard(usernameText)} onContextMenu={() => WriteToClipboard(settings.User.uuid)}><Typography variant="h5">{usernameText}</Typography></Button>
-          <Button disabled>[Edit Username]</Button>
-          <Button disabled>[Change Email]</Button>
-          <Button disabled>[Change Password]</Button>
-          <Button color="error" onClick={() => props.onLogout ? props.onLogout() : null}>[Logout]</Button>
+          <div className="UserInfoContainer">
+            <IconButton className="OverlayContainer" onClick={pickProfile}>
+              <Avatar sx={{ width: 128, height: 128 }} src={`${settings.User.avatarSrc.replace("64", "128")}&nonce=${props.avatarNonce}`}/>
+              <AddIcon fontSize="large" className="Overlay" color="inherit" />
+            </IconButton>
+            <Button color="inherit" style={{ textTransform: "none" }} onClick={() => WriteToClipboard(usernameText)} onContextMenu={() => WriteToClipboard(settings.User.uuid)}><Typography variant="h5">{usernameText}</Typography></Button>
+          </div>
+          <div className="UserSectionButtonContainer">
+            <Button disabled>[Edit Username]</Button>
+            <Button disabled>[Change Email]</Button>
+            <Button disabled>[Change Password]</Button>
+            <Button color="error" onClick={() => props.onLogout ? props.onLogout() : null}>[Logout]</Button>
+          </div>
         </Card>
       </Section>
       <Section title="[Nova's Debugging Corner]">

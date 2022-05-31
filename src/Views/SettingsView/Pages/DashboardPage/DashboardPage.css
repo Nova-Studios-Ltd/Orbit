@@ -11,8 +11,17 @@
   flex-direction: row;
   align-items: center;
   justify-content: center;
+  flex-wrap: wrap;
+
   padding: 10px !important;
   border-radius: var(--global-border-radius) !important;
+}
+
+.UserSectionButtonContainer, .UserInfoContainer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
 }
 
 .Overlay {
@@ -40,5 +49,13 @@
 @media only screen and (max-width: 600px) {
   .DashboardPageContainer {
 
+  }
+
+  .UserSectionCard {
+    flex-direction: column;
+  }
+
+  .UserSectionButtonContainer, .UserInfoContainer {
+    flex-direction: column;
   }
 }
