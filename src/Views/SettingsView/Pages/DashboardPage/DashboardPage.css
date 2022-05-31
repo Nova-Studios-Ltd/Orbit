@@ -2,31 +2,31 @@
 
 }
 
-@media only screen and (max-width: 600px) {
-  .DashboardPageContainer {
+.UserSection {
 
-  }
 }
 
-.Username {
-  color: white;
-}
-
-.Username:not(.Username:hover) {
-  color: white;
+.UserSectionCard {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  padding: 10px !important;
+  border-radius: var(--global-border-radius) !important;
 }
 
 .Overlay {
-  color: white;
+  text-align: center;
   font-size: 100px;
+
   position: absolute;
   top: 50%;
   left: 50%;
   width: 128px;
   height: 128px;
+
   transform: translate(-50%, -50%);
   -ms-transform: translate(-50%, -50%);
-  text-align: center;
 }
 
 .OverlayContainer:hover .Overlay {
@@ -37,11 +37,8 @@
   color: transparent;
 }
 
-.Settings_User_Section_Card {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 10px !important;
-  border-radius: 15px !important;
+@media only screen and (max-width: 600px) {
+  .DashboardPageContainer {
+
+  }
 }
