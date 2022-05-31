@@ -2,7 +2,7 @@ import { Avatar, Button, Card, IconButton, Typography, useTheme } from "@mui/mat
 import { Add as AddIcon } from "@mui/icons-material";
 import useClassNames from "Hooks/useClassNames";
 import { useTranslation } from "react-i18next";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { SettingsManager } from "NSLib/SettingsManager";
 
 import PageContainer from "Components/Containers/PageContainer/PageContainer";
@@ -11,6 +11,10 @@ import Section from "Components/Containers/Section/Section";
 import type { Page } from "DataTypes/Components";
 import { NCFile, UploadFile, WriteToClipboard } from "NSLib/ElectronAPI";
 import { SETAvatar, UPDATEEmail, UPDATEPassword, UPDATEUsername } from "NSLib/APIEvents";
+import { Websocket as Socket } from "Init/AuthHandler";
+import { NCWebsocketState } from "NSLib/NCWebsocket";
+
+import StatusIndicator, { IndicatorState } from "./ColoredCircle"
 
 interface DashboardPageProps extends Page {
   avatarNonce?: string,
@@ -25,6 +29,7 @@ function DashboardPage(props: DashboardPageProps) {
 
   const settings = new SettingsManager();
   const usernameText = `${settings.ReadCookieSync("Username")}#${settings.ReadCookieSync("Discriminator")}`;
+  const [websocketState, setWebsocketState] = useState("");
 
   const updateAvatar = () => {
     if (props.onAvatarChanged) props.onAvatarChanged();
@@ -64,6 +69,51 @@ function DashboardPage(props: DashboardPageProps) {
     });
   }
 
+  if (Socket !== undefined) {
+    Socket.OnStateChange = (oldState: NCWebsocketState, state: NCWebsocketState) => {
+      setWebsocketState(socketState(state));
+    }
+  }
+
+  useEffect(() => {
+    if (Socket === undefined) return;
+    setWebsocketState(socketState(Socket.GetWebsocketState()));
+  }, [Socket]);
+
+  const socketState = (state: any) => {
+    if (Socket === undefined) return "Websocket not yet initialized";
+    switch (state) {
+      case NCWebsocketState.Connected:
+        return "Connected";
+      case NCWebsocketState.Connecting:
+        return "Connecting";
+      case NCWebsocketState.Disconnected:
+        return "Disconnected";
+      case NCWebsocketState.Reconnecting:
+        return "Reconnecting";
+      default:
+        return "Websocket state is unknown";
+    }
+  }
+
+  const socketStateColor = () => {
+    if (Socket === undefined) return IndicatorState.Negative;
+    switch (Socket.GetWebsocketState()) {
+      case NCWebsocketState.Connected:
+        return IndicatorState.Positive;
+      case NCWebsocketState.Connecting:
+        return IndicatorState.Intermedate;
+      case NCWebsocketState.Disconnected:
+        return IndicatorState.Negative;
+      case NCWebsocketState.Reconnecting:
+        return IndicatorState.Intermedate
+      default:
+        return IndicatorState.Negative;
+    }
+  }
+
+  (window as any).NCWebsocket = Socket;
+
   return (
     <PageContainer className={classNames} noPadding>
       <Section className="UserSection">
@@ -85,6 +135,8 @@ function DashboardPage(props: DashboardPageProps) {
       </Section>
       <Section title="[Nova's Debugging Corner]">
         <iframe title="Yes" src="https://open.spotify.com/embed/track/6k9rAAVAXdBPM0Msv3x45O" />
+        <StatusIndicator state={socketStateColor()}></StatusIndicator>
+        <Typography>{websocketState}</Typography>
       </Section>
     </PageContainer>
   );

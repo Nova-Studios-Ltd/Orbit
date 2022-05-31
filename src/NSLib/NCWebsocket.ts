@@ -1,6 +1,13 @@
 import IWebSocketEvent from "../Interfaces/IWebsocketEvent";
 import { Dictionary } from "./Dictionary";
 
+export enum NCWebsocketState {
+  Connecting,
+  Connected,
+  Disconnected,
+  Reconnecting
+}
+
 export default class NCWebsocket {
   private reconnect = 1;
   private timesteps = [2500, 4000, 8000, 12000];
@@ -12,10 +19,21 @@ export default class NCWebsocket {
   private events: Dictionary<(event: IWebSocketEvent) => void>;
   private timeoutID?: NodeJS.Timeout = undefined;
 
+
+  private _state = NCWebsocketState.Connecting;
+  private set state(state: NCWebsocketState) {
+    this.OnStateChange(this._state, state);
+    this._state = state;
+  }
+  private get state(): NCWebsocketState {
+    return this._state;
+  }
+
   constructor(address: string, token: string, insecure?: boolean) {
     this.insecure = insecure;
     this.address = address;
     this.token = token;
+    this.state = NCWebsocketState.Connecting;
     if (insecure === undefined || insecure === false) {
       this.websocket = new WebSocket(`wss://${address}`);
     }
@@ -41,16 +59,19 @@ export default class NCWebsocket {
     };
 
     this.websocket.onerror = (e) => {
+      this.state = NCWebsocketState.Disconnected;
       console.error(`Socket Closed Unexpectedly. Attempting Reconnect In ${this.timesteps[this.reconnect] / 1000}s`);
       this.Reconnect();
     };
 
     this.websocket.onclose = (e) => {
+      this.state = NCWebsocketState.Disconnected;
       console.warn(`Socket Closed. Attempting Reconnect In ${this.timesteps[this.reconnect] / 1000}s`);
       this.Reconnect();
     };
 
     this.websocket.onopen = () => {
+      this.state = NCWebsocketState.Connected;
       this.OnConnected();
       if (this.timeoutID !== undefined) clearTimeout(this.timeoutID);
       this.reconnect = 0;
@@ -62,12 +83,15 @@ export default class NCWebsocket {
   OnReconnectStart: (attempt: number) => void = () => {};
   OnReconnectEnd: (attempt: number) => void = () => {};
   OnConnected: () => void = () => {};
+  OnStateChange: (oldState: NCWebsocketState, state: NCWebsocketState) => void = () => {};
 
   private Reconnect() {
     const att = this.reconnect;
     this.OnReconnectStart(this.reconnect);
     if (this.terminated) return;
+    this.state = NCWebsocketState.Reconnecting;
     if (this.reconnect > 4) {
+      this.state = NCWebsocketState.Disconnected;
         this.Terminate();
         return;
     }
@@ -100,6 +124,11 @@ export default class NCWebsocket {
   Terminate() {
     this.OnTerminated();
     this.terminated = true;
+    this.state = NCWebsocketState.Disconnected;
     this.websocket.close();
+  }
+
+  GetWebsocketState() {
+    return this.state;
   }
 }

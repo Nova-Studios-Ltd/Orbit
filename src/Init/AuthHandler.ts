@@ -12,7 +12,7 @@ import { HasFlag } from "NSLib/NCFlags";
 import { ClearAllDatabases } from "NSLib/Util";
 
 export const Manager = new SettingsManager();
-let Websocket;
+export let Websocket: NCWebsocket;
 
 export async function LoginNewUser(email: string, password: string) : Promise<LoginStatus> {
   const shaPass = await GenerateBase64SHA256(password);

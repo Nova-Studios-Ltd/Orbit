@@ -11,7 +11,7 @@ import { NCChannelCache } from "NSLib/NCCache";
 import { HasFlag } from "NSLib/NCFlags";
 import { UploadFile } from "NSLib/ElectronAPI";
 import { SettingsManager } from "NSLib/SettingsManager";
-import { CREATEChannel, DELETEChannel, DELETEMessage, EDITMessage, GETChannel, GETMessage, GETMessageEditTimestamps, GETMessages, GETUserChannels, GETUserUUID, SENDMessage } from "NSLib/APIEvents";
+import { CREATEChannel, DELETEChannel, DELETEMessage, EDITMessage, GETChannel, GETMessage, GETMessageEditTimestamps, GETMessages, GETMessagesSingle, GETUserChannels, GETUserUUID, SENDMessage } from "NSLib/APIEvents";
 
 import ViewContainer from "Components/Containers/ViewContainer/ViewContainer";
 import MessageAttachment from "DataTypes/MessageAttachment";
@@ -226,6 +226,12 @@ function MainView(props: MainViewProps) {
         GETMessages(channel.channelID, (decrypt: IMessageProps[]) => {
           setMessages(decrypt);
         });
+        /*setMessages([]);
+        GETMessagesSingle(channel.channelID, (message: IMessageProps) => {
+          setMessages(prevState => {
+            return [...prevState, message];
+          });
+        });*/
       }
     }
   }

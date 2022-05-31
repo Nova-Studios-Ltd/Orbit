@@ -163,6 +163,41 @@ export async function GETMessages(channel_uuid: string, callback: (messages: IMe
   }
 }
 
+export async function GETMessagesSingle(channel_uuid: string, callback: (message: IMessageProps) => void, bypass_cache = false, limit = 30, after = -1, before = 2147483647) {
+  if (HasFlag("no-cache")) bypass_cache = true;
+  // Hit cache
+  const cache = new NCChannelCache(channel_uuid);
+  const messages = await cache.GetMessages(limit, before);
+  if (messages.Satisfied && !bypass_cache) {
+    messages.Messages.forEach((message) => callback(message));
+  }
+  else {
+    if (bypass_cache) {
+      messages.Count = 0;
+      messages.Messages = [];
+    }
+    // If cache is missed or is incomplete (or bypassed)
+    let newLimit = limit - messages.Count;
+    let newBefore = messages.Last_Id;
+    if (messages.Count === 0) {
+      newLimit = limit;
+      newBefore = before;
+    }
+    GET(`Channel/${channel_uuid}/Messages?limit=${newLimit}&after=${after}&before=${newBefore}`, new SettingsManager().User.token).then(async (resp: NCAPIResponse) => {
+      if (resp.status === 200) {
+        const rawMessages = resp.payload as IMessageProps[];
+        const decryptedMessages = [] as  IMessageProps[];
+        for (let m = 0; m < rawMessages.length; m++) {
+          const message = await DecryptMessage(rawMessages[m]);
+          decryptedMessages.push(message);
+          callback(message);
+          if (!bypass_cache) cache.SetMessage(message.message_Id, message);
+        }
+      }
+    });
+  }
+}
+
 export async function GETMessageEditTimestamps(channel_uuid: string, limit = 30, after = -1, before = 2147483647) : Promise<Dictionary<string>> {
   const resp = await GET(`/Channel/${channel_uuid}/Messages/EditTimestamps?limit=${limit}&after=${after}&before=${before}`, new SettingsManager().User.token);
   return new Dictionary(resp.payload as Indexable<string>);
