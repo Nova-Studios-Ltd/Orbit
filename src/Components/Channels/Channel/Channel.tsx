@@ -42,7 +42,7 @@ function Channel(props: ChannelProps) {
   }
 
   return (
-    <AvatarTextButton sharedProps={props.sharedProps} iconSrc={props.channelIconSrc} selected={props.isSelected} onLeftClick={onChannelLeftClick} onRightClick={onChannelRightClick}>
+    <AvatarTextButton sharedProps={props.sharedProps} showEllipsis iconSrc={props.channelIconSrc} selected={props.isSelected} onLeftClick={onChannelLeftClick} onRightClick={onChannelRightClick}>
       {props.channelName}
     </AvatarTextButton>
   )

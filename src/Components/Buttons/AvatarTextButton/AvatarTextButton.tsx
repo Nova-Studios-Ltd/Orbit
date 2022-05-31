@@ -9,6 +9,7 @@ export interface AvatarTextButtonProps extends NCComponent {
   children?: ReactNode,
   iconSrc?: string,
   selected?: boolean,
+  showEllipsis?: boolean,
   onLeftClick?: (event: React.MouseEvent<HTMLButtonElement>) => void,
   onRightClick?: (event: React.MouseEvent<HTMLButtonElement>) => void
 }
@@ -37,7 +38,7 @@ function AvatarTextButton(props: AvatarTextButtonProps) {
       <div className="AvatarTextButtonRight">
         <Typography variant="h6">{props.children}</Typography>
       </div>
-      {isTouchCapable ? (
+      {isTouchCapable && props.showEllipsis ? (
         <IconButton className="AvatarTextButtonEllipsis" onClick={onEllipsisClick}>
           <EllipsisIcon />
         </IconButton>) : null}
