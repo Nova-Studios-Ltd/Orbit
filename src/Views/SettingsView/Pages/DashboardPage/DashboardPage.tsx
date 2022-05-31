@@ -2,7 +2,6 @@ import { Avatar, Button, Card, IconButton, Typography, useTheme } from "@mui/mat
 import { Add as AddIcon } from "@mui/icons-material";
 import useClassNames from "Hooks/useClassNames";
 import { useTranslation } from "react-i18next";
-import { SETAvatar } from "NSLib/APIEvents";
 import { useState } from "react";
 import { SettingsManager } from "NSLib/SettingsManager";
 
@@ -11,6 +10,7 @@ import Section from "Components/Containers/Section/Section";
 
 import type { Page } from "DataTypes/Components";
 import { NCFile, UploadFile, WriteToClipboard } from "NSLib/ElectronAPI";
+import { SETAvatar, UPDATEEmail, UPDATEPassword, UPDATEUsername } from "NSLib/APIEvents";
 
 interface DashboardPageProps extends Page {
   avatarNonce?: string,
@@ -37,6 +37,30 @@ function DashboardPage(props: DashboardPageProps) {
         if (set) console.log("Avatar Set");
         updateAvatar();
       });
+    });
+  }
+
+  const changePasswd = async () => {
+    return;
+    // TODO Actully allow updating password
+    UPDATEPassword("", (status: boolean, newPassword: string) => {
+
+    });
+  }
+
+  const changeUsername = async () => {
+    return;
+    // TODO Actully allow updating username
+    UPDATEUsername("", (status: boolean, newUsername: string) => {
+
+    });
+  }
+
+  const changeEmail = async () => {
+    return;
+    // TODO Actully allow updating email
+    UPDATEEmail("", (status: boolean, newUsername: string) => {
+
     });
   }
 

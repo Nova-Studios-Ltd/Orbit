@@ -39,7 +39,7 @@ function LoginPage(props: LoginPageProps) {
 
   const Manager = new SettingsManager();
   Manager.ContainsCookie("LoggedIn").then(async (value: boolean) => {
-    if (location.pathname.toLowerCase().includes(AuthViewRoutes.Login) || location.pathname.toLowerCase().includes(AuthViewRoutes.Register)) {
+    if ((location.pathname.toLowerCase().includes(AuthViewRoutes.Login) || location.pathname.toLowerCase().includes(AuthViewRoutes.Register)) && value) {
       Manager.WriteCookie("LoggedIn", "false");
       navigate(MainViewRoutes.Chat);
     }

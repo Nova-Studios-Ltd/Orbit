@@ -167,7 +167,9 @@ function MainView(props: MainViewProps) {
             setMessages([]);
             return;
           }
-          const m_id = (await cache.GetMessages(1)).Messages[0].message_Id;
+          const m = (await cache.GetMessages(1)).Messages[0];
+          if (m === undefined) return;
+          const m_id = m.message_Id;
           if (messages[0].message_Id !== m_id) {
             if (await cache.CacheValid()) {
               const limit = parseInt(messages[0].message_Id) - parseInt(m_id);
@@ -265,8 +267,8 @@ function MainView(props: MainViewProps) {
     }
   };
 
-  const onLogout = () => {
-    Logout();
+  const onLogout = async () => {
+    await Logout();
     navigate(AuthViewRoutes.Login);
   }
 

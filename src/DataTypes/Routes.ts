@@ -10,8 +10,8 @@ export enum MainViewRoutes {
 }
 
 export enum FriendViewRoutes {
-  FriendsList = "/list",
-  AddFriend = "/add"
+  FriendsList = "list",
+  AddFriend = "add"
 }
 
 export enum SettingsViewRoutes {
