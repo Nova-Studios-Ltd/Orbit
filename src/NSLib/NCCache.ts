@@ -36,7 +36,7 @@ export class NCChannelCache {
   async CacheValid() : Promise<boolean> {
     if (!await this.ContainsMessage("LastAccess")) return false;
     const d = new Date((await this.CurrentCache.get("LastAccess"))["LastAccess"]);
-    return ((Date.now() - d.getTime()) / (1000 * 3600 * 24)) < 1;
+    return (((Date.now() - d.getTime()) / (1000 * 3600 * 24)) < 1);
   }
 
   async ReadSession() : Promise<string> {
@@ -52,12 +52,14 @@ export class NCChannelCache {
   }
 
   async GetMessage(id: string) : Promise<NCChannelCacheResult> {
+    this.CurrentCache.setSync("LastAccess", Date.now())
     if (!await this.ContainsMessage(id)) return new NCChannelCacheResult([], 0, 0, false);
     const message = (await this.CurrentCache.get(id))[id] as IMessageProps
     return new NCChannelCacheResult([message], 1, parseInt(message.message_Id), true);
   }
 
   async GetMessages(limit: number, before: number = 2147483647) : Promise<NCChannelCacheResult> {
+    this.CurrentCache.setSync("LastAccess", Date.now())
     const keys = (await this.CurrentCache.keys() as string[]).reverse();
     const messages = [] as IMessageProps[];
     let curLim = 0;

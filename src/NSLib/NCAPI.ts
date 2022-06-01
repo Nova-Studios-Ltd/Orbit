@@ -39,7 +39,7 @@ export async function GET(endpoint: string, token?: string, json: boolean = true
       "Authorization": token || ""
     }
   });
-  if (json)
+  if (json && resp.status === 200)
     return new NCAPIResponse(resp.status, resp.statusText, await resp.json());
   else
     return new NCAPIResponse(resp.status, resp.statusText, await resp.text());

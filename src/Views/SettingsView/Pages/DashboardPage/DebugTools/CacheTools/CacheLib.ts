@@ -12,15 +12,29 @@ export async function GetCaches() : Promise<string[]> {
   return caches;
 }
 
+export async function HasChannelCache(channel_uuid: string) : Promise<boolean> {
+  const names = (await indexedDB.databases()).flatMap((v) => {
+    if (v.name !== undefined) return v.name;
+    return "";
+  });
+
+  if (names.indexOf(`Cache_${channel_uuid}_1`) !== -1) return true;
+  else return false;
+}
 
 export async function CacheValid(channel_uuid: string) : Promise<boolean> {
+  if (!HasChannelCache(channel_uuid)) return false;
   const cache = new NCChannelCache(channel_uuid);
   if (await cache.CacheValid()) return true;
   else return false;
 }
 
 export async function CacheIsUptoDate(channel_uuid: string) : Promise<boolean> {
-  return await new Promise((resolve) => {
+  const res = await (new Promise<boolean>((resolve) => {
+    if (!HasChannelCache(channel_uuid)) {
+      resolve(false);
+      return;
+    }
     const cache = new NCChannelCache(channel_uuid);
     GETMessages(channel_uuid, async (messages: IMessageProps[]) => {
       // Check if our last message message matches the one on the server
@@ -52,5 +66,42 @@ export async function CacheIsUptoDate(channel_uuid: string) : Promise<boolean> {
       }
       resolve(true);
     }, true, 1);
-  });
+  }));
+  console.log(res);
+  return res;
+}
+
+export async function DeleteCache(cache: string) {
+  if (!await HasChannelCache(cache)) return;
+  indexedDB.deleteDatabase(cache);
+}
+
+export async function InvalidateCache(cache: string) {
+  if (!await HasChannelCache(cache)) return;
+  new NCChannelCache(cache).WriteSession("According to all known laws of aviation, there is no way a bee should be able to fly. Its wings are too small to get its fat little body off the ground. The bee, of course, flies anyway because bees don't care what humans think is impossible.");
+}
+
+/**
+ * Emptys and then fills the cache with the 30 (or user configured value) new messages
+ * @param cache Name of the cache
+ */
+export async function RefreshCache(cache: string) {
+  await DeleteCache(cache);
+  await GETMessages(cache.replace("Cache_", "").replace("_1", ""), () => {}, false, 30);
+}
+
+/**
+ * Check if the caches newest message is the servers newest message. Updates as needed
+ * @param cache Name of the cache
+ */
+export async function CacheMatchesMaster(cache: string) {
+
+}
+
+/**
+ * Check if the caches contained messages have been edited or removed on the remote server. Updates as needed
+ * @param cache Name of the cache
+ */
+export async function CacheIsSynced(cache: string) {
+
 }

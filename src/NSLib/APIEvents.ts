@@ -158,7 +158,9 @@ export async function GETMessages(channel_uuid: string, callback: (messages: IMe
           if (!bypass_cache) cache.SetMessage(message.message_Id, message);
         }
         callback([...messages.Messages, ...decryptedMessages]);
+        return;
       }
+      callback([]);
     });
   }
 }
