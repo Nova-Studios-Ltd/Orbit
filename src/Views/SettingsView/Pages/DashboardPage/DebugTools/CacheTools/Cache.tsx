@@ -30,9 +30,9 @@ function Cache(props: CacheProps) {
       case CacheStatus.Missing:
         return IndicatorState.Negative;
       case CacheStatus.OutOfDate:
-        return IndicatorState.Intermedate;
+        return IndicatorState.Intermediate;
       default:
-        return IndicatorState.Intermedate;
+        return IndicatorState.Intermediate;
     }
   }
 

@@ -1,28 +1,31 @@
-import { Fragment } from "react";
+import { useTheme } from "@mui/material";
 
 export enum IndicatorState {
   Positive,
-  Intermedate,
+  Intermediate,
   Negative
 }
 
-interface PropThings {
+interface StatusIndicatorProps {
   children?: JSX.Element[] | string[] | JSX.Element | string | (string | JSX.Element)[],
   state: IndicatorState
 }
 
-const StatusIndicator = (props: PropThings) => {
+function StatusIndicator(props: StatusIndicatorProps) {
+  const theme = useTheme();
 
   const styles = { backgroundColor: "#25956b" };
   if (props.state === IndicatorState.Positive) styles.backgroundColor = "#25956b";
-  if (props.state === IndicatorState.Intermedate) styles.backgroundColor = "#cc8800";
+  if (props.state === IndicatorState.Intermediate) styles.backgroundColor = "#cc8800";
   if (props.state === IndicatorState.Negative) styles.backgroundColor = "#9e0000";
 
   return (
-    <Fragment>
-      <span className="colored-circle" style={styles}/>
-      {props.children}
-    </Fragment>
+    <div className="StatusIndicatorContainer" style={{ fontFamily: theme.typography.body1.fontFamily }}>
+      <span className="ColoredCircle" style={styles}/>
+      <div className="StatusIndicatorItemContainer">
+        {props.children}
+      </div>
+    </div>
   );
 };
 
