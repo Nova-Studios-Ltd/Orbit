@@ -131,7 +131,6 @@ export default class NCWebsocket {
     else {
       this.websocket = new WebSocket(`ws://${this.address}`);
     }
-    this.events = new Dictionary<(event: IWebSocketEvent) => void>();
     this.Init();
   }
 

@@ -1,4 +1,4 @@
-import { Avatar, Button, Card, IconButton, Typography, useTheme } from "@mui/material";
+import { Avatar, Button, Card, FormControlLabel, IconButton, Switch, Typography, useTheme } from "@mui/material";
 import { Add as AddIcon } from "@mui/icons-material";
 import useClassNames from "Hooks/useClassNames";
 import { useTranslation } from "react-i18next";
@@ -10,7 +10,9 @@ import Section from "Components/Containers/Section/Section";
 import type { Page } from "DataTypes/Components";
 import { NCFile, UploadFile, WriteToClipboard } from "NSLib/ElectronAPI";
 import { SETAvatar, UPDATEEmail, UPDATEPassword, UPDATEUsername } from "NSLib/APIEvents";
-import NetworkDiag from "./NetDiag/NetworkDiagnostics";
+import NetworkDiag from "./DebugTools/NetworkDiagnostics";
+import { useState } from "react";
+import CacheTools from "./DebugTools/CacheTools/CacheTools";
 
 
 interface DashboardPageProps extends Page {
@@ -23,6 +25,8 @@ function DashboardPage(props: DashboardPageProps) {
   const Localizations_DashboardPage = useTranslation("DashboardPage").t;
   const classNames = useClassNames("DashboardPageContainer", props.className);
   const theme = useTheme();
+
+  const [test, setTest] = useState(false);
 
   const settings = new SettingsManager();
   const usernameText = `${settings.ReadCookieSync("Username")}#${settings.ReadCookieSync("Discriminator")}`;
@@ -84,11 +88,11 @@ function DashboardPage(props: DashboardPageProps) {
           </div>
         </Card>
       </Section>
-      <Section title="[Nova's Debugging Corner]">
-        <iframe title="Yes" src="https://open.spotify.com/embed/track/6k9rAAVAXdBPM0Msv3x45O" />
+      <Section title="[Network Diagnostics]">
+        <NetworkDiag showAdvanced={true}/>
       </Section>
-      <Section title="Networking Diag.">
-        <NetworkDiag/>
+      <Section title="[Cache Tools]">
+        <CacheTools/>
       </Section>
     </PageContainer>
   );

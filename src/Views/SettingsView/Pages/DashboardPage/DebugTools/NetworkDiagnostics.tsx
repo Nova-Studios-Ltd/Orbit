@@ -11,7 +11,7 @@ import { LatencyVisual, SocketStateVisual } from "./NetLib";
 import { GETLatency } from "NSLib/APIEvents";
 
 export interface ComponentProps extends NCComponent {
-
+  showAdvanced?: boolean
 }
 
 function NetworkDiag(props: ComponentProps) {
@@ -46,18 +46,26 @@ function NetworkDiag(props: ComponentProps) {
   (window as any).NCWebsocket = Socket;
 
   const state = websocketState[2] as NCWebsocketState;
+
+  const websocketAdvanced = () => {
+    if (props.showAdvanced) {
+      return (<div>
+        {(state === NCWebsocketState.Connected)? (<Button disabled>[Connected]</Button>) : (<Button onClick={() => Socket.Connect()}>[Connect]</Button>)}
+        {(state === NCWebsocketState.Disconnected)? (<Button disabled>[Disconnected]</Button>) : (<Button onClick={() => Socket.Terminate()}>[Disconnect]</Button>)}
+        {(state === NCWebsocketState.Disconnected || state === NCWebsocketState.Connecting || state === NCWebsocketState.Reconnecting)? (<Button disabled>[Reconnect]</Button>) : (<Button onClick={() => Socket.Reconnect()}>[Reconnect]</Button>)}
+      </div>);
+    }
+    return (<div></div>);
+  }
+
   return (
     <div className={classNames} style={{ backgroundColor: theme.palette.background.default }}>
       <StatusIndicator state={websocketState[1] as IndicatorState}>
-        Websocket {websocketState[0] as string}
-        <div>
-          {(state === NCWebsocketState.Connected)? (<Button disabled>Connected</Button>) : (<Button onClick={() => Socket.Connect()}>Connect</Button>)}
-          {(state === NCWebsocketState.Disconnected)? (<Button disabled>Disconnected</Button>) : (<Button onClick={() => Socket.Terminate()}>Disconnect</Button>)}
-          {(state === NCWebsocketState.Disconnected || state === NCWebsocketState.Connecting || state === NCWebsocketState.Reconnecting)? (<Button disabled>Reconnect</Button>) : (<Button onClick={() => Socket.Reconnect()}>Reconnect</Button>)}
-        </div>
+        [Websocket {websocketState[0] as string}]
+        {websocketAdvanced()}
       </StatusIndicator>
       <br/>
-      <StatusIndicator state={apiLatency[1] as IndicatorState}>API Latency {apiLatency[0] as string}</StatusIndicator>
+      <StatusIndicator state={apiLatency[1] as IndicatorState}>[API Latency {apiLatency[0] as string}]</StatusIndicator>
     </div>
   )
 }

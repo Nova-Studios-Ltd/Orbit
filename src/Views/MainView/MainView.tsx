@@ -205,6 +205,7 @@ function MainView(props: MainViewProps) {
               const message = await GETMessage(channel.channelID, key, true);
               if (message === undefined) continue;
               console.log(`Cache for channel '${channel.channelID}' missing message with id '${message.message_Id}'. Updating...`);
+              cache.SetMessage(key, message);
               continue;
             }
             if (remoteTimestamps.getValue(key) !== localTimestamps.getValue(key) && channel.channelID !== undefined) {

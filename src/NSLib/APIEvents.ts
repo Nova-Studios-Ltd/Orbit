@@ -369,9 +369,9 @@ export async function GETChannelName(channel_uuid: string) : Promise<string | un
 }
 
 // Diagnostic Endpoints
-export async function GETLatency() : Promise<number> {
+export async function GETLatency(status: number = 200) : Promise<number> {
   const start = Date.now();
-  const resp = await GET("/Events/Ping", undefined, false);
+  const resp = await GET(`/Events/Ping?status=${status}`, undefined, false);
   if (resp.status === 200) {
     return Date.now() - start;
   }
