@@ -367,3 +367,13 @@ export async function GETChannelName(channel_uuid: string) : Promise<string | un
   if (resp.status === 200) return (resp.payload as IRawChannelProps).channelName;
   return undefined;
 }
+
+// Diagnostic Endpoints
+export async function GETLatency() : Promise<number> {
+  const start = Date.now();
+  const resp = await GET("/Events/Ping", undefined, false);
+  if (resp.status === 200) {
+    return Date.now() - start;
+  }
+  return Number.MAX_SAFE_INTEGER;
+}

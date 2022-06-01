@@ -84,16 +84,17 @@ export default class NCWebsocket {
   OnReconnectEnd: (attempt: number) => void = () => {};
   OnConnected: () => void = () => {};
   OnStateChange: (oldState: NCWebsocketState, state: NCWebsocketState) => void = () => {};
+  OnLatencyMeasurementEnd: (latency: number) => void = () => {};
 
-  private Reconnect() {
+  Reconnect() {
     const att = this.reconnect;
     this.OnReconnectStart(this.reconnect);
     if (this.terminated) return;
     this.state = NCWebsocketState.Reconnecting;
     if (this.reconnect > 4) {
       this.state = NCWebsocketState.Disconnected;
-        this.Terminate();
-        return;
+      this.Terminate();
+      return;
     }
     this.reconnect++;
     this.timeoutID = setTimeout(() => {
@@ -119,6 +120,19 @@ export default class NCWebsocket {
 
   RemoveEvent(event_id: string) {
     this.events.clear(event_id);
+  }
+
+  Connect() {
+    this.terminated = false;
+    this.state = NCWebsocketState.Connecting;
+    if (this.insecure === undefined || this.insecure === false) {
+      this.websocket = new WebSocket(`wss://${this.address}`);
+    }
+    else {
+      this.websocket = new WebSocket(`ws://${this.address}`);
+    }
+    this.events = new Dictionary<(event: IWebSocketEvent) => void>();
+    this.Init();
   }
 
   Terminate() {
