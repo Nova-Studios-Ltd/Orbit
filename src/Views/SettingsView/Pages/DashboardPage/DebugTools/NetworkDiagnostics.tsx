@@ -50,7 +50,7 @@ function NetworkDiag(props: ComponentProps) {
   const websocketAdvanced = () => {
     if (props.showAdvanced) {
       return (<div>
-        {(state === NCWebsocketState.Connected)? (<Button disabled>[Connected]</Button>) : (<Button onClick={() => Socket.Connect()}>[Connect]</Button>)}
+        {(state === NCWebsocketState.Connected || state === NCWebsocketState.Reconnecting)? (<Button disabled>[Connected]</Button>) : (<Button onClick={() => Socket.Connect()}>[Connect]</Button>)}
         {(state === NCWebsocketState.Disconnected)? (<Button disabled>[Disconnected]</Button>) : (<Button onClick={() => Socket.Terminate()}>[Disconnect]</Button>)}
         {(state === NCWebsocketState.Disconnected || state === NCWebsocketState.Connecting || state === NCWebsocketState.Reconnecting)? (<Button disabled>[Reconnect]</Button>) : (<Button onClick={() => Socket.Reconnect()}>[Reconnect]</Button>)}
       </div>);

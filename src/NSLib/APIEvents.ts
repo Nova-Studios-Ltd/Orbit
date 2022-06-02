@@ -165,7 +165,7 @@ export async function GETMessages(channel_uuid: string, callback: (messages: IMe
   }
 }
 
-export async function GETMessagesSingle(channel_uuid: string, callback: (message: IMessageProps) => void, bypass_cache = false, limit = 30, after = -1, before = 2147483647) {
+export async function GETMessagesSingle(channel_uuid: string, callback: (message: IMessageProps) => Promise<boolean>, bypass_cache = false, limit = 30, after = -1, before = 2147483647) {
   if (HasFlag("no-cache")) bypass_cache = true;
   // Hit cache
   const cache = new NCChannelCache(channel_uuid);
@@ -192,7 +192,7 @@ export async function GETMessagesSingle(channel_uuid: string, callback: (message
         for (let m = 0; m < rawMessages.length; m++) {
           const message = await DecryptMessage(rawMessages[m]);
           decryptedMessages.push(message);
-          callback(message);
+          await callback(message);
           if (!bypass_cache) cache.SetMessage(message.message_Id, message);
         }
       }

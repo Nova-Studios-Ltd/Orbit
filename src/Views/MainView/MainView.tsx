@@ -224,15 +224,16 @@ function MainView(props: MainViewProps) {
         }, true, 1);
       }
       else {
-        GETMessages(channel.channelID, (decrypt: IMessageProps[]) => {
+        /*GETMessages(channel.channelID, (decrypt: IMessageProps[]) => {
           setMessages(decrypt);
-        });
-        /*setMessages([]);
-        GETMessagesSingle(channel.channelID, (message: IMessageProps) => {
+        });*/
+        setMessages([]);
+        GETMessagesSingle(channel.channelID, async (message: IMessageProps) => {
           setMessages(prevState => {
             return [...prevState, message];
           });
-        });*/
+          return true;
+        });
       }
     }
   }

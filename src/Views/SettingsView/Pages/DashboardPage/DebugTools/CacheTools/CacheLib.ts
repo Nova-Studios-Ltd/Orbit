@@ -67,7 +67,6 @@ export async function CacheIsUptoDate(channel_uuid: string) : Promise<boolean> {
       resolve(true);
     }, true, 1);
   }));
-  console.log(res);
   return res;
 }
 
