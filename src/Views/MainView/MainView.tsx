@@ -151,6 +151,8 @@ function MainView(props: MainViewProps) {
     navigate(path);
   }
 
+  const loadingChannel = useRef(false);
+
   const onChannelClick = async (channel: ChannelProps) => {
     if (!location.pathname.includes("chat"))
       navigate(`${MainViewRoutes.Chat}${location.search}`);
@@ -224,16 +226,23 @@ function MainView(props: MainViewProps) {
         }, true, 1);
       }
       else {
-        /*GETMessages(channel.channelID, (decrypt: IMessageProps[]) => {
+        GETMessages(channel.channelID, (decrypt: IMessageProps[]) => {
           setMessages(decrypt);
-        });*/
+        });
+        /*console.log(loadingChannel.current);
+        if (loadingChannel.current) return;
+        loadingChannel.current = true;
         setMessages([]);
+        await new Promise(r => setTimeout(r, 250));
         GETMessagesSingle(channel.channelID, async (message: IMessageProps) => {
+          //console.log(message.message_Id);
           setMessages(prevState => {
+            console.log([...prevState, message]);
             return [...prevState, message];
           });
+          await new Promise(r => setTimeout(r, 250));
           return true;
-        });
+        }, () => {loadingChannel.current = false});*/
       }
     }
   }

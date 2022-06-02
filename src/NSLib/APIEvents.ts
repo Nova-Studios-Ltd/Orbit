@@ -103,11 +103,13 @@ async function DecryptMessage(message: IMessageProps) : Promise<IMessageProps> {
     const decryptedMessage = await DecryptBase64(key, new AESMemoryEncryptData(message.iv, message.content));
     message.content = decryptedMessage.String;
   }
-  for (let a = 0; a < message.attachments.length; a++) {
-    const attachment = message.attachments[a];
-    const content = await GETFile(attachment.contentUrl, Manager.User.token);
-    const decryptedContent = await DecryptUint8Array(key, new AESMemoryEncryptData( message.iv, content.payload as Uint8Array));
-    message.attachments[a].content = decryptedContent;
+  if (!HasFlag("no-attach")) {
+    for (let a = 0; a < message.attachments.length; a++) {
+      const attachment = message.attachments[a];
+      const content = await GETFile(attachment.contentUrl, Manager.User.token);
+      const decryptedContent = await DecryptUint8Array(key, new AESMemoryEncryptData( message.iv, content.payload as Uint8Array));
+      message.attachments[a].content = decryptedContent;
+    }
   }
   return message;
 }
@@ -165,7 +167,7 @@ export async function GETMessages(channel_uuid: string, callback: (messages: IMe
   }
 }
 
-export async function GETMessagesSingle(channel_uuid: string, callback: (message: IMessageProps) => Promise<boolean>, bypass_cache = false, limit = 30, after = -1, before = 2147483647) {
+export async function GETMessagesSingle(channel_uuid: string, callback: (message: IMessageProps) => Promise<boolean>, finished: () => void, bypass_cache = false, limit = 30, after = -1, before = 2147483647) {
   if (HasFlag("no-cache")) bypass_cache = true;
   // Hit cache
   const cache = new NCChannelCache(channel_uuid);
@@ -196,6 +198,7 @@ export async function GETMessagesSingle(channel_uuid: string, callback: (message
           if (!bypass_cache) cache.SetMessage(message.message_Id, message);
         }
       }
+      finished();
     });
   }
 }
