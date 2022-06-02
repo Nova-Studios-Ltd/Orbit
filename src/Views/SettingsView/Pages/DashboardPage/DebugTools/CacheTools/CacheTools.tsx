@@ -22,22 +22,23 @@ function CacheTools(props: ComponentProps) {
     for (let c = 0; c < rawCaches.length; c++) {
       const cache = rawCaches[c].replace("Cache_", "").replace("_1", "");
       const d = await testCache(cache);
-      cc.push([d, rawCaches[c]]);
+      cc.push([d, cache]);
     }
 
     setCaches(cc);
   }
 
   const testCache = async (cache: string) => {
-    let cacheStatus = CacheStatus.Missing;
-    if (await CacheValid(cache)) cacheStatus = CacheStatus.Ok;
-    if (await CacheIsUptoDate(cache)) cacheStatus = CacheStatus.OutOfDate;
+    let cacheStatus = CacheStatus.Ok;
+    if (!await CacheValid(cache)) cacheStatus = CacheStatus.Missing;
+    if (!await CacheIsUptoDate(cache)) cacheStatus = CacheStatus.OutOfDate;
     return cacheStatus;
   }
 
   const deleteCache = (cache: string) => {
     DeleteCache(cache);
-    getCaches();
+    // eslint-disable-next-line no-restricted-globals
+    location.reload();
   }
 
   const invalidateCache = (cache: string) => {

@@ -73,12 +73,15 @@ export async function CacheIsUptoDate(channel_uuid: string) : Promise<boolean> {
 
 export async function DeleteCache(cache: string) {
   if (!await HasChannelCache(cache)) return;
-  indexedDB.deleteDatabase(cache);
+  indexedDB.deleteDatabase(`Cache_${cache}_1`);
 }
 
-export async function InvalidateCache(cache: string) {
-  if (!await HasChannelCache(cache)) return;
-  new NCChannelCache(cache).WriteSession("According to all known laws of aviation, there is no way a bee should be able to fly. Its wings are too small to get its fat little body off the ground. The bee, of course, flies anyway because bees don't care what humans think is impossible.");
+export async function InvalidateCache(channel_uuid: string) {
+  console.log(channel_uuid);
+  if (!await HasChannelCache(channel_uuid)) return;
+  const c = new NCChannelCache(channel_uuid);
+  c.WriteSession("According to all known laws of aviation, there is no way a bee should be able to fly. Its wings are too small to get its fat little body off the ground. The bee, of course, flies anyway because bees don't care what humans think is impossible.");
+  await c.InvalidateCache();
 }
 
 /**
@@ -87,21 +90,5 @@ export async function InvalidateCache(cache: string) {
  */
 export async function RefreshCache(cache: string) {
   await DeleteCache(cache);
-  await GETMessages(cache.replace("Cache_", "").replace("_1", ""), () => {}, false, 30);
-}
-
-/**
- * Check if the caches newest message is the servers newest message. Updates as needed
- * @param cache Name of the cache
- */
-export async function CacheMatchesMaster(cache: string) {
-
-}
-
-/**
- * Check if the caches contained messages have been edited or removed on the remote server. Updates as needed
- * @param cache Name of the cache
- */
-export async function CacheIsSynced(cache: string) {
-
+  await GETMessages(cache, () => {}, false, 30);
 }
