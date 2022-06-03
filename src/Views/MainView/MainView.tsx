@@ -70,7 +70,11 @@ function MainView(props: MainViewProps) {
   const scrollCanvas = () => {
     const canvas = canvasRef.current;
     if (canvas && autoScroll.current) {
-      canvas.scroll({ top: canvas.scrollHeight, behavior: "smooth" });
+      const distance = canvas.scrollHeight - canvas.scrollTop;
+      if (distance < 1200)
+        canvas.scroll({ top: canvas.scrollHeight, behavior: "smooth" });
+      else
+        canvas.scrollTop = canvas.scrollHeight;
     }
     else {
       autoScroll.current = true;
@@ -108,12 +112,12 @@ function MainView(props: MainViewProps) {
 
   const onLoadPriorMessages = () => {
     const oldestID = parseInt(messages[messages.length - 1].message_Id);
-    GETMessages(selectedChannel.table_Id, (messages: IMessageProps[]) => {
+    /*GETMessages(selectedChannel.table_Id, (messages: IMessageProps[]) => {
       autoScroll.current = false;
       setMessages(prevState => {
         return [...prevState, ...messages];
       })
-    }, false, 30, -1, oldestID);
+    }, false, 30, -1, oldestID);*/
   }
 
   const onFileUpload = () => {
@@ -226,23 +230,17 @@ function MainView(props: MainViewProps) {
         }, true, 1);
       }
       else {
-        GETMessages(channel.channelID, (decrypt: IMessageProps[]) => {
+        /*GETMessages(channel.channelID, (decrypt: IMessageProps[]) => {
           setMessages(decrypt);
-        });
-        /*console.log(loadingChannel.current);
-        if (loadingChannel.current) return;
-        loadingChannel.current = true;
+        });*/
         setMessages([]);
-        await new Promise(r => setTimeout(r, 250));
         GETMessagesSingle(channel.channelID, async (message: IMessageProps) => {
-          //console.log(message.message_Id);
+          //autoScroll.current = false;
           setMessages(prevState => {
-            console.log([...prevState, message]);
             return [...prevState, message];
           });
-          await new Promise(r => setTimeout(r, 250));
           return true;
-        }, () => {loadingChannel.current = false});*/
+        }, () => {autoScroll.current = true;});
       }
     }
   }

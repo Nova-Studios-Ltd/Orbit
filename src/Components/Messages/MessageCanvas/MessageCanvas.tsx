@@ -1,4 +1,4 @@
-import { useTheme } from "@mui/material";
+import { Skeleton, useTheme } from "@mui/material";
 import useClassNames from "Hooks/useClassNames";
 
 import Message, { MessageProps } from "Components/Messages/Message/Message";
@@ -32,7 +32,7 @@ function MessageCanvas(props: MessageCanvasProps) {
 
   const onScroll = () => {
     const scrollTop = props.canvasRef?.current.scrollTop;
-    if (scrollTop !== undefined) {
+    if (scrollTop !== undefined && props.canvasRef !== undefined) {
       if (scrollTop - lastScrollPos.current < -5 && scrollTop < 10 && props.onLoadPriorMessages !== undefined) {
         props.onLoadPriorMessages();
       }

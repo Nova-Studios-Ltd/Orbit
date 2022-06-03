@@ -91,9 +91,6 @@ function DashboardPage(props: DashboardPageProps) {
       <Section title="[Network Diagnostics]">
         <NetworkDiag showAdvanced={true}/>
       </Section>
-      <Section title="[Cache Tools]">
-        <CacheTools/>
-      </Section>
     </PageContainer>
   );
 }
