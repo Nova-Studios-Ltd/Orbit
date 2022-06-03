@@ -112,12 +112,12 @@ function MainView(props: MainViewProps) {
 
   const onLoadPriorMessages = () => {
     const oldestID = parseInt(messages[messages.length - 1].message_Id);
-    /*GETMessages(selectedChannel.table_Id, (messages: IMessageProps[]) => {
+    GETMessages(selectedChannel.table_Id, (messages: IMessageProps[]) => {
       autoScroll.current = false;
       setMessages(prevState => {
         return [...prevState, ...messages];
       })
-    }, false, 30, -1, oldestID);*/
+    }, false, 30, -1, oldestID);
   }
 
   const onFileUpload = () => {

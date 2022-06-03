@@ -191,10 +191,8 @@ export async function GETMessagesSingle(channel_uuid: string, callback: (message
     GET(`Channel/${channel_uuid}/Messages?limit=${newLimit}&after=${after}&before=${newBefore}`, new SettingsManager().User.token).then(async (resp: NCAPIResponse) => {
       if (resp.status === 200) {
         const rawMessages = resp.payload as IMessageProps[];
-        const decryptedMessages = [] as  IMessageProps[];
         for (let m = 0; m < rawMessages.length; m++) {
           const message = await DecryptMessage(rawMessages[m]);
-          decryptedMessages.push(message);
           await callback(message);
           if (!bypass_cache) cache.SetMessage(message.message_Id, message);
         }
