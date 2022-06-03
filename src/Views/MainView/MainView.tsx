@@ -235,7 +235,7 @@ function MainView(props: MainViewProps) {
         });*/
         setMessages([]);
         GETMessagesSingle(channel.channelID, async (message: IMessageProps) => {
-          //autoScroll.current = false;
+          autoScroll.current = false;
           setMessages(prevState => {
             return [...prevState, message];
           });

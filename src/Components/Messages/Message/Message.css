@@ -37,6 +37,7 @@
 
 .MessageTimestamp, .MessageTimestampEdited {
   margin-left: 5px !important;
+  font-size: 12px !important;
 }
 
 @media only screen and (max-width: 600px) {

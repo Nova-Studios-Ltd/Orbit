@@ -130,8 +130,8 @@ function Message(props: MessageProps) {
       <div className="MessageRight" style={{ backgroundColor: isHovering ? theme.customPalette.customActions.messageHover : theme.customPalette.messageBackground }} onMouseEnter={() => mouseHoverEventHandler(true)} onMouseLeave={() => mouseHoverEventHandler(false)} onClick={messageLeftClickHandler} onContextMenu={messageRightClickHandler}>
         <div className="MessageRightHeader">
           <Typography className="MessageName" fontWeight="bold">{props.author}</Typography>
-          <Typography className="MessageTimestamp" variant="subtitle2">{props.timestamp}</Typography>
-          {props.isEdited ? <Typography className="MessageTimestampEdited" variant="subtitle2">({Localizations_Message("Typography-TimestampEdited")} {props.editedTimestamp})</Typography> : null}
+          <Typography className="MessageTimestamp" variant="subtitle2">{props.timestamp?.replace("T", " ")}</Typography>
+          {props.isEdited ? <Typography className="MessageTimestampEdited" variant="subtitle2">({Localizations_Message("Typography-TimestampEdited")} {props.editedTimestamp?.replace("T", " ")})</Typography> : null}
         </div>
         <Typography variant="body1">{props.content}</Typography>
         <div className="MessageMediaParentContainer">

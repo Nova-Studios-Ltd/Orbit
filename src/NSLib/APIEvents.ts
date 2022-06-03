@@ -152,7 +152,6 @@ export async function GETMessages(channel_uuid: string, callback: (messages: IMe
     }
     GET(`Channel/${channel_uuid}/Messages?limit=${newLimit}&after=${after}&before=${newBefore}`, new SettingsManager().User.token).then(async (resp: NCAPIResponse) => {
       if (resp.status === 200) {
-        const start = Date.now();
         const rawMessages = resp.payload as IMessageProps[];
         const decryptedMessages = [] as  IMessageProps[];
         for (let m = 0; m < rawMessages.length; m++) {
@@ -161,7 +160,6 @@ export async function GETMessages(channel_uuid: string, callback: (messages: IMe
           if (!bypass_cache) cache.SetMessage(message.message_Id, message);
         }
         callback([...messages.Messages, ...decryptedMessages]);
-        console.log(Date.now() - start);
         return;
       }
       callback([]);
@@ -189,6 +187,7 @@ export async function GETMessagesSingle(channel_uuid: string, callback: (message
       newLimit = limit;
       newBefore = before;
     }
+    messages.Messages.forEach((message) => callback(message));
     GET(`Channel/${channel_uuid}/Messages?limit=${newLimit}&after=${after}&before=${newBefore}`, new SettingsManager().User.token).then(async (resp: NCAPIResponse) => {
       if (resp.status === 200) {
         const rawMessages = resp.payload as IMessageProps[];
