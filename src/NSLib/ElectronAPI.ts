@@ -63,7 +63,7 @@ export async function DownloadUint8ArrayFile(file: Uint8Array, filename = "unkno
     const link = document.createElement('a');
     const url = URL.createObjectURL(new Blob([file]));
     link.href = url;
-    link.download = url;
+    link.download = filename;
     link.click();
   }
 }
@@ -81,7 +81,7 @@ export async function DownloadUint8ArrayFile(file: Uint8Array, filename = "unkno
     const link = document.createElement('a');
     const url = URL.createObjectURL(file);
     link.href = url;
-    link.download = url;
+    link.download = filename;
     link.click();
   }
 }
