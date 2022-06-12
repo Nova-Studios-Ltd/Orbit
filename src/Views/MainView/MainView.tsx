@@ -155,8 +155,6 @@ function MainView(props: MainViewProps) {
     navigate(path);
   }
 
-  const loadingChannel = useRef(false);
-
   const onChannelClick = async (channel: ChannelProps) => {
     if (!location.pathname.includes("chat"))
       navigate(`${MainViewRoutes.Chat}${location.search}`);
@@ -230,9 +228,6 @@ function MainView(props: MainViewProps) {
         }, true, 1);
       }
       else {
-        /*GETMessages(channel.channelID, (decrypt: IMessageProps[]) => {
-          setMessages(decrypt);
-        });*/
         setMessages([]);
         GETMessagesSingle(channel.channelID, async (message: IMessageProps) => {
           autoScroll.current = false;
