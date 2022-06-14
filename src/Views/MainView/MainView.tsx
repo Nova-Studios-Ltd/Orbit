@@ -25,7 +25,6 @@ import SettingsView from "Views/SettingsView/SettingsView";
 
 import type { SharedProps, View } from "DataTypes/Components";
 import type { IRawChannelProps } from "Interfaces/IRawChannelProps";
-import type { ChannelProps } from "Components/Channels/Channel/Channel";
 import type { IMessageProps } from "Interfaces/IMessageProps";
 import type { MessageProps } from "Components/Messages/Message/Message";
 import { AuthViewRoutes, MainViewRoutes, SettingsViewRoutes } from "DataTypes/Routes";
@@ -155,23 +154,25 @@ function MainView(props: MainViewProps) {
     navigate(path);
   }
 
-  const onChannelClick = async (channel: ChannelProps) => {
+  const onChannelClick = async (channel: IRawChannelProps) => {
     if (!location.pathname.includes("chat"))
       navigate(`${MainViewRoutes.Chat}${location.search}`);
-    setSelectedChannel({ table_Id: channel.channelID, channelName: channel.channelName, channelIcon: channel.channelIconSrc, members: channel.channelMembers, channelType: channel.isGroup } as IRawChannelProps);
+
     if (channel.channelName) setTitle(channel.channelName);
     setChannelMenuVisibility(false);
 
-    if (channel && channel.channelID) {
+    setSelectedChannel(channel);
+
+    if (channel && channel.table_Id) {
       setMessages([]);
       // Check if channel has cache
-      const isCache = await NCChannelCache.ContainsCache(channel.channelID);
+      const isCache = await NCChannelCache.ContainsCache(channel.table_Id);
       if (isCache) {
         const cache = isCache as NCChannelCache;
         // Fully refresh cache, ignoring anything, pulling the newest messages
         if (await cache.RequiresRefresh()) {
           cache.ClearCache();
-          GETMessagesSingle(channel.channelID, async (message: IMessageProps) => {
+          GETMessagesSingle(channel.table_Id, async (message: IMessageProps) => {
             autoScroll.current = false;
             setMessages(prevState => {
               return [...prevState, message];
@@ -185,15 +186,15 @@ function MainView(props: MainViewProps) {
         if (!await cache.IsValidSession(session.current)) {
 
         }
-        else {
-          GETMessagesSingle(channel.channelID, async (message: IMessageProps) => {
-            autoScroll.current = false;
-            setMessages(prevState => {
-              return [...prevState, message];
-            });
-            return true;
-          }, () => {autoScroll.current = true;});
-        }
+      }
+      else {
+        GETMessagesSingle(channel.table_Id, async (message: IMessageProps) => {
+          autoScroll.current = false;
+          setMessages(prevState => {
+            return [...prevState, message];
+          });
+          return true;
+        }, () => {autoScroll.current = true;});
       }
       /*if (await HasChannelCache(channel.channelID) && !await CacheValid(channel.channelID, session.current) && !HasFlag("no-cache")) {
         const cache = new NCChannelCache(channel.channelID);
@@ -281,16 +282,16 @@ function MainView(props: MainViewProps) {
     }
   };
 
-  const onChannelEdit = (channel: ChannelProps) => {
+  const onChannelEdit = (channel: IRawChannelProps) => {
     console.log(`Request to edit channel ${channel.channelName}`);
     // TODO: Add Channel edit logic here
   };
 
-  const onChannelDelete = (channel: ChannelProps) => {
+  const onChannelDelete = (channel: IRawChannelProps) => {
     console.log(`Request to delete channel ${channel.channelName}`);
-    if (channel.channelID === undefined) return;
-    DELETEChannel(channel.channelID, (deleted: boolean) => {
-      console.log(`Request to delete channel ${channel.channelID} succesful`);
+    if (channel.table_Id === undefined) return;
+    DELETEChannel(channel.table_Id, (deleted: boolean) => {
+      console.log(`Request to delete channel ${channel.table_Id} succesful`);
     });
   };
 
@@ -366,6 +367,7 @@ function MainView(props: MainViewProps) {
       Events.remove("DeleteMessage");
       Events.remove("EditMessage");
     });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [channels, messages]);
 
 
@@ -380,11 +382,13 @@ function MainView(props: MainViewProps) {
 
     GETUserChannels(async (channels: string[]) => {
       const loadedChannels = [] as IRawChannelProps[];
+
       for (var i = 0; i < channels.length; i++) {
         const channel = await GETChannel(channels[i]);
         if (channel === undefined) continue;
         loadedChannels.push(channel);
       }
+
       setChannels(loadedChannels);
 
       if (loadedChannels[0]) onChannelClick(loadedChannels[0]); // Temporary channel preload
