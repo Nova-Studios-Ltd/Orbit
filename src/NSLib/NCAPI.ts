@@ -1,3 +1,6 @@
+import { API_DOMAIN } from "vars";
+
+
 /**
  * Represents a response from the NovaChat API
  */
@@ -33,7 +36,7 @@ export enum ContentType {
  * @returns A NCAPIResponse with the data from the NovaChat API
  */
 export async function GET(endpoint: string, token?: string, json: boolean = true) : Promise<NCAPIResponse> {
-  const resp = await fetch(`https://api.novastudios.tk/${endpoint}`, {
+  const resp = await fetch(`${API_DOMAIN}/${endpoint}`, {
     method: "GET",
     headers: {
       "Authorization": token || ""
@@ -54,7 +57,7 @@ export async function GET(endpoint: string, token?: string, json: boolean = true
  * @returns A NCAPIResponse with the data from the NovaChat API
  */
 export async function POST(endpoint: string, content_type: ContentType, payload: string, token?: string, json: boolean = true) : Promise<NCAPIResponse> {
-  const resp = await fetch(`https://api.novastudios.tk/${endpoint}`, {
+  const resp = await fetch(`${API_DOMAIN}/${endpoint}`, {
     method: "POST",
     headers: {
         "Authorization": token || "",
@@ -77,7 +80,7 @@ export async function POST(endpoint: string, content_type: ContentType, payload:
  * @returns A NCAPIResponse with the data from the NovaChat API
  */
 export async function PUT(endpoint: string, content_type: ContentType, payload: string, token?: string) : Promise<NCAPIResponse> {
-    const resp = await fetch(`https://api.novastudios.tk/${endpoint}`, {
+    const resp = await fetch(`${API_DOMAIN}/${endpoint}`, {
         method: "PUT",
         headers: {
             "Authorization": token || "",
@@ -97,7 +100,7 @@ export async function PUT(endpoint: string, content_type: ContentType, payload: 
  * @returns A NCAPIResponse with the data from the NovaChat API
  */
 export async function PATCH(endpoint: string, content_type: ContentType, payload: string, token?: string) : Promise<NCAPIResponse> {
-    const resp = await fetch(`https://api.novastudios.tk/${endpoint}`, {
+    const resp = await fetch(`${API_DOMAIN}/${endpoint}`, {
         method: "PATCH",
         headers: {
             "Authorization": token || "",
@@ -115,7 +118,7 @@ export async function PATCH(endpoint: string, content_type: ContentType, payload
  * @returns A NCAPIResponse with the data from the NovaChat API
  */
 export async function DELETE(endpoint: string, token?: string) : Promise<NCAPIResponse> {
-    const resp = await fetch(`https://api.novastudios.tk/${endpoint}`, {
+    const resp = await fetch(`${API_DOMAIN}/${endpoint}`, {
         method: "DELETE",
         headers: {
             "Authorization": token || ""
@@ -134,7 +137,7 @@ export async function DELETE(endpoint: string, token?: string) : Promise<NCAPIRe
 export async function POSTFile(endpoint: string, payload: Blob, filename: string, token?: string) : Promise<NCAPIResponse> {
   const formData = new FormData();
   formData.append("file", payload, filename);
-  const resp = await fetch(`https://api.novastudios.tk/${endpoint}`, {
+  const resp = await fetch(`${API_DOMAIN}/${endpoint}`, {
     method: "POST",
     body: formData,
     headers: {
@@ -151,8 +154,8 @@ export async function POSTFile(endpoint: string, payload: Blob, filename: string
  * @returns A NCAPIResponse with the data from the NovaChat API
  */
 export async function GETFile(endpoint: string, token?: string) : Promise<NCAPIResponse> {
-  if (endpoint.includes("https://api.novastudios.tk")) endpoint = endpoint.replace("https://api.novastudios.tk", "");
-  const resp = await fetch(`https://api.novastudios.tk/${endpoint}`, {
+  if (endpoint.includes(API_DOMAIN)) endpoint = endpoint.replace(API_DOMAIN, "");
+  const resp = await fetch(`${API_DOMAIN}/${endpoint}`, {
       method: "GET",
       headers: {
         "Authorization": token || ""

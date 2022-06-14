@@ -12,7 +12,6 @@ export default class NCWebsocket {
   private reconnect = 1;
   private timesteps = [2500, 4000, 8000, 12000];
   websocket: WebSocket;
-  private insecure?: boolean;
   private address: string;
   private token: string;
   private terminated: boolean = false;
@@ -29,17 +28,11 @@ export default class NCWebsocket {
     return this._state;
   }
 
-  constructor(address: string, token: string, insecure?: boolean) {
-    this.insecure = insecure;
+  constructor(address: string, token: string) {
     this.address = address;
     this.token = token;
     this.state = NCWebsocketState.Connecting;
-    if (insecure === undefined || insecure === false) {
-      this.websocket = new WebSocket(`wss://${address}`);
-    }
-    else {
-      this.websocket = new WebSocket(`ws://${address}`);
-    }
+    this.websocket = new WebSocket(address);
     this.events = new Dictionary<(event: IWebSocketEvent) => void>();
     this.Init();
   }
@@ -102,12 +95,7 @@ export default class NCWebsocket {
       this.websocket.onopen = () => {};
       this.websocket.onerror = () => {};
       this.websocket.onmessage = () => {};
-      if (this.insecure === undefined || this.insecure === false) {
-          this.websocket = new WebSocket(`wss://${this.address}`);
-      }
-      else {
-          this.websocket = new WebSocket(`ws://${this.address}`);
-      }
+      this.websocket = new WebSocket(this.address);
       this.Init();
       if (this.timeoutID !== undefined) clearTimeout(this.timeoutID)
       this.OnReconnectEnd(att);
@@ -125,12 +113,7 @@ export default class NCWebsocket {
   Connect() {
     this.terminated = false;
     this.state = NCWebsocketState.Connecting;
-    if (this.insecure === undefined || this.insecure === false) {
-      this.websocket = new WebSocket(`wss://${this.address}`);
-    }
-    else {
-      this.websocket = new WebSocket(`ws://${this.address}`);
-    }
+    this.websocket = new WebSocket(this.address);
     this.Init();
   }
 

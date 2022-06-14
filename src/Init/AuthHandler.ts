@@ -9,7 +9,8 @@ import { ToBase64String, ToUint8Array } from "../NSLib/Base64";
 import { LoginStatus } from "DataTypes/Enums";
 import { DecryptBase64, GenerateBase64SHA256 } from "NSLib/NCEncryption";
 import { HasFlag } from "NSLib/NCFlags";
-import { ClearAllDatabases } from "NSLib/Util";
+import { NCChannelCache } from "NSLib/NCCache";
+import { WEBSOCKET_DOMAIN } from "vars";
 
 export const Manager = new SettingsManager();
 export let Websocket: NCWebsocket;
@@ -49,7 +50,7 @@ export async function AutoLogin() : Promise<boolean> {
 
   if (!HasFlag("no-websocket")) {
     // Setup websocket
-    Websocket = new NCWebsocket(`api.novastudios.tk/Events/Listen?user_uuid=${Manager.User.uuid}`, Manager.User.token, false);
+    Websocket = new NCWebsocket(`${WEBSOCKET_DOMAIN}/Events/Listen?user_uuid=${Manager.User.uuid}`, Manager.User.token);
     Websocket.OnConnected = () => console.log("Connected!");
     Websocket.OnTerminated = () => console.log("Terminated!");
 
@@ -69,7 +70,7 @@ export async function AutoLogin() : Promise<boolean> {
 }
 
 export async function Logout() {
-  await ClearAllDatabases();
+  await NCChannelCache.DeleteCaches();
   await Manager.ClearLocalStorage();
   await Manager.ClearCookies()
 }

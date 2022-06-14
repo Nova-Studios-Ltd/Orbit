@@ -1,6 +1,7 @@
 import Dimensions from "../DataTypes/Dimensions";
 import customProtocolCheck from "custom-protocol-check";
 import { NCChannelCache } from "./NCCache";
+import { API_DOMAIN } from "vars";
 
 export async function GetImageDimensions(buffer: Uint8Array) : Promise<Dimensions | undefined> {
   return new Promise((resolve) => {
@@ -56,35 +57,4 @@ export function ComputeCSSDims(image: Dimensions, desired: Dimensions) : Dimensi
 
 export function isValidUsername(username: string) {
   return new RegExp(/^([\S]{1,})#([0-9]{4}$)/g).test(username);
-}
-
-export async function HasChannelCache(channel_uuid: string) : Promise<boolean> {
-  const names = (await indexedDB.databases()).flatMap((v) => {
-    if (v.name !== undefined) return v.name;
-    return "";
-  });
-
-  if (names.indexOf(`Cache_${channel_uuid}_1`) !== -1) return true;
-  else return false;
-}
-
-export async function ClearAllDatabases() {
-  const names = (await indexedDB.databases()).flatMap((v) => {
-    if (v.name !== undefined) return v.name;
-    return "";
-  });
-
-  for (let n = 0; n < names.length; n++) {
-    const name = names[n];
-    indexedDB.deleteDatabase(name);
-  }
-}
-
-export async function CacheValid(channel_uuid: string, session: string) : Promise<boolean> {
-  const cache = new NCChannelCache(channel_uuid);
-  if (await cache.ReadSession() === session && await cache.RequiresRefresh()) return true;
-  else {
-    cache.WriteSession(session);
-    return false;
-  }
 }

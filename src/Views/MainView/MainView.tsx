@@ -5,7 +5,7 @@ import { AutoLogin, Logout } from "Init/AuthHandler";
 import { Events } from "Init/WebsocketEventInit";
 import { IconButton, useTheme } from "@mui/material";
 import { Menu as MenuIcon } from "@mui/icons-material";
-import { CacheValid, HasChannelCache, isValidUsername } from "NSLib/Util";
+import { isValidUsername } from "NSLib/Util";
 import { GenerateBase64SHA256 } from "NSLib/NCEncryption";
 import { NCChannelCache } from "NSLib/NCCache";
 import { HasFlag } from "NSLib/NCFlags";
@@ -184,9 +184,9 @@ function MainView(props: MainViewProps) {
         }
 
         if (!await cache.IsValidSession(session.current)) {
-          await NCChannelCache.CleanCache(channel.channelID);
-          await NCChannelCache.UpdateCache(channel.channelID);
-          GETMessagesSingle(channel.channelID, async (message: IMessageProps) => {
+          await NCChannelCache.CleanCache(channel.table_Id);
+          await NCChannelCache.UpdateCache(channel.table_Id);
+          GETMessagesSingle(channel.table_Id, async (message: IMessageProps) => {
             autoScroll.current = false;
             setMessages(prevState => {
               return [...prevState, message];
