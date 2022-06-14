@@ -130,40 +130,41 @@ export async function GETMessage(channel_uuid: string, message_id: string, bypas
   return undefined;
 }
 
-export async function GETMessages(channel_uuid: string, callback: (messages: IMessageProps[]) => void, bypass_cache = false, limit = 30, after = -1, before = 2147483647) {
+export async function GETMessages(channel_uuid: string, callback: (messages: IMessageProps[]) => void, bypass_cache = false, limit = 30, after = -1, before = 2147483647) : Promise<IMessageProps[]> {
   if (HasFlag("no-cache")) bypass_cache = true;
   // Hit cache
   const cache = new NCChannelCache(channel_uuid);
   const messages = await cache.GetMessages(limit, before);
   if (messages.Satisfied && !bypass_cache) {
     callback(messages.Messages);
+    return messages.Messages;
   }
   else {
     if (bypass_cache) {
       messages.Count = 0;
       messages.Messages = [];
     }
-    // If cache is missed or is incomplete (or bypassed)
+    // If cache is missed (or bypassed) or is incomplete
     let newLimit = limit - messages.Count;
     let newBefore = messages.Last_Id;
     if (messages.Count === 0) {
       newLimit = limit;
       newBefore = before;
     }
-    GET(`Channel/${channel_uuid}/Messages?limit=${newLimit}&after=${after}&before=${newBefore}`, new SettingsManager().User.token).then(async (resp: NCAPIResponse) => {
-      if (resp.status === 200) {
-        const rawMessages = resp.payload as IMessageProps[];
-        const decryptedMessages = [] as  IMessageProps[];
-        for (let m = 0; m < rawMessages.length; m++) {
-          const message = await DecryptMessage(rawMessages[m]);
-          decryptedMessages.push(message);
-          if (!bypass_cache) cache.SetMessage(message.message_Id, message);
-        }
+    const resp = await GET(`Channel/${channel_uuid}/Messages?limit=${newLimit}&after=${after}&before=${newBefore}`, new SettingsManager().User.token);
+    if (resp.status === 200) {
+      const rawMessages = resp.payload as IMessageProps[];
+      const decryptedMessages = [] as IMessageProps[];
+      for (let m = 0; m < rawMessages.length; m++) {
+        const message = await DecryptMessage(rawMessages[m]);
+        decryptedMessages.push(message);
+        if (!bypass_cache) cache.SetMessage(message.message_Id, message);
         callback([...messages.Messages, ...decryptedMessages]);
-        return;
+        return [...messages.Messages, ...decryptedMessages];
       }
-      callback([]);
-    });
+    }
+    callback([])
+    return [];
   }
 }
 

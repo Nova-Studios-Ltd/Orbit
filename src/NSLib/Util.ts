@@ -82,7 +82,7 @@ export async function ClearAllDatabases() {
 
 export async function CacheValid(channel_uuid: string, session: string) : Promise<boolean> {
   const cache = new NCChannelCache(channel_uuid);
-  if (await cache.ReadSession() === session && await cache.CacheValid()) return true;
+  if (await cache.ReadSession() === session && await cache.RequiresRefresh()) return true;
   else {
     cache.WriteSession(session);
     return false;

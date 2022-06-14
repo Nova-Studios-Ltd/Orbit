@@ -1,7 +1,7 @@
 import { IMessageProps } from "Interfaces/IMessageProps";
 import { getStorage } from "SiffrStorage/sifrr.storage";
+import { GETMessage, GETMessageEditTimestamps, GETMessages } from "./APIEvents";
 import { Dictionary } from "./Dictionary";
-import { GenerateBase64SHA256 } from "./NCEncryption"
 
 
 export class NCChannelCacheResult {
@@ -21,10 +21,10 @@ export class NCChannelCacheResult {
 
 export class NCChannelCache {
   private CurrentCache: any;
-  constructor(cache_id: string) {
+  constructor(channel_uuid: string) {
     const cache = {
       priority: ["indexeddb"],
-      name: `Cache_${cache_id}_`,
+      name: `Cache_${channel_uuid}_`,
       version: 1,
       description: "Channel Cache",
       size: 10 * 1024 * 1024,
@@ -33,14 +33,14 @@ export class NCChannelCache {
     this.CurrentCache = getStorage(cache);
   }
 
-  async CacheValid() : Promise<boolean> {
+  async RequiresRefresh() : Promise<boolean> {
     if (!await this.ContainsMessage("LastAccess")) return false;
     const d = new Date((await this.CurrentCache.get("LastAccess"))["LastAccess"]);
     return (((Date.now() - d.getTime()) / (1000 * 3600 * 24)) < 1);
   }
 
-  async InvalidateCache() {
-    this.CurrentCache.setSync("LastAccess", Date.parse("1970-01-01 12:00"));
+  async IsValidSession(session: string) : Promise<boolean> {
+    return (await this.CurrentCache.get("Session"))["Session"] === session;
   }
 
   async ReadSession() : Promise<string> {
@@ -114,5 +114,108 @@ export class NCChannelCache {
     keys.splice(keys.indexOf("Session", 1));
     if (keys.length > 100)
       this.CurrentCache.del(keys[0]);
+  }
+
+  // Static Methods
+  /**
+   * Gets all current channel caches
+   * @returns A string array containing all current caches
+   */
+  static async GetCaches() : Promise<string[]> {
+    const caches = (await indexedDB.databases()).flatMap((c) => {
+      if (c.name !== undefined && c.name.includes("Cache")) return c.name;
+      return "";
+    });
+    return caches;
+  }
+
+  /**
+   * Checks if there is a cached created for the specified channel
+   * @param channel_uuid The uuid of the channel you wish to find the cache for
+   * @returns a NCChannelCache object if the cache is found otherwise undefined
+   */
+  static async ContainsCache(channel_uuid: string) : Promise<NCChannelCache | undefined> {
+    const caches = await this.GetCaches();
+    if (caches.indexOf(`Cache_${channel_uuid}_1`) !== -1) new NCChannelCache(channel_uuid);
+    else return undefined;
+  }
+
+  /**
+   * Removes all channel caches
+   */
+  static async DeleteCaches() {
+    const caches = await this.GetCaches();
+    for (const c in caches) {
+      indexedDB.deleteDatabase(c);
+    }
+  }
+
+  /**
+   * Checks and returns a range of missing messages from the specified cache
+   * @param channel_uuid Channel to check out-of-date
+   * @returns Returns data as a triple [message-limit, after-id, before-id] or undefined if cache is already up-to-date or is unknown
+   */
+  static async CacheIsOld(channel_uuid: string) : Promise<[number, number, number] | undefined> {
+    const ce = await this.ContainsCache(channel_uuid);
+    if (ce === undefined) return undefined;
+    const remote_message = parseInt((await GETMessages(channel_uuid, () => {}, true, 1))[0].message_Id);
+    const local_message = parseInt((await (ce as NCChannelCache).GetMessages(1)).Messages[0].message_Id);
+    if (remote_message !== local_message) {
+      const limit = remote_message - local_message;
+      return [limit, local_message - 1, remote_message + 1];
+    }
+    else {
+      return undefined;
+    }
+  }
+
+  /**
+   * Updates messages in the cache
+   * @param channel_uuid Channel to check for updated messages is
+   * @returns A array of strings of message ids that have been updated
+   */
+  static async UpdateCache(channel_uuid: string) : Promise<string[] | undefined> {
+    const ce = await this.ContainsCache(channel_uuid);
+    if (ce === undefined) return undefined;
+    const cache = ce as NCChannelCache;
+    const oldestId = (await cache.GetOldestMessage()).Last_Id;
+    const newestID = parseInt((await cache.GetMessages(1)).Messages[0].message_Id);
+    const limit = newestID - oldestId;
+    const remote = await GETMessageEditTimestamps(channel_uuid, limit, oldestId - 1, newestID + 1);
+    const local = await cache.GetMessageEditTimestamps();
+    const keys = [] as string[];
+    for (const key in remote.keys()) {
+      if (!local.containsKey(key) || remote.getValue(key) !== local.getValue(key)) {
+        const message = await GETMessage(channel_uuid, key.toString(), true);
+        console.log(`Cache for channel '${channel_uuid}' has out-of-date/missing message '${key}'. Attempting update...`)
+        if (message === undefined) continue;
+        keys.push(key);
+        cache.SetMessage(key, message);
+      }
+    }
+    return keys;
+  }
+
+  /**
+   * Cleans cache of deleted message
+   * @param channel_uuid Channel to clean deleted messages from
+   * @returns A array of string of message ids that have been removed
+   */
+  static async CleanCache(channel_uuid: string) : Promise<string[] | undefined> {
+    const ce = await this.ContainsCache(channel_uuid);
+    if (ce === undefined) return undefined;
+    const cache = ce as NCChannelCache;
+    const oldestId = (await cache.GetOldestMessage()).Last_Id;
+    const newestID = parseInt((await cache.GetMessages(1)).Messages[0].message_Id);
+    const limit = newestID - oldestId;
+    const remote = await GETMessageEditTimestamps(channel_uuid, limit, oldestId - 1, newestID + 1);
+    const local = await cache.GetMessageEditTimestamps();
+    const keys = [] as string[];
+    for (const key in local.keys()) {
+      if (remote.containsKey(key)) continue;
+      cache.RemoveMessage(key);
+      keys.push(key);
+    }
+    return keys;
   }
 }

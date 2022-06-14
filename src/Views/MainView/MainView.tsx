@@ -163,7 +163,39 @@ function MainView(props: MainViewProps) {
     setChannelMenuVisibility(false);
 
     if (channel && channel.channelID) {
-      if (await HasChannelCache(channel.channelID) && !await CacheValid(channel.channelID, session.current) && !HasFlag("no-cache")) {
+      setMessages([]);
+      // Check if channel has cache
+      const isCache = await NCChannelCache.ContainsCache(channel.channelID);
+      if (isCache) {
+        const cache = isCache as NCChannelCache;
+        // Fully refresh cache, ignoring anything, pulling the newest messages
+        if (await cache.RequiresRefresh()) {
+          cache.ClearCache();
+          GETMessagesSingle(channel.channelID, async (message: IMessageProps) => {
+            autoScroll.current = false;
+            setMessages(prevState => {
+              return [...prevState, message];
+            });
+            return true;
+          }, () => {autoScroll.current = true;}, true);
+          cache.WriteSession(session.current);
+          return;
+        }
+
+        if (!await cache.IsValidSession(session.current)) {
+
+        }
+        else {
+          GETMessagesSingle(channel.channelID, async (message: IMessageProps) => {
+            autoScroll.current = false;
+            setMessages(prevState => {
+              return [...prevState, message];
+            });
+            return true;
+          }, () => {autoScroll.current = true;});
+        }
+      }
+      /*if (await HasChannelCache(channel.channelID) && !await CacheValid(channel.channelID, session.current) && !HasFlag("no-cache")) {
         const cache = new NCChannelCache(channel.channelID);
         GETMessages(channel.channelID, async (messages: IMessageProps[]) => {
           // Get any new messages we may have missed while offline
@@ -175,7 +207,7 @@ function MainView(props: MainViewProps) {
           if (m === undefined) return;
           const m_id = m.message_Id;
           if (messages[0].message_Id !== m_id) {
-            if (await cache.CacheValid()) {
+            if (await cache.RequiresRefresh()) {
               const limit = parseInt(messages[0].message_Id) - parseInt(m_id);
               if (channel.channelID === undefined) return;
               GETMessages(channel.channelID, (decrypt: IMessageProps[]) => {
@@ -236,7 +268,7 @@ function MainView(props: MainViewProps) {
           });
           return true;
         }, () => {autoScroll.current = true;});
-      }
+      }*/
     }
   }
 
