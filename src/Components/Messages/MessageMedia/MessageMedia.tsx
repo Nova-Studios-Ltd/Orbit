@@ -1,5 +1,5 @@
 import { useTheme } from "@mui/material";
-import { memo, useEffect, useRef, useState } from "react";
+import React, { memo, useEffect, useRef, useState } from "react";
 import useClassNames from "Hooks/useClassNames";
 import { ComputeCSSDims } from "NSLib/Util";
 import Dimensions from "DataTypes/Dimensions";
@@ -42,6 +42,10 @@ function MessageMedia({ className, content, contentUrl, fileName, mimeType, file
 
   }, [contentHeight, contentWidth, isPreviewableMediaType]);
 
+  const onMediaClick = (event: React.MouseEvent<HTMLDivElement>) => {
+    event.stopPropagation();
+  }
+
   const mediaElement = () => {
     if (mimeType && mimeType.length > 0) {
       const parsedMimeType = new MimeTypeParser(mimeType).getGeneralizedFileType();
@@ -64,7 +68,7 @@ function MessageMedia({ className, content, contentUrl, fileName, mimeType, file
   }
 
   return (
-    <div className={classNames} style={{ backgroundColor: theme.palette.background.paper, ...dimensions }}>
+    <div className={classNames} style={{ backgroundColor: theme.palette.background.paper, ...dimensions }} onClick={onMediaClick}>
       {mediaElement()}
     </div>
   )
