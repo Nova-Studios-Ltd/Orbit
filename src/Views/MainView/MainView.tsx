@@ -183,7 +183,15 @@ function MainView(props: MainViewProps) {
         }
 
         if (!await cache.IsValidSession(session.current)) {
-
+          await NCChannelCache.CleanCache(channel.channelID);
+          await NCChannelCache.UpdateCache(channel.channelID);
+          GETMessagesSingle(channel.channelID, async (message: IMessageProps) => {
+            autoScroll.current = false;
+            setMessages(prevState => {
+              return [...prevState, message];
+            });
+            return true;
+          }, () => {autoScroll.current = true;});
         }
         else {
           GETMessagesSingle(channel.channelID, async (message: IMessageProps) => {
