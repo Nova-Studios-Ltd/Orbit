@@ -12,7 +12,7 @@ export interface SectionProps extends NCComponent {
 
 function Section(props: SectionProps) {
   const theme = useTheme();
-  const classNames = useClassNames("SectionContainer", props.className);
+  let classNames = useClassNames("SectionContainer", props.className);
 
   const items = () => {
     if (props.children) {

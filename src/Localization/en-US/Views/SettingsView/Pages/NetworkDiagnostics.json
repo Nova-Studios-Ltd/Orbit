@@ -1,0 +1,7 @@
+{
+  "Button_Label-ConnectWebsocket": "Connect",
+  "Button_Label-DisconnectWebsocket": "Disconnect",
+  "Button_Label-ReconnectWebsocket": "Reconnect",
+  "Typography-WebsocketStatusLabel": "Websocket",
+  "Typography-APIStatusLabel": "API Latency"
+}

@@ -1,4 +1,5 @@
 import { Button, useTheme } from "@mui/material";
+import { useTranslation } from "react-i18next";
 import useClassNames from "Hooks/useClassNames";
 
 import type { NCComponent } from "DataTypes/Components";
@@ -15,6 +16,7 @@ export interface ComponentProps extends NCComponent {
 }
 
 function NetworkDiag(props: ComponentProps) {
+  const Localizations_NetworkDiagnostics = useTranslation("NetworkDiagnostics").t;
   const theme = useTheme();
   const classNames = useClassNames("ComponentContainer", props.className);
   const [websocketState, setWebsocketState] = useState(["", IndicatorState.Negative, NCWebsocketState.Disconnected]);
@@ -50,9 +52,9 @@ function NetworkDiag(props: ComponentProps) {
   const websocketAdvanced = () => {
     if (props.showAdvanced) {
       return (<div>
-        {(state === NCWebsocketState.Connected || state === NCWebsocketState.Reconnecting)? (<Button disabled>[Connected]</Button>) : (<Button onClick={() => Socket.Connect()}>[Connect]</Button>)}
-        {(state === NCWebsocketState.Disconnected)? (<Button disabled>[Disconnected]</Button>) : (<Button onClick={() => Socket.Terminate()}>[Disconnect]</Button>)}
-        {(state === NCWebsocketState.Disconnected || state === NCWebsocketState.Connecting || state === NCWebsocketState.Reconnecting)? (<Button disabled>[Reconnect]</Button>) : (<Button onClick={() => Socket.Reconnect()}>[Reconnect]</Button>)}
+        {(state === NCWebsocketState.Connected || state === NCWebsocketState.Reconnecting)? (<Button disabled>{Localizations_NetworkDiagnostics("Button_Label-ConnectWebsocket")}</Button>) : (<Button onClick={() => Socket.Connect()}>{Localizations_NetworkDiagnostics("Button_Label-ConnectWebsocket")}</Button>)}
+        {(state === NCWebsocketState.Disconnected)? (<Button disabled>{Localizations_NetworkDiagnostics("Button_Label-DisconnectWebsocket")}</Button>) : (<Button onClick={() => Socket.Terminate()}>{Localizations_NetworkDiagnostics("Button_Label-DisconnectWebsocket")}</Button>)}
+        {(state === NCWebsocketState.Disconnected || state === NCWebsocketState.Connecting || state === NCWebsocketState.Reconnecting)? (<Button disabled>{Localizations_NetworkDiagnostics("Button_Label-ReconnectWebsocket")}</Button>) : (<Button onClick={() => Socket.Reconnect()}>{Localizations_NetworkDiagnostics("Button_Label-ReconnectWebsocket")}</Button>)}
       </div>);
     }
     return (<div></div>);
@@ -61,11 +63,11 @@ function NetworkDiag(props: ComponentProps) {
   return (
     <div className={classNames} style={{ backgroundColor: theme.palette.background.default }}>
       <StatusIndicator state={websocketState[1] as IndicatorState}>
-        [Websocket {websocketState[0] as string}]
+        {Localizations_NetworkDiagnostics("Typography-WebsocketStatusLabel").toString()} {websocketState[0] as string}
         {websocketAdvanced()}
       </StatusIndicator>
       <br/>
-      <StatusIndicator state={apiLatency[1] as IndicatorState}>[API Latency {apiLatency[0] as string}]</StatusIndicator>
+      <StatusIndicator state={apiLatency[1] as IndicatorState}>{Localizations_NetworkDiagnostics("Typography-APIStatusLabel").toString()} {apiLatency[0] as string}</StatusIndicator>
     </div>
   )
 }

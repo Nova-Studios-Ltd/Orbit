@@ -1,3 +1,10 @@
 {
-
+  "Button_Label-EditUsername": "Change Username",
+  "Button_Label-EditPassword": "Change Password",
+  "Button_Label-EditEmail": "Change Email",
+  "Button_Label-Logout": "Logout",
+  "Button_Label-CopyToken": "Copy Token to Clipboard",
+  "Button_Label-DeleteAccount": "Delete Account",
+  "Section_Title-Diagnostics": "Network Diagnostics",
+  "Section_Title-Advanced": "Advanced"
 }

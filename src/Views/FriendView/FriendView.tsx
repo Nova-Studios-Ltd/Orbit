@@ -47,8 +47,8 @@ function FriendView(props: FriendViewProps) {
   return (
     <ViewContainer className={classNames} noPadding>
       <Tabs value={path} onChange={onTabChange}>
-        <Tab label="[Friends List]" value={FriendViewRoutes.FriendsList} />
-        <Tab label="[Add Friend]" value={FriendViewRoutes.AddFriend} />
+        <Tab label={Localizations_FriendView("Tab_Label-FriendsList")} value={FriendViewRoutes.FriendsList} />
+        <Tab label={Localizations_FriendView("Tab_Label-AddFriend")} value={FriendViewRoutes.AddFriend} />
       </Tabs>
       {page()}
     </ViewContainer>

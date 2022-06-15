@@ -24,6 +24,19 @@
   justify-content: center;
 }
 
+.SectionButtonContainer {
+  display: flex;
+  flex-direction: row;
+}
+
+.SectionButton {
+  margin-left: var(--global-margin) !important;
+}
+
+.SectionButton:first-child {
+  margin-left: 0 !important;
+}
+
 .Overlay {
   text-align: center;
   font-size: 100px;
@@ -57,5 +70,15 @@
 
   .UserSectionButtonContainer, .UserInfoContainer {
     flex-direction: column;
+  }
+
+  .SectionButtonContainer {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .SectionButton {
+    margin-top: var(--global-margin) !important;
+    margin-left: 0 !important;
   }
 }

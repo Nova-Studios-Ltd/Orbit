@@ -10,6 +10,7 @@
     "**/.erb": true,
     "**/.husky": true,
     "**/__tests__": true,
-    "**/.history": true
+    "**/.history": true,
+    "**/.VSCodeCounter": true
   }
 }

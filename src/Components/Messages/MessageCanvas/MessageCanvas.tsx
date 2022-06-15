@@ -1,4 +1,5 @@
-import { Skeleton, useTheme } from "@mui/material";
+import { Typography, useTheme } from "@mui/material";
+import { useTranslation } from "react-i18next";
 import useClassNames from "Hooks/useClassNames";
 
 import Message, { MessageProps } from "Components/Messages/Message/Message";
@@ -17,10 +18,18 @@ export interface MessageCanvasProps extends NCAPIComponent {
 }
 
 function MessageCanvas(props: MessageCanvasProps) {
+  const Localizations_MessageCanvas = useTranslation("MessageCanvas").t;
   const theme = useTheme();
   const classNames = useClassNames("MessageCanvasContainer", props.className);
   const innerClassNames = useClassNames("TheActualMessageCanvas", props.innerClassName);
   const lastScrollPos = useRef(0);
+
+  const NoMessagesHint = (
+    <div className="NoMessagesHintContainer">
+      <Typography variant="h6">{Localizations_MessageCanvas("Typography_Heading-NoMessagesHint")}</Typography>
+      <Typography variant="body1">{Localizations_MessageCanvas("Typography_Body-NoMessagesHint")}</Typography>
+    </div>
+  );
 
   const messagesArray = () => {
     if (props.messages && props.messages.length > 0) {
@@ -28,6 +37,8 @@ function MessageCanvas(props: MessageCanvasProps) {
         return (<Message key={message.message_Id} sharedProps={props.sharedProps} content={message.content} attachments={message.attachments} id={message.message_Id} authorID={message.author_UUID} avatarURL={message.avatar} author={message.author} timestamp={message.timestamp} editedTimestamp={message.editedTimestamp} isEdited={message.edited} onMessageEdit={props.onMessageEdit} onMessageDelete={props.onMessageDelete} />)
       }).reverse();
     }
+
+    return NoMessagesHint;
   }
 
   const onScroll = () => {

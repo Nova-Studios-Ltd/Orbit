@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { AutoLogin, Logout } from "Init/AuthHandler";
@@ -49,7 +49,7 @@ function MainView(props: MainViewProps) {
   const [selectedChannel, setSelectedChannel] = useState(null as unknown as IRawChannelProps);
   const [messages, setMessages] = useState([] as IMessageProps[]);
   const [MessageAttachments, setMessageAttachments] = useState([] as MessageAttachment[]);
-  const [channelMenuOpen, setChannelMenuVisibility] = useState(true);
+  const [channelMenuOpen, setChannelMenuVisibility] = useState(false);
   const [avatarNonce, setAvatarNonce] = useState(Date.now().toString());
 
   const onAvatarChanged = () => {
@@ -110,7 +110,7 @@ function MainView(props: MainViewProps) {
   }
 
   const onLoadPriorMessages = () => {
-    const oldestID = parseInt(messages[messages.length - 1].message_Id);
+    const oldestID = parseInt(messages[messages.length - 1].message_Id); // TODO: Figure out why this spits out an error
     GETMessages(selectedChannel.table_Id, (messages: IMessageProps[]) => {
       autoScroll.current = false;
       setMessages(prevState => {
@@ -152,6 +152,12 @@ function MainView(props: MainViewProps) {
     setSelectedChannel(null as unknown as IRawChannelProps);
     setChannelMenuVisibility(false);
     navigate(path);
+  }
+
+  const onMainViewContainerRightClick = (event: React.MouseEvent<HTMLDivElement>) => {
+    if (props.sharedProps && props.sharedProps.widthConstrained) {
+      setChannelMenuVisibility(false);
+    }
   }
 
   const onChannelClick = async (channel: IRawChannelProps) => {
@@ -256,7 +262,7 @@ function MainView(props: MainViewProps) {
             if (remoteTimestamps.getValue(key) !== localTimestamps.getValue(key) && channel.channelID !== undefined) {
               const message = await GETMessage(channel.channelID, key, true);
               if (message === undefined) continue;
-              console.log(`Message iwth id '${message.message_Id}' is out of date. Updating...`);
+              console.log(`Message with id '${message.message_Id}' is out of date. Updating...`);
               cache.SetMessage(key, message);
             }
           }
@@ -299,7 +305,7 @@ function MainView(props: MainViewProps) {
     console.log(`Request to delete channel ${channel.channelName}`);
     if (channel.table_Id === undefined) return;
     DELETEChannel(channel.table_Id, (deleted: boolean) => {
-      console.log(`Request to delete channel ${channel.table_Id} succesful`);
+      console.log(`Request to delete channel ${channel.table_Id} successful`);
     });
   };
 
@@ -399,7 +405,12 @@ function MainView(props: MainViewProps) {
 
       setChannels(loadedChannels);
 
-      if (loadedChannels[0]) onChannelClick(loadedChannels[0]); // Temporary channel preload
+      if (props.path === MainViewRoutes.Chat && loadedChannels.length < 1) {
+        navigate(MainViewRoutes.Friends);
+        return;
+      }
+
+      if (props.path === MainViewRoutes.Chat && loadedChannels[0]) onChannelClick(loadedChannels[0]); // Temporary channel preload
     });
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -441,8 +452,8 @@ function MainView(props: MainViewProps) {
     <ViewContainer>
       <div className="MainViewContainer">
         {MainViewContainerLeft()}
-        <div className="MainViewContainerRight">
-          <GenericHeader sharedProps={props.sharedProps} title={title} childrenLeft={props.sharedProps?.widthConstrained ? <IconButton onClick={() => onChannelMenuToggle()}><MenuIcon /></IconButton> : null} />
+        <div className="MainViewContainerRight" onClick={onMainViewContainerRightClick}>
+          <GenericHeader sharedProps={props.sharedProps} title={title} childrenLeft={props.sharedProps?.widthConstrained ? <IconButton onClick={(event: React.MouseEvent<HTMLButtonElement>) => { event.stopPropagation(); onChannelMenuToggle(); }}><MenuIcon /></IconButton> : null} />
           {page()}
         </div>
       </div>

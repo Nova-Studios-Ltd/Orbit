@@ -26,8 +26,6 @@ function DashboardPage(props: DashboardPageProps) {
   const classNames = useClassNames("DashboardPageContainer", props.className);
   const theme = useTheme();
 
-  const [test, setTest] = useState(false);
-
   const settings = new SettingsManager();
   const usernameText = `${settings.ReadCookieSync("Username")}#${settings.ReadCookieSync("Discriminator")}`;
 
@@ -47,7 +45,7 @@ function DashboardPage(props: DashboardPageProps) {
 
   const changePasswd = async () => {
     return;
-    // TODO Actully allow updating password
+    // TODO Actually allow updating password
     UPDATEPassword("", (status: boolean, newPassword: string) => {
 
     });
@@ -55,7 +53,7 @@ function DashboardPage(props: DashboardPageProps) {
 
   const changeUsername = async () => {
     return;
-    // TODO Actully allow updating username
+    // TODO Actually allow updating username
     UPDATEUsername("", (status: boolean, newUsername: string) => {
 
     });
@@ -63,7 +61,7 @@ function DashboardPage(props: DashboardPageProps) {
 
   const changeEmail = async () => {
     return;
-    // TODO Actully allow updating email
+    // TODO Actually allow updating email
     UPDATEEmail("", (status: boolean, newUsername: string) => {
 
     });
@@ -81,15 +79,21 @@ function DashboardPage(props: DashboardPageProps) {
             <Button color="inherit" style={{ textTransform: "none" }} onClick={() => WriteToClipboard(usernameText)} onContextMenu={() => WriteToClipboard(settings.User.uuid)}><Typography variant="h5">{usernameText}</Typography></Button>
           </div>
           <div className="UserSectionButtonContainer">
-            <Button disabled>[Edit Username]</Button>
-            <Button disabled>[Change Email]</Button>
-            <Button disabled>[Change Password]</Button>
-            <Button color="error" onClick={() => props.onLogout ? props.onLogout() : null}>[Logout]</Button>
+            <Button className="SectionButton" id="EditUsernameButton">{Localizations_DashboardPage("Button_Label-EditUsername")}</Button>
+            <Button className="SectionButton" id="EditEmailButton" disabled>{Localizations_DashboardPage("Button_Label-EditEmail")}</Button>
+            <Button className="SectionButton" id="EditPasswordButton" disabled>{Localizations_DashboardPage("Button_Label-EditPassword")}</Button>
+            <Button className="SectionButton" id="LogoutButton" color="error" onClick={() => props.onLogout ? props.onLogout() : null}>{Localizations_DashboardPage("Button_Label-Logout")}</Button>
           </div>
         </Card>
       </Section>
-      <Section title="[Network Diagnostics]">
+      <Section title={Localizations_DashboardPage("Section_Title-Diagnostics")}>
         <NetworkDiag showAdvanced={true}/>
+      </Section>
+      <Section title={Localizations_DashboardPage("Section_Title-Advanced")}>
+        <div className="SectionButtonContainer">
+          <Button className="SectionButton" id="CopyTokenButton" variant="outlined">{Localizations_DashboardPage("Button_Label-CopyToken")}</Button>
+          <Button className="SectionButton" id="DeleteAccountButton" variant="outlined" color="error">{Localizations_DashboardPage("Button_Label-DeleteAccount")}</Button>
+        </div>
       </Section>
     </PageContainer>
   );
