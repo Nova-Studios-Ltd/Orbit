@@ -10,18 +10,16 @@ export default function TD() {
             Orbit Web Client
           </h2>
           <p>
-            Welcome to Orbit! Orbit is currently under development and is not ready yet. However, when it is, it will be live here.
+            Welcome to Orbit! Orbit is currently under development and is not ready yet. When it is, it will be live here.
           </p>
           <p>
-            In the meantime, perhaps give our <a
+            In the meantime, you can try our open beta of Orbit <span
             className="App-link"
-            href="https://novastudios.tk/NC3"
-            rel="noopener noreferrer"
+            onClick={() => document.location.href = "https://www.youtube.com/watch?v=dQw4w9WgXcQ"}
           >
-            Desktop Client
-          </a> a try?
+            here
+          </span>.
           </p>
-          <caption>(nvm it's broken)</caption>
         </header>
       </div>
     );
