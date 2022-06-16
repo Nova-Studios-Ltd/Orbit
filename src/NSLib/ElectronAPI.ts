@@ -102,7 +102,7 @@ export function UploadFile(): Promise<NCFile[]> {
       file.multiple = true;
       file.type = 'file';
       file.click();
-      file.onchange = async () => {
+      file.oninput = async () => {
         if (file.files === null || file.files.length === 0) return;
         const files = [] as NCFile[];
         for (let ff = 0; ff < file.files.length; ff++) {
