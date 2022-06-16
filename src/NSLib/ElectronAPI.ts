@@ -94,6 +94,16 @@ export async function DownloadUint8ArrayFile(file: Uint8Array, filename = "unkno
  */
 export function UploadFile(): Promise<NCFile[]> {
   return new Promise(async (resolve) => {
+    const handleFiles = async (file: HTMLInputElement) => {
+      if (file.files === null || file.files.length === 0) return;
+      const files = [] as NCFile[];
+      for (let ff = 0; ff < file.files.length; ff++) {
+        const f = file.files[ff];
+        files.push(new NCFile(new Uint8Array(await f.arrayBuffer()), "N/A", f.name));
+      }
+      resolve(files);
+    }
+
     if (IsElectron()) {
       resolve(await GetIPCRenderer().invoke("UploadFile"))
     }
@@ -102,15 +112,8 @@ export function UploadFile(): Promise<NCFile[]> {
       file.multiple = true;
       file.type = 'file';
       file.click();
-      file.oninput = async () => {
-        if (file.files === null || file.files.length === 0) return;
-        const files = [] as NCFile[];
-        for (let ff = 0; ff < file.files.length; ff++) {
-          const f = file.files[ff];
-          files.push(new NCFile(new Uint8Array(await f.arrayBuffer()), "N/A", f.name));
-        }
-        resolve(files);
-      }
+      file.oninput = (event) => handleFiles(event.currentTarget as HTMLInputElement);
+      file.onblur = (event) => handleFiles(event.currentTarget as HTMLInputElement);
     }
   })
 }
