@@ -92,7 +92,7 @@ export async function DownloadUint8ArrayFile(file: Uint8Array, filename = "unkno
  * Triggers a file upload, automaticly handles switching to native
  * @returns A Promise containing a NCFile array
  */
-export function UploadFile(): Promise<NCFile[]> {
+export function UploadFile(multiple?: boolean): Promise<NCFile[]> {
   return new Promise(async (resolve) => {
     const handleFiles = async (file: HTMLInputElement) => {
       if (file.files === null || file.files.length === 0) return;
@@ -109,11 +109,11 @@ export function UploadFile(): Promise<NCFile[]> {
     }
     else {
       var file = document.createElement('input');
-      file.multiple = true;
+      file.multiple = multiple ? true : false;
       file.type = 'file';
-      file.click();
       file.oninput = (event) => handleFiles(event.currentTarget as HTMLInputElement);
       file.onblur = (event) => handleFiles(event.currentTarget as HTMLInputElement);
+      file.click();
     }
   })
 }

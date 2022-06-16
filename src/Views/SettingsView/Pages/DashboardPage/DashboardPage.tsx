@@ -34,7 +34,7 @@ function DashboardPage(props: DashboardPageProps) {
   }
 
   const pickProfile = async () => {
-    UploadFile().then((files: NCFile[]) => {
+    UploadFile(false).then((files: NCFile[]) => {
       if (files.length === 0) return;
       SETAvatar(settings.User.uuid, new Blob([files[0].FileContents]), (set: boolean) => {
         if (set) console.log("Avatar Set");
