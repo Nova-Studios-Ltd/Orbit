@@ -90,7 +90,30 @@ export async function SETKey(key_user_uuid: string, key: string) : Promise<boole
 }
 
 // Friend
-// TODO Add friend endpoints
+export async function GETFriends(user_uuid: string) : Promise<Dictionary<string>> {
+  const resp = await GET(`/Friend/${user_uuid}/Friends`, new SettingsManager().User.token);
+  if (resp.status === 200) {
+    const d = new Dictionary<string>();
+    d._dict = resp.payload as Indexable<string>;
+    return d;
+  }
+  return new Dictionary<string>();
+}
+
+export async function REQUESTFriend(user_uuid: string, request_uuid: string) : Promise<boolean> {
+  const resp = await POST(`/Friend/${user_uuid}/Send/${request_uuid}`, ContentType.EMPTY, "", new SettingsManager().User.token, false);
+  return resp.status === 200;
+}
+
+export async function ACCEPTFriend(user_uuid: string, request_uuid: string) : Promise<boolean> {
+  const resp = await PATCH(`/Friend/${user_uuid}/Accept/${request_uuid}`, ContentType.EMPTY, "", new SettingsManager().User.token);
+  return resp.status === 200;
+}
+
+export async function DECLINEFriend(user_uuid: string, request_uuid: string) : Promise<boolean> {
+  const resp = await PATCH(`/Friend/${user_uuid}/Decline/${request_uuid}`, ContentType.EMPTY, "", new SettingsManager().User.token);
+  return resp.status === 200;
+}
 
 
 // Messages
