@@ -38,9 +38,9 @@ function LoginPage(props: LoginPageProps) {
   }
 
   const Manager = new SettingsManager();
-  Manager.ContainsCookie("LoggedIn").then(async (value: boolean) => {
-    if ((location.pathname.toLowerCase().includes(AuthViewRoutes.Login) || location.pathname.toLowerCase().includes(AuthViewRoutes.Register)) && value) {
-      Manager.WriteCookie("LoggedIn", "false");
+  Manager.ContainsLocalStorage("LoggedIn").then(async (value: boolean) => {
+    if ((location.pathname.toLowerCase().includes(AuthViewRoutes.Login) || location.pathname.toLowerCase().includes(AuthViewRoutes.Register) || location.pathname === "/") && value) {
+      Manager.WriteLocalStorage("LoggedIn", "false");
       navigate(MainViewRoutes.Chat);
     }
   });

@@ -64,7 +64,7 @@ export async function AutoLogin() : Promise<boolean> {
   Manager.ClearKeys();
   Manager.LoadKeys(keyResp);
 
-  Manager.WriteCookie("LoggedIn", "true");
+  Manager.WriteLocalStorage("LoggedIn", "false");
 
   return true;
 }

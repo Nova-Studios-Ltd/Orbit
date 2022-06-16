@@ -8,10 +8,9 @@ import { Menu as MenuIcon } from "@mui/icons-material";
 import { isValidUsername } from "NSLib/Util";
 import { GenerateBase64SHA256 } from "NSLib/NCEncryption";
 import { NCChannelCache } from "NSLib/NCCache";
-import { HasFlag } from "NSLib/NCFlags";
 import { UploadFile } from "NSLib/ElectronAPI";
 import { SettingsManager } from "NSLib/SettingsManager";
-import { CREATEChannel, DELETEChannel, DELETEMessage, EDITMessage, GETChannel, GETMessage, GETMessageEditTimestamps, GETMessages, GETMessagesSingle, GETUserChannels, GETUserUUID, SENDMessage } from "NSLib/APIEvents";
+import { CREATEChannel, DELETEChannel, DELETEMessage, EDITMessage, GETChannel, GETMessages, GETMessagesSingle, GETUserChannels, GETUserUUID, SENDMessage } from "NSLib/APIEvents";
 
 import ViewContainer from "Components/Containers/ViewContainer/ViewContainer";
 import MessageAttachment from "DataTypes/MessageAttachment";
@@ -210,80 +209,6 @@ function MainView(props: MainViewProps) {
           return true;
         }, () => {autoScroll.current = true;});
       }
-      /*if (await HasChannelCache(channel.channelID) && !await CacheValid(channel.channelID, session.current) && !HasFlag("no-cache")) {
-        const cache = new NCChannelCache(channel.channelID);
-        GETMessages(channel.channelID, async (messages: IMessageProps[]) => {
-          // Get any new messages we may have missed while offline
-          if (messages.length === 0) {
-            setMessages([]);
-            return;
-          }
-          const m = (await cache.GetMessages(1)).Messages[0];
-          if (m === undefined) return;
-          const m_id = m.message_Id;
-          if (messages[0].message_Id !== m_id) {
-            if (await cache.RequiresRefresh()) {
-              const limit = parseInt(messages[0].message_Id) - parseInt(m_id);
-              if (channel.channelID === undefined) return;
-              GETMessages(channel.channelID, (decrypt: IMessageProps[]) => {
-                setMessages(decrypt);
-              }, false, limit, parseInt(m_id) - 1, parseInt(messages[0].message_Id) + 1);
-            }
-            else {
-              cache.ClearCache();
-              if (channel.channelID === undefined) return;
-              GETMessages(channel.channelID, (decrypt: IMessageProps[]) => {
-                setMessages(decrypt);
-              });
-            }
-          }
-          else {
-            if (channel.channelID === undefined) return;
-            GETMessages(channel.channelID, (decrypt: IMessageProps[]) => {
-              setMessages(decrypt);
-            });
-          }
-          // Now for the fun part... Updating edited messages...
-          const oldest = (await cache.GetOldestMessage()).Last_Id;
-          const limit = parseInt(messages[0].message_Id) - oldest;
-          const remoteTimestamps = await GETMessageEditTimestamps(channel.channelID, limit, oldest - 1, parseInt(messages[0].message_Id) + 1);
-          const localTimestamps = await cache.GetMessageEditTimestamps();
-
-          const keys = remoteTimestamps.keys();
-          for (let k = 0; k < keys.length; k++) {
-            const key = keys[k];
-            if (!localTimestamps.containsKey(key) && channel.channelID !== undefined) {
-              const message = await GETMessage(channel.channelID, key, true);
-              if (message === undefined) continue;
-              console.log(`Cache for channel '${channel.channelID}' missing message with id '${message.message_Id}'. Updating...`);
-              cache.SetMessage(key, message);
-              continue;
-            }
-            if (remoteTimestamps.getValue(key) !== localTimestamps.getValue(key) && channel.channelID !== undefined) {
-              const message = await GETMessage(channel.channelID, key, true);
-              if (message === undefined) continue;
-              console.log(`Message with id '${message.message_Id}' is out of date. Updating...`);
-              cache.SetMessage(key, message);
-            }
-          }
-          const kkeys = localTimestamps.keys();
-          for (let k = 0; k < kkeys.length; k++) {
-            const key = kkeys[k];
-            if (remoteTimestamps.containsKey(key)) continue;
-            cache.RemoveMessage(key);
-          }
-        }, true, 1);
-      }
-      else {
-        setMessages([]);
-        GETMessagesSingle(channel.channelID, async (message: IMessageProps) => {
-          autoScroll.current = false;
-          setMessages(prevState => {
-            return [...prevState, message];
-          });
-          return true;
-        }, () => {autoScroll.current = true;});
-      }*/
     }
   }
 
