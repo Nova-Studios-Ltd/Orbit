@@ -4,7 +4,7 @@ import MessageAttachment from "../DataTypes/MessageAttachment";
 import { Dictionary, Indexable } from "./Dictionary";
 import { ContentType, DELETE, GET, GETFile, NCAPIResponse, PATCH, POST, POSTFile, PUT } from "./NCAPI";
 import { AESMemoryEncryptData } from "./NCEncrytUtil";
-import { GetImageDimensions } from "./Util";
+import { GetExtension, GetImageDimensions } from "./Util";
 import Dimensions from "../DataTypes/Dimensions";
 import IUserData from "../Interfaces/IUserData";
 import { SettingsManager } from "./SettingsManager";
@@ -255,7 +255,9 @@ export function SENDMessage(channel_uuid: string, contents: string, rawAttachmen
             for (let a = 0; a < rawAttachments.length; a++) {
                 const attachment = rawAttachments[a];
                 const imageSize = (await GetImageDimensions(attachment.contents)) || new Dimensions(0, 0);
-                const re = await POSTFile(`/Channel/${channel_uuid}?width=${imageSize.width}&height=${imageSize.height}&contentToken=${token}`, new Blob([(await EncryptUint8Array(messageKey, attachment.contents, new Base64String(encryptedMessage.iv))).content]), attachment.filename, Manager.User.token)
+                const contents = (await EncryptUint8Array(messageKey, attachment.contents, new Base64String(encryptedMessage.iv))).content;
+                const encFilename = await EncryptBase64(messageKey, Base64String.CreateBase64String(attachment.filename), new Base64String(encryptedMessage.iv));
+                const re = await POSTFile(`/Channel/${channel_uuid}?width=${imageSize.width}&height=${imageSize.height}&contentToken=${token}&fileType=${GetExtension(attachment.filename)}`, new Blob([contents]), encFilename.content as string, Manager.User.token)
                 if (re.status === 200) attachments.push(re.payload as string);
                 else failedUploads.push(new FailedUpload(re.status as FailReason, attachment.filename, attachment.id));
             }

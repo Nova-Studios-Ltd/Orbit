@@ -1,7 +1,5 @@
 import Dimensions from "../DataTypes/Dimensions";
 import customProtocolCheck from "custom-protocol-check";
-import { NCChannelCache } from "./NCCache";
-import { API_DOMAIN } from "vars";
 
 export async function GetImageDimensions(buffer: Uint8Array) : Promise<Dimensions | undefined> {
   return new Promise((resolve) => {
@@ -37,6 +35,12 @@ export async function OpenCustomProto(url: string) : Promise<boolean> {
   })
 }
 
+/**
+ * Generates the Width and Height of a image with respect to aspect ratio
+ * @param image The Dimensions of the current image
+ * @param desired The Dimensions you wish to acheive
+ * @returns New Dimensions
+ */
 export function ComputeCSSDims(image: Dimensions, desired: Dimensions) : Dimensions {
   if (image.width <= 0 && image.width <= 0) return new Dimensions(0, 0);
   const xRatio = image.width / desired.width;
@@ -55,6 +59,22 @@ export function ComputeCSSDims(image: Dimensions, desired: Dimensions) : Dimensi
   return new Dimensions(nnx, nny);
 }
 
-export function isValidUsername(username: string) {
+/**
+ * Tests if the provided username is of a valid format
+ * @param username Username to test
+ * @returns True if the username is valid otherwise false
+ */
+export function isValidUsername(username: string) : boolean {
   return new RegExp(/^([\S]{1,})#([0-9]{4}$)/g).test(username);
+}
+
+/**
+ * Extracts the extension from the provided name
+ * @param filename File name to get extension from (ie. hello.txt)
+ * @returns The files extension (ie. txt)
+ */
+export function GetExtension(filename: string) : string {
+  const re = /(?:\.([^.]+))?$/.exec(filename);
+  if (re === null) return "";
+  return re[1];
 }
