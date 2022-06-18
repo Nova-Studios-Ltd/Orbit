@@ -28,7 +28,7 @@ function DashboardPage(props: DashboardPageProps) {
 
   const settings = new SettingsManager();
   const usernameText = `${settings.ReadCookieSync("Username")}#${settings.ReadCookieSync("Discriminator")}`;
-  const avatarSrc = settings && settings.User && settings.User.avatarSrc ? `nonce=${props.avatarNonce}` : "";
+  const avatarSrc = settings && settings.User && settings.User.avatarSrc ? `${settings.User.avatarSrc}&nonce=${props.avatarNonce}` : "";
 
   const updateAvatar = () => {
     if (props.onAvatarChanged) props.onAvatarChanged();
