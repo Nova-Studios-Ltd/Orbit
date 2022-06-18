@@ -67,6 +67,10 @@ function DashboardPage(props: DashboardPageProps) {
     });
   }
 
+  const deleteAccount = () => {
+    console.log("sike");
+  }
+
   return (
     <PageContainer className={classNames} noPadding>
       <Section className="UserSection">
@@ -91,9 +95,10 @@ function DashboardPage(props: DashboardPageProps) {
       </Section>
       <Section title={Localizations_DashboardPage("Section_Title-Advanced")}>
         <div className="SectionButtonContainer">
-          <Button className="SectionButton" id="CopyTokenButton" variant="outlined">{Localizations_DashboardPage("Button_Label-CopyToken")}</Button>
-          <Button className="SectionButton" id="DeleteAccountButton" variant="outlined" color="error">{Localizations_DashboardPage("Button_Label-DeleteAccount")}</Button>
+          <Button className="SectionButton" id="CopyTokenButton" variant="outlined" color="warning" onClick={() => WriteToClipboard(settings.User.token)}>{Localizations_DashboardPage("Button_Label-CopyToken")}</Button>
+          <Button className="SectionButton" id="DeleteAccountButton" variant="outlined" color="error" onClick={() => deleteAccount()}>{Localizations_DashboardPage("Button_Label-DeleteAccount")}</Button>
         </div>
+        <Typography variant="caption" color="error" textTransform="uppercase">{Localizations_DashboardPage("Typography-TokenWarning")}</Typography>
       </Section>
     </PageContainer>
   );

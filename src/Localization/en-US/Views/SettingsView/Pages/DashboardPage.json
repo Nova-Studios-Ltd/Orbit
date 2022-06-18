@@ -5,6 +5,7 @@
   "Button_Label-Logout": "Logout",
   "Button_Label-CopyToken": "Copy Token to Clipboard",
   "Button_Label-DeleteAccount": "Delete Account",
+  "Typography-TokenWarning": "Warning: the token is essentially your internal \"password\" and should never be shared. This is for debugging purposes.",
   "Section_Title-Diagnostics": "Network Diagnostics",
   "Section_Title-Advanced": "Advanced"
 }
