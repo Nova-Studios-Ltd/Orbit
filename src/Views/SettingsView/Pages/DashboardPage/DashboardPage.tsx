@@ -28,7 +28,7 @@ function DashboardPage(props: DashboardPageProps) {
 
   const settings = new SettingsManager();
   const usernameText = `${settings.ReadCookieSync("Username")}#${settings.ReadCookieSync("Discriminator")}`;
-  const avatarSrc = settings && settings.User && settings.User.avatarSrc ? `${settings.User.avatarSrc.replace("64", "128")}&nonce=${props.avatarNonce}` : "";
+  const avatarSrc = settings && settings.User && settings.User.avatarSrc ? `nonce=${props.avatarNonce}` : "";
 
   const updateAvatar = () => {
     if (props.onAvatarChanged) props.onAvatarChanged();
@@ -38,7 +38,7 @@ function DashboardPage(props: DashboardPageProps) {
     UploadFile(false).then((files: NCFile[]) => {
       if (files.length === 0) return;
       SETAvatar(settings.User.uuid, new Blob([files[0].FileContents]), (set: boolean) => {
-        if (set) console.log("Avatar Set");
+        if (set) console.log("Avatar Set", settings.User.uuid);
         updateAvatar();
       });
     });
