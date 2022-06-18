@@ -28,6 +28,7 @@ function DashboardPage(props: DashboardPageProps) {
 
   const settings = new SettingsManager();
   const usernameText = `${settings.ReadCookieSync("Username")}#${settings.ReadCookieSync("Discriminator")}`;
+  const avatarSrc = settings && settings.User && settings.User.avatarSrc ? `${settings.User.avatarSrc.replace("64", "128")}&nonce=${props.avatarNonce}` : "";
 
   const updateAvatar = () => {
     if (props.onAvatarChanged) props.onAvatarChanged();
@@ -77,7 +78,7 @@ function DashboardPage(props: DashboardPageProps) {
         <Card className="UserSectionCard">
           <div className="UserInfoContainer">
             <IconButton className="OverlayContainer" onClick={pickProfile}>
-              <Avatar sx={{ width: 128, height: 128 }} src={`${settings.User.avatarSrc.replace("64", "128")}&nonce=${props.avatarNonce}`}/>
+              <Avatar sx={{ width: 128, height: 128 }} src={avatarSrc}/>
               <AddIcon fontSize="large" className="Overlay" color="inherit" />
             </IconButton>
             <Button color="inherit" style={{ textTransform: "none" }} onClick={() => WriteToClipboard(usernameText)} onContextMenu={() => WriteToClipboard(settings.User.uuid)}><Typography variant="h5">{usernameText}</Typography></Button>
