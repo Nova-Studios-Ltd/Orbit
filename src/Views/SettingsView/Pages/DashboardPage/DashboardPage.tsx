@@ -44,7 +44,7 @@ function DashboardPage(props: DashboardPageProps) {
     });
   }
 
-  const changePasswd = async () => {
+  const changePassword = async () => {
     return;
     // TODO Actually allow updating password
     UPDATEPassword("", (status: boolean, newPassword: string) => {
