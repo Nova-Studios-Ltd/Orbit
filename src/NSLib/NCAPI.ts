@@ -68,8 +68,9 @@ export async function POST(endpoint: string, content_type: ContentType, payload:
 
   try {
     if (json) return new NCAPIResponse(resp.status, resp.statusText, await resp.clone().json());
+    throw Error("JSON format not requested");
   }
-  finally {
+  catch {
     return new NCAPIResponse(resp.status, resp.statusText, await resp.text());
   }
 }
