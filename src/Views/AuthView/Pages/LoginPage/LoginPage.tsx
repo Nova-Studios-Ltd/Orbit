@@ -32,8 +32,10 @@ function LoginPage(props: LoginPageProps) {
     event.preventDefault();
 
     LoginNewUser(email, password).then((status: LoginStatus) => {
-      if (status === LoginStatus.Success) navigate(MainViewRoutes.Chat);
-      else setFailStatus(status);
+      if (status === LoginStatus.Success)
+        navigate(MainViewRoutes.Chat)
+      else
+        setFailStatus(status);
     });
   }
 

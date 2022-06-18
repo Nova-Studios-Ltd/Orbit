@@ -120,7 +120,7 @@ function RegisterPage(props: RegisterPageProps) {
             }}>{Localizations_RegisterPage("Link-LearnMore")}</Link>
           </>
         }/>
-        <Button className="RegisterFormItem" variant="outlined" type="submit">{Localizations_RegisterPage("Button_Text-Login")}</Button>
+        <Button className="RegisterFormItem" variant="outlined" type="submit">{Localizations_RegisterPage("Button_Text-Register")}</Button>
       </form>
       <Typography marginTop={1.5}>{Localizations_RegisterPage("Typography-HaveAccountQuestion")} <RouterLink to="/login" style={{ color: theme.palette.primary.main }}>{Localizations_RegisterPage("Link-ToLoginForm")}</RouterLink></Typography>
     </div>

@@ -65,10 +65,14 @@ export async function POST(endpoint: string, content_type: ContentType, payload:
     },
     body: payload
   });
-  if (json)
-    return new NCAPIResponse(resp.status, resp.statusText, await resp.json());
-  else
+
+  try {
+    if (json) return new NCAPIResponse(resp.status, resp.statusText, await resp.clone().json());
+    throw Error("JSON format not requested");
+  }
+  catch {
     return new NCAPIResponse(resp.status, resp.statusText, await resp.text());
+  }
 }
 
 /**
