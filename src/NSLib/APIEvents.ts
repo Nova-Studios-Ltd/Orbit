@@ -237,8 +237,8 @@ export function SENDMessage(channel_uuid: string, contents: string, rawAttachmen
       if (resp.status === 200) {
           const channel = resp.payload as IRawChannelProps;
           if (channel.members === undefined) {
-              callback(false, [] as FailedUpload[]);
-              return;
+            callback(false, [] as FailedUpload[]);
+            return;
           }
           // Generate Key and Encrypt Message
           const messageKey = await GenerateBase64Key(32);
