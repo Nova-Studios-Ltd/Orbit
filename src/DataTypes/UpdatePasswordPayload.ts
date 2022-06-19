@@ -9,11 +9,11 @@ export class UpdatePasswordPayload {
 }
 
 export class PasswordPayloadKey {
-  privKey: string;
+  content: string;
   iv: string;
 
   constructor(privKey: string, iv: string) {
-    this.privKey = privKey
+    this.content = privKey
     this.iv = iv
   }
 }
