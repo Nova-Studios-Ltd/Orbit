@@ -1,4 +1,4 @@
-import { NCChannelCache } from "NSLib/NCCache";
+import { NCChannelCache } from "NSLib/NCChannelCache";
 import NCEvents from "NSLib/NCEvents";
 import { SettingsManager } from "NSLib/SettingsManager";
 import IWebSocketEvent from "../Interfaces/IWebsocketEvent";
@@ -22,6 +22,9 @@ export default function WebsocketInit(Websocket: NCWebsocket) {
   Websocket.CreateEvent(7, OnAddNewKey);
   Websocket.CreateEvent(8, OnRemoveKey);
   Websocket.CreateEvent(9, OnKeystoreReload);
+
+  // Username
+  Websocket.CreateEvent(10, OnUsernameChanged);
 }
 
 async function OnNewMessage(event: IWebSocketEvent) {
@@ -72,4 +75,9 @@ async function OnKeystoreReload(event: IWebSocketEvent) {
   if (keystore === undefined) return;
   await Manager.ClearKeys();
   Manager.LoadKeys(keystore);
+}
+
+async function OnUsernameChanged(event: IWebSocketEvent) {
+  const Manager = new SettingsManager();
+  //Manager.WriteCookie("Username")
 }

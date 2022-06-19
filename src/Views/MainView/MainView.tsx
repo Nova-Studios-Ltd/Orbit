@@ -7,7 +7,7 @@ import { IconButton, useTheme } from "@mui/material";
 import { Menu as MenuIcon } from "@mui/icons-material";
 import { isValidUsername } from "NSLib/Util";
 import { GenerateBase64SHA256 } from "NSLib/NCEncryption";
-import { NCChannelCache } from "NSLib/NCCache";
+import { NCChannelCache } from "NSLib/NCChannelCache";
 import { UploadFile } from "NSLib/ElectronAPI";
 import { SettingsManager } from "NSLib/SettingsManager";
 import { CREATEChannel, DELETEChannel, DELETEMessage, EDITMessage, GETChannel, GETMessages, GETMessagesSingle, GETUserChannels, GETUserUUID, SENDMessage } from "NSLib/APIEvents";
@@ -172,7 +172,7 @@ function MainView(props: MainViewProps) {
       setMessages([]);
       // Check if channel has cache
       const isCache = await NCChannelCache.ContainsCache(channel.table_Id);
-      if (isCache) {
+      if (isCache !== undefined) {
         const cache = isCache as NCChannelCache;
         // Fully refresh cache, ignoring anything, pulling the newest messages
         if (await cache.RequiresRefresh()) {
@@ -191,14 +191,23 @@ function MainView(props: MainViewProps) {
         if (!await cache.IsValidSession(session.current)) {
           await NCChannelCache.CleanCache(channel.table_Id);
           await NCChannelCache.UpdateCache(channel.table_Id);
+          cache.WriteSession(session.current);
           GETMessagesSingle(channel.table_Id, async (message: IMessageProps) => {
             autoScroll.current = false;
             setMessages(prevState => {
               return [...prevState, message];
             });
             return true;
-          }, () => {autoScroll.current = true;});
+          }, () => {autoScroll.current = true;}, true);
+          return;
         }
+        GETMessagesSingle(channel.table_Id, async (message: IMessageProps) => {
+          autoScroll.current = false;
+          setMessages(prevState => {
+            return [...prevState, message];
+          });
+          return true;
+        }, () => {autoScroll.current = true;});
       }
       else {
         GETMessagesSingle(channel.table_Id, async (message: IMessageProps) => {
@@ -207,7 +216,11 @@ function MainView(props: MainViewProps) {
             return [...prevState, message];
           });
           return true;
-        }, () => {autoScroll.current = true;});
+        }, async () => {
+          autoScroll.current = true;
+          const cc = await NCChannelCache.ContainsCache(channel.table_Id);
+          if (cc) (cc as NCChannelCache).WriteSession(session.current);
+        });
       }
     }
   }

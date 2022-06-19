@@ -36,7 +36,7 @@ export class NCChannelCache {
   async RequiresRefresh() : Promise<boolean> {
     if (!await this.ContainsMessage("LastAccess")) return false;
     const d = new Date((await this.CurrentCache.get("LastAccess"))["LastAccess"]);
-    return (((Date.now() - d.getTime()) / (1000 * 3600 * 24)) < 1);
+    return (((Date.now() - d.getTime()) / (1000 * 3600 * 24)) > 1);
   }
 
   async IsValidSession(session: string) : Promise<boolean> {
@@ -136,7 +136,7 @@ export class NCChannelCache {
    */
   static async ContainsCache(channel_uuid: string) : Promise<NCChannelCache | undefined> {
     const caches = await this.GetCaches();
-    if (caches.indexOf(`Cache_${channel_uuid}_1`) !== -1) new NCChannelCache(channel_uuid);
+    if (caches.indexOf(`Cache_${channel_uuid}_1`) !== -1) return new NCChannelCache(channel_uuid);
     else return undefined;
   }
 
@@ -179,13 +179,15 @@ export class NCChannelCache {
     if (ce === undefined) return undefined;
     const cache = ce as NCChannelCache;
     const oldestId = (await cache.GetOldestMessage()).Last_Id;
-    const newestID = parseInt((await cache.GetMessages(1)).Messages[0].message_Id);
+    const message = await cache.GetMessages(1);
+    if (!message.Satisfied) return undefined;
+    const newestID = parseInt(message.Messages[0].message_Id);
     const limit = newestID - oldestId;
     const remote = await GETMessageEditTimestamps(channel_uuid, limit, oldestId - 1, newestID + 1);
     const local = await cache.GetMessageEditTimestamps();
     const keys = [] as string[];
     for (const key in remote.keys()) {
-      if (!local.containsKey(key) || remote.getValue(key) !== local.getValue(key)) {
+      if ((!local.containsKey(key) || remote.getValue(key) !== local.getValue(key)) && remote.containsKey(key)) {
         const message = await GETMessage(channel_uuid, key.toString(), true);
         console.log(`Cache for channel '${channel_uuid}' has out-of-date/missing message '${key}'. Attempting update...`)
         if (message === undefined) continue;
@@ -206,7 +208,9 @@ export class NCChannelCache {
     if (ce === undefined) return undefined;
     const cache = ce as NCChannelCache;
     const oldestId = (await cache.GetOldestMessage()).Last_Id;
-    const newestID = parseInt((await cache.GetMessages(1)).Messages[0].message_Id);
+    const message = await cache.GetMessages(1);
+    if (!message.Satisfied) return undefined;
+    const newestID = parseInt(message.Messages[0].message_Id);
     const limit = newestID - oldestId;
     const remote = await GETMessageEditTimestamps(channel_uuid, limit, oldestId - 1, newestID + 1);
     const local = await cache.GetMessageEditTimestamps();

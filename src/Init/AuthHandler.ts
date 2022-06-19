@@ -9,7 +9,7 @@ import { ToBase64String, ToUint8Array } from "../NSLib/Base64";
 import { LoginStatus } from "DataTypes/Enums";
 import { DecryptBase64, GenerateBase64SHA256 } from "NSLib/NCEncryption";
 import { HasFlag } from "NSLib/NCFlags";
-import { NCChannelCache } from "NSLib/NCCache";
+import { NCChannelCache } from "NSLib/NCChannelCache";
 import { WEBSOCKET_DOMAIN } from "vars";
 
 export const Manager = new SettingsManager();

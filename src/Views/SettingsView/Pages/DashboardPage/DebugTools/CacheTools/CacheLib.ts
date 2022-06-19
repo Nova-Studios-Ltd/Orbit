@@ -1,6 +1,6 @@
 import { IMessageProps } from "Interfaces/IMessageProps";
 import { GETMessageEditTimestamps, GETMessages } from "NSLib/APIEvents";
-import { NCChannelCache } from "NSLib/NCCache";
+import { NCChannelCache } from "NSLib/NCChannelCache";
 
 export async function GetCaches() : Promise<string[]> {
   const databases = (await indexedDB.databases());

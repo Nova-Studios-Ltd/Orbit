@@ -10,7 +10,7 @@ import IUserData from "../Interfaces/IUserData";
 import { SettingsManager } from "./SettingsManager";
 import { Base64String } from "./Base64";
 import { DecryptBase64, DecryptBase64WithPriv, DecryptUint8Array, EncryptBase64, EncryptBase64WithPub, EncryptUint8Array, GenerateBase64Key, GenerateBase64SHA256 } from "./NCEncryption";
-import { NCChannelCache } from "./NCCache";
+import { NCChannelCache } from "./NCChannelCache";
 import { HasFlag } from "./NCFlags";
 import FailedUpload, { FailReason } from "DataTypes/FailedUpload";
 import { PasswordPayloadKey, UpdatePasswordPayload } from "DataTypes/UpdatePasswordPayload";
