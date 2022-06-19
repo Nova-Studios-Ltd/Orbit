@@ -35,7 +35,7 @@ export async function GETUserUUID(username: string, discriminator: string) : Pro
 }
 
 export function UPDATEUsername(newUsername: string, callback: (status: boolean, newUsername: string) => void) {
-  PATCH(`/User/@me/Username`, ContentType.JSON, newUsername, new SettingsManager().User.token).then((resp: NCAPIResponse) => {
+  PATCH(`/User/@me/Username`, ContentType.JSON, JSON.stringify(newUsername), new SettingsManager().User.token).then((resp: NCAPIResponse) => {
     if (resp.status === 200) callback(true, newUsername);
     else callback(false, "");
   });
@@ -53,7 +53,7 @@ export async function UPDATEPassword(newPassword: string, callback: (status: boo
 }
 
 export function UPDATEEmail(newEmail: string, callback: (status: boolean, newEmail: string) => void) {
-  PATCH(`/User/@me/Email`, ContentType.JSON, newEmail, new SettingsManager().User.token).then((resp: NCAPIResponse) => {
+  PATCH(`/User/@me/Email`, ContentType.JSON, JSON.stringify(newEmail), new SettingsManager().User.token).then((resp: NCAPIResponse) => {
     if (resp.status === 200) callback(true, newEmail);
     else callback(false, "");
   });

@@ -5,6 +5,12 @@
   "Button_Label-Logout": "Logout",
   "Button_Label-CopyToken": "Copy Token to Clipboard",
   "Button_Label-DeleteAccount": "Delete Account",
+  "TextField_Placeholder-ChangeUsernamePrompt": "New Username",
+  "TextField_Placeholder-ChangeEmailPrompt": "New Email",
+  "TextField_Placeholder-ChangePasswordPrompt": "New Password",
+  "Typography-ChangeUsernameDialogTitle": "Change Your Username",
+  "Typography-ChangeEmailDialogTitle": "Change Your Email",
+  "Typography-ChangePasswordDialogTitle": "Change Your Password",
   "Typography-TokenWarning": "Warning: the token is essentially your internal \"password\" and should never be shared. This is for debugging purposes.",
   "Section_Title-Diagnostics": "Network Diagnostics",
   "Section_Title-Advanced": "Advanced"

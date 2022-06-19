@@ -1,21 +1,18 @@
 import { useState } from "react";
-import { Menu, Modal, Popover, ThemeProvider } from "@mui/material";
-import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
+import { Menu, Popover, ThemeProvider } from "@mui/material";
+import { Route, Routes } from "react-router-dom";
 import i18n from "i18next";
 import { initReactI18next, useTranslation } from "react-i18next";
 import { Helmet } from "react-helmet";
 
-import { Manager } from "./Init/AuthHandler";
 import { GetUrlFlag } from "NSLib/NCFlags";
 import { ThemeSelector } from "Theme";
 import { Localizations } from "Localization/Localizations";
-import { SettingsManager } from "NSLib/SettingsManager";
 
 import AuthView from "Views/AuthView/AuthView";
 import ErrorView from "Views/ErrorView/ErrorView";
 import MainView from "Views/MainView/MainView";
 
-import DebugButton from "Components/Buttons/DebugButtom/DebugButton";
 import ContextMenuItem from "Components/Menus/ContextMenuItem/ContextMenuItem";
 
 import { AuthViewRoutes, FriendViewRoutes, MainViewRoutes } from "DataTypes/Routes";
@@ -23,11 +20,8 @@ import type { ReactNode } from "react";
 import type { ContextMenuProps, HelpPopupProps, SharedProps } from "DataTypes/Components";
 import type { ContextMenuItemProps } from "Components/Menus/ContextMenuItem/ContextMenuItem";
 import type { Coordinates } from "DataTypes/Types";
-import type { DialogItemProps } from "Components/Dialogs/DialogItem/DialogItem";
 
 import "./App.css";
-
-
 
 i18n.use(initReactI18next)
 .init({
@@ -38,6 +32,7 @@ i18n.use(initReactI18next)
 
 function App() {
   const Localizations_Common = useTranslation().t;
+  const theme = ThemeSelector(GetUrlFlag("theme") || "DarkTheme_Default");
 
   const [widthConstrained, setWidthConstrainedState] = useState(window.matchMedia("(max-width: 600px)").matches);
   const [isTouchCapable, setTouchCapableState] = useState("ontouchstart" in window || navigator.maxTouchPoints > 0);
@@ -48,12 +43,8 @@ function App() {
   const [contextMenuVisible, setContextMenuVisibility] = useState(false);
   const [contextMenuAnchorPos, setContextMenuAnchor] = useState(null as unknown as Coordinates);
   const [contextMenuItems, setContextMenuItems] = useState(null as unknown as ContextMenuItemProps[]);
-  const [dialogVisible, setDialogVisibility] = useState(false);
-  const [dialogAnchorPos, setDialogAnchor] = useState(null as unknown as Coordinates);
-  const [dialogMenuItems, setDialogItems] = useState(null as unknown as DialogItemProps[]);
 
   const contextMenuAnchorPosFiltered = { x: contextMenuAnchorPos ? contextMenuAnchorPos.x : 0, y: contextMenuAnchorPos ? contextMenuAnchorPos.y : 0 }
-
 
   const closeHelpPopup = () => {
     setHelpVisibility(false);
@@ -111,7 +102,7 @@ function App() {
       <Helmet>
         <title>{title && title.length > 0 ? `${Localizations_Common("AppTitle")} - ${title}` : Localizations_Common("AppTitle")}</title>
       </Helmet>
-      <ThemeProvider theme={ThemeSelector(GetUrlFlag("theme") || "DarkTheme_Default")}>
+      <ThemeProvider theme={theme}>
         <Routes>
           <Route path="*" element={<ErrorView sharedProps={SharedProps} errorCode={404} />}></Route>
           <Route path="/" element={<AuthView sharedProps={SharedProps} path={AuthViewRoutes.Login} />} />

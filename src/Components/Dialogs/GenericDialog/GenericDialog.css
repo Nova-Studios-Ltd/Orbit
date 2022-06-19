@@ -1,0 +1,49 @@
+.GenericDialogInnerContainer {
+
+}
+
+.GenericDialogInnerContainer {
+  display: flex;
+  flex-direction: column;
+  padding: var(--global-padding);
+  border-radius: var(--global-border-radius);
+  gap: var(--global-margin);
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+
+  transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+}
+
+.GenericDialogTitle {
+  overflow-wrap: break-word;
+}
+
+.GenericDialogContentContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.GenericDialogButtonContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+}
+
+@media only screen and (max-width: 600px) {
+  .GenericDialogInnerContainer {
+    position: static;
+    height: 100%;
+
+    transform: none;
+    -ms-transform: none;
+  }
+
+  .GenericDialogButtonContainer {
+    margin-top: auto;
+    margin-bottom: var(--global-margin);
+  }
+}

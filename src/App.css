@@ -54,6 +54,10 @@ html, body, #root, .App {
   padding: 0;
 }
 
+.FullWidth {
+  width: 100%;
+}
+
 .GenericContextMenu {
 
 }

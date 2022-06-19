@@ -26,7 +26,7 @@ function SettingsView(props: SettingsViewProps) {
   const page = () => {
     switch (props.path) {
       case SettingsViewRoutes.Dashboard:
-        return <DashboardPage avatarNonce={props.avatarNonce} onAvatarChanged={props.onAvatarChanged} onLogout={props.onLogout} />
+        return <DashboardPage sharedProps={props.sharedProps} avatarNonce={props.avatarNonce} onAvatarChanged={props.onAvatarChanged} onLogout={props.onLogout} />
       default:
         return null;
     }

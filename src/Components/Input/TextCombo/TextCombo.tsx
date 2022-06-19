@@ -27,6 +27,8 @@ export interface TextComboProps extends NCAPIComponent {
   maxLength?: number,
   textFieldPlaceholder?: string,
   autoFocus?: boolean,
+  fullWidth?: boolean,
+  isPassword?: boolean,
   onChange?: (event: TextComboChangeEvent) => void,
   onDismiss?: (event: TextComboDismissEvent) => void,
   onSubmit?: (event: TextComboSubmitEvent) => void
@@ -35,9 +37,10 @@ export interface TextComboProps extends NCAPIComponent {
 function TextCombo(props: TextComboProps) {
   const Localizations_TextCombo = useTranslation("TextCombo").t;
   const theme = useTheme();
-  const classNames = useClassNames("TextComboContainer", props.className);
+  const classNames = useClassNames(useClassNames("TextComboContainer", props.className), props.fullWidth ? "FullWidth" : undefined);
   const MaxTextFieldCharLength = props.maxLength ? props.maxLength : 4000; // How many characters remaining before it is shown
   const TextFieldCharLengthDisplayThreshold = Math.floor(MaxTextFieldCharLength * 0.2); // How many characters remaining before it is shown
+  const TextFieldType = props.isPassword ? "password" : "text";
 
   const [TextFieldFocused, setTextFieldFocusedState] = useState(false);
   const [TextFieldCharLength, setTextFieldCharLength] = useState(0);
@@ -84,7 +87,7 @@ function TextCombo(props: TextComboProps) {
       <div className="TextComboBefore">
         {props.childrenLeft}
       </div>
-      <input type="text" className="TextComboField" ref={TextFieldRef} maxLength={MaxTextFieldCharLength} style={{ backgroundColor: "transparent", color: theme.palette.text.primary, fontSize: theme.typography.subtitle1.fontSize }} placeholder={props.textFieldPlaceholder} value={props.value} onFocus={() => inputFocusHandler(true)} onBlur={() => inputFocusHandler(false)} onChange={onChangeHandler} onKeyDown={onKeyDownHandler} />
+      <input type={TextFieldType} className="TextComboField" ref={TextFieldRef} maxLength={MaxTextFieldCharLength} style={{ backgroundColor: "transparent", color: theme.palette.text.primary, fontSize: theme.typography.subtitle1.fontSize }} placeholder={props.textFieldPlaceholder} value={props.value} onFocus={() => inputFocusHandler(true)} onBlur={() => inputFocusHandler(false)} onChange={onChangeHandler} onKeyDown={onKeyDownHandler} />
       <div className="TextComboAfter">
         {RemainingTextFieldCharLength < TextFieldCharLengthDisplayThreshold ? <Typography variant="caption" alignSelf="center">{RemainingTextFieldCharLength}</Typography> : null}
         {props.childrenRight}
