@@ -27,23 +27,25 @@ function AvatarTextButton(props: AvatarTextButtonProps) {
   }
 
   const onEllipsisClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    event.stopPropagation();
     if (props.onRightClick) props.onRightClick(event);
   };
 
   return (
-    <ButtonBase className={classNames} style={{ backgroundColor: props.selected || isHovering ? theme.customPalette.customActions.active : theme.palette.background.paper }} onClick={props.onLeftClick} onContextMenu={props.onRightClick} onMouseEnter={() => onMouseHover(true)} onMouseLeave={() => onMouseHover(false)}>
-      <div className="AvatarTextButtonLeft">
-        <Avatar className="AvatarTextButtonIcon" src={props.iconSrc} />
-      </div>
-      <div className="AvatarTextButtonRight">
-        <Typography variant="h6">{props.children}</Typography>
-      </div>
+    <div className={classNames} style={{ backgroundColor: props.selected || isHovering ? theme.customPalette.customActions.active : theme.palette.background.paper }}>
+      <ButtonBase className="AvatarTextButtonBase" onClick={props.onLeftClick} onContextMenu={props.onRightClick} onMouseEnter={() => onMouseHover(true)} onMouseLeave={() => onMouseHover(false)}>
+        <div className="AvatarTextButtonLeft">
+          <Avatar className="AvatarTextButtonIcon" src={props.iconSrc} />
+        </div>
+        <div className="AvatarTextButtonRight">
+          <Typography variant="h6">{props.children}</Typography>
+        </div>
+      </ButtonBase>
       {props.showEllipsis || (isTouchCapable && props.showEllipsisConditional) ? (
         <IconButton className="AvatarTextButtonEllipsis" onClick={onEllipsisClick}>
           <EllipsisIcon />
-        </IconButton>) : null}
-    </ButtonBase>
+        </IconButton>) : null
+      }
+    </div>
   )
 }
 

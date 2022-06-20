@@ -2,6 +2,8 @@
   display: flex;
   flex-direction: column;
 
+  box-sizing: border-box;
+
   padding: var(--global-padding);
   overflow-y: auto;
   overflow-x: hidden;
@@ -16,6 +18,6 @@
   }
 
   .PageContainerNonAdaptive {
-    padding: var(--global-padding);;
+    padding: var(--global-padding);
   }
 }

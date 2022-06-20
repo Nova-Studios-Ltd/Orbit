@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import useClassNames from "Hooks/useClassNames";
 
 import PageContainer from "Components/Containers/PageContainer/PageContainer";
+import AvatarTextButton from "Components/Buttons/AvatarTextButton/AvatarTextButton";
 import FriendView from "Views/FriendView/FriendView";
 
 import type { Page } from "DataTypes/Components";
@@ -22,8 +23,12 @@ function FriendPage(props: FriendPageProps) {
   }, [Localizations_FriendPage, props, props.sharedProps?.changeTitleCallback]);
 
   return (
-    <PageContainer className={classNames} noPadding>
-
+    <PageContainer className={classNames} adaptive={false}>
+      <AvatarTextButton showEllipsis>Fake Friend 1</AvatarTextButton>
+      <AvatarTextButton showEllipsis>Fake Friend 2</AvatarTextButton>
+      <AvatarTextButton showEllipsis>Fake Friend 3</AvatarTextButton>
+      <AvatarTextButton showEllipsis>Fake Friend 4</AvatarTextButton>
+      <AvatarTextButton showEllipsis>Fake Friend 5</AvatarTextButton>
     </PageContainer>
   );
 }

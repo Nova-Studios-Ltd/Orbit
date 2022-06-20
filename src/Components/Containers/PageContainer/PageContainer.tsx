@@ -14,16 +14,16 @@ function PageContainer({ adaptive, noPadding, className, children }: PageContain
   const theme = useTheme();
   let classNames = useClassNames("PageContainer", className);
 
-  if (adaptive == null) {
+  if (adaptive === null) {
     adaptive = true;
-  }
-
-  if (noPadding) {
-    classNames = classNames.concat(" ", "NoPadding");
   }
 
   if (!adaptive) {
     classNames = classNames.concat(" ", "PageContainerNonAdaptive");
+  }
+
+  if (noPadding) {
+    classNames = classNames.concat(" ", "NoPadding");
   }
 
   return (

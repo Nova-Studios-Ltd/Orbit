@@ -1,4 +1,11 @@
 .AvatarTextButtonContainer {
+  display: flex;
+  flex-direction: row;
+
+  border-radius: var(--global-border-radius);
+}
+
+.AvatarTextButtonBase {
   display: flex !important;
   flex-direction: row;
   justify-content: flex-start !important;

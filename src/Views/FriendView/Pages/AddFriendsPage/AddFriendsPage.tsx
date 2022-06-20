@@ -32,7 +32,7 @@ function AddFriendsPage(props: AddFriendsPageProps) {
   };
 
   return (
-    <PageContainer className={classNames} noPadding>
+    <PageContainer className={classNames} adaptive={false}>
       <div className="CreateChannelContainer">
         <TextField value={RecipientField} onChange={handleRecipientFieldChanged} />
         <Button onClick={createChannel}>{Localizations_AddFriendsPage("Button_Label-AddFriend")}</Button>
