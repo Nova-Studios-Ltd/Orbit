@@ -4,7 +4,6 @@ import Dimensions from "../DataTypes/Dimensions";
 export interface IMessageProps {
     message_Id: string,
     author_UUID: string,
-    author: string,
     content: string,
     iv: string,
     encryptedKeys: { [key: string] : string; },

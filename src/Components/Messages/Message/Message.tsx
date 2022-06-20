@@ -13,6 +13,9 @@ import { AttachmentProps, IAttachmentProps } from "Interfaces/IAttachmentProps";
 import { WriteToClipboard } from "NSLib/ElectronAPI";
 import { GetImageDimensions, GetMimeType } from "NSLib/ContentLinkUtil";
 import { FileType } from "NSLib/MimeTypeParser";
+import { UserCache } from "Views/MainView/MainView";
+import UserData from "DataTypes/UserData";
+import IUserData from "Interfaces/IUserData";
 
 export interface MessageProps extends NCComponent {
   content?: string,
@@ -20,7 +23,6 @@ export interface MessageProps extends NCComponent {
   id?: string,
   authorID?: string,
   avatarURL?: string,
-  author?: string,
   timestamp?: string,
   editedTimestamp?: string,
   isEdited?: boolean,
@@ -31,7 +33,7 @@ export interface MessageProps extends NCComponent {
 function Message(props: MessageProps) {
   const theme = useTheme();
   const settingsManager = useSettingsManager();
-  const filteredMessageProps: MessageProps = { content: props.content, id: props.id, avatarURL: props.avatarURL, author: props.author, timestamp: props.timestamp };
+  const filteredMessageProps: MessageProps = { content: props.content, id: props.id, avatarURL: props.avatarURL, timestamp: props.timestamp };
   const Localizations_Message = useTranslation("Message").t;
 
   const isTouchCapable = props.sharedProps && props.sharedProps.isTouchCapable;
@@ -41,6 +43,7 @@ function Message(props: MessageProps) {
   const [isEditing, setEditingState] = useState(false);
   const [editFieldValue, setEditFieldValue] = useState("" as string | undefined);
   const [allAttachments, setAttachments] = useState([] as IAttachmentProps[]);
+  const [displayName, setDisplayName] = useState(UserCache.GetUser(props.authorID || "")?.username || "");
 
   useEffect(() => {
     if (props.attachments === undefined) return;
@@ -122,6 +125,12 @@ function Message(props: MessageProps) {
     }
   }
 
+  if (props.authorID !== undefined && displayName === "") {
+    UserCache.GetUserAsync(props.authorID).then((user: IUserData) => {
+      setDisplayName(`${user.username}#${user.discriminator}`);
+    });
+  }
+
   return (
     <div className="MessageContainer" style={{ backgroundColor: "transparent" }}>
       <div className="MessageLeft">
@@ -129,7 +138,7 @@ function Message(props: MessageProps) {
       </div>
       <div className="MessageRight" style={{ backgroundColor: isHovering ? theme.customPalette.customActions.messageHover : theme.customPalette.messageBackground }} onMouseEnter={() => mouseHoverEventHandler(true)} onMouseLeave={() => mouseHoverEventHandler(false)} onClick={messageLeftClickHandler} onContextMenu={messageRightClickHandler}>
         <div className="MessageRightHeader">
-          <Typography className="MessageName" fontWeight="bold">{props.author}</Typography>
+          <Typography className="MessageName" fontWeight="bold">{displayName}</Typography>
           <Typography className="MessageTimestamp" variant="subtitle2">{props.timestamp?.replace("T", " ")}</Typography>
           {props.isEdited ? <Typography className="MessageTimestampEdited" variant="subtitle2">({Localizations_Message("Typography-TimestampEdited")} {props.editedTimestamp?.replace("T", " ")})</Typography> : null}
         </div>

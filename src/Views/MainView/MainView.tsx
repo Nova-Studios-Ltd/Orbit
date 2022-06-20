@@ -27,11 +27,13 @@ import type { IRawChannelProps } from "Interfaces/IRawChannelProps";
 import type { IMessageProps } from "Interfaces/IMessageProps";
 import type { MessageProps } from "Components/Messages/Message/Message";
 import { AuthViewRoutes, MainViewRoutes, SettingsViewRoutes } from "DataTypes/Routes";
+import { NCUserCache } from "NSLib/NCUserCache";
 
 interface MainViewProps extends View {
   path: MainViewRoutes
 }
 
+export const UserCache = new NCUserCache();
 function MainView(props: MainViewProps) {
   const Localizations_MainView = useTranslation("MainView").t;
   const navigate = useNavigate();
