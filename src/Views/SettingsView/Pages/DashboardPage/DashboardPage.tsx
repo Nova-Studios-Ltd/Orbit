@@ -1,4 +1,4 @@
-import { Avatar, Button, Card, FormControlLabel, IconButton, Switch, Typography, useTheme } from "@mui/material";
+import { Avatar, Button, Card, IconButton, Typography, useTheme } from "@mui/material";
 import { Add as AddIcon } from "@mui/icons-material";
 import useClassNames from "Hooks/useClassNames";
 import { useTranslation } from "react-i18next";
@@ -11,8 +11,7 @@ import type { Page } from "DataTypes/Components";
 import { NCFile, UploadFile, WriteToClipboard } from "NSLib/ElectronAPI";
 import { SETAvatar, UPDATEEmail, UPDATEPassword, UPDATEUsername } from "NSLib/APIEvents";
 import NetworkDiag from "./DebugTools/NetworkDiagnostics";
-import React, { ReactNode, useState } from "react";
-import CacheTools from "./DebugTools/CacheTools/CacheTools";
+import React, { useState } from "react";
 import TextCombo from "Components/Input/TextCombo/TextCombo";
 import GenericDialog from "Components/Dialogs/GenericDialog/GenericDialog";
 
@@ -24,6 +23,7 @@ interface DashboardPageProps extends Page {
 }
 
 function DashboardPage(props: DashboardPageProps) {
+  const Localizations_Common = useTranslation().t;
   const Localizations_DashboardPage = useTranslation("DashboardPage").t;
   const Localizations_GenericDialog = useTranslation("GenericDialog").t;
   const classNames = useClassNames("DashboardPageContainer", props.className);
@@ -39,6 +39,8 @@ function DashboardPage(props: DashboardPageProps) {
   const [ChangeEmailDialogVisible, setChangeEmailDialogVisibility] = useState(false);
   const [NewPasswordValue, setNewPasswordValue] = useState("");
   const [ChangePasswordDialogVisible, setChangePasswordDialogVisibility] = useState(false);
+  const [DeleteAccountDialogVisible, setDeleteAccountDialogVisibility] = useState(false);
+
 
   const updateAvatar = () => {
     if (props.onAvatarChanged) props.onAvatarChanged();
@@ -77,6 +79,7 @@ function DashboardPage(props: DashboardPageProps) {
 
   const deleteAccount = () => {
     console.log("sike");
+    setDeleteAccountDialogVisibility(false);
   }
 
   const onChangeUsername = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -119,33 +122,44 @@ function DashboardPage(props: DashboardPageProps) {
       <Section title={Localizations_DashboardPage("Section_Title-Advanced")}>
         <div className="SectionButtonContainer">
           <Button className="SectionButton" id="CopyTokenButton" variant="outlined" color="warning" onClick={() => WriteToClipboard(settings.User.token)}>{Localizations_DashboardPage("Button_Label-CopyToken")}</Button>
-          <Button className="SectionButton" id="DeleteAccountButton" variant="outlined" color="error" onClick={() => deleteAccount()}>{Localizations_DashboardPage("Button_Label-DeleteAccount")}</Button>
+          <Button className="SectionButton" id="DeleteAccountButton" variant="outlined" color="error" onClick={() => setDeleteAccountDialogVisibility(true)}>{Localizations_DashboardPage("Button_Label-DeleteAccount")}</Button>
         </div>
         <Typography variant="caption" color="error" textTransform="uppercase">{Localizations_DashboardPage("Typography-TokenWarning")}</Typography>
       </Section>
-      <GenericDialog open={ChangeUsernameDialogVisible} title={Localizations_DashboardPage("Typography-ChangeUsernameDialogTitle")} buttons={
+      <GenericDialog onClose={() => setChangeUsernameDialogVisibility(false)} open={ChangeUsernameDialogVisible} title={Localizations_DashboardPage("Typography-ChangeUsernameDialogTitle")} buttons={
         <>
           <Button onClick={() => setChangeUsernameDialogVisibility(false)}>{Localizations_GenericDialog("Button_Label-DialogCancel")}</Button>
           <Button onClick={() => changeUsername()}>{Localizations_GenericDialog("Button_Label-DialogOK")}</Button>
         </>
       }>
-        <TextCombo fullWidth={props.sharedProps?.widthConstrained} submitButton={false} textFieldPlaceholder={Localizations_DashboardPage("TextField_Placeholder-ChangeUsernamePrompt")} value={NewUsernameValue} onChange={(event) => event.value ? setNewUsernameValue(event.value) : null} onSubmit={() => changeUsername()} />
+        <TextCombo fullWidth submitButton={false} textFieldPlaceholder={Localizations_DashboardPage("TextField_Placeholder-ChangeUsernamePrompt")} value={NewUsernameValue} onChange={(event) => event.value ? setNewUsernameValue(event.value) : null} onSubmit={() => changeUsername()} />
       </GenericDialog>
-      <GenericDialog open={ChangeEmailDialogVisible} title={Localizations_DashboardPage("Typography-ChangeEmailDialogTitle")} buttons={
+      <GenericDialog onClose={() => setChangeEmailDialogVisibility(false)} open={ChangeEmailDialogVisible} title={Localizations_DashboardPage("Typography-ChangeEmailDialogTitle")} buttons={
         <>
           <Button onClick={() => setChangeEmailDialogVisibility(false)}>{Localizations_GenericDialog("Button_Label-DialogCancel")}</Button>
           <Button onClick={() => changeEmail()}>{Localizations_GenericDialog("Button_Label-DialogOK")}</Button>
         </>
       }>
-        <TextCombo fullWidth={props.sharedProps?.widthConstrained} submitButton={false} textFieldPlaceholder={Localizations_DashboardPage("TextField_Placeholder-ChangeEmailPrompt")} value={NewEmailValue} onChange={(event) => event.value ? setNewEmailValue(event.value) : null} onSubmit={() => changePassword()} />
+        <TextCombo fullWidth submitButton={false} textFieldPlaceholder={Localizations_DashboardPage("TextField_Placeholder-ChangeEmailPrompt")} value={NewEmailValue} onChange={(event) => event.value ? setNewEmailValue(event.value) : null} onSubmit={() => changePassword()} />
       </GenericDialog>
-      <GenericDialog open={ChangePasswordDialogVisible} title={Localizations_DashboardPage("Typography-ChangePasswordDialogTitle")} buttons={
+      <GenericDialog onClose={() => setChangePasswordDialogVisibility(false)} open={ChangePasswordDialogVisible} title={Localizations_DashboardPage("Typography-ChangePasswordDialogTitle")} buttons={
         <>
           <Button onClick={() => setChangePasswordDialogVisibility(false)}>{Localizations_GenericDialog("Button_Label-DialogCancel")}</Button>
           <Button onClick={() => changePassword()}>{Localizations_GenericDialog("Button_Label-DialogOK")}</Button>
         </>
       }>
-        <TextCombo fullWidth={props.sharedProps?.widthConstrained} isPassword submitButton={false} textFieldPlaceholder={Localizations_DashboardPage("TextField_Placeholder-ChangePasswordPrompt")} value={NewPasswordValue} onChange={(event) => event.value ? setNewPasswordValue(event.value) : null} onSubmit={() => changeEmail()} />
+        <TextCombo fullWidth isPassword submitButton={false} textFieldPlaceholder={Localizations_DashboardPage("TextField_Placeholder-ChangePasswordPrompt")} value={NewPasswordValue} onChange={(event) => event.value ? setNewPasswordValue(event.value) : null} onSubmit={() => changeEmail()} />
+      </GenericDialog>
+      <GenericDialog onClose={() => setDeleteAccountDialogVisibility(false)} open={DeleteAccountDialogVisible} title={Localizations_DashboardPage("Typography-DeleteAccountDialogTitle")} buttons={
+        <>
+          <Button onClick={() => setDeleteAccountDialogVisibility(false)}>{Localizations_GenericDialog("Button_Label-DialogCancel")}</Button>
+          <Button color="error" onClick={() => deleteAccount()}>{Localizations_GenericDialog("Button_Label-DialogDelete")}</Button>
+        </>
+      }>
+        <div className="DeleteAccountDialogTextContainer">
+          <Typography variant="body1">{Localizations_DashboardPage("Typography-DeleteAccountBlurb", { AppTitle: Localizations_Common("AppTitle") })}</Typography>
+          <Typography variant="caption">{Localizations_DashboardPage("Typography-DeleteAccountThanks", { AppTitle: Localizations_Common("AppTitle") })}</Typography>
+        </div>
       </GenericDialog>
     </PageContainer>
   );

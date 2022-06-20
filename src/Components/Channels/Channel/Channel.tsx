@@ -1,10 +1,12 @@
-import { useTheme } from "@mui/material";
+import { useState } from "react";
+import { Button, useTheme, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
 
-import type { NCComponent } from "DataTypes/Components";
-import { ContextMenuItemProps } from "Components/Menus/ContextMenuItem/ContextMenuItem";
 import AvatarTextButton from "Components/Buttons/AvatarTextButton/AvatarTextButton";
+import GenericDialog from "Components/Dialogs/GenericDialog/GenericDialog";
 
+import type { ContextMenuItemProps } from "Components/Menus/ContextMenuItem/ContextMenuItem";
+import type { NCComponent } from "DataTypes/Components";
 import type { IRawChannelProps } from "Interfaces/IRawChannelProps";
 
 export interface ChannelProps extends NCComponent {
@@ -17,11 +19,15 @@ export interface ChannelProps extends NCComponent {
 
 function Channel(props: ChannelProps) {
   const theme = useTheme();
+  const Localizations_GenericDialog = useTranslation("GenericDialog").t;
   const Localizations_Channel = useTranslation("Channel").t;
 
+  const [EditChannelDialogVisible, setEditChannelDialogVisibility] = useState(false);
+  const [DeleteChannelDialogVisible, setDeleteChannelDialogVisibility] = useState(false);
+
   const channelContextMenuItems: ContextMenuItemProps[] = [
-    { children: Localizations_Channel("ContextMenuItem-Edit"), onLeftClick: () => { if (props.onChannelEdit) props.onChannelEdit(props.channelData) }},
-    { children: Localizations_Channel("ContextMenuItem-Delete"), onLeftClick: () => { if (props.onChannelDelete) props.onChannelDelete(props.channelData) }}
+    { children: Localizations_Channel("ContextMenuItem-Edit"), onLeftClick: () => { setEditChannelDialogVisibility(true) }},
+    { children: Localizations_Channel("ContextMenuItem-Delete"), onLeftClick: () => { setDeleteChannelDialogVisibility(true) }}
   ]
 
   const onChannelLeftClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -37,10 +43,40 @@ function Channel(props: ChannelProps) {
     event.preventDefault();
   }
 
+  const editChannel = () => {
+    if (props.onChannelEdit) props.onChannelEdit(props.channelData);
+    // TODO: Implement channel editing logic
+    setEditChannelDialogVisibility(false);
+  }
+
+  const deleteChannel = () => {
+    if (props.onChannelDelete) props.onChannelDelete(props.channelData);
+    setDeleteChannelDialogVisibility(false);
+  }
+
   return (
-    <AvatarTextButton sharedProps={props.sharedProps} showEllipsisConditional iconSrc={props.channelData.channelIcon} selected={props.isSelected} onLeftClick={onChannelLeftClick} onRightClick={onChannelRightClick}>
-      {props.channelData.channelName}
-    </AvatarTextButton>
+    <>
+      <AvatarTextButton sharedProps={props.sharedProps} showEllipsisConditional iconSrc={props.channelData.channelIcon} selected={props.isSelected} onLeftClick={onChannelLeftClick} onRightClick={onChannelRightClick}>
+        {props.channelData.channelName}
+      </AvatarTextButton>
+      <GenericDialog onClose={() => setDeleteChannelDialogVisibility(false)} open={DeleteChannelDialogVisible} title={Localizations_Channel("Typography-DeleteChannelTitle", { channelName: props.channelData.channelName })} buttons={
+        <>
+          <Button onClick={() => setDeleteChannelDialogVisibility(false)}>{Localizations_GenericDialog("Button_Label-DialogCancel")}</Button>
+          <Button color="error" onClick={() => deleteChannel()}>{Localizations_GenericDialog("Button_Label-DialogDelete")}</Button>
+        </>
+      }>
+        <Typography variant="body1">{Localizations_Channel("Typography-DeleteChannelBlurb")}</Typography>
+      </GenericDialog>
+      <GenericDialog onClose={() => setEditChannelDialogVisibility(false)} open={EditChannelDialogVisible} title={Localizations_Channel("Typography-EditChannelTitle", { channelName: props.channelData.channelName })} buttons={
+        <>
+          <Button onClick={() => setEditChannelDialogVisibility(false)}>{Localizations_GenericDialog("Button_Label-DialogCancel")}</Button>
+          <Button color="success" onClick={() => editChannel()}>{Localizations_GenericDialog("Button_Label-DialogSave")}</Button>
+        </>
+      }>
+        [Insert Channel Info Here]
+      </GenericDialog>
+    </>
+
   )
 }
 

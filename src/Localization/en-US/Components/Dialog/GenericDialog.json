@@ -1,4 +1,6 @@
 {
+  "Button_Label-DialogCancel": "Cancel",
+  "Button_Label-DialogDelete": "Delete",
   "Button_Label-DialogOK": "OK",
-  "Button_Label-DialogCancel": "Cancel"
+  "Button_Label-DialogSave": "Save"
 }

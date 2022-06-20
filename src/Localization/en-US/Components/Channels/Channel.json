@@ -1,4 +1,7 @@
 {
   "ContextMenuItem-Edit": "Edit",
-  "ContextMenuItem-Delete": "Delete"
+  "ContextMenuItem-Delete": "Delete",
+  "Typography-EditChannelTitle": "About \"{{channelName}}\"",
+  "Typography-DeleteChannelTitle": "Delete Channel \"{{channelName}}\"?",
+  "Typography-DeleteChannelBlurb": "Messages sent in this channel will be kept until all members have deleted this channel. You can reopen this channel at any time and continue where you left off until that happens."
 }

@@ -1,15 +1,17 @@
-.GenericDialogInnerContainer {
+.GenericDialogContainer {
 
 }
 
 .GenericDialogInnerContainer {
   display: flex;
   flex-direction: column;
-  padding: var(--global-padding);
+  padding: var(--dialog-padding-top) var(--dialog-padding-right) var(--dialog-padding-bottom) var(--dialog-padding-left);
   border-radius: var(--global-border-radius);
-  gap: var(--global-margin);
+
+  box-sizing: border-box;
 
   position: absolute;
+  min-width: 25rem;
   top: 50%;
   left: 50%;
 
@@ -25,6 +27,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+
+  margin: var(--dialog-margin) 0;
 }
 
 .GenericDialogButtonContainer {
@@ -38,8 +42,16 @@
     position: static;
     height: 100%;
 
+    border-radius: 0;;
+
+    padding: var(--dialog-padding-top-constrained) var(--dialog-padding-right-constrained) var(--dialog-padding-bottom-constrained) var(--dialog-padding-left-constrained);    ;
+
     transform: none;
     -ms-transform: none;
+  }
+
+  .GenericDialogContentContainer {
+    margin: var(--dialog-margin-constrained) 0;
   }
 
   .GenericDialogButtonContainer {
