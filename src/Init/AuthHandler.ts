@@ -41,7 +41,10 @@ export async function AutoLogin() : Promise<boolean> {
 
   // Attempt to retreive user data
   const userResp = await GETUser(Manager.User.uuid);
-  if (userResp === undefined) return false;
+  if (userResp === undefined) {
+    await Logout();
+    return false;
+  }
 
   // Store user data
   Manager.User.avatarSrc = userResp.avatar;
@@ -60,7 +63,10 @@ export async function AutoLogin() : Promise<boolean> {
 
   // Fetch users keystore
   const keyResp = await GETKeystore();
-  if (keyResp === undefined) return false;
+  if (keyResp === undefined) {
+    await Logout();
+    return false;
+  }
   Manager.ClearKeys();
   Manager.LoadKeys(keyResp);
 
