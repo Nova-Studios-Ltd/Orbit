@@ -2,6 +2,7 @@ import { Avatar, Button, Card, IconButton, Typography, useTheme } from "@mui/mat
 import { Add as AddIcon } from "@mui/icons-material";
 import useClassNames from "Hooks/useClassNames";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 import { SettingsManager } from "NSLib/SettingsManager";
 
 import PageContainer from "Components/Containers/PageContainer/PageContainer";
@@ -14,7 +15,7 @@ import NetworkDiag from "./DebugTools/NetworkDiagnostics";
 import React, { useState } from "react";
 import TextCombo from "Components/Input/TextCombo/TextCombo";
 import GenericDialog from "Components/Dialogs/GenericDialog/GenericDialog";
-
+import { AuthViewRoutes } from "DataTypes/Routes";
 
 interface DashboardPageProps extends Page {
   avatarNonce?: string,
@@ -28,6 +29,7 @@ function DashboardPage(props: DashboardPageProps) {
   const Localizations_GenericDialog = useTranslation("GenericDialog").t;
   const classNames = useClassNames("DashboardPageContainer", props.className);
   const theme = useTheme();
+  const navigate = useNavigate();
 
   const settings = new SettingsManager();
   const usernameText = `${settings.ReadCookieSync("Username")}#${settings.ReadCookieSync("Discriminator")}`;
@@ -79,7 +81,13 @@ function DashboardPage(props: DashboardPageProps) {
 
   const deleteAccount = () => {
     DELETEUser((status) => {
-      console.log(`User Account Deletion Status: ${status}`);
+      if (status) {
+        navigate(AuthViewRoutes.Login);
+        console.log("Account Deletion Successful")
+      }
+      else {
+        console.log("Account Deletion Failed")
+      }
     });
     setDeleteAccountDialogVisibility(false);
   }
