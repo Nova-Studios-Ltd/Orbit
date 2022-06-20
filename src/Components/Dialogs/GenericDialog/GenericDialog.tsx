@@ -20,12 +20,12 @@ function GenericDialog(props: GenericDialogProps) {
 
   const onKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
     if (event.key.toLowerCase() === "escape") {
-      if (props && props.onClose) props.onClose();
+      if (props.onClose) props.onClose();
     }
   }
 
   const onBackdropClick = () => {
-    if (props && props.dismissibleAnywhere && props.onClose) props.onClose();
+    if (props.dismissibleAnywhere && props.onClose) props.onClose();
   }
 
   return (

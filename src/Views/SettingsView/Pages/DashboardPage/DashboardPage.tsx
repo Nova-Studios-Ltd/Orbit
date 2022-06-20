@@ -9,7 +9,7 @@ import Section from "Components/Containers/Section/Section";
 
 import type { Page } from "DataTypes/Components";
 import { NCFile, UploadFile, WriteToClipboard } from "NSLib/ElectronAPI";
-import { SETAvatar, UPDATEEmail, UPDATEPassword, UPDATEUsername } from "NSLib/APIEvents";
+import { DELETEUser, SETAvatar, UPDATEEmail, UPDATEPassword, UPDATEUsername } from "NSLib/APIEvents";
 import NetworkDiag from "./DebugTools/NetworkDiagnostics";
 import React, { useState } from "react";
 import TextCombo from "Components/Input/TextCombo/TextCombo";
@@ -40,7 +40,7 @@ function DashboardPage(props: DashboardPageProps) {
   const [NewPasswordValue, setNewPasswordValue] = useState("");
   const [ChangePasswordDialogVisible, setChangePasswordDialogVisibility] = useState(false);
   const [DeleteAccountDialogVisible, setDeleteAccountDialogVisibility] = useState(false);
-
+  const [LogoutDialogVisible, setLogoutDialogVisibility] = useState(false);
 
   const updateAvatar = () => {
     if (props.onAvatarChanged) props.onAvatarChanged();
@@ -78,8 +78,14 @@ function DashboardPage(props: DashboardPageProps) {
   }
 
   const deleteAccount = () => {
-    console.log("sike");
+    DELETEUser((status) => {
+      console.log(`User Account Deletion Status: ${status}`);
+    });
     setDeleteAccountDialogVisibility(false);
+  }
+
+  const logout = () => {
+    if (props.onLogout) props.onLogout();
   }
 
   const onChangeUsername = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -112,7 +118,7 @@ function DashboardPage(props: DashboardPageProps) {
             <Button className="SectionButton" id="EditUsernameButton" onClick={onChangeUsername}>{Localizations_DashboardPage("Button_Label-EditUsername")}</Button>
             <Button className="SectionButton" id="EditEmailButton" onClick={onChangeEmail}>{Localizations_DashboardPage("Button_Label-EditEmail")}</Button>
             <Button className="SectionButton" id="EditPasswordButton" onClick={onChangePassword}>{Localizations_DashboardPage("Button_Label-EditPassword")}</Button>
-            <Button className="SectionButton" id="LogoutButton" color="error" onClick={() => props.onLogout ? props.onLogout() : null}>{Localizations_DashboardPage("Button_Label-Logout")}</Button>
+            <Button className="SectionButton" id="LogoutButton" color="error" onClick={() => setLogoutDialogVisibility(true)}>{Localizations_DashboardPage("Button_Label-Logout")}</Button>
           </div>
         </Card>
       </Section>
@@ -160,6 +166,14 @@ function DashboardPage(props: DashboardPageProps) {
           <Typography variant="body1">{Localizations_DashboardPage("Typography-DeleteAccountBlurb", { AppTitle: Localizations_Common("AppTitle") })}</Typography>
           <Typography variant="caption">{Localizations_DashboardPage("Typography-DeleteAccountThanks", { AppTitle: Localizations_Common("AppTitle") })}</Typography>
         </div>
+      </GenericDialog>
+      <GenericDialog onClose={() => setLogoutDialogVisibility(false)} open={LogoutDialogVisible} title={Localizations_DashboardPage("Typography-LogoutDialogTitle")} buttons={
+        <>
+          <Button onClick={() => setLogoutDialogVisibility(false)}>{Localizations_GenericDialog("Button_Label-DialogCancel")}</Button>
+          <Button color="error" onClick={() => logout()}>{Localizations_GenericDialog("Button_Label-DialogOK")}</Button>
+        </>
+      }>
+        <Typography variant="body1">{Localizations_DashboardPage("Typography-LogoutBlurb")}</Typography>
       </GenericDialog>
     </PageContainer>
   );
