@@ -185,7 +185,7 @@ function DashboardPage(props: DashboardPageProps) {
           <Button color="error" onClick={() => deleteAccount()}>{Localizations_GenericDialog("Button_Label-DialogDelete")}</Button>
         </>
       }>
-        <div className="DeleteAccountDialogTextContainer">
+        <div className="GenericDialogTextContainer">
           <Typography variant="body1">{Localizations_DashboardPage("Typography-DeleteAccountBlurb", { AppTitle: Localizations_Common("AppTitle") })}</Typography>
           <Typography variant="caption">{Localizations_DashboardPage("Typography-DeleteAccountThanks", { AppTitle: Localizations_Common("AppTitle") })}</Typography>
         </div>

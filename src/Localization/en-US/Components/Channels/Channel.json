@@ -1,7 +1,10 @@
 {
   "ContextMenuItem-Edit": "Edit",
   "ContextMenuItem-Delete": "Delete",
-  "Typography-EditChannelTitle": "About \"{{channelName}}\"",
-  "Typography-DeleteChannelTitle": "Delete Channel \"{{channelName}}\"?",
-  "Typography-DeleteChannelBlurb": "Messages sent in this channel will be kept until all members have deleted this channel. You can reopen this channel at any time and continue where you left off until that happens."
+  "ContextMenuItem-Info": "Details",
+  "Typography-ChannelInfoDialogTitle": "About \"{{channelName}}\"",
+  "Typography-DeleteChannelDialogTitle": "Delete Channel \"{{channelName}}\"?",
+  "Typography-EditChannelDialogTitle": "Edit \"{{channelName}}\"",
+  "Typography-DeleteChannelBlurb1": "Messages sent in this channel will be kept until all members have deleted this channel.",
+  "Typography-DeleteChannelBlurb2": "Reopening this channel while at least one member has a copy of it will restore your copy."
 }

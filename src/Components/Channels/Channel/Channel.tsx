@@ -22,11 +22,12 @@ function Channel(props: ChannelProps) {
   const Localizations_GenericDialog = useTranslation("GenericDialog").t;
   const Localizations_Channel = useTranslation("Channel").t;
 
+  const [ChannelInfoDialogVisible, setChannelInfoDialogVisibility] = useState(false);
   const [EditChannelDialogVisible, setEditChannelDialogVisibility] = useState(false);
   const [DeleteChannelDialogVisible, setDeleteChannelDialogVisibility] = useState(false);
 
   const channelContextMenuItems: ContextMenuItemProps[] = [
-    { children: Localizations_Channel("ContextMenuItem-Edit"), onLeftClick: () => { setEditChannelDialogVisibility(true) }},
+    props.channelData.isGroup ? { children: Localizations_Channel("ContextMenuItem-Edit"), onLeftClick: () => { setEditChannelDialogVisibility(true) }} : { children: Localizations_Channel("ContextMenuItem-Info"), onLeftClick: () => { setChannelInfoDialogVisibility(true) }},
     { children: Localizations_Channel("ContextMenuItem-Delete"), onLeftClick: () => { setDeleteChannelDialogVisibility(true) }}
   ]
 
@@ -59,18 +60,28 @@ function Channel(props: ChannelProps) {
       <AvatarTextButton sharedProps={props.sharedProps} showEllipsisConditional iconSrc={props.channelData.channelIcon} selected={props.isSelected} onLeftClick={onChannelLeftClick} onRightClick={onChannelRightClick}>
         {props.channelData.channelName}
       </AvatarTextButton>
-      <GenericDialog onClose={() => setDeleteChannelDialogVisibility(false)} open={DeleteChannelDialogVisible} title={Localizations_Channel("Typography-DeleteChannelTitle", { channelName: props.channelData.channelName })} buttons={
+      <GenericDialog onClose={() => setDeleteChannelDialogVisibility(false)} open={DeleteChannelDialogVisible} title={Localizations_Channel("Typography-DeleteChannelDialogTitle", { channelName: props.channelData.channelName })} buttons={
         <>
           <Button onClick={() => setDeleteChannelDialogVisibility(false)}>{Localizations_GenericDialog("Button_Label-DialogCancel")}</Button>
           <Button color="error" onClick={() => deleteChannel()}>{Localizations_GenericDialog("Button_Label-DialogDelete")}</Button>
         </>
       }>
-        <Typography variant="body1">{Localizations_Channel("Typography-DeleteChannelBlurb")}</Typography>
+        <div className="GenericDialogTextContainer">
+          <Typography variant="body1">{Localizations_Channel("Typography-DeleteChannelBlurb1")}</Typography>
+          <Typography variant="body1">{Localizations_Channel("Typography-DeleteChannelBlurb2")}</Typography>
+        </div>
       </GenericDialog>
-      <GenericDialog onClose={() => setEditChannelDialogVisibility(false)} open={EditChannelDialogVisible} title={Localizations_Channel("Typography-EditChannelTitle", { channelName: props.channelData.channelName })} buttons={
+      <GenericDialog onClose={() => setEditChannelDialogVisibility(false)} open={EditChannelDialogVisible} title={Localizations_Channel("Typography-EditChannelDialogTitle", { channelName: props.channelData.channelName })} buttons={
         <>
           <Button onClick={() => setEditChannelDialogVisibility(false)}>{Localizations_GenericDialog("Button_Label-DialogCancel")}</Button>
           <Button color="success" onClick={() => editChannel()}>{Localizations_GenericDialog("Button_Label-DialogSave")}</Button>
+        </>
+      }>
+        [Insert Channel Editing Stuff Here]
+      </GenericDialog>
+      <GenericDialog onClose={() => setChannelInfoDialogVisibility(false)} open={ChannelInfoDialogVisible} title={Localizations_Channel("Typography-ChannelInfoDialogTitle", { channelName: props.channelData.channelName })} buttons={
+        <>
+          <Button onClick={() => setChannelInfoDialogVisibility(false)}>{Localizations_GenericDialog("Button_Label-DialogOK")}</Button>
         </>
       }>
         [Insert Channel Info Here]
