@@ -26,6 +26,10 @@ export default function WebsocketInit(Websocket: NCWebsocket) {
 
   // Username
   Websocket.CreateEvent(10, OnUsernameChanged);
+
+  // Friends
+  Websocket.CreateEvent(11, OnNewFriendRequest);
+  Websocket.CreateEvent(12, OnFriendAccepted);
 }
 
 async function OnNewMessage(event: IWebSocketEvent) {
@@ -82,4 +86,12 @@ async function OnUsernameChanged(event: IWebSocketEvent) {
   const user = await GETUser(event.User);
   if (user === undefined) return;
   UserCache.AddUser(user);
+}
+
+async function OnNewFriendRequest(event: IWebSocketEvent) {
+  // TODO Update friend page for new requests
+}
+
+async function OnFriendAccepted(event: IWebSocketEvent) {
+ // TODO Update friend page for acceptted friend
 }
