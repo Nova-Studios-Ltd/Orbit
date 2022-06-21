@@ -154,7 +154,7 @@ function DashboardPage(props: DashboardPageProps) {
           <Button onClick={() => changeEmail()}>{Localizations_GenericDialog("Button_Label-DialogOK")}</Button>
         </>
       }>
-        <TextCombo fullWidth submitButton={false} textFieldPlaceholder={Localizations_DashboardPage("TextField_Placeholder-ChangeEmailPrompt")} value={NewEmailValue} onChange={(event) => event.value ? setNewEmailValue(event.value) : null} onSubmit={() => changePassword()} />
+        <TextCombo fullWidth submitButton={false} textFieldPlaceholder={Localizations_DashboardPage("TextField_Placeholder-ChangeEmailPrompt")} value={NewEmailValue} onChange={(event) => event.value ? setNewEmailValue(event.value) : null} onSubmit={() => changeEmail()} />
       </GenericDialog>
       <GenericDialog onClose={() => setChangePasswordDialogVisibility(false)} open={ChangePasswordDialogVisible} title={Localizations_DashboardPage("Typography-ChangePasswordDialogTitle")} buttons={
         <>
@@ -162,7 +162,7 @@ function DashboardPage(props: DashboardPageProps) {
           <Button onClick={() => changePassword()}>{Localizations_GenericDialog("Button_Label-DialogOK")}</Button>
         </>
       }>
-        <TextCombo fullWidth isPassword submitButton={false} textFieldPlaceholder={Localizations_DashboardPage("TextField_Placeholder-ChangePasswordPrompt")} value={NewPasswordValue} onChange={(event) => event.value ? setNewPasswordValue(event.value) : null} onSubmit={() => changeEmail()} />
+        <TextCombo fullWidth isPassword submitButton={false} textFieldPlaceholder={Localizations_DashboardPage("TextField_Placeholder-ChangePasswordPrompt")} value={NewPasswordValue} onChange={(event) => event.value ? setNewPasswordValue(event.value) : null} onSubmit={() => changePassword()} />
       </GenericDialog>
       <GenericDialog onClose={() => setDeleteAccountDialogVisibility(false)} open={DeleteAccountDialogVisible} title={Localizations_DashboardPage("Typography-DeleteAccountDialogTitle")} buttons={
         <>
