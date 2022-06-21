@@ -1,5 +1,23 @@
 .TextComboContainer {
   display: flex;
+  flex-direction: column;
+}
+
+.TextComboField {
+  border: none;
+  outline: none;
+
+  text-indent: 5pt;
+
+  width: 100%;
+}
+
+.TextComboTop {
+
+}
+
+.TextComboBottom {
+  display: flex;
   flex-direction: row;
 
   box-sizing: border-box;
@@ -11,15 +29,6 @@
   height: 3.5rem;
 
   transition: border-color 50ms linear;
-}
-
-.TextComboField {
-  border: none;
-  outline: none;
-
-  text-indent: 5pt;
-
-  width: 100%;
 }
 
 .TextComboBefore {
@@ -34,8 +43,16 @@
   justify-content: center;
 }
 
+.TextComboFieldErrorText {
+
+}
+
 @media only screen and (max-width: 600px) {
   .TextComboContainer {
 
+  }
+
+  .TextComboBottom {
+    height: 3rem;
   }
 }
