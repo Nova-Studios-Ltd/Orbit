@@ -3,6 +3,7 @@ import { Button, TextField } from "@mui/material";
 import { useTranslation } from "react-i18next";
 
 import PageContainer from "Components/Containers/PageContainer/PageContainer";
+import TextCombo, { TextComboChangeEvent } from "Components/Input/TextCombo/TextCombo";
 
 import type { Page } from "DataTypes/Components";
 import { useEffect, useState } from "react";
@@ -21,8 +22,8 @@ function AddFriendsPage(props: AddFriendsPageProps) {
     if (props.sharedProps && props.sharedProps.changeTitleCallback) props.sharedProps.changeTitleCallback(Localizations_AddFriendsPage("PageTitle"));
   }, [Localizations_AddFriendsPage, props, props.sharedProps?.changeTitleCallback]);
 
-  const handleRecipientFieldChanged = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setRecipientField(event.currentTarget.value);
+  const handleRecipientFieldChanged = (event: TextComboChangeEvent) => {
+    if (event.value) setRecipientField(event.value);
   };
 
   const createChannel = () => {
@@ -34,8 +35,9 @@ function AddFriendsPage(props: AddFriendsPageProps) {
   return (
     <PageContainer className={classNames} adaptive={false}>
       <div className="CreateChannelContainer">
-        <TextField value={RecipientField} onChange={handleRecipientFieldChanged} />
-        <Button onClick={createChannel}>{Localizations_AddFriendsPage("Button_Label-AddFriend")}</Button>
+        <TextCombo submitButton={false} value={RecipientField} onChange={handleRecipientFieldChanged} onSubmit={createChannel} childrenRight={
+          <Button onClick={createChannel} variant="outlined">{Localizations_AddFriendsPage("Button_Label-AddFriend")}</Button>
+        }/>
       </div>
     </PageContainer>
   );
