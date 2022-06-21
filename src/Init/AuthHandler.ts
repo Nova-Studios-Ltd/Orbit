@@ -28,6 +28,7 @@ export async function LoginNewUser(email: string, password: string) : Promise<Lo
   // Stored user secruity information (Keypair, token, uuid)
   Manager.User.token = ud.token;
   Manager.User.uuid = ud.uuid;
+  Manager.User.email = ud.email;
   Manager.User.keyPair = new RSAMemoryKeyPair((await DecryptBase64(shaPass, ud.key)).String, ud.publicKey);
 
   // Store keypair
