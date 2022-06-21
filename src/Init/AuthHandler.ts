@@ -51,6 +51,7 @@ export async function AutoLogin() : Promise<boolean> {
   Manager.User.avatarSrc = userResp.avatar;
   Manager.User.discriminator = userResp.discriminator;
   Manager.User.username = userResp.username;
+  Manager.User.email = userResp.email;
 
   if (!HasFlag("no-websocket")) {
     // Setup websocket
