@@ -29,6 +29,8 @@ export interface TextComboProps extends NCAPIComponent {
   autoFocus?: boolean,
   fullWidth?: boolean,
   isPassword?: boolean,
+  error?: boolean,
+  errorText?: string,
   onChange?: (event: TextComboChangeEvent) => void,
   onDismiss?: (event: TextComboDismissEvent) => void,
   onSubmit?: (event: TextComboSubmitEvent) => void
@@ -83,15 +85,20 @@ function TextCombo(props: TextComboProps) {
   };
 
   return (
-    <div className={classNames} style={{ backgroundColor: theme.customPalette.TextComboBackground, borderColor: TextFieldFocused ? theme.palette.action.active : theme.palette.divider }}>
-      <div className="TextComboBefore">
-        {props.childrenLeft}
+    <div className={classNames}>
+      <div className="TextComboTop">
+        {props.error && props.errorText ? <Typography className="TextComboFieldErrorText" color="error" variant="caption">{props.errorText}</Typography> : null}
       </div>
-      <input type={TextFieldType} className="TextComboField" ref={TextFieldRef} maxLength={MaxTextFieldCharLength} style={{ backgroundColor: "transparent", color: theme.palette.text.primary, fontSize: theme.typography.subtitle1.fontSize }} placeholder={props.textFieldPlaceholder} value={props.value} onFocus={() => inputFocusHandler(true)} onBlur={() => inputFocusHandler(false)} onChange={onChangeHandler} onKeyDown={onKeyDownHandler} />
-      <div className="TextComboAfter">
-        {RemainingTextFieldCharLength < TextFieldCharLengthDisplayThreshold ? <Typography variant="caption" alignSelf="center">{RemainingTextFieldCharLength}</Typography> : null}
-        {props.childrenRight}
-        {props.submitButton === false ? null : <IconButton title={Localizations_TextCombo("TextCombo-Tooltip-SubmitGeneric")} aria-label={Localizations_TextCombo("TextCombo-Tooltip-SubmitGeneric")} onClick={() => submit()}><SendIcon /></IconButton>}
+      <div className="TextComboBottom" style={{ backgroundColor: theme.customPalette.TextComboBackground, borderColor: props.error ? theme.palette.error.main : (TextFieldFocused ? theme.palette.action.active : theme.palette.divider) }}>
+        <div className="TextComboBefore">
+          {props.childrenLeft}
+        </div>
+        <input type={TextFieldType} className="TextComboField" ref={TextFieldRef} maxLength={MaxTextFieldCharLength} style={{ backgroundColor: "transparent", color: theme.palette.text.primary, fontSize: theme.typography.subtitle1.fontSize }} placeholder={props.textFieldPlaceholder} value={props.value} onFocus={() => inputFocusHandler(true)} onBlur={() => inputFocusHandler(false)} onChange={onChangeHandler} onKeyDown={onKeyDownHandler} />
+        <div className="TextComboAfter">
+          {RemainingTextFieldCharLength < TextFieldCharLengthDisplayThreshold ? <Typography variant="caption" alignSelf="center">{RemainingTextFieldCharLength}</Typography> : null}
+          {props.childrenRight}
+          {props.submitButton === false ? null : <IconButton title={Localizations_TextCombo("TextCombo-Tooltip-SubmitGeneric")} aria-label={Localizations_TextCombo("TextCombo-Tooltip-SubmitGeneric")} onClick={() => submit()}><SendIcon /></IconButton>}
+        </div>
       </div>
     </div>
   )
