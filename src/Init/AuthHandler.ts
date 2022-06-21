@@ -41,7 +41,7 @@ export async function AutoLogin() : Promise<boolean> {
   if (!await Manager.ContainsLocalStorage("UUID") || !await Manager.ContainsLocalStorage("Token")) return false;
 
   // Attempt to retreive user data
-  const userResp = await GETUser(Manager.User.uuid);
+  const userResp = await GETUser("@me");
   if (userResp === undefined) {
     await Logout();
     return false;
