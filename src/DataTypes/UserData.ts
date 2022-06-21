@@ -39,6 +39,13 @@ export default class UserData {
     return this.Manager.ReadCookieSync("AvatarSrc");
   }
 
+  set email(email: string) {
+    this.Manager.WriteCookieSync("Email", email);
+  }
+
+  get email() : string {
+    return this.Manager.ReadCookieSync("Email");
+  }
 
   set uuid(uuid: string) {
     this.Manager.WriteLocalStorageSync("UUID", uuid);
@@ -55,6 +62,4 @@ export default class UserData {
   get token() : string {
     return this.Manager.ReadLocalStorageSync("Token");
   }
-
-
 }

@@ -121,7 +121,7 @@ function MainView(props: MainViewProps) {
   }
 
   const onFileUpload = () => {
-    UploadFile(true).then((files) => {
+    UploadFile(true).then((files: string | any[]) => {
       const newAttachmentList: MessageAttachment[] = [];
 
       for (let i = 0; i < files.length; i++) {

@@ -1,8 +1,9 @@
 import { NCChannelCache } from "NSLib/NCChannelCache";
 import NCEvents from "NSLib/NCEvents";
 import { SettingsManager } from "NSLib/SettingsManager";
+import { UserCache } from "Views/MainView/MainView";
 import IWebSocketEvent from "../Interfaces/IWebsocketEvent";
-import { GETChannel, GETKey, GETKeystore, GETMessage } from "../NSLib/APIEvents";
+import { GETChannel, GETKey, GETKeystore, GETMessage, GETUser } from "../NSLib/APIEvents";
 import NCWebsocket from "../NSLib/NCWebsocket";
 
 export const Events = new NCEvents();
@@ -78,6 +79,7 @@ async function OnKeystoreReload(event: IWebSocketEvent) {
 }
 
 async function OnUsernameChanged(event: IWebSocketEvent) {
-  const Manager = new SettingsManager();
-  //Manager.WriteCookie("Username")
+  const user = await GETUser(event.User);
+  if (user === undefined) return;
+  UserCache.AddUser(user);
 }
