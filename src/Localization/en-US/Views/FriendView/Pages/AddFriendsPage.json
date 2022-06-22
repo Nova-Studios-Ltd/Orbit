@@ -1,3 +1,5 @@
 {
-  "Button_Label-AddFriend": "Create Channel"
+  "PageTitle": "Add a Friend",
+  "Button_Label-AddFriend": "Add Friend",
+  "TextField_Placeholder-FriendFormat": "Username#Discriminator"
 }

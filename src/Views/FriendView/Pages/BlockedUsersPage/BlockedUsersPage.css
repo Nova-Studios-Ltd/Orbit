@@ -1,0 +1,15 @@
+.AddFriendsPageContainer {
+  display: flex;
+  flex-direction: column;
+}
+
+.CreateChannelContainer {
+  display: flex;
+  flex-direction: column;
+}
+
+@media only screen and (max-width: 600px) {
+  .AddFriendsPageContainer {
+
+  }
+}

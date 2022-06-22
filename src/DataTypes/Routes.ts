@@ -11,6 +11,7 @@ export enum MainViewRoutes {
 
 export enum FriendViewRoutes {
   FriendsList = "list",
+  BlockedUsersList = "blacklist",
   AddFriend = "add"
 }
 

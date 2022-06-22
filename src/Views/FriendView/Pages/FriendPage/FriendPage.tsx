@@ -1,22 +1,48 @@
-import { Button, Tab, Tabs, TextField, Typography } from "@mui/material";
-import React, { SyntheticEvent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import useClassNames from "Hooks/useClassNames";
 
 import PageContainer from "Components/Containers/PageContainer/PageContainer";
 import AvatarTextButton from "Components/Buttons/AvatarTextButton/AvatarTextButton";
-import FriendView from "Views/FriendView/FriendView";
 
 import type { Page } from "DataTypes/Components";
-import { FriendViewRoutes } from "DataTypes/Routes";
+import type Friend from "DataTypes/Friend";
+import { Dictionary } from "NSLib/Dictionary";
+import { Typography } from "@mui/material";
 
 interface FriendPageProps extends Page {
-  onChannelCreate?: (recipient: string) => void,
+  friends?: Friend[],
+  onFriendClicked?: (friend: Friend) => void,
+  onAddFriend?: (recipient: string) => void,
 }
 
 function FriendPage(props: FriendPageProps) {
-  const Localizations_FriendPage = useTranslation("FriendPage").t;
+  const Localizations_FriendPage = useTranslation("FriendListPage").t;
   const classNames = useClassNames("FriendPageContainer", props.className);
+
+  const friendElements = (() => {
+    if (props.friends) {
+      return props.friends.map((friend) => {
+        if (!friend.friendData) return null;
+        return (
+        <AvatarTextButton className="FriendButton" iconSrc={friend.friendData?.avatar} onLeftClick={() => { if (props.onFriendClicked) props.onFriendClicked(friend) }}>
+          <div className="FriendButtonContainer">
+            <Typography>{friend.friendData?.username}#{friend.friendData?.discriminator}</Typography>
+            <Typography variant="caption">{friend.status}</Typography>
+          </div>
+        </AvatarTextButton>)
+      })
+    }
+  })()
+
+  const NoFriendsHint = (() => {
+    return (
+      <div className="NoChannelsHintContainer">
+      <Typography variant="h6">{Localizations_FriendPage("Typography_Heading-NoFriendHint")}</Typography>
+      <Typography variant="body1">{Localizations_FriendPage("Typography_Body-NoFriendHint")}</Typography>
+    </div>
+    )
+  })()
 
   useEffect(() => {
     if (props.sharedProps && props.sharedProps.changeTitleCallback) props.sharedProps.changeTitleCallback(Localizations_FriendPage("PageTitle"));
@@ -24,11 +50,7 @@ function FriendPage(props: FriendPageProps) {
 
   return (
     <PageContainer className={classNames} adaptive={false}>
-      <AvatarTextButton showEllipsis>Fake Friend 1</AvatarTextButton>
-      <AvatarTextButton showEllipsis>Fake Friend 2</AvatarTextButton>
-      <AvatarTextButton showEllipsis>Fake Friend 3</AvatarTextButton>
-      <AvatarTextButton showEllipsis>Fake Friend 4</AvatarTextButton>
-      <AvatarTextButton showEllipsis>Fake Friend 5</AvatarTextButton>
+      {friendElements && friendElements.length > 0 ? friendElements : NoFriendsHint}
     </PageContainer>
   );
 }

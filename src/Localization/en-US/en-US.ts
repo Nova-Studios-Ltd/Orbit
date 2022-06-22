@@ -17,6 +17,7 @@ import E404_EN_US from "./Views/ErrorView/Pages//E404.json";
 import FriendView_EN_US from "./Views/FriendView/FriendView.json";
 
 import AddFriendsPage_EN_US from "./Views/FriendView/Pages/AddFriendsPage.json";
+import BlockedUsersPage_EN_US from "./Views/FriendView/Pages/BlockedUsersPage.json";
 import FriendListPage_EN_US from "./Views/FriendView/Pages/FriendListPage.json";
 
 // Main
@@ -66,6 +67,7 @@ export const Localizations_EN_US = {
   FriendView: FriendView_EN_US,
 
   AddFriendsPage: AddFriendsPage_EN_US,
+  BlockedUsersPage: BlockedUsersPage_EN_US,
   FriendListPage: FriendListPage_EN_US,
 
   // Main

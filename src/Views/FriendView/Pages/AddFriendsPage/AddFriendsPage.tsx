@@ -9,7 +9,7 @@ import type { Page } from "DataTypes/Components";
 import { useEffect, useState } from "react";
 
 interface AddFriendsPageProps extends Page {
-  onChannelCreate?: (recipient: string) => void,
+  onAddFriend?: (recipient: string) => void,
 }
 
 function AddFriendsPage(props: AddFriendsPageProps) {
@@ -23,20 +23,21 @@ function AddFriendsPage(props: AddFriendsPageProps) {
   }, [Localizations_AddFriendsPage, props, props.sharedProps?.changeTitleCallback]);
 
   const handleRecipientFieldChanged = (event: TextComboChangeEvent) => {
-    if (event.value) setRecipientField(event.value);
+    if (event.value !== undefined) setRecipientField(event.value);
   };
 
-  const createChannel = () => {
-    if (props.onChannelCreate) {
-      props.onChannelCreate(RecipientField);
+  const addFriend = () => {
+    if (RecipientField.length > 0 && props.onAddFriend) {
+      props.onAddFriend(RecipientField);
+      setRecipientField("");
     }
   };
 
   return (
     <PageContainer className={classNames} adaptive={false}>
       <div className="CreateChannelContainer">
-        <TextCombo submitButton={false} value={RecipientField} onChange={handleRecipientFieldChanged} onSubmit={createChannel} childrenRight={
-          <Button onClick={createChannel} variant="outlined">{Localizations_AddFriendsPage("Button_Label-AddFriend")}</Button>
+        <TextCombo submitButton={false} value={RecipientField} textFieldPlaceholder={Localizations_AddFriendsPage("TextField_Placeholder-FriendFormat")} onChange={handleRecipientFieldChanged} onSubmit={addFriend} childrenRight={
+          <Button onClick={addFriend} disabled={RecipientField.length < 1} variant="contained">{Localizations_AddFriendsPage("Button_Label-AddFriend")}</Button>
         }/>
       </div>
     </PageContainer>

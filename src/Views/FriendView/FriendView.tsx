@@ -2,26 +2,27 @@ import { SyntheticEvent, useEffect, useState } from "react";
 import { Button, Tab, Tabs, TextField, Typography } from "@mui/material";
 import useClassNames from "Hooks/useClassNames";
 import { useTranslation } from "react-i18next";
-import { FriendViewRoutes } from "DataTypes/Routes";
 
 import ViewContainer from "Components/Containers/ViewContainer/ViewContainer";
 import AddFriendsPage from "Views/FriendView/Pages/AddFriendsPage/AddFriendsPage";
+import BlockedUsersPage from "./Pages/BlockedUsersPage/BlockedUsersPage";
 import FriendPage from "Views/FriendView/Pages/FriendPage/FriendPage";
 
 import type { View } from "DataTypes/Components";
+import type { Dictionary } from "NSLib/Dictionary";
+import type Friend from "DataTypes/Friend";
+import { FriendViewRoutes } from "DataTypes/Routes";
 
 interface FriendViewProps extends View {
   path?: never,
-  onChannelCreate?: (recipient: string) => void
+  friends?: Friend[],
+  onFriendClicked?: (friend: Friend) => void,
+  onAddFriend?: (recipient: string) => void
 }
 
 function FriendView(props: FriendViewProps) {
   const Localizations_FriendView = useTranslation("FriendView").t;
   const classNames = useClassNames("FriendViewContainer", props.className);
-
-  useEffect(() => {
-    if (props.sharedProps && props.sharedProps.changeTitleCallback) props.sharedProps.changeTitleCallback(Localizations_FriendView("ViewTitle"));
-  }, [Localizations_FriendView, props, props.sharedProps?.changeTitleCallback]);
 
   const [path, setPath] = useState(FriendViewRoutes.FriendsList);
 
@@ -33,11 +34,15 @@ function FriendView(props: FriendViewProps) {
     switch (path) {
       case FriendViewRoutes.FriendsList:
         return (
-          <FriendPage />
+          <FriendPage friends={props.friends} onFriendClicked={props.onFriendClicked} sharedProps={props.sharedProps} />
+        )
+      case FriendViewRoutes.BlockedUsersList:
+        return (
+          <BlockedUsersPage sharedProps={props.sharedProps} />
         )
       case FriendViewRoutes.AddFriend:
         return (
-          <AddFriendsPage onChannelCreate={props.onChannelCreate} />
+          <AddFriendsPage sharedProps={props.sharedProps} onAddFriend={props.onAddFriend} />
         )
       default:
         return null;
@@ -46,8 +51,9 @@ function FriendView(props: FriendViewProps) {
 
   return (
     <ViewContainer className={classNames} noPadding>
-      <Tabs value={path} onChange={onTabChange}>
+      <Tabs variant="scrollable" visibleScrollbar={!props.sharedProps?.isTouchCapable} value={path} onChange={onTabChange}>
         <Tab label={Localizations_FriendView("Tab_Label-FriendsList")} value={FriendViewRoutes.FriendsList} />
+        <Tab label={Localizations_FriendView("Tab_Label-BlockedUsers")} value={FriendViewRoutes.BlockedUsersList} />
         <Tab label={Localizations_FriendView("Tab_Label-AddFriend")} value={FriendViewRoutes.AddFriend} />
       </Tabs>
       {page()}

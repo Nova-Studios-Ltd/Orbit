@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { Button, useTheme, Typography } from "@mui/material";
+import { Button, useTheme, Typography, TextField } from "@mui/material";
 import { useTranslation } from "react-i18next";
+import { SettingsManager } from "NSLib/SettingsManager";
 
 import AvatarTextButton from "Components/Buttons/AvatarTextButton/AvatarTextButton";
 import GenericDialog from "Components/Dialogs/GenericDialog/GenericDialog";
@@ -19,8 +20,21 @@ export interface ChannelProps extends NCComponent {
 
 function Channel(props: ChannelProps) {
   const theme = useTheme();
+  const settings = new SettingsManager();
   const Localizations_GenericDialog = useTranslation("GenericDialog").t;
   const Localizations_Channel = useTranslation("Channel").t;
+
+  const channelMembersThatIsNotYou: string[] = (() => {
+    const membersThatArentYou: string[] = [];
+
+    if (props.channelData && props.channelData.members) {
+      for (let i = 0; i < props.channelData.members.length; i++) {
+        if (props.channelData.members[i] !== settings.User.uuid) membersThatArentYou.push(props.channelData.members[i]);
+      }
+    }
+
+    return membersThatArentYou;
+  })();
 
   const [ChannelInfoDialogVisible, setChannelInfoDialogVisibility] = useState(false);
   const [EditChannelDialogVisible, setEditChannelDialogVisibility] = useState(false);
@@ -84,7 +98,7 @@ function Channel(props: ChannelProps) {
           <Button onClick={() => setChannelInfoDialogVisibility(false)}>{Localizations_GenericDialog("Button_Label-DialogOK")}</Button>
         </>
       }>
-        [Insert Channel Info Here]
+        <TextField label={Localizations_Channel("TextField_Label-ChannelInfoDialogMembers")} disabled value={channelMembersThatIsNotYou} />
       </GenericDialog>
     </>
 

@@ -10,7 +10,8 @@ import { GenerateBase64SHA256 } from "NSLib/NCEncryption";
 import { NCChannelCache } from "NSLib/NCChannelCache";
 import { UploadFile } from "NSLib/ElectronAPI";
 import { SettingsManager } from "NSLib/SettingsManager";
-import { CREATEChannel, DELETEChannel, DELETEMessage, EDITMessage, GETChannel, GETMessages, GETMessagesSingle, GETUserChannels, GETUserUUID, SENDMessage } from "NSLib/APIEvents";
+import { NCUserCache } from "NSLib/NCUserCache";
+import { CREATEChannel, DELETEChannel, DELETEMessage, EDITMessage, GETChannel, GETOwnFriends, GETMessages, GETMessagesSingle, GETUserChannels, GETUserUUID, SENDMessage, GETUser, REQUESTFriend } from "NSLib/APIEvents";
 
 import ViewContainer from "Components/Containers/ViewContainer/ViewContainer";
 import MessageAttachment from "DataTypes/MessageAttachment";
@@ -26,8 +27,9 @@ import type { SharedProps, View } from "DataTypes/Components";
 import type { IRawChannelProps } from "Interfaces/IRawChannelProps";
 import type { IMessageProps } from "Interfaces/IMessageProps";
 import type { MessageProps } from "Components/Messages/Message/Message";
+import type { Dictionary } from "NSLib/Dictionary";
+import type Friend from "DataTypes/Friend";
 import { AuthViewRoutes, MainViewRoutes, SettingsViewRoutes } from "DataTypes/Routes";
-import { NCUserCache } from "NSLib/NCUserCache";
 
 interface MainViewProps extends View {
   path: MainViewRoutes
@@ -39,6 +41,7 @@ function MainView(props: MainViewProps) {
   const navigate = useNavigate();
   const location = useLocation();
   const theme = useTheme();
+  const settings = new SettingsManager();
 
   const canvasRef = useRef() as React.MutableRefObject<HTMLDivElement>;
   const messageCount = useRef(0);
@@ -49,6 +52,7 @@ function MainView(props: MainViewProps) {
   const [channels, setChannels] = useState([] as IRawChannelProps[]);
   const [selectedChannel, setSelectedChannel] = useState(null as unknown as IRawChannelProps);
   const [messages, setMessages] = useState([] as IMessageProps[]);
+  const [friends, setFriends] = useState([] as Friend[]);
   const [MessageAttachments, setMessageAttachments] = useState([] as MessageAttachment[]);
   const [channelMenuOpen, setChannelMenuVisibility] = useState(false);
   const [avatarNonce, setAvatarNonce] = useState(Date.now().toString());
@@ -161,6 +165,12 @@ function MainView(props: MainViewProps) {
     }
   }
 
+  const onFriendClicked = (friend: Friend) => {
+    if (friend.friendData && friend.friendData.uuid) {
+      CREATEChannel(friend.friendData.uuid, () => {});
+    }
+  }
+
   const onChannelClick = async (channel: IRawChannelProps) => {
     if (!location.pathname.includes("chat"))
       navigate(`${MainViewRoutes.Chat}${location.search}`);
@@ -227,12 +237,12 @@ function MainView(props: MainViewProps) {
     }
   }
 
-  const onChannelCreate = async (recipient: string) => {
+  const onAddFriend = async (recipient: string) => {
     if (isValidUsername(recipient)) {
       const ud = recipient.split("#");
       const user = await GETUserUUID(ud[0], ud[1]);
       if (user === undefined) return;
-      CREATEChannel(user, () => {});
+      REQUESTFriend(settings.User.uuid, user);
     }
   };
 
@@ -352,6 +362,21 @@ function MainView(props: MainViewProps) {
 
       if (props.path === MainViewRoutes.Chat && loadedChannels[0]) onChannelClick(loadedChannels[0]); // Temporary channel preload
     });
+
+    GETOwnFriends().then((rawFriends: Dictionary<string>) => {
+      const newFriendsArray: Friend[] = [];
+
+      for (let i = 0; i < rawFriends.keys().length; i++) {
+        const friendUUID = rawFriends.keys()[i];
+        const friendStatus = rawFriends.getValue(friendUUID);
+
+        GETUser(friendUUID).then((friendData) => {
+          newFriendsArray.push({ friendData, status: friendStatus });
+        });
+      }
+
+      setFriends(newFriendsArray);
+    });
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -365,7 +390,7 @@ function MainView(props: MainViewProps) {
           </>
         )
       case MainViewRoutes.Friends:
-        return (<FriendView sharedProps={modifiedSharedProps} onChannelCreate={onChannelCreate} />);
+        return (<FriendView sharedProps={modifiedSharedProps} friends={friends} onFriendClicked={onFriendClicked} onAddFriend={onAddFriend} />);
       case MainViewRoutes.Settings:
         return (<SettingsView sharedProps={modifiedSharedProps} avatarNonce={avatarNonce} onAvatarChanged={onAvatarChanged} onLogout={onLogout} path={SettingsViewRoutes.Dashboard} />);
       default:
@@ -380,7 +405,7 @@ function MainView(props: MainViewProps) {
     return (
       <div className="MainViewContainerLeft">
         <div className="NavigationButtonContainer" style={{ backgroundColor: theme.palette.background.paper, borderColor: theme.palette.divider }}>
-          <AvatarTextButton className="NavigationButtonContainerItem" selected={props.path === MainViewRoutes.Settings} onLeftClick={() => navigateToPage(MainViewRoutes.Settings)} iconSrc={`${new SettingsManager().User.avatarSrc}&nonce=${avatarNonce}`}>{Localizations_MainView("Typography-SettingsHeader")}</AvatarTextButton>
+          <AvatarTextButton className="NavigationButtonContainerItem" selected={props.path === MainViewRoutes.Settings} onLeftClick={() => navigateToPage(MainViewRoutes.Settings)} iconSrc={`${settings.User.avatarSrc}&nonce=${avatarNonce}`}>{Localizations_MainView("Typography-SettingsHeader")}</AvatarTextButton>
           <AvatarTextButton className="NavigationButtonContainerItem" selected={props.path === MainViewRoutes.Friends} onLeftClick={() => navigateToPage(MainViewRoutes.Friends)}>{Localizations_MainView("Typography-FriendsHeader")}</AvatarTextButton>
         </div>
         <ChannelList sharedProps={props.sharedProps} channels={channels} onChannelEdit={onChannelEdit} onChannelDelete={onChannelDelete} onChannelClick={onChannelClick} selectedChannel={selectedChannel} />

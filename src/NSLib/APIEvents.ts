@@ -100,6 +100,10 @@ export async function GETFriends(user_uuid: string) : Promise<Dictionary<string>
   return new Dictionary<string>();
 }
 
+export async function GETOwnFriends() : Promise<Dictionary<string>> {
+  return await GETFriends(new SettingsManager().User.uuid);
+}
+
 export async function REQUESTFriend(user_uuid: string, request_uuid: string) : Promise<boolean> {
   const resp = await POST(`/Friend/${user_uuid}/Send/${request_uuid}`, ContentType.EMPTY, "", new SettingsManager().User.token, false);
   return resp.status === 200;
