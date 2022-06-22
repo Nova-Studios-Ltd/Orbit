@@ -392,7 +392,7 @@ function MainView(props: MainViewProps) {
     <ViewContainer>
       <div className="MainViewContainer">
         {MainViewContainerLeft()}
-        <div className="MainViewContainerRight" onClick={onMainViewContainerRightClick}>
+        <div className="MainViewContainerRight" onClick={onMainViewContainerRightClick} style={{ opacity: channelMenuOpen ? 0.5 : 1 }}>
           <GenericHeader sharedProps={props.sharedProps} title={title} childrenLeft={props.sharedProps?.widthConstrained ? <IconButton onClick={(event: React.MouseEvent<HTMLButtonElement>) => { event.stopPropagation(); onChannelMenuToggle(); }}><MenuIcon /></IconButton> : null} />
           {page()}
         </div>
