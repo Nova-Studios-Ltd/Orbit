@@ -127,7 +127,7 @@ function Message(props: MessageProps) {
 
   if (props.authorID !== undefined && displayName === "") {
     UserCache.GetUserAsync(props.authorID).then((user: IUserData) => {
-      setDisplayName(`${user.username}#${user.discriminator}`);
+      setDisplayName(`${user.username}`);
     });
   }
 
