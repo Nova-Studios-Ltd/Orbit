@@ -28,8 +28,9 @@ export default function WebsocketInit(Websocket: NCWebsocket) {
   Websocket.CreateEvent(10, OnUsernameChanged);
 
   // Friends
-  Websocket.CreateEvent(11, OnNewFriendRequest);
-  Websocket.CreateEvent(12, OnFriendAccepted);
+  Websocket.CreateEvent(11, FriendRequestAdded);
+  Websocket.CreateEvent(12, FriendRequestUpdated);
+  Websocket.CreateEvent(13, FriendRequestRemoved)
 }
 
 async function OnNewMessage(event: IWebSocketEvent) {
@@ -88,10 +89,14 @@ async function OnUsernameChanged(event: IWebSocketEvent) {
   UserCache.AddUser(user);
 }
 
-async function OnNewFriendRequest(event: IWebSocketEvent) {
-  Events.send("NewFriendRequest", event.User, await GETFriend(event.User));
+async function FriendRequestAdded(event: IWebSocketEvent) {
+  Events.send("FriendAdded", event.User, await GETFriend(event.User));
 }
 
-async function OnFriendAccepted(event: IWebSocketEvent) {
-  Events.send("FriendAccepted", event.User, await GETFriend(event.User));
+async function FriendRequestUpdated(event: IWebSocketEvent) {
+  Events.send("FriendUpdated", event.User, await GETFriend(event.User));
+}
+
+async function FriendRequestRemoved(event: IWebSocketEvent) {
+  Events.send("FriendRemoved", event.User);
 }
