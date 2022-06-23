@@ -66,7 +66,7 @@ function MessageInput({ className, attachments, onFileUpload, onFileRemove, onCh
       <div className="FileUploadSummaryContainer">
         {summaryItems()}
       </div>
-      <TextCombo className="MessageInputField" textFieldPlaceholder={Localizations_MessageInput("TextField_Placeholder-TypeHerePrompt")} autoFocus value={TextFieldValue} onChange={onChangeHandler} onSubmit={sendMessage}
+      <TextCombo className="MessageInputField" textFieldPlaceholder={Localizations_MessageInput("TextField_Placeholder-TypeHerePrompt")} value={TextFieldValue} onChange={onChangeHandler} onSubmit={sendMessage}
         childrenLeft={
           <>
             <IconButton title={Localizations_MessageInput("IconButton-Tooltip-UploadFile")} aria-label={Localizations_MessageInput("IconButton-Tooltip-UploadFile")} onClick={() => uploadFile()}><UploadIcon /></IconButton>
