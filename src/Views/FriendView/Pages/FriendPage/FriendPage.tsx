@@ -71,7 +71,7 @@ function FriendPage(props: FriendPageProps) {
 
         // TODO: Localize friend.status
         return (
-        <AvatarTextButton key={friend.friendData.uuid} className="FriendButton" showEllipsisConditional iconSrc={friend.friendData.avatar} onLeftClick={() => { if (props.onFriendClicked) props.onFriendClicked(friend) }} onRightClick={friendRightClickHandler} sharedProps={props.sharedProps}>
+        <AvatarTextButton key={friend.friendData.uuid} className="FriendButton" showEllipsis iconSrc={friend.friendData.avatar} onLeftClick={() => { if (props.onFriendClicked) props.onFriendClicked(friend) }} onRightClick={friendRightClickHandler} sharedProps={props.sharedProps}>
           <div className="FriendButtonContainer">
             <Typography>{friend.friendData?.username}#{friend.friendData?.discriminator}</Typography>
             <Typography variant="caption">{friend.status}</Typography>

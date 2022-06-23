@@ -41,7 +41,7 @@ function AvatarTextButton(props: AvatarTextButtonProps) {
         </div>
       </ButtonBase>
       {props.showEllipsis || (isTouchCapable && props.showEllipsisConditional) ? (
-        <IconButton className="AvatarTextButtonEllipsis" onClick={onEllipsisClick}>
+        <IconButton className="AvatarTextButtonEllipsis" onClick={onEllipsisClick} onMouseEnter={() => onMouseHover(true)} onMouseLeave={() => onMouseHover(false)}>
           <EllipsisIcon />
         </IconButton>) : null
       }
