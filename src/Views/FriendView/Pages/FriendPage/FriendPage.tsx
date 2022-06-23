@@ -19,6 +19,7 @@ interface FriendPageProps extends Page {
 }
 
 function FriendPage(props: FriendPageProps) {
+  const Localizations_FriendView = useTranslation("FriendView").t;
   const Localizations_FriendPage = useTranslation("FriendListPage").t;
   const classNames = useClassNames("FriendPageContainer", props.className);
 
@@ -59,7 +60,7 @@ function FriendPage(props: FriendPageProps) {
     return (
       <div className="NoChannelsHintContainer">
       <Typography variant="h6">{Localizations_FriendPage("Typography_Heading-NoFriendHint")}</Typography>
-      <Typography variant="body1">{Localizations_FriendPage("Typography_Body-NoFriendHint")}</Typography>
+      <Typography variant="body1">{Localizations_FriendPage("Typography_Body-NoFriendHint", { AddFriendSectionTitle: Localizations_FriendView("Tab_Label-AddFriend") })}</Typography>
     </div>
     )
   })()
