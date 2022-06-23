@@ -45,6 +45,7 @@ function FriendPage(props: FriendPageProps) {
           event.preventDefault();
         }
 
+        // TODO: Localize friend.status
         return (
         <AvatarTextButton className="FriendButton" showEllipsisConditional iconSrc={friend.friendData?.avatar} onLeftClick={() => { if (props.onFriendClicked) props.onFriendClicked(friend) }} onRightClick={friendRightClickHandler} sharedProps={props.sharedProps}>
           <div className="FriendButtonContainer">
@@ -52,7 +53,7 @@ function FriendPage(props: FriendPageProps) {
             <Typography variant="caption">{friend.status}</Typography>
           </div>
         </AvatarTextButton>)
-      })
+      });
     }
   })()
 
