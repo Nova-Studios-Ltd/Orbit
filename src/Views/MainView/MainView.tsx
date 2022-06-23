@@ -370,20 +370,33 @@ function MainView(props: MainViewProps) {
       setMessages([]);
     });
 
-    Events.on("NewFriendRequest", async (request_uuid: string, status: string) => {
+    Events.on("FriendAdded", async (request_uuid: string, status: string) => {
       const friendData = UserCache.GetUser(request_uuid);
       setFriends(prevState => {
         return [...prevState, {friendData, status} as Friend ];
       });
     });
 
-    Events.on("ChangeFriendStatus", async (friend_uuid: string, status: string) => [
+    Events.on("FriendUpdated", async (request_uuid: string, status: string) => {
+      const friendData = UserCache.GetUser(request_uuid);
+      setFriends(prevState => {
+        const index = prevState.findIndex(c => c.friendData?.uuid === request_uuid);
+        if (index > -1) {
+          prevState[index] = {friendData, status} as Friend
+        }
+        return [...prevState];
+      })
+    });
 
-    ]);
-
-    Events.on("DeleteFriend", async (friend_uuid: string, status: string) => [
-
-    ]);
+    Events.on("FriendRemoved", async (request_uuid: string) => {
+      setFriends(prevState => {
+        const index = prevState.findIndex(c => c.friendData?.uuid === request_uuid);
+        if (index > -1) {
+          prevState.splice(index, 1);
+        }
+        return [...prevState];
+      });
+    });
 
     return (() => {
       Events.remove("NewMessage");
@@ -391,7 +404,7 @@ function MainView(props: MainViewProps) {
       Events.remove("EditMessage");
       Events.remove("NewChannel");
       Events.remove("DeleteChannel");
-      Events.remove("NewFriendRequest");
+      Events.remove("FriendAdded");
     });
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [channels, messages]);
