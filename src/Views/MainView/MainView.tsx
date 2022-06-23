@@ -11,7 +11,7 @@ import { NCChannelCache } from "NSLib/NCChannelCache";
 import { UploadFile } from "NSLib/ElectronAPI";
 import { SettingsManager } from "NSLib/SettingsManager";
 import { NCUserCache } from "NSLib/NCUserCache";
-import { CREATEChannel, DELETEChannel, DELETEMessage, EDITMessage, GETChannel, GETOwnFriends, GETMessages, GETMessagesSingle, GETUserChannels, GETUserUUID, SENDMessage, GETUser, REQUESTFriend } from "NSLib/APIEvents";
+import { CREATEChannel, DELETEChannel, DELETEMessage, EDITMessage, GETChannel, GETOwnFriends, GETMessages, GETMessagesSingle, GETUserChannels, GETUserUUID, SENDMessage, GETUser, REQUESTFriend, ACCEPTFriend } from "NSLib/APIEvents";
 
 import ViewContainer from "Components/Containers/ViewContainer/ViewContainer";
 import MessageAttachment from "DataTypes/MessageAttachment";
@@ -56,6 +56,25 @@ function MainView(props: MainViewProps) {
   const [MessageAttachments, setMessageAttachments] = useState([] as MessageAttachment[]);
   const [channelMenuOpen, setChannelMenuVisibility] = useState(false);
   const [avatarNonce, setAvatarNonce] = useState(Date.now().toString());
+
+  const channelContainsUUID = (uuid: string) => {
+    for (let i = 0; i < channels.length; i++) {
+      const channel = channels[i];
+      const containsUUID = (() => {
+        if (channel.members) {
+          for (let j = 0; j < channel.members.length; j++) {
+            if (channel.members[j] === uuid) return true;
+          }
+          return false;
+        }
+        return false;
+      })()
+
+      if (containsUUID) return channel;
+    }
+
+    return undefined;
+  }
 
   const onAvatarChanged = () => {
     const nonce = Date.now().toString();
@@ -165,12 +184,6 @@ function MainView(props: MainViewProps) {
     }
   }
 
-  const onFriendClicked = (friend: Friend) => {
-    if (friend.friendData && friend.friendData.uuid) {
-      CREATEChannel(friend.friendData.uuid, () => {});
-    }
-  }
-
   const onChannelClick = async (channel: IRawChannelProps) => {
     if (!location.pathname.includes("chat"))
       navigate(`${MainViewRoutes.Chat}${location.search}`);
@@ -237,6 +250,25 @@ function MainView(props: MainViewProps) {
     }
   }
 
+  const onFriendClicked = (friend: Friend) => {
+    if (friend.friendData && friend.friendData.uuid) {
+      switch (friend.status?.toLowerCase()) {
+        case "accepted":
+          const existingChannel = channelContainsUUID(friend.friendData.uuid);
+          if (existingChannel) {
+            onChannelClick(existingChannel);
+          }
+          else {
+            CREATEChannel(friend.friendData.uuid, (status) => { console.log(`Channel creation from onFriendClicked status: ${status}`) });
+          }
+          break;
+        case "request":
+          ACCEPTFriend(settings.User.uuid, friend.friendData.uuid);
+          break;
+      }
+    }
+  }
+
   const onAddFriend = async (recipient: string) => {
     if (isValidUsername(recipient)) {
       const ud = recipient.split("#");
@@ -245,6 +277,10 @@ function MainView(props: MainViewProps) {
       REQUESTFriend(settings.User.uuid, user);
     }
   };
+
+  const onRemoveFriend = (uuid: string) => {
+    console.log(`Requested to remove friend with UUID ${uuid}`);
+  }
 
   const onChannelEdit = (channel: IRawChannelProps) => {
     console.log(`Request to edit channel ${channel.channelName}`);
@@ -390,7 +426,7 @@ function MainView(props: MainViewProps) {
           </>
         )
       case MainViewRoutes.Friends:
-        return (<FriendView sharedProps={modifiedSharedProps} friends={friends} onFriendClicked={onFriendClicked} onAddFriend={onAddFriend} />);
+        return (<FriendView sharedProps={modifiedSharedProps} friends={friends} onFriendClicked={onFriendClicked} onAddFriend={onAddFriend} onRemoveFriend={onRemoveFriend} />);
       case MainViewRoutes.Settings:
         return (<SettingsView sharedProps={modifiedSharedProps} avatarNonce={avatarNonce} onAvatarChanged={onAvatarChanged} onLogout={onLogout} path={SettingsViewRoutes.Dashboard} />);
       default:
