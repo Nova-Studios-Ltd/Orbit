@@ -16,6 +16,7 @@ import { FriendViewRoutes } from "DataTypes/Routes";
 interface FriendViewProps extends View {
   path?: never,
   friends?: Friend[],
+  onReloadList?: () => void,
   onFriendClicked?: (friend: Friend) => void,
   onAddFriend?: (recipient: string) => void,
   onRemoveFriend?: (uuid: string) => void,
@@ -37,7 +38,7 @@ function FriendView(props: FriendViewProps) {
     switch (path) {
       case FriendViewRoutes.FriendsList:
         return (
-          <FriendPage friends={props.friends} onFriendClicked={props.onFriendClicked} onBlockFriend={props.onBlockFriend} onUnblockFriend={props.onUnblockFriend} onRemoveFriend={props.onRemoveFriend} sharedProps={props.sharedProps} />
+          <FriendPage friends={props.friends} onReloadList={props.onReloadList} onFriendClicked={props.onFriendClicked} onBlockFriend={props.onBlockFriend} onUnblockFriend={props.onUnblockFriend} onRemoveFriend={props.onRemoveFriend} sharedProps={props.sharedProps} />
         )
       case FriendViewRoutes.BlockedUsersList:
         return (

@@ -1,5 +1,6 @@
 {
   "PageTitle": "Friends",
+  "Button_Label-ReloadFriendsList": "Reload",
   "Typography-RemoveFriendDialogTitle": "Unfriend {{user}}?",
   "Typography-BlockFriendDialogTitle": "Block {{user}}?",
   "Typography-UnblockFriendDialogTitle": "Unblock {{user}}?",

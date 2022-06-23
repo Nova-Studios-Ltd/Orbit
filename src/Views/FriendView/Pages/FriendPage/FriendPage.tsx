@@ -116,8 +116,10 @@ function FriendPage(props: FriendPageProps) {
 
   return (
     <PageContainer className={classNames} adaptive={false}>
-      <Button onClick={() => { if (props.onReloadList) props.onReloadList() }}></Button>
-      {friendElements && friendElements.length > 0 ? friendElements : NoFriendsHint}
+      <Button onClick={() => { if (props.onReloadList) props.onReloadList() }}>{Localizations_FriendPage("Button_Label-ReloadFriendsList")}</Button>
+      <div className="FriendsContainer">
+        {friendElements && friendElements.length > 0 ? friendElements : NoFriendsHint}
+      </div>
     </PageContainer>
   );
 }

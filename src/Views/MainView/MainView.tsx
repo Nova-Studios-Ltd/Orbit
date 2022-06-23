@@ -323,6 +323,21 @@ function MainView(props: MainViewProps) {
     navigate(AuthViewRoutes.Login);
   }
 
+  const populateFriendsList = async () => {
+    const rawFriends: Dictionary<string> = await GETOwnFriends();
+    const newFriendsArray: Friend[] = [];
+
+    for (let i = 0; i < rawFriends.keys().length; i++) {
+      const friendUUID = rawFriends.keys()[i];
+      const friendStatus = rawFriends.getValue(friendUUID);
+
+      const friendData = await GETUser(friendUUID);
+      newFriendsArray.push({ friendData, status: friendStatus });
+    }
+
+    setFriends(newFriendsArray);
+  }
+
   useEffect(() => {
     Events.on("NewMessage", (message: IMessageProps, channel_uuid: string) => {
       if (selectedChannel.table_Id !== channel_uuid) return;
@@ -438,20 +453,7 @@ function MainView(props: MainViewProps) {
       if (props.path === MainViewRoutes.Chat && loadedChannels[0]) onChannelClick(loadedChannels[0]); // Temporary channel preload
     });
 
-    GETOwnFriends().then((rawFriends: Dictionary<string>) => {
-      const newFriendsArray: Friend[] = [];
-
-      for (let i = 0; i < rawFriends.keys().length; i++) {
-        const friendUUID = rawFriends.keys()[i];
-        const friendStatus = rawFriends.getValue(friendUUID);
-
-        GETUser(friendUUID).then((friendData) => {
-          newFriendsArray.push({ friendData, status: friendStatus });
-        });
-      }
-
-      setFriends(newFriendsArray);
-    });
+    populateFriendsList();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -465,7 +467,7 @@ function MainView(props: MainViewProps) {
           </>
         )
       case MainViewRoutes.Friends:
-        return (<FriendView sharedProps={modifiedSharedProps} friends={friends} onFriendClicked={onFriendClicked} onAddFriend={onAddFriend} onBlockFriend={onBlockFriend} onUnblockFriend={onUnblockFriend} onRemoveFriend={onRemoveFriend} />);
+        return (<FriendView sharedProps={modifiedSharedProps} friends={friends} onReloadList={populateFriendsList} onFriendClicked={onFriendClicked} onAddFriend={onAddFriend} onBlockFriend={onBlockFriend} onUnblockFriend={onUnblockFriend} onRemoveFriend={onRemoveFriend} />);
       case MainViewRoutes.Settings:
         return (<SettingsView sharedProps={modifiedSharedProps} avatarNonce={avatarNonce} onAvatarChanged={onAvatarChanged} onLogout={onLogout} path={SettingsViewRoutes.Dashboard} />);
       default:

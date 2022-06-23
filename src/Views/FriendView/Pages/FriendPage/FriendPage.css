@@ -1,6 +1,15 @@
 .FriendPageContainer {
   display: flex;
   flex-direction: column;
+  align-items: flex-end;
+
+  gap: var(--global-margin);
+}
+
+.FriendsContainer {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
 
   gap: var(--global-margin);
 }
