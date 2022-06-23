@@ -90,6 +90,17 @@ export async function SETKey(key_user_uuid: string, key: string) : Promise<boole
 }
 
 // Friend
+export async function GETFriend(friend_uuid: string) : Promise<Dictionary<string>> {
+  const resp = await GET(`/Friend/${new SettingsManager().User.uuid}/Friends/${friend_uuid}`, new SettingsManager().User.token);
+  if (resp.status === 200) {
+    const dict = new Dictionary<string>();
+    const data = resp.payload;
+    dict.setValue(data.uuid, data.state);
+    return dict;
+  }
+  return new Dictionary<string>();
+}
+
 export async function GETFriends(user_uuid: string) : Promise<Dictionary<string>> {
   const resp = await GET(`/Friend/${user_uuid}/Friends`, new SettingsManager().User.token);
   if (resp.status === 200) {
@@ -104,18 +115,23 @@ export async function GETOwnFriends() : Promise<Dictionary<string>> {
   return await GETFriends(new SettingsManager().User.uuid);
 }
 
-export async function REQUESTFriend(user_uuid: string, request_uuid: string) : Promise<boolean> {
-  const resp = await POST(`/Friend/${user_uuid}/Send/${request_uuid}`, ContentType.EMPTY, "", new SettingsManager().User.token, false);
+export async function REQUESTFriend(request_uuid: string) : Promise<boolean> {
+  const resp = await POST(`/Friend/${new SettingsManager().User.uuid}/Send/${request_uuid}`, ContentType.EMPTY, "", new SettingsManager().User.token, false);
   return resp.status === 200;
 }
 
-export async function ACCEPTFriend(user_uuid: string, request_uuid: string) : Promise<boolean> {
-  const resp = await PATCH(`/Friend/${user_uuid}/Accept/${request_uuid}`, ContentType.EMPTY, "", new SettingsManager().User.token);
+export async function ACCEPTFriend(request_uuid: string) : Promise<boolean> {
+  const resp = await PATCH(`/Friend/${new SettingsManager().User.uuid}/Accept/${request_uuid}`, ContentType.EMPTY, "", new SettingsManager().User.token);
   return resp.status === 200;
 }
 
-export async function DECLINEFriend(user_uuid: string, request_uuid: string) : Promise<boolean> {
-  const resp = await PATCH(`/Friend/${user_uuid}/Decline/${request_uuid}`, ContentType.EMPTY, "", new SettingsManager().User.token);
+export async function DECLINEFriend(request_uuid: string) : Promise<boolean> {
+  const resp = await PATCH(`/Friend/${new SettingsManager().User.uuid}/Decline/${request_uuid}`, ContentType.EMPTY, "", new SettingsManager().User.token);
+  return resp.status === 200;
+}
+
+export async function REMOVEFriend(request_uuid: string) : Promise<boolean> {
+  const resp = await DELETE(`/Friend/${new SettingsManager().User.uuid}/Remove/${request_uuid}`, new SettingsManager().User.token)
   return resp.status === 200;
 }
 

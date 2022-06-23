@@ -3,7 +3,7 @@ import NCEvents from "NSLib/NCEvents";
 import { SettingsManager } from "NSLib/SettingsManager";
 import { UserCache } from "Views/MainView/MainView";
 import IWebSocketEvent from "../Interfaces/IWebsocketEvent";
-import { GETChannel, GETKey, GETKeystore, GETMessage, GETUser } from "../NSLib/APIEvents";
+import { GETChannel, GETFriend, GETKey, GETKeystore, GETMessage, GETUser } from "../NSLib/APIEvents";
 import NCWebsocket from "../NSLib/NCWebsocket";
 
 export const Events = new NCEvents();
@@ -89,9 +89,9 @@ async function OnUsernameChanged(event: IWebSocketEvent) {
 }
 
 async function OnNewFriendRequest(event: IWebSocketEvent) {
-  // TODO Update friend page for new requests
+  Events.send("NewFriendRequest", await GETFriend(event.User));
 }
 
 async function OnFriendAccepted(event: IWebSocketEvent) {
- // TODO Update friend page for acceptted friend
+  Events.send("FriendAccepted", await GETFriend(event.User));
 }
