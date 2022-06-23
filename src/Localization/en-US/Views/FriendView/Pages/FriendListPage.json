@@ -1,6 +1,14 @@
 {
   "PageTitle": "Friends",
+  "Typography-RemoveFriendDialogTitle": "Unfriend {{user}}?",
+  "Typography-BlockFriendDialogTitle": "Block {{user}}?",
+  "Typography-UnblockFriendDialogTitle": "Unblock {{user}}?",
+  "Typography-RemoveFriendDialogBlurb": "Remove Friend Blurb",
+  "Typography-BlockFriendDialogBlurb": "Block Friend Blurb",
+  "Typography-UnblockFriendDialogBlurb": "Unblock Friend Blurb",
   "Typography_Heading-NoFriendHint": "Friend List Empty",
   "Typography_Body-NoFriendHint": "Head on over to the \"{{AddFriendSectionTitle}}\" section and add your first friend!",
+  "ContextMenuItem-BlockFriend": "Block",
+  "ContextMenuItem-UnblockFriend": "Unblock",
   "ContextMenuItem-RemoveFriend": "Remove"
 }

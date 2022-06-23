@@ -278,6 +278,14 @@ function MainView(props: MainViewProps) {
     }
   };
 
+  const onBlockFriend = (uuid: string) => {
+    console.log(`Pseudocockblocked user ${uuid}`);
+  }
+
+  const onUnblockFriend = (uuid: string) => {
+    console.log(`Pseudouncockblocked user ${uuid}`);
+  }
+
   const onRemoveFriend = (uuid: string) => {
     REMOVEFriend(uuid);
   }
@@ -369,6 +377,14 @@ function MainView(props: MainViewProps) {
       });
     });
 
+    Events.on("ChangeFriendStatus", async (friend_uuid: string, status: string) => [
+
+    ]);
+
+    Events.on("DeleteFriend", async (friend_uuid: string, status: string) => [
+
+    ]);
+
     return (() => {
       Events.remove("NewMessage");
       Events.remove("DeleteMessage");
@@ -436,7 +452,7 @@ function MainView(props: MainViewProps) {
           </>
         )
       case MainViewRoutes.Friends:
-        return (<FriendView sharedProps={modifiedSharedProps} friends={friends} onFriendClicked={onFriendClicked} onAddFriend={onAddFriend} onRemoveFriend={onRemoveFriend} />);
+        return (<FriendView sharedProps={modifiedSharedProps} friends={friends} onFriendClicked={onFriendClicked} onAddFriend={onAddFriend} onBlockFriend={onBlockFriend} onUnblockFriend={onUnblockFriend} onRemoveFriend={onRemoveFriend} />);
       case MainViewRoutes.Settings:
         return (<SettingsView sharedProps={modifiedSharedProps} avatarNonce={avatarNonce} onAvatarChanged={onAvatarChanged} onLogout={onLogout} path={SettingsViewRoutes.Dashboard} />);
       default:

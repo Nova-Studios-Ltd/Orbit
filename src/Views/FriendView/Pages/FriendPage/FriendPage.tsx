@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Dictionary } from "NSLib/Dictionary";
-import { Typography } from "@mui/material";
+import { Button, Typography } from "@mui/material";
 import useClassNames from "Hooks/useClassNames";
 
 import PageContainer from "Components/Containers/PageContainer/PageContainer";
@@ -10,21 +10,40 @@ import AvatarTextButton from "Components/Buttons/AvatarTextButton/AvatarTextButt
 import type { Page } from "DataTypes/Components";
 import type Friend from "DataTypes/Friend";
 import type { ContextMenuItemProps } from "Components/Menus/ContextMenuItem/ContextMenuItem";
+import GenericDialog from "Components/Dialogs/GenericDialog/GenericDialog";
 
 interface FriendPageProps extends Page {
   friends?: Friend[],
+  onReloadList?: () => void,
   onFriendClicked?: (friend: Friend) => void,
   onAddFriend?: (recipient: string) => void,
-  onRemoveFriend?: (uuid: string) => void
+  onRemoveFriend?: (uuid: string) => void,
+  onBlockFriend?: (uuid: string) => void,
+  onUnblockFriend?: (uuid: string) => void
 }
 
 function FriendPage(props: FriendPageProps) {
   const Localizations_FriendView = useTranslation("FriendView").t;
   const Localizations_FriendPage = useTranslation("FriendListPage").t;
+  const Localizations_GenericDialog = useTranslation("GenericDialog").t;
   const classNames = useClassNames("FriendPageContainer", props.className);
+
+  const [RemoveFriendDialogSelector, setRemoveFriendDialogSelector] = useState("");
+  const [BlockUnblockFriendDialogSelector, setBlockUnblockFriendDialogSelector] = useState("");
 
   const removeFriend = (uuid?: string) => {
     if (uuid && props.onRemoveFriend) props.onRemoveFriend(uuid);
+    setRemoveFriendDialogSelector("");
+  }
+
+  const blockFriend = (uuid?: string) => {
+    if (uuid && props.onBlockFriend) props.onBlockFriend(uuid);
+    setBlockUnblockFriendDialogSelector("");
+  }
+
+  const unblockFriend = (uuid?: string) => {
+    if (uuid && props.onUnblockFriend) props.onUnblockFriend(uuid);
+    setBlockUnblockFriendDialogSelector("");
   }
 
   const friendElements = (() => {
@@ -32,8 +51,13 @@ function FriendPage(props: FriendPageProps) {
       return props.friends.map((friend) => {
         if (!friend.friendData) return null;
 
+        const RemoveFriendDialogVisible = RemoveFriendDialogSelector === friend.friendData?.uuid;
+        const BlockUnblockFriendDialogVisible = BlockUnblockFriendDialogSelector === friend.friendData?.uuid;
+        const isBlocked = friend.status?.toLowerCase() === "blocked";
+
         const friendContextMenuItems: ContextMenuItemProps[] = [
-          { children: Localizations_FriendPage("ContextMenuItem-RemoveFriend"), onLeftClick: () => removeFriend(friend.friendData?.uuid)},
+          { children: Localizations_FriendPage("ContextMenuItem-RemoveFriend"), onLeftClick: () => friend.friendData && friend.friendData.uuid ? setRemoveFriendDialogSelector(friend.friendData.uuid) : null},
+          { children: isBlocked ? Localizations_FriendPage("ContextMenuItem-UnblockFriend") : Localizations_FriendPage("ContextMenuItem-BlockFriend"), onLeftClick: () => friend.friendData && friend.friendData.uuid ? setBlockUnblockFriendDialogSelector(friend.friendData.uuid) : null },
         ];
 
         const friendRightClickHandler = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -52,6 +76,26 @@ function FriendPage(props: FriendPageProps) {
             <Typography>{friend.friendData?.username}#{friend.friendData?.discriminator}</Typography>
             <Typography variant="caption">{friend.status}</Typography>
           </div>
+          <GenericDialog onClose={() => setRemoveFriendDialogSelector("")} open={RemoveFriendDialogVisible} title={Localizations_FriendPage("Typography-RemoveFriendDialogTitle", { user: friend.friendData.username })} buttons={
+            <>
+              <Button onClick={(event) => { setRemoveFriendDialogSelector(""); event.stopPropagation(); }}>{Localizations_GenericDialog("Button_Label-DialogCancel")}</Button>
+              <Button color="error" onClick={(event) => { removeFriend(friend.friendData?.uuid); event.stopPropagation() }}>{Localizations_GenericDialog("Button_Label-DialogRemove")}</Button>
+            </>
+          }>
+            <div className="GenericDialogTextContainer">
+              <Typography variant="body1">{Localizations_FriendPage("Typography-RemoveFriendDialogBlurb", { user: friend.friendData.username })}</Typography>
+            </div>
+          </GenericDialog>
+          <GenericDialog onClose={() => setBlockUnblockFriendDialogSelector("")} open={BlockUnblockFriendDialogVisible} title={isBlocked ? Localizations_FriendPage("Typography-UnblockFriendDialogTitle", { user: friend.friendData.username }) : Localizations_FriendPage("Typography-BlockFriendDialogTitle", { user: friend.friendData.username })} buttons={
+            <>
+              <Button onClick={(event) => { setBlockUnblockFriendDialogSelector(""); event.stopPropagation() }}>{Localizations_GenericDialog("Button_Label-DialogCancel")}</Button>
+              <Button color="error" onClick={(event) => { isBlocked ? unblockFriend(friend.friendData?.uuid) : blockFriend(friend.friendData?.uuid); event.stopPropagation() }}>{isBlocked ? Localizations_GenericDialog("Button_Label-DialogUnblock") : Localizations_GenericDialog("Button_Label-DialogBlock")}</Button>
+            </>
+          }>
+            <div className="GenericDialogTextContainer">
+              <Typography variant="body1">{Localizations_FriendPage(isBlocked ? "Typography-UnblockFriendDialogBlurb" : "Typography-BlockFriendDialogBlurb", { user: friend.friendData.username })}</Typography>
+            </div>
+          </GenericDialog>
         </AvatarTextButton>)
       });
     }
@@ -72,6 +116,7 @@ function FriendPage(props: FriendPageProps) {
 
   return (
     <PageContainer className={classNames} adaptive={false}>
+      <Button onClick={() => { if (props.onReloadList) props.onReloadList() }}></Button>
       {friendElements && friendElements.length > 0 ? friendElements : NoFriendsHint}
     </PageContainer>
   );
