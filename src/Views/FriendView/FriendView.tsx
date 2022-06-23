@@ -17,7 +17,8 @@ interface FriendViewProps extends View {
   path?: never,
   friends?: Friend[],
   onFriendClicked?: (friend: Friend) => void,
-  onAddFriend?: (recipient: string) => void
+  onAddFriend?: (recipient: string) => void,
+  onRemoveFriend?: (uuid: string) => void
 }
 
 function FriendView(props: FriendViewProps) {
@@ -34,7 +35,7 @@ function FriendView(props: FriendViewProps) {
     switch (path) {
       case FriendViewRoutes.FriendsList:
         return (
-          <FriendPage friends={props.friends} onFriendClicked={props.onFriendClicked} sharedProps={props.sharedProps} />
+          <FriendPage friends={props.friends} onFriendClicked={props.onFriendClicked} onRemoveFriend={props.onRemoveFriend} sharedProps={props.sharedProps} />
         )
       case FriendViewRoutes.BlockedUsersList:
         return (

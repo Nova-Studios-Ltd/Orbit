@@ -1,5 +1,6 @@
 {
   "PageTitle": "Friends",
   "Typography_Heading-NoFriendHint": "No Friends!",
-  "Typography_Body-NoFriendHint": "Ha ha"
+  "Typography_Body-NoFriendHint": "Ha ha",
+  "ContextMenuItem-RemoveFriend": "Remove"
 }

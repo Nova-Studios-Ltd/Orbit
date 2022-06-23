@@ -278,6 +278,10 @@ function MainView(props: MainViewProps) {
     }
   };
 
+  const onRemoveFriend = (uuid: string) => {
+    console.log(`Requested to remove friend with UUID ${uuid}`);
+  }
+
   const onChannelEdit = (channel: IRawChannelProps) => {
     console.log(`Request to edit channel ${channel.channelName}`);
     // TODO: Add Channel edit logic here
@@ -422,7 +426,7 @@ function MainView(props: MainViewProps) {
           </>
         )
       case MainViewRoutes.Friends:
-        return (<FriendView sharedProps={modifiedSharedProps} friends={friends} onFriendClicked={onFriendClicked} onAddFriend={onAddFriend} />);
+        return (<FriendView sharedProps={modifiedSharedProps} friends={friends} onFriendClicked={onFriendClicked} onAddFriend={onAddFriend} onRemoveFriend={onRemoveFriend} />);
       case MainViewRoutes.Settings:
         return (<SettingsView sharedProps={modifiedSharedProps} avatarNonce={avatarNonce} onAvatarChanged={onAvatarChanged} onLogout={onLogout} path={SettingsViewRoutes.Dashboard} />);
       default:
