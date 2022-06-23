@@ -147,8 +147,11 @@ async function DecryptMessage(message: IMessageProps) : Promise<IMessageProps> {
     for (let a = 0; a < message.attachments.length; a++) {
       const attachment = message.attachments[a];
       const content = await GETFile(attachment.contentUrl, Manager.User.token);
+      const filename = message.attachments[a].filename;
       const decryptedContent = await DecryptUint8Array(key, new AESMemoryEncryptData( message.iv, content.payload as Uint8Array));
+      const decryptedFilename = await DecryptBase64(key, new AESMemoryEncryptData( message.iv, filename));
       message.attachments[a].content = decryptedContent;
+      message.attachments[a].filename = decryptedFilename.String;
     }
   }
   return message;
