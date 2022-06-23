@@ -90,15 +90,12 @@ export async function SETKey(key_user_uuid: string, key: string) : Promise<boole
 }
 
 // Friend
-export async function GETFriend(friend_uuid: string) : Promise<Dictionary<string>> {
+export async function GETFriend(friend_uuid: string) : Promise<string> {
   const resp = await GET(`/Friend/${new SettingsManager().User.uuid}/Friends/${friend_uuid}`, new SettingsManager().User.token);
   if (resp.status === 200) {
-    const dict = new Dictionary<string>();
-    const data = resp.payload;
-    dict.setValue(data.uuid, data.state);
-    return dict;
+    return resp.payload.uuid;
   }
-  return new Dictionary<string>();
+  return "";
 }
 
 export async function GETFriends(user_uuid: string) : Promise<Dictionary<string>> {

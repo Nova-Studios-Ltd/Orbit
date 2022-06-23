@@ -27,7 +27,7 @@ import type { SharedProps, View } from "DataTypes/Components";
 import type { IRawChannelProps } from "Interfaces/IRawChannelProps";
 import type { IMessageProps } from "Interfaces/IMessageProps";
 import type { MessageProps } from "Components/Messages/Message/Message";
-import type { Dictionary } from "NSLib/Dictionary";
+import { Dictionary } from "NSLib/Dictionary";
 import type Friend from "DataTypes/Friend";
 import { AuthViewRoutes, MainViewRoutes, SettingsViewRoutes } from "DataTypes/Routes";
 
@@ -263,7 +263,7 @@ function MainView(props: MainViewProps) {
           }
           break;
         case "request":
-          ACCEPTFriend(settings.User.uuid, friend.friendData.uuid);
+          ACCEPTFriend(friend.friendData.uuid);
           break;
       }
     }
@@ -274,7 +274,7 @@ function MainView(props: MainViewProps) {
       const ud = recipient.split("#");
       const user = await GETUserUUID(ud[0], ud[1]);
       if (user === undefined) return;
-      REQUESTFriend(settings.User.uuid, user);
+      REQUESTFriend(user);
     }
   };
 
@@ -362,10 +362,20 @@ function MainView(props: MainViewProps) {
       setMessages([]);
     });
 
+    Events.on("NewFriendRequest", async (request_uuid: string, status: string) => {
+      const friendData = UserCache.GetUser(request_uuid);
+      setFriends(prevState => {
+        return [...prevState, {friendData, status} as Friend ];
+      });
+    });
+
     return (() => {
       Events.remove("NewMessage");
       Events.remove("DeleteMessage");
       Events.remove("EditMessage");
+      Events.remove("NewChannel");
+      Events.remove("DeleteChannel");
+      Events.remove("NewFriendRequest");
     });
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [channels, messages]);

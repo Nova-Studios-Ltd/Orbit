@@ -89,9 +89,9 @@ async function OnUsernameChanged(event: IWebSocketEvent) {
 }
 
 async function OnNewFriendRequest(event: IWebSocketEvent) {
-  Events.send("NewFriendRequest", await GETFriend(event.User));
+  Events.send("NewFriendRequest", event.User, await GETFriend(event.User));
 }
 
 async function OnFriendAccepted(event: IWebSocketEvent) {
-  Events.send("FriendAccepted", await GETFriend(event.User));
+  Events.send("FriendAccepted", event.User, await GETFriend(event.User));
 }
