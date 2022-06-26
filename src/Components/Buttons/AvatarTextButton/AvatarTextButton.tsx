@@ -44,9 +44,8 @@ function AvatarTextButton(props: AvatarTextButtonProps) {
   }
 
   const onMainMouseDown = (event: React.MouseEvent<HTMLDivElement>) => {
-    console.log(event.target);
     if (mainRippleRef.current) mainRippleRef.current.start(event);
-    if (event.button === 2) {
+    if (event.button === 2 && mainHovering) {
       // Right Click
       if (props.onRightClick) props.onRightClick(event);
     }
@@ -54,7 +53,7 @@ function AvatarTextButton(props: AvatarTextButtonProps) {
 
   const onMainMouseUp = (event: React.MouseEvent<HTMLDivElement>) => {
     if (mainRippleRef.current) mainRippleRef.current.stop(event);
-    if (event.button === 0) {
+    if (event.button === 0 && mainHovering) {
       // Left Click
       if (props.onLeftClick) props.onLeftClick(event);
     }
@@ -66,7 +65,7 @@ function AvatarTextButton(props: AvatarTextButtonProps) {
 
   const onEllipsisMouseUp = (event: React.MouseEvent<HTMLDivElement>) => {
     if (ellipsisRippleRef.current) ellipsisRippleRef.current.stop(event);
-    if (props.onRightClick) props.onRightClick(event);
+    if (props.onRightClick && ellipsisHovering) props.onRightClick(event);
   }
 
   return (
