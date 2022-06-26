@@ -202,9 +202,9 @@ export async function GETMessages(channel_uuid: string, callback: (messages: IMe
         const message = await DecryptMessage(rawMessages[m]);
         decryptedMessages.push(message);
         if (!bypass_cache) cache.SetMessage(message.message_Id, message);
-        callback([...messages.Messages, ...decryptedMessages]);
-        return [...messages.Messages, ...decryptedMessages];
       }
+      callback([...messages.Messages, ...decryptedMessages]);
+      return [...messages.Messages, ...decryptedMessages];
     }
     callback([])
     return [];

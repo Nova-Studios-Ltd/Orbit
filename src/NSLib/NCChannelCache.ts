@@ -69,7 +69,7 @@ export class NCChannelCache {
     for (let i = 0; i < keys.length; i++) {
       const key = keys[i];
       if (key === "LastAccess" || key === "Session" || curLim >= limit) continue;
-      if (parseInt(key) < before) {
+      if (parseInt(key) < before + 1) {
         curLim++;
         lastID = key;
         messages.push((await this.GetMessage(key)).Messages[0]);

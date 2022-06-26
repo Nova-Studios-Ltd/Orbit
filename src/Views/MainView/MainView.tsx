@@ -134,13 +134,14 @@ function MainView(props: MainViewProps) {
   }
 
   const onLoadPriorMessages = () => {
+    //console.log(messages);
     const oldestID = parseInt(messages[messages.length - 1].message_Id); // TODO: Figure out why this spits out an error
     GETMessages(selectedChannel.table_Id, (messages: IMessageProps[]) => {
       autoScroll.current = false;
       setMessages(prevState => {
         return [...prevState, ...messages];
       })
-    }, false, 30, -1, oldestID);
+    }, false, 30, -1, oldestID - 1);
   }
 
   const onFileUpload = () => {
@@ -201,9 +202,10 @@ function MainView(props: MainViewProps) {
         const cache = isCache as NCChannelCache;
         // Fully refresh cache, ignoring anything, pulling the newest messages
         if (await cache.RequiresRefresh()) {
-          cache.ClearCache();
+          //cache.ClearCache();
           GETMessagesSingle(channel.table_Id, async (message: IMessageProps) => {
             autoScroll.current = false;
+            await cache.SetMessage(message.author_UUID, message);
             setMessages(prevState => {
               return [...prevState, message];
             });
