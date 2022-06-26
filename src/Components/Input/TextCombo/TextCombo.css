@@ -34,12 +34,14 @@
 .TextComboBefore {
   display: flex;
   flex-direction: row;
+  align-items: center;
   justify-content: center;
 }
 
 .TextComboAfter {
   display: flex;
   flex-direction: row;
+  align-items: center;
   justify-content: center;
 }
 

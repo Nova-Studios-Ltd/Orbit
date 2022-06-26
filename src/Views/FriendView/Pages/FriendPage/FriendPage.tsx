@@ -60,7 +60,7 @@ function FriendPage(props: FriendPageProps) {
           { children: isBlocked ? Localizations_FriendPage("ContextMenuItem-UnblockFriend") : Localizations_FriendPage("ContextMenuItem-BlockFriend"), onLeftClick: () => friend.friendData && friend.friendData.uuid ? setBlockUnblockFriendDialogSelector(friend.friendData.uuid) : null },
         ];
 
-        const friendRightClickHandler = (event: React.MouseEvent<HTMLButtonElement>) => {
+        const friendRightClickHandler = (event: React.MouseEvent<HTMLDivElement>) => {
           if (props.sharedProps && props.sharedProps.ContextMenu && event.currentTarget) {
             props.sharedProps.ContextMenu.setAnchor({ x: event.clientX, y: event.clientY });
             props.sharedProps.ContextMenu.setItems(friendContextMenuItems);

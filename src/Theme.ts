@@ -21,7 +21,8 @@ export const DarkTheme_Default = createTheme({
     customActions: {
       active: "#3C3E42",
       messageHover: "#8A8F94",
-      contextMenuItemActive: "#7E8187"
+      contextMenuItemActive: "#7E8187",
+      avatarTextButtonActive: "#3C3E42"
     },
     contextMenuBackground: "#3C3E42",
     contextMenuItemBackground: "#3C3E42",
@@ -45,7 +46,8 @@ export const LightTheme_Default = createTheme({
     customActions: {
       active: "",
       messageHover: "",
-      contextMenuItemActive: ""
+      contextMenuItemActive: "",
+      avatarTextButtonActive: "",
     },
     contextMenuBackground: "",
     contextMenuItemBackground: "",
@@ -68,7 +70,8 @@ export const WTFTheme_Default = createTheme({
     customActions: {
       active: GenerateRandomColor(),
       messageHover: GenerateRandomColor(),
-      contextMenuItemActive: GenerateRandomColor()
+      contextMenuItemActive: GenerateRandomColor(),
+      avatarTextButtonActive: GenerateRandomColor(),
     },
     contextMenuBackground: GenerateRandomColor(),
     contextMenuItemBackground: GenerateRandomColor(),
@@ -85,7 +88,8 @@ declare module "@mui/material/styles" {
       customActions: {
         active: string,
         messageHover: string,
-        contextMenuItemActive: string
+        contextMenuItemActive: string,
+        avatarTextButtonActive: string,
       },
       contextMenuBackground: string,
       contextMenuItemBackground: string,
@@ -101,7 +105,8 @@ declare module "@mui/material/styles" {
       customActions: {
         active: string,
         messageHover: string,
-        contextMenuItemActive: string
+        contextMenuItemActive: string,
+        avatarTextButtonActive: string,
       },
       contextMenuBackground: string,
       contextMenuItemBackground: string,

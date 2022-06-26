@@ -97,7 +97,9 @@ function TextCombo(props: TextComboProps) {
         <div className="TextComboAfter">
           {RemainingTextFieldCharLength < TextFieldCharLengthDisplayThreshold ? <Typography variant="caption" alignSelf="center">{RemainingTextFieldCharLength}</Typography> : null}
           {props.childrenRight}
-          {props.submitButton === false ? null : <IconButton title={Localizations_TextCombo("TextCombo-Tooltip-SubmitGeneric")} aria-label={Localizations_TextCombo("TextCombo-Tooltip-SubmitGeneric")} onClick={() => submit()}><SendIcon /></IconButton>}
+          <span>
+            {props.submitButton === false ? null : <IconButton title={Localizations_TextCombo("TextCombo-Tooltip-SubmitGeneric")} aria-label={Localizations_TextCombo("TextCombo-Tooltip-SubmitGeneric")} onClick={() => submit()}><SendIcon /></IconButton>}
+          </span>
         </div>
       </div>
     </div>

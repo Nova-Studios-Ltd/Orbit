@@ -1,9 +1,10 @@
-import { Avatar, ButtonBase, IconButton, Typography, useTheme } from "@mui/material";
+import { Avatar, ButtonBase, IconButton, TouchRippleClasses, Typography, useTheme } from "@mui/material";
 import { MoreHoriz as EllipsisIcon } from "@mui/icons-material";
-import React, { useState, ReactNode } from "react";
+import React, { useState, useRef, ReactNode } from "react";
 
 import type { NCComponent } from "DataTypes/Components";
 import useClassNames from "Hooks/useClassNames";
+import TouchRipple, { TouchRippleActions } from "@mui/material/ButtonBase/TouchRipple";
 
 export interface AvatarTextButtonProps extends NCComponent {
   children?: ReactNode,
@@ -11,8 +12,8 @@ export interface AvatarTextButtonProps extends NCComponent {
   selected?: boolean,
   showEllipsis?: boolean,
   showEllipsisConditional?: boolean,
-  onLeftClick?: (event: React.MouseEvent<HTMLButtonElement>) => void,
-  onRightClick?: (event: React.MouseEvent<HTMLButtonElement>) => void
+  onLeftClick?: (event: React.MouseEvent<HTMLDivElement>) => void,
+  onRightClick?: (event: React.MouseEvent<HTMLDivElement>) => void
 }
 
 function AvatarTextButton(props: AvatarTextButtonProps) {
@@ -20,31 +21,71 @@ function AvatarTextButton(props: AvatarTextButtonProps) {
   const classNames = useClassNames("AvatarTextButtonContainer", props.className);
   const isTouchCapable = props.sharedProps && props.sharedProps.isTouchCapable;
 
-  const [isHovering, setHoveringState] = useState(false);
+  const mainRippleRef = useRef() as React.MutableRefObject<TouchRippleActions>;
+  const ellipsisRippleRef = useRef() as React.MutableRefObject<TouchRippleActions>;
 
-  const onMouseHover = (isHovering: boolean) => {
-    setHoveringState(isHovering);
+  const [mainIsHovering, setMainHoveringState] = useState(false);
+  const [ellipsisIsHovering, setEllipsisHoveringState] = useState(false);
+
+  const onMainMouseHover = (event: React.MouseEvent<HTMLDivElement>) => {
+    const isHovering = event.type.toLowerCase() === "mouseenter" ? true : false;
+    setMainHoveringState(isHovering);
+    if (!isHovering) {
+      if (mainRippleRef.current) mainRippleRef.current.stop(event);
+    }
   }
 
-  const onEllipsisClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const onEllipsisMouseHover = (event: React.MouseEvent<HTMLDivElement>) => {
+    const isHovering = event.type.toLowerCase() === "mouseenter" ? true : false;
+    setEllipsisHoveringState(isHovering);
+    if (!isHovering) {
+      if (ellipsisRippleRef.current) ellipsisRippleRef.current.stop(event);
+    }
+  }
+
+  const onMainMouseDown = (event: React.MouseEvent<HTMLDivElement>) => {
+    if (mainRippleRef.current) mainRippleRef.current.start(event);
+    if (event.button === 2) {
+      // Right Click
+      if (props.onRightClick) props.onRightClick(event);
+    }
+  }
+
+  const onMainMouseUp = (event: React.MouseEvent<HTMLDivElement>) => {
+    if (mainRippleRef.current) mainRippleRef.current.stop(event);
+    if (event.button === 0) {
+      // Left Click
+      if (props.onLeftClick) props.onLeftClick(event);
+    }
+  }
+
+  const onEllipsisMouseDown = (event: React.MouseEvent<HTMLDivElement>) => {
+    if (ellipsisRippleRef.current) ellipsisRippleRef.current.start(event);
+  }
+
+  const onEllipsisMouseUp = (event: React.MouseEvent<HTMLDivElement>) => {
+    if (ellipsisRippleRef.current) ellipsisRippleRef.current.stop(event);
     if (props.onRightClick) props.onRightClick(event);
-  };
+  }
 
   return (
-    <div className={classNames} style={{ backgroundColor: props.selected || isHovering ? theme.customPalette.customActions.active : theme.palette.background.paper }}>
-      <ButtonBase className="AvatarTextButtonBase" onClick={props.onLeftClick} onContextMenu={props.onRightClick} onMouseEnter={() => onMouseHover(true)} onMouseLeave={() => onMouseHover(false)}>
+    <div className={classNames} style={{ backgroundColor: props.selected || mainIsHovering ? theme.customPalette.customActions.avatarTextButtonActive : theme.palette.background.paper }}>
+      <div className="AvatarTextButtonBase" onMouseDown={onMainMouseDown} onContextMenu={onMainMouseDown} onMouseUp={onMainMouseUp} onMouseEnter={onMainMouseHover} onMouseLeave={onMainMouseHover}>
         <div className="AvatarTextButtonLeft">
           <Avatar className="AvatarTextButtonIcon" src={props.iconSrc} />
         </div>
         <div className="AvatarTextButtonRight">
           <Typography variant="h6">{props.children}</Typography>
         </div>
-      </ButtonBase>
+      </div>
       {props.showEllipsis || (isTouchCapable && props.showEllipsisConditional) ? (
-        <IconButton className="AvatarTextButtonEllipsis" onClick={onEllipsisClick} onMouseEnter={() => onMouseHover(true)} onMouseLeave={() => onMouseHover(false)}>
+        <div className="AvatarTextButtonEllipsis" style={{ backgroundColor: mainIsHovering || ellipsisIsHovering ? theme.customPalette.customActions.avatarTextButtonActive : theme.palette.background.paper }} onMouseDown={onEllipsisMouseDown} onMouseUp={onEllipsisMouseUp} onMouseEnter={onEllipsisMouseHover} onMouseLeave={onEllipsisMouseHover}>
           <EllipsisIcon />
-        </IconButton>) : null
+          <TouchRipple className="AvatarTextButtonRipple" ref={ellipsisRippleRef} />
+      </div>
+        ) : null
       }
+      <TouchRipple className="AvatarTextButtonRipple" ref={mainRippleRef} />
     </div>
   )
 }

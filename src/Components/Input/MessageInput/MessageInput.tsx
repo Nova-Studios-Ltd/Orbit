@@ -69,7 +69,7 @@ function MessageInput({ className, attachments, onFileUpload, onFileRemove, onCh
       <TextCombo className="MessageInputField" textFieldPlaceholder={Localizations_MessageInput("TextField_Placeholder-TypeHerePrompt")} value={TextFieldValue} onChange={onChangeHandler} onSubmit={sendMessage}
         childrenLeft={
           <>
-            <IconButton title={Localizations_MessageInput("IconButton-Tooltip-UploadFile")} aria-label={Localizations_MessageInput("IconButton-Tooltip-UploadFile")} onClick={() => uploadFile()}><UploadIcon /></IconButton>
+            <span><IconButton title={Localizations_MessageInput("IconButton-Tooltip-UploadFile")} aria-label={Localizations_MessageInput("IconButton-Tooltip-UploadFile")} onClick={() => uploadFile()}><UploadIcon /></IconButton></span>
             {hasAttachments ? <IconButton title={Localizations_MessageInput("IconButton-Tooltip-ClearAttachments")} aria-label={Localizations_MessageInput("IconButton-Tooltip-ClearAttachments")} onClick={() => clearAttachments()}><DeleteIcon /></IconButton> : null}
           </>
         }
