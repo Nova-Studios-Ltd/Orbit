@@ -24,8 +24,8 @@ function AvatarTextButton(props: AvatarTextButtonProps) {
   const mainRippleRef = useRef() as React.MutableRefObject<TouchRippleActions>;
   const ellipsisRippleRef = useRef() as React.MutableRefObject<TouchRippleActions>;
 
-  const [mainIsHovering, setMainHoveringState] = useState(false);
-  const [ellipsisIsHovering, setEllipsisHoveringState] = useState(false);
+  const [mainHovering, setMainHoveringState] = useState(false);
+  const [ellipsisHovering, setEllipsisHoveringState] = useState(false);
 
   const onMainMouseHover = (event: React.MouseEvent<HTMLDivElement>) => {
     const isHovering = event.type.toLowerCase() === "mouseenter" ? true : false;
@@ -44,6 +44,7 @@ function AvatarTextButton(props: AvatarTextButtonProps) {
   }
 
   const onMainMouseDown = (event: React.MouseEvent<HTMLDivElement>) => {
+    console.log(event.target);
     if (mainRippleRef.current) mainRippleRef.current.start(event);
     if (event.button === 2) {
       // Right Click
@@ -69,7 +70,7 @@ function AvatarTextButton(props: AvatarTextButtonProps) {
   }
 
   return (
-    <div className={classNames} style={{ backgroundColor: props.selected || mainIsHovering ? theme.customPalette.customActions.avatarTextButtonActive : theme.palette.background.paper }}>
+    <div className={classNames} style={{ backgroundColor: props.selected || mainHovering ? theme.customPalette.customActions.avatarTextButtonActive : theme.palette.background.paper }}>
       <div className="AvatarTextButtonBase" onMouseDown={onMainMouseDown} onContextMenu={onMainMouseDown} onMouseUp={onMainMouseUp} onMouseEnter={onMainMouseHover} onMouseLeave={onMainMouseHover}>
         <div className="AvatarTextButtonLeft">
           <Avatar className="AvatarTextButtonIcon" src={props.iconSrc} />
@@ -79,7 +80,7 @@ function AvatarTextButton(props: AvatarTextButtonProps) {
         </div>
       </div>
       {props.showEllipsis || (isTouchCapable && props.showEllipsisConditional) ? (
-        <div className="AvatarTextButtonEllipsis" style={{ backgroundColor: mainIsHovering || ellipsisIsHovering ? theme.customPalette.customActions.avatarTextButtonActive : theme.palette.background.paper }} onMouseDown={onEllipsisMouseDown} onMouseUp={onEllipsisMouseUp} onMouseEnter={onEllipsisMouseHover} onMouseLeave={onEllipsisMouseHover}>
+        <div className="AvatarTextButtonEllipsis" style={{ backgroundColor: mainHovering || ellipsisHovering ? theme.customPalette.customActions.avatarTextButtonActive : theme.palette.background.paper }} onMouseDown={onEllipsisMouseDown} onMouseUp={onEllipsisMouseUp} onMouseEnter={onEllipsisMouseHover} onMouseLeave={onEllipsisMouseHover}>
           <EllipsisIcon />
           <TouchRipple className="AvatarTextButtonRipple" ref={ellipsisRippleRef} />
       </div>
