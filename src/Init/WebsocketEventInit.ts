@@ -90,6 +90,7 @@ async function OnUsernameChanged(event: IWebSocketEvent) {
 }
 
 async function FriendRequestAdded(event: IWebSocketEvent) {
+  console.log("New request");
   Events.send("FriendAdded", event.User, await GETFriend(event.User));
 }
 
