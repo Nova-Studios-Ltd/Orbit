@@ -1,6 +1,6 @@
 export async function StripExif(image: Blob) : Promise<Blob | undefined> {
   if (image.type !== "image/jpeg") return undefined;
-
+  return removeExif(image, new DataView(await image.arrayBuffer()))
 }
 
 async function removeExif(image: Blob, dv: DataView) : Promise<Blob> {
@@ -9,7 +9,7 @@ async function removeExif(image: Blob, dv: DataView) : Promise<Blob> {
   let i = 0;
   if (dv.getUint16(offset) === 0xffd8) {
     offset += 2;
-    const app1 = 0;
+    let app1 = 0;
     offset += 2;
     while (offset < dv.byteLength) {
       if (app1 === 0xffe1) {
@@ -21,18 +21,17 @@ async function removeExif(image: Blob, dv: DataView) : Promise<Blob> {
         break;
       }
       offset += dv.getUint16(offset);
-      let app1 = dv.getUint16(offset);
+      app1 = dv.getUint16(offset);
       offset += 2;
     }
     if (pieces.length > 0) {
       let newPeices = [];
       pieces.forEach(function(v) {
         newPeices.push(image.slice(v.recess, v.offset));
-      }, this);
+      });
       newPeices.push(image.slice(recess));
-      let br = new Blob(newPeices, {type: "image/jpeg"});
-      return br;
+      return new Blob(newPeices, {type: "image/jpeg"});
     }
   }
-  return null;
+  return new Blob();
 }
