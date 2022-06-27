@@ -132,6 +132,16 @@ export async function REMOVEFriend(request_uuid: string) : Promise<boolean> {
   return resp.status === 200;
 }
 
+export async function BLOCKFriend(request_uuid: string) : Promise<boolean> {
+  const resp = await PATCH(`/Friend/${new SettingsManager().User.uuid}/Block/${request_uuid}`, ContentType.EMPTY, "", new SettingsManager().User.token);
+  return resp.status === 200;
+}
+
+export async function UNBLOCKFriend(request_uuid: string) : Promise<boolean> {
+  const resp = await PATCH(`/Friend/${new SettingsManager().User.uuid}/Unblock/${request_uuid}`, ContentType.EMPTY, "", new SettingsManager().User.token);
+  return resp.status === 200;
+}
+
 
 // Messages
 async function DecryptMessage(message: IMessageProps) : Promise<IMessageProps> {
