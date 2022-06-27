@@ -26,7 +26,7 @@ function MessageVideo({ className, content, contentUrl, fileName, fileSize, mime
 
   return (
     <div className={classNames} style={{ backgroundColor: theme.palette.background.paper }}>
-      <video className="MessageMediaVideo" controls src={contentRef.current} />
+      <video className="MessageMediaVideo" onClick={(event) => event.preventDefault()} controls src={contentRef.current} />
       <div className="MessageMediaVideoOverlay">
 
       </div>

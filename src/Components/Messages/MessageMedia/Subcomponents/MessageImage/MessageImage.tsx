@@ -26,7 +26,7 @@ function MessageImage({ className, content, contentUrl, fileName, fileSize, mime
 
   return (
     <div className={classNames} style={{ backgroundColor: theme.palette.background.paper }}>
-      <img className="MessageMediaImage" src={contentRef.current} alt={fileName} loading="lazy"/>
+      <img className="MessageMediaImage" onClick={(event) => event.preventDefault()} src={contentRef.current} alt={fileName} loading="lazy"/>
       <div className="MessageMediaImageOverlay">
 
       </div>

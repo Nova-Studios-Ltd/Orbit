@@ -10,7 +10,7 @@ import TextCombo, { TextComboChangeEvent, TextComboSubmitEvent } from "Component
 import type { NCComponent } from "DataTypes/Components";
 import type { ContextMenuItemProps } from "Components/Menus/ContextMenuItem/ContextMenuItem";
 import { AttachmentProps, IAttachmentProps } from "Interfaces/IAttachmentProps";
-import { WriteToClipboard } from "NSLib/ElectronAPI";
+import { DownloadUint8ArrayFile, WriteToClipboard } from "NSLib/ElectronAPI";
 import { GetImageDimensions, GetMimeType } from "NSLib/ContentLinkUtil";
 import { FileType } from "NSLib/MimeTypeParser";
 import { UserCache } from "Views/MainView/MainView";
@@ -44,6 +44,8 @@ function Message(props: MessageProps) {
   const [editFieldValue, setEditFieldValue] = useState("" as string | undefined);
   const [allAttachments, setAttachments] = useState([] as IAttachmentProps[]);
   const [displayName, setDisplayName] = useState(UserCache.GetUser(props.authorID || "")?.username || "");
+  const [selectedAttachment, setSelectedAttachment] = useState(null as unknown as IAttachmentProps);
+  const [messageContextMenuItems, setMessageContextMenuItems] = useState(null as unknown as ContextMenuItemProps[]);
 
   useEffect(() => {
     if (props.attachments === undefined) return;
@@ -71,7 +73,6 @@ function Message(props: MessageProps) {
     processMedia();
   }, [props, props.attachments, props.content]);
 
-
   const startEditMessage = () => {
     setEditingState(true);
     setEditFieldValue(props.content);
@@ -88,11 +89,13 @@ function Message(props: MessageProps) {
     WriteToClipboard(props.content);
   }
 
-  const messageContextMenuItems: ContextMenuItemProps[] = [
-    { children: Localizations_Message("ContextMenuItem-Copy"), onLeftClick: () => copyMessage()},
-    { hide: !isOwnMessage, children: Localizations_Message("ContextMenuItem-Edit"), onLeftClick: () => startEditMessage()},
-    { hide: !isOwnMessage, children: Localizations_Message("ContextMenuItem-Delete"), onLeftClick: () => { if (props.onMessageDelete) props.onMessageDelete(filteredMessageProps) }}
-  ]
+  const showContextMenu = (position: { x: number, y: number }) => {
+    if (props.sharedProps && props.sharedProps.ContextMenu) {
+      props.sharedProps.ContextMenu.setAnchor({ x: position.x, y: position.y });
+      props.sharedProps.ContextMenu.setItems(messageContextMenuItems);
+      props.sharedProps.ContextMenu.setVisibility(true);
+    }
+  }
 
   const editMessageFieldChangedHandler = (event: TextComboChangeEvent) => {
     setEditFieldValue(event.value);
@@ -102,12 +105,17 @@ function Message(props: MessageProps) {
     setHoveringState(isHovering);
   }
 
-  const messageRightClickHandler = (event: React.MouseEvent<HTMLDivElement>) => {
-    if (props.sharedProps && props.sharedProps.ContextMenu && event.currentTarget) {
-      props.sharedProps.ContextMenu.setAnchor({ x: event.clientX, y: event.clientY });
-      props.sharedProps.ContextMenu.setItems(messageContextMenuItems);
-      props.sharedProps.ContextMenu.setVisibility(true);
+  const downloadSelectedAttachment = () => {
+    if (selectedAttachment && selectedAttachment.content) {
+      DownloadUint8ArrayFile(selectedAttachment.content, selectedAttachment.filename);
+      return;
     }
+    console.warn("File does not contain content to download");
+  };
+
+  const messageRightClickHandler = (event: React.MouseEvent<HTMLDivElement>) => {
+    showContextMenu({ x: event.clientX, y: event.clientY });
+    setSelectedAttachment(null as unknown as IAttachmentProps);
     event.preventDefault();
   }
 
@@ -115,11 +123,31 @@ function Message(props: MessageProps) {
     if (isTouchCapable) messageRightClickHandler(event);
   }
 
+  const attachmentLeftClickHandler = (event: React.MouseEvent<HTMLDivElement>, attachment: IAttachmentProps) => {
+    setSelectedAttachment(attachment);
+  }
+
+  const attachmentRightClickHandler = (event: React.MouseEvent<HTMLDivElement>, attachment: IAttachmentProps) => {
+    setSelectedAttachment(attachment);
+  }
+
+  useEffect(() => {
+    setMessageContextMenuItems([
+    { children: Localizations_Message("ContextMenuItem-Copy"), onLeftClick: () => copyMessage()},
+    { hide: !selectedAttachment, children: Localizations_Message("ContextMenuItem-Download"), onLeftClick: () => downloadSelectedAttachment() },
+    { hide: !isOwnMessage, children: Localizations_Message("ContextMenuItem-Edit"), onLeftClick: () => startEditMessage()},
+    { hide: !isOwnMessage, children: Localizations_Message("ContextMenuItem-Delete"), onLeftClick: () => { if (props.onMessageDelete) props.onMessageDelete(filteredMessageProps) }},
+    ]);
+
+    props.sharedProps?.ContextMenu?.setItems(messageContextMenuItems);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedAttachment]);
+
   const mediaComponents = () => {
     if (allAttachments && allAttachments.length > 0) {
       return allAttachments.map((attachment, index) => {
         return (
-          <MessageMedia key={`${props.id}-${index}`} content={attachment.content} contentUrl={attachment.contentUrl} fileName={attachment.filename} fileSize={attachment.size} mimeType={attachment.mimeType} contentWidth={attachment.contentWidth} contentHeight={attachment.contentHeight} isExternal={attachment.isExternal}/>
+          <MessageMedia key={`${props.id}-${index}`} onLeftClick={attachmentLeftClickHandler} onRightClick={attachmentRightClickHandler} content={attachment.content} contentUrl={attachment.contentUrl} fileName={attachment.filename} fileSize={attachment.size} mimeType={attachment.mimeType} contentWidth={attachment.contentWidth} contentHeight={attachment.contentHeight} isExternal={attachment.isExternal}/>
         )
       });
     }

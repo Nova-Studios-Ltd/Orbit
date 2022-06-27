@@ -11,6 +11,7 @@ import MessageVideo from "./Subcomponents/MessageVideo/MessageVideo";
 import MessageAudio from "./Subcomponents/MessageAudio/MessageAudio";
 
 import type { NCComponent } from "DataTypes/Components";
+import type { IAttachmentProps } from "Interfaces/IAttachmentProps";
 
 export interface MessageMediaProps extends NCComponent {
   content?: Uint8Array,
@@ -20,19 +21,21 @@ export interface MessageMediaProps extends NCComponent {
   mimeType?: string,
   contentWidth?: number,
   contentHeight?: number,
-  isExternal?: boolean
+  isExternal?: boolean,
+  onLeftClick?: (event: React.MouseEvent<HTMLDivElement>, attachment: IAttachmentProps) => void,
+  onRightClick?: (event: React.MouseEvent<HTMLDivElement>, attachment: IAttachmentProps) => void
 }
 
-function MessageMedia({ className, content, contentUrl, fileName, mimeType, fileSize, contentWidth, contentHeight, isExternal }: MessageMediaProps) {
+function MessageMedia(props: MessageMediaProps) {
   const theme = useTheme();
-  const classNames = useClassNames("MessageMediaContainer", className);
+  const classNames = useClassNames("MessageMediaContainer", props.className);
   const isPreviewableMediaType = useRef(false);
   const [dimensions, setDimensions] = useState({});
 
   useEffect(() => {
     let _dimensions = {};
-    if (contentWidth && contentHeight) {
-      const size = ComputeCSSDims(new Dimensions(contentWidth, contentHeight), new Dimensions(575, 400));
+    if (props.contentWidth && props.contentHeight) {
+      const size = ComputeCSSDims(new Dimensions(props.contentWidth, props.contentHeight), new Dimensions(575, 400));
       _dimensions = { width: size.width > 0 ? size.width : "18rem", height: size.height > 0 ? size.height : "30rem" };
     }
 
@@ -40,35 +43,46 @@ function MessageMedia({ className, content, contentUrl, fileName, mimeType, file
       setDimensions(_dimensions);
     }
 
-  }, [contentHeight, contentWidth, isPreviewableMediaType]);
+  }, [props.contentHeight, props.contentWidth, isPreviewableMediaType]);
 
   const onMediaClick = (event: React.MouseEvent<HTMLDivElement>) => {
     event.stopPropagation();
+    event.preventDefault();
+
+    const attachmentProps = { contentUrl: props.contentUrl || "", content: props.content || new Uint8Array(), filename: props.fileName || "", mimeType: props.mimeType || "", size: props.fileSize || 0, contentWidth: props.contentWidth || 0, contentHeight: props.contentHeight || 0, isExternal: props.isExternal || false };
+
+    if (event.button === 0) { // Left Click
+      if (props.onLeftClick) props.onLeftClick(event, attachmentProps);
+
+    }
+    else if (event.button === 2) { // Right Click
+      if (props.onRightClick) props.onRightClick(event, attachmentProps);
+    }
   }
 
   const mediaElement = () => {
-    if (mimeType && mimeType.length > 0) {
-      const parsedMimeType = new MimeTypeParser(mimeType).getGeneralizedFileType();
+    if (props.mimeType && props.mimeType.length > 0) {
+      const parsedMimeType = new MimeTypeParser(props.mimeType).getGeneralizedFileType();
       switch (parsedMimeType) {
         case FileType.Image:
           isPreviewableMediaType.current = true;
-          if (isExternal) return (<MessageImage contentUrl={contentUrl} fileName={fileName} mimeType={mimeType} fileSize={fileSize} contentWidth={contentWidth} contentHeight={contentHeight} />);
-          return (<MessageImage content={content} contentUrl={contentUrl} fileName={fileName} mimeType={mimeType} fileSize={fileSize} contentWidth={contentWidth} contentHeight={contentHeight} />);
+          if (props.isExternal) return (<MessageImage contentUrl={props.contentUrl} fileName={props.fileName} mimeType={props.mimeType} fileSize={props.fileSize} contentWidth={props.contentWidth} contentHeight={props.contentHeight} />);
+          return (<MessageImage content={props.content} contentUrl={props.contentUrl} fileName={props.fileName} mimeType={props.mimeType} fileSize={props.fileSize} contentWidth={props.contentWidth} contentHeight={props.contentHeight} />);
         case FileType.Video:
           isPreviewableMediaType.current = true;
-          if (isExternal) return (<MessageVideo contentUrl={contentUrl} fileName={fileName} mimeType={mimeType} fileSize={fileSize} contentWidth={contentWidth} contentHeight={contentHeight} />);
-          return (<MessageVideo content={content} contentUrl={contentUrl} fileName={fileName} mimeType={mimeType} fileSize={fileSize} contentWidth={contentWidth} contentHeight={contentHeight} />);
+          if (props.isExternal) return (<MessageVideo contentUrl={props.contentUrl} fileName={props.fileName} mimeType={props.mimeType} fileSize={props.fileSize} contentWidth={props.contentWidth} contentHeight={props.contentHeight} />);
+          return (<MessageVideo content={props.content} contentUrl={props.contentUrl} fileName={props.fileName} mimeType={props.mimeType} fileSize={props.fileSize} contentWidth={props.contentWidth} contentHeight={props.contentHeight} />);
         case FileType.Audio:
-          return (<MessageAudio content={content} contentUrl={contentUrl} fileName={fileName} mimeType={mimeType} fileSize={fileSize} contentWidth={contentWidth} contentHeight={contentHeight} />);
+          return (<MessageAudio content={props.content} contentUrl={props.contentUrl} fileName={props.fileName} mimeType={props.mimeType} fileSize={props.fileSize} contentWidth={props.contentWidth} contentHeight={props.contentHeight} />);
         default:
-          return (<MessageFile fileName={fileName} fileSize={fileSize} content={content} url={contentUrl} />);
+          return (<MessageFile fileName={props.fileName} fileSize={props.fileSize} content={props.content} url={props.contentUrl} />);
       }
     }
-    return (<MessageFile fileName={fileName} fileSize={fileSize} content={content} url={contentUrl} />);
+    return (<MessageFile fileName={props.fileName} fileSize={props.fileSize} content={props.content} url={props.contentUrl} />);
   }
 
   return (
-    <div className={classNames} style={{ backgroundColor: theme.palette.background.paper, ...dimensions }} onClick={onMediaClick}>
+    <div className={classNames} style={{ backgroundColor: theme.palette.background.paper, ...dimensions }} onClick={onMediaClick} onContextMenu={onMediaClick}>
       {mediaElement()}
     </div>
   )
