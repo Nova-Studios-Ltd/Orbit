@@ -45,11 +45,11 @@ function Channel(props: ChannelProps) {
     { children: Localizations_Channel("ContextMenuItem-Delete"), onLeftClick: () => { setDeleteChannelDialogVisibility(true) }}
   ]
 
-  const onChannelLeftClick = (event: React.MouseEvent<HTMLDivElement>) => {
+  const onChannelLeftClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     if (props.onClick) props.onClick(props.channelData);
   }
 
-  const onChannelRightClick = (event: React.MouseEvent<HTMLDivElement>) => {
+  const onChannelRightClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     if (props.sharedProps && props.sharedProps.ContextMenu && event.currentTarget) {
       props.sharedProps.ContextMenu.setItems(channelContextMenuItems);
       props.sharedProps.ContextMenu.setAnchor({ x: event.clientX, y: event.clientY });

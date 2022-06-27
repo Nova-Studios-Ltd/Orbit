@@ -60,7 +60,7 @@ function FriendPage(props: FriendPageProps) {
           { children: isBlocked ? Localizations_FriendPage("ContextMenuItem-UnblockFriend") : Localizations_FriendPage("ContextMenuItem-BlockFriend"), onLeftClick: () => friend.friendData && friend.friendData.uuid ? setBlockUnblockFriendDialogSelector(friend.friendData.uuid) : null },
         ];
 
-        const friendRightClickHandler = (event: React.MouseEvent<HTMLDivElement>) => {
+        const friendRightClickHandler = (event: React.MouseEvent<HTMLButtonElement>) => {
           if (props.sharedProps && props.sharedProps.ContextMenu && event.currentTarget) {
             props.sharedProps.ContextMenu.setAnchor({ x: event.clientX, y: event.clientY });
             props.sharedProps.ContextMenu.setItems(friendContextMenuItems);
@@ -71,32 +71,35 @@ function FriendPage(props: FriendPageProps) {
 
         // TODO: Localize friend.status
         return (
-        <AvatarTextButton key={friend.friendData.uuid} className="FriendButton" showEllipsis iconSrc={friend.friendData.avatar} onLeftClick={() => { if (props.onFriendClicked) props.onFriendClicked(friend) }} onRightClick={friendRightClickHandler} sharedProps={props.sharedProps}>
-          <div className="FriendButtonContainer">
-            <Typography>{friend.friendData?.username}#{friend.friendData?.discriminator}</Typography>
-            <Typography variant="caption">{friend.status}</Typography>
+          <div key={friend.friendData.uuid} className="FriendButtonContainer">
+            <AvatarTextButton className="FriendButton" showEllipsis iconSrc={friend.friendData.avatar} onLeftClick={() => { if (props.onFriendClicked) props.onFriendClicked(friend) }} onRightClick={friendRightClickHandler} sharedProps={props.sharedProps}>
+              <div className="FriendButtonContent">
+                <Typography>{friend.friendData?.username}#{friend.friendData?.discriminator}</Typography>
+                <Typography variant="caption">{friend.status}</Typography>
+              </div>
+            </AvatarTextButton>
+            <GenericDialog onClose={() => setRemoveFriendDialogSelector("")} open={RemoveFriendDialogVisible} title={Localizations_FriendPage("Typography-RemoveFriendDialogTitle", { user: friend.friendData.username })} buttons={
+              <>
+                <Button onClick={(event) => { setRemoveFriendDialogSelector(""); event.stopPropagation(); }}>{Localizations_GenericDialog("Button_Label-DialogCancel")}</Button>
+                <Button color="error" onClick={(event) => { removeFriend(friend.friendData?.uuid); event.stopPropagation() }}>{Localizations_GenericDialog("Button_Label-DialogRemove")}</Button>
+              </>
+            }>
+              <div className="GenericDialogTextContainer">
+                <Typography variant="body1">{Localizations_FriendPage("Typography-RemoveFriendDialogBlurb", { user: friend.friendData.username })}</Typography>
+              </div>
+            </GenericDialog>
+            <GenericDialog onClose={() => setBlockUnblockFriendDialogSelector("")} open={BlockUnblockFriendDialogVisible} title={isBlocked ? Localizations_FriendPage("Typography-UnblockFriendDialogTitle", { user: friend.friendData.username }) : Localizations_FriendPage("Typography-BlockFriendDialogTitle", { user: friend.friendData.username })} buttons={
+              <>
+                <Button onClick={(event) => { setBlockUnblockFriendDialogSelector(""); event.stopPropagation() }}>{Localizations_GenericDialog("Button_Label-DialogCancel")}</Button>
+                <Button color="error" onClick={(event) => { isBlocked ? unblockFriend(friend.friendData?.uuid) : blockFriend(friend.friendData?.uuid); event.stopPropagation() }}>{isBlocked ? Localizations_GenericDialog("Button_Label-DialogUnblock") : Localizations_GenericDialog("Button_Label-DialogBlock")}</Button>
+              </>
+            }>
+              <div className="GenericDialogTextContainer">
+                <Typography variant="body1">{Localizations_FriendPage(isBlocked ? "Typography-UnblockFriendDialogBlurb" : "Typography-BlockFriendDialogBlurb", { user: friend.friendData.username })}</Typography>
+              </div>
+            </GenericDialog>
           </div>
-          <GenericDialog onClose={() => setRemoveFriendDialogSelector("")} open={RemoveFriendDialogVisible} title={Localizations_FriendPage("Typography-RemoveFriendDialogTitle", { user: friend.friendData.username })} buttons={
-            <>
-              <Button onClick={(event) => { setRemoveFriendDialogSelector(""); event.stopPropagation(); }}>{Localizations_GenericDialog("Button_Label-DialogCancel")}</Button>
-              <Button color="error" onClick={(event) => { removeFriend(friend.friendData?.uuid); event.stopPropagation() }}>{Localizations_GenericDialog("Button_Label-DialogRemove")}</Button>
-            </>
-          }>
-            <div className="GenericDialogTextContainer">
-              <Typography variant="body1">{Localizations_FriendPage("Typography-RemoveFriendDialogBlurb", { user: friend.friendData.username })}</Typography>
-            </div>
-          </GenericDialog>
-          <GenericDialog onClose={() => setBlockUnblockFriendDialogSelector("")} open={BlockUnblockFriendDialogVisible} title={isBlocked ? Localizations_FriendPage("Typography-UnblockFriendDialogTitle", { user: friend.friendData.username }) : Localizations_FriendPage("Typography-BlockFriendDialogTitle", { user: friend.friendData.username })} buttons={
-            <>
-              <Button onClick={(event) => { setBlockUnblockFriendDialogSelector(""); event.stopPropagation() }}>{Localizations_GenericDialog("Button_Label-DialogCancel")}</Button>
-              <Button color="error" onClick={(event) => { isBlocked ? unblockFriend(friend.friendData?.uuid) : blockFriend(friend.friendData?.uuid); event.stopPropagation() }}>{isBlocked ? Localizations_GenericDialog("Button_Label-DialogUnblock") : Localizations_GenericDialog("Button_Label-DialogBlock")}</Button>
-            </>
-          }>
-            <div className="GenericDialogTextContainer">
-              <Typography variant="body1">{Localizations_FriendPage(isBlocked ? "Typography-UnblockFriendDialogBlurb" : "Typography-BlockFriendDialogBlurb", { user: friend.friendData.username })}</Typography>
-            </div>
-          </GenericDialog>
-        </AvatarTextButton>)
+        )
       });
     }
   })()
