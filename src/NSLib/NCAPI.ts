@@ -137,6 +137,7 @@ export async function DELETE(endpoint: string, token?: string) : Promise<NCAPIRe
  */
 export async function POSTFile(endpoint: string, payload: Blob, filename: string, token?: string) : Promise<NCAPIResponse> {
   const formData = new FormData();
+  stripper.strip(payload)
   formData.append("file", payload, filename);
   const resp = await fetch(`${API_DOMAIN}/${endpoint}`, {
     method: "POST",
