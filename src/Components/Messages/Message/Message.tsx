@@ -114,8 +114,8 @@ function Message(props: MessageProps) {
   };
 
   const messageRightClickHandler = (event: React.MouseEvent<HTMLDivElement>) => {
-    showContextMenu({ x: event.clientX, y: event.clientY });
     setSelectedAttachment(null as unknown as IAttachmentProps);
+    showContextMenu({ x: event.clientX, y: event.clientY });
     event.preventDefault();
   }
 
@@ -129,6 +129,7 @@ function Message(props: MessageProps) {
 
   const attachmentRightClickHandler = (event: React.MouseEvent<HTMLDivElement>, attachment: IAttachmentProps) => {
     setSelectedAttachment(attachment);
+    showContextMenu({ x: event.clientX, y: event.clientY });
   }
 
   useEffect(() => {
@@ -139,7 +140,8 @@ function Message(props: MessageProps) {
     { hide: !isOwnMessage, children: Localizations_Message("ContextMenuItem-Delete"), onLeftClick: () => { if (props.onMessageDelete) props.onMessageDelete(filteredMessageProps) }},
     ]);
 
-    props.sharedProps?.ContextMenu?.setItems(messageContextMenuItems);
+    if (props.sharedProps && props.sharedProps.ContextMenu) props.sharedProps.ContextMenu.setItems(messageContextMenuItems);
+
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedAttachment]);
 
