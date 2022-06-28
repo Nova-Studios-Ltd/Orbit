@@ -139,7 +139,7 @@ export async function DELETE(endpoint: string, token?: string) : Promise<NCAPIRe
 export async function POSTFile(endpoint: string, payload: Blob, filename: string, token?: string) : Promise<NCAPIResponse> {
   const formData = new FormData();
   const stipped = await StripExif(payload);
-  if (stipped !== undefined)
+  if (filename.includes("jpeg") || filename.includes("jpg"))
     formData.append("file", stipped, filename);
   else
     formData.append("file", payload, filename);

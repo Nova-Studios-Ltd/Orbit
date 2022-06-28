@@ -1,5 +1,5 @@
-export async function StripExif(image: Blob) : Promise<Blob | undefined> {
-  if (image.type !== "image/jpeg") return undefined;
+export async function StripExif(image: Blob) : Promise<Blob> {
+  console.log("Stipping metadata");
   return removeExif(image, new DataView(await image.arrayBuffer()))
 }
 
@@ -17,9 +17,9 @@ async function removeExif(image: Blob, dv: DataView) : Promise<Blob> {
         recess = offset + dv.getUint16(offset);
         i++;
       }
-      else if (app1 === 0xffda) {
+      /*else if (app1 === 0xffda) {
         break;
-      }
+      }*/
       offset += dv.getUint16(offset);
       app1 = dv.getUint16(offset);
       offset += 2;
