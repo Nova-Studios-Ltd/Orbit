@@ -110,7 +110,9 @@ function App() {
         }}>
           {helpContent}
         </Popover>
-        <ContextMenu className="GenericContextMenu" items={contextMenuItems} open={contextMenuVisible} anchorPos={contextMenuAnchorPos} onDismiss={closeContextMenu} />
+        <ContextMenu className="GenericContextMenu" open={contextMenuVisible} anchorPos={contextMenuAnchorPos} onDismiss={closeContextMenu}>
+          {contextMenuItems}
+        </ContextMenu>
         <div className="ToastHolder">
 
         </div>

@@ -7,9 +7,9 @@ import { Coordinates } from "DataTypes/Types";
 import React, { createRef } from "react";
 
 export interface ContextMenuProps extends NCComponent {
+  children?: ContextMenuItemProps[],
   open: boolean,
   anchorPos?: Coordinates,
-  items?: ContextMenuItemProps[],
   dim?: boolean,
   onDismiss?: (event: React.FocusEvent<HTMLDivElement> | React.MouseEvent<HTMLDivElement>) => void
 }
@@ -19,9 +19,9 @@ function ContextMenu(props: ContextMenuProps) {
   const classNames = useClassNames("ContextMenuContainer", props.className);
 
   const contextMenuItemsList = () => {
-    if (!props.items || props.items.length < 1) return null;
+    if (!props.children || props.children.length < 1) return null;
 
-    return props.items.map((item, index) => {
+    return props.children.map((item, index) => {
       if (item.hide) return null;
       return (<ContextMenuItem key={index} sharedProps={props.sharedProps} className={item.className} disabled={item.disabled} persistOnClick={item.persistOnClick} icon={item.icon} onLeftClick={item.onLeftClick} onRightClick={item.onRightClick}>{item.children}</ContextMenuItem>)
     });

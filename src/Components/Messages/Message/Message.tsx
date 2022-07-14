@@ -187,7 +187,9 @@ function Message(props: MessageProps) {
             </>
           } /> : null}
       </div>
-      <ContextMenu open={ContextMenuVisible} anchorPos={ContextMenuAnchorPos} items={ContextMenuItems} onDismiss={closeContextMenu} />
+      <ContextMenu open={ContextMenuVisible} anchorPos={ContextMenuAnchorPos} onDismiss={closeContextMenu}>
+        {ContextMenuItems}
+      </ContextMenu>
     </div>
   )
 }
