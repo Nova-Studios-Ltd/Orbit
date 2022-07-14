@@ -141,6 +141,7 @@ function Message(props: MessageProps) {
 
   useEffect(() => {
     setContextMenuItems([
+    { hide: !selectedAttachment, children: selectedAttachment?.filename, disabled: true },
     { children: Localizations_Message("ContextMenuItem-Copy"), onLeftClick: () => copyMessage()},
     { hide: !selectedAttachment, children: Localizations_Message("ContextMenuItem-Download"), onLeftClick: () => downloadSelectedAttachment() },
     { hide: !isOwnMessage, children: Localizations_Message("ContextMenuItem-Edit"), onLeftClick: () => startEditMessage()},

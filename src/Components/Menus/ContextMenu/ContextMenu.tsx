@@ -4,7 +4,7 @@ import useClassNames from "Hooks/useClassNames";
 import type { NCComponent } from "DataTypes/Components";
 import ContextMenuItem, { ContextMenuItemProps } from "../ContextMenuItem/ContextMenuItem";
 import { Coordinates } from "DataTypes/Types";
-import React, { createRef } from "react";
+import React, { createRef, useEffect, useRef, useState } from "react";
 
 export interface ContextMenuProps extends NCComponent {
   children?: ContextMenuItemProps[],
@@ -18,6 +18,12 @@ function ContextMenu(props: ContextMenuProps) {
   const theme = useTheme();
   const classNames = useClassNames("ContextMenuContainer", props.className);
 
+  const [anchorPos, setAnchorPos] = useState(props.anchorPos);
+
+  useEffect(() => {
+    setAnchorPos(props.anchorPos);
+  }, [props, props.anchorPos]);
+
   const contextMenuItemsList = () => {
     if (!props.children || props.children.length < 1) return null;
 
@@ -27,11 +33,39 @@ function ContextMenu(props: ContextMenuProps) {
     });
   };
 
-  if (!props.anchorPos || !props.open) return null;
+  const calculatePosition = (menuRef: HTMLDivElement | null) => {
+    if (menuRef && anchorPos) {
+      const width = menuRef.offsetWidth;
+      const height = menuRef.offsetHeight;
+      const viewportWidth = window.innerWidth;
+      const viewportHeight = window.innerHeight;
+
+      let calculatedAnchorPosX = anchorPos.x;
+      let calculatedAnchorPosY = anchorPos.y;
+
+      if (anchorPos.x + width > viewportWidth) {
+        calculatedAnchorPosX = viewportWidth - width;
+      }
+      if (anchorPos.y + height > viewportHeight) {
+        calculatedAnchorPosY = viewportHeight - height;
+      }
+
+      if (calculatedAnchorPosX !== anchorPos.x || calculatedAnchorPosY !== anchorPos.y) {
+        //setAnchorPos({ x: calculatedAnchorPosX, y: calculatedAnchorPosY }); TODO: Figure out how to keep context menu within bounds of viewport
+      }
+
+      console.log(`AnchorPos: (${anchorPos.x}, ${anchorPos.y})`);
+      console.log(`Viewport: ${viewportWidth} x ${viewportHeight}`);
+      console.log(`Menu: ${width} x ${height}`);
+      console.log(`Calculated: ${anchorPos.x + width} x ${anchorPos.y + height}`);
+    }
+  }
+
+  if (!anchorPos || !props.open) return null;
 
   return (
-    <div className={classNames} onClick={props.onDismiss} onContextMenu={props.onDismiss}>
-      <div className="ContextMenuItemParentContainer" style={{ backgroundColor: theme.customPalette.contextMenuBackground, position: "absolute", left: props.anchorPos.x, top: props.anchorPos.y }}>
+    <div ref={(el) => calculatePosition(el)} className={classNames} onClick={props.onDismiss} onContextMenu={props.onDismiss}>
+      <div className="ContextMenuItemParentContainer" style={{ backgroundColor: theme.customPalette.contextMenuBackground, position: "absolute", left: anchorPos.x, top: anchorPos.y }}>
         {contextMenuItemsList()}
       </div>
       <div className="ContextMenuBackdrop" style={{ backgroundColor: props.dim ? theme.palette.background.paper : "none" }}/>

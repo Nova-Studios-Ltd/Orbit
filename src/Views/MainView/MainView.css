@@ -35,14 +35,12 @@
 }
 
 .MainViewHeader {
-  margin-top: var(--global-margin);
+  margin: var(--global-margin) var(--global-margin) 0 0;
   border-radius: var(--global-border-radius);
 }
 
 .MainViewContainerItem {
-  margin-left: var(--global-margin);
   margin-right: var(--global-margin);
-  width: calc(100% - var(--global-margin) * 2);
 }
 
 .NavigationButtonContainer {
@@ -63,6 +61,11 @@
     padding: 0;
   }
 
+  .MainViewContainerItem {
+    margin: 0;
+    width: auto;
+  }
+
   .MainViewChannelList {
     border-radius: 0;
     margin-top: 0;
@@ -79,7 +82,7 @@
   }
 
   .MainViewHeader {
-    margin-top: 0;
+    margin: 0;
     border-radius: 0;
   }
 }
