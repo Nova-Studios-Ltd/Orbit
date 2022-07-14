@@ -44,7 +44,7 @@ function ContextMenuItem(props: ContextMenuItemProps) {
   }
 
   return (
-    <MenuItem className={classNames} style={{ backgroundColor: backgroundColor }} disabled={props.disabled} onClick={handleLeftClick} onContextMenu={handleRightClick} onMouseEnter={() => handleFocus(true)} onFocus={() => handleFocus(true)} onMouseLeave={() => handleFocus(false)} onBlur={() => handleFocus(false)}>
+    <MenuItem className={classNames} style={{ color: theme.palette.text.primary, backgroundColor: backgroundColor }} disabled={props.disabled} onClick={handleLeftClick} onContextMenu={handleRightClick} onMouseEnter={() => handleFocus(true)} onFocus={() => handleFocus(true)} onMouseLeave={() => handleFocus(false)} onBlur={() => handleFocus(false)}>
       {props.icon}
       {props.children}
     </MenuItem>
