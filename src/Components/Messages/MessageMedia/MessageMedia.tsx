@@ -36,14 +36,14 @@ function MessageMedia(props: MessageMediaProps) {
     let _dimensions = {};
     if (props.contentWidth && props.contentHeight) {
       const size = ComputeCSSDims(new Dimensions(props.contentWidth, props.contentHeight), new Dimensions(575, 400));
-      _dimensions = { width: size.width > 0 ? size.width : "18rem", height: size.height > 0 ? size.height : "30rem" };
+      _dimensions = props.sharedProps?.widthConstrained ? { width: "100%", height: "auto" } : { width: size.width > 0 ? size.width : "18rem", height: size.height > 0 ? size.height : "30rem" };
     }
 
     if (isPreviewableMediaType.current) {
       setDimensions(_dimensions);
     }
 
-  }, [props.contentHeight, props.contentWidth, isPreviewableMediaType]);
+  }, [props.contentHeight, props.contentWidth, isPreviewableMediaType, props.sharedProps?.widthConstrained]);
 
   const onMediaClick = (event: React.MouseEvent<HTMLDivElement>) => {
     event.stopPropagation();
