@@ -11,7 +11,7 @@ import { NCChannelCache } from "NSLib/NCChannelCache";
 import { UploadFile } from "NSLib/ElectronAPI";
 import { SettingsManager } from "NSLib/SettingsManager";
 import { NCUserCache } from "NSLib/NCUserCache";
-import { CREATEChannel, DELETEChannel, DELETEMessage, EDITMessage, GETChannel, GETOwnFriends, GETMessages, GETMessagesSingle, GETUserChannels, GETUserUUID, SENDMessage, GETUser, REQUESTFriend, ACCEPTFriend, REMOVEFriend } from "NSLib/APIEvents";
+import { CREATEChannel, DELETEChannel, DELETEMessage, EDITMessage, GETChannel, GETOwnFriends, GETMessages, GETMessagesSingle, GETUserChannels, GETUserUUID, SENDMessage, GETUser, REQUESTFriend, ACCEPTFriend, REMOVEFriend, BLOCKFriend, UNBLOCKFriend } from "NSLib/APIEvents";
 
 import ViewContainer from "Components/Containers/ViewContainer/ViewContainer";
 import MessageAttachment from "DataTypes/MessageAttachment";
@@ -281,10 +281,12 @@ function MainView(props: MainViewProps) {
   };
 
   const onBlockFriend = (uuid: string) => {
+    BLOCKFriend(uuid);
     console.log(`Pseudocockblocked user ${uuid}`);
   }
 
   const onUnblockFriend = (uuid: string) => {
+    UNBLOCKFriend(uuid);
     console.log(`Pseudouncockblocked user ${uuid}`);
   }
 
