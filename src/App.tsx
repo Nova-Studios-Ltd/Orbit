@@ -22,6 +22,7 @@ import type { ContextMenuItemProps } from "Components/Menus/ContextMenuItem/Cont
 import type { Coordinates } from "DataTypes/Types";
 
 import "./App.css";
+import ContextMenu from "Components/Menus/ContextMenu/ContextMenu";
 
 i18n.use(initReactI18next)
 .init({
@@ -44,8 +45,6 @@ function App() {
   const [contextMenuAnchorPos, setContextMenuAnchor] = useState(null as unknown as Coordinates);
   const [contextMenuItems, setContextMenuItems] = useState(null as unknown as ContextMenuItemProps[]);
 
-  const contextMenuAnchorPosFiltered = { x: contextMenuAnchorPos ? contextMenuAnchorPos.x : 0, y: contextMenuAnchorPos ? contextMenuAnchorPos.y : 0 }
-
   const closeHelpPopup = () => {
     setHelpVisibility(false);
     setHelpAnchor(null as unknown as Element);
@@ -66,7 +65,7 @@ function App() {
     closePopup: closeHelpPopup
   };
 
-  const ContextMenu: ContextMenuProps = {
+  const ContextMenuStruct: ContextMenuProps = {
     visible: contextMenuVisible,
     anchorPos: contextMenuAnchorPos,
     items: contextMenuItems,
@@ -78,20 +77,11 @@ function App() {
 
   const SharedProps: SharedProps = {
     HelpPopup: HelpPopup,
-    ContextMenu: ContextMenu,
+    ContextMenu: ContextMenuStruct,
     widthConstrained: widthConstrained,
     isTouchCapable: isTouchCapable,
     changeTitleCallback: setTitle
   }
-
-  const contextMenuItemsList = () => {
-    if (!contextMenuItems || contextMenuItems.length < 1) return null;
-
-    return contextMenuItems.map((item, index) => {
-      if (item.hide) return null;
-      return (<ContextMenuItem key={index} sharedProps={SharedProps} className={item.className} disabled={item.disabled} persistOnClick={item.persistOnClick} icon={item.icon} onLeftClick={item.onLeftClick} onRightClick={item.onRightClick}>{item.children}</ContextMenuItem>)
-    });
-  };
 
   window.addEventListener("resize", (event) => {
     setWidthConstrainedState(window.matchMedia("(max-width: 600px)").matches);
@@ -120,9 +110,9 @@ function App() {
         }}>
           {helpContent}
         </Popover>
-        <Menu className="GenericContextMenu" PaperProps={{ className: "GenericContextMenuPaper" }} open={contextMenuVisible} anchorReference="anchorPosition" anchorPosition={{ top: contextMenuAnchorPosFiltered.y, left: contextMenuAnchorPosFiltered.x }} onClose={() => closeContextMenu()}>
-          {contextMenuItemsList()}
-        </Menu>
+        <ContextMenu className="GenericContextMenu" open={contextMenuVisible} anchorPos={contextMenuAnchorPos} onDismiss={closeContextMenu}>
+          {contextMenuItems}
+        </ContextMenu>
         <div className="ToastHolder">
 
         </div>

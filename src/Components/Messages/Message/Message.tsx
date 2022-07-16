@@ -16,6 +16,8 @@ import { FileType } from "NSLib/MimeTypeParser";
 import { UserCache } from "Views/MainView/MainView";
 import UserData from "DataTypes/UserData";
 import IUserData from "Interfaces/IUserData";
+import ContextMenu from "Components/Menus/ContextMenu/ContextMenu";
+import { Coordinates } from "DataTypes/Types";
 
 export interface MessageProps extends NCComponent {
   content?: string,
@@ -45,7 +47,9 @@ function Message(props: MessageProps) {
   const [allAttachments, setAttachments] = useState([] as IAttachmentProps[]);
   const [displayName, setDisplayName] = useState(UserCache.GetUser(props.authorID || "")?.username || "");
   const [selectedAttachment, setSelectedAttachment] = useState(null as unknown as IAttachmentProps);
-  const [messageContextMenuItems, setMessageContextMenuItems] = useState(null as unknown as ContextMenuItemProps[]);
+  const [ContextMenuVisible, setContextMenuVisibility] = useState(false);
+  const [ContextMenuAnchorPos, setContextMenuAnchorPos] = useState(null as unknown as Coordinates);
+  const [ContextMenuItems, setContextMenuItems] = useState(null as unknown as ContextMenuItemProps[]);
 
   useEffect(() => {
     if (props.attachments === undefined) return;
@@ -89,12 +93,15 @@ function Message(props: MessageProps) {
     WriteToClipboard(props.content);
   }
 
-  const showContextMenu = (position: { x: number, y: number }) => {
-    if (props.sharedProps && props.sharedProps.ContextMenu) {
-      props.sharedProps.ContextMenu.setAnchor({ x: position.x, y: position.y });
-      props.sharedProps.ContextMenu.setItems(messageContextMenuItems);
-      props.sharedProps.ContextMenu.setVisibility(true);
-    }
+  const showContextMenu = (position: Coordinates) => {
+    setContextMenuAnchorPos(position);
+    setContextMenuVisibility(true);
+    // "To fix, one must first break" - some dude probably
+  }
+
+  const closeContextMenu = (event: React.FocusEvent<HTMLDivElement> | React.MouseEvent<HTMLDivElement>) => {
+    setContextMenuAnchorPos(null as unknown as Coordinates);
+    setContextMenuVisibility(false);
   }
 
   const editMessageFieldChangedHandler = (event: TextComboChangeEvent) => {
@@ -133,15 +140,13 @@ function Message(props: MessageProps) {
   }
 
   useEffect(() => {
-    setMessageContextMenuItems([
+    setContextMenuItems([
+    { hide: !selectedAttachment, children: selectedAttachment?.filename, disabled: true },
     { children: Localizations_Message("ContextMenuItem-Copy"), onLeftClick: () => copyMessage()},
     { hide: !selectedAttachment, children: Localizations_Message("ContextMenuItem-Download"), onLeftClick: () => downloadSelectedAttachment() },
     { hide: !isOwnMessage, children: Localizations_Message("ContextMenuItem-Edit"), onLeftClick: () => startEditMessage()},
     { hide: !isOwnMessage, children: Localizations_Message("ContextMenuItem-Delete"), onLeftClick: () => { if (props.onMessageDelete) props.onMessageDelete(filteredMessageProps) }},
     ]);
-
-    if (props.sharedProps && props.sharedProps.ContextMenu) props.sharedProps.ContextMenu.setItems(messageContextMenuItems);
-
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedAttachment]);
 
@@ -149,7 +154,7 @@ function Message(props: MessageProps) {
     if (allAttachments && allAttachments.length > 0) {
       return allAttachments.map((attachment, index) => {
         return (
-          <MessageMedia key={`${props.id}-${index}`} onLeftClick={attachmentLeftClickHandler} onRightClick={attachmentRightClickHandler} content={attachment.content} contentUrl={attachment.contentUrl} fileName={attachment.filename} fileSize={attachment.size} mimeType={attachment.mimeType} contentWidth={attachment.contentWidth} contentHeight={attachment.contentHeight} isExternal={attachment.isExternal}/>
+          <MessageMedia key={`${props.id}-${index}`} sharedProps={props.sharedProps} onLeftClick={attachmentLeftClickHandler} onRightClick={attachmentRightClickHandler} content={attachment.content} contentUrl={attachment.contentUrl} fileName={attachment.filename} fileSize={attachment.size} mimeType={attachment.mimeType} contentWidth={attachment.contentWidth} contentHeight={attachment.contentHeight} isExternal={attachment.isExternal}/>
         )
       });
     }
@@ -183,6 +188,9 @@ function Message(props: MessageProps) {
             </>
           } /> : null}
       </div>
+      <ContextMenu open={ContextMenuVisible} anchorPos={ContextMenuAnchorPos} onDismiss={closeContextMenu}>
+        {ContextMenuItems}
+      </ContextMenu>
     </div>
   )
 }

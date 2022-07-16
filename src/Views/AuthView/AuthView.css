@@ -26,6 +26,7 @@
   position: relative;
 
   width: 30rem;
+  margin: var(--global-margin) 0;
 }
 
 .AuthViewFormContainerBackground {
@@ -44,6 +45,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+
+  margin-bottom: var(--global-margin);
 
   position: relative;
   z-index: 1;
@@ -68,10 +71,6 @@
   .AuthViewFormContainerBackground {
     border-radius: 0;
     opacity: 0.5;
-  }
-
-  .AuthViewBrandingContainer {
-    margin-bottom: var(--global-margin);
   }
 }
 

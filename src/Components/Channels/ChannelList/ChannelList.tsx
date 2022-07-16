@@ -1,5 +1,6 @@
 import { Typography, useTheme } from "@mui/material";
 import { useTranslation } from "react-i18next";
+import useClassNames from "Hooks/useClassNames";
 
 import Channel, { ChannelProps } from "Components/Channels/Channel/Channel";
 
@@ -15,6 +16,7 @@ export interface ChannelListProps extends NCAPIComponent {
 
 function ChannelList(props: ChannelListProps) {
   const Localizations_ChannelList = useTranslation("ChannelList").t;
+  const classNames = useClassNames("ChannelListContainer", props.className);
   const theme = useTheme();
 
   const NoChannelsHint = (
@@ -36,7 +38,7 @@ function ChannelList(props: ChannelListProps) {
   };
 
   return (
-    <div className="ChannelListContainer" style={{ backgroundColor: theme.palette.background.paper }}>
+    <div className={classNames} style={{ backgroundColor: theme.palette.background.paper }}>
       {channelArray()}
     </div>
   )

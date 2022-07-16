@@ -10,6 +10,10 @@
   display: flex;
   flex-direction: column;
 
+  padding: var(--global-padding);
+
+  box-sizing: border-box;
+
   width: 18rem;
   height: 100%;
 }
@@ -25,16 +29,23 @@
   width: 100%;
 }
 
+.MainViewChannelList {
+  border-radius: var(--global-border-radius);
+  margin-top: var(--global-margin);
+}
+
+.MainViewHeader {
+  margin: var(--global-margin) var(--global-margin) 0 0;
+  border-radius: var(--global-border-radius);
+}
+
 .MainViewContainerItem {
-  margin-left: var(--global-margin);
   margin-right: var(--global-margin);
-  width: calc(100% - var(--global-margin) * 2);
 }
 
 .NavigationButtonContainer {
   padding: var(--global-padding);
-  border-bottom-width: 1px;
-  border-bottom-style: dashed;
+  border-radius: var(--global-border-radius);
 }
 
 .NavigationButtonContainerItem {
@@ -46,5 +57,32 @@
 }
 
 @media only screen and (max-width: 600px) {
+  .MainViewContainerLeft {
+    padding: 0;
+  }
 
+  .MainViewContainerItem {
+    margin: 0;
+    width: auto;
+  }
+
+  .MainViewChannelList {
+    border-radius: 0;
+    margin-top: 0;
+  }
+
+  .NavigationButtonContainer {
+    border-radius: 0;
+    margin-top: 0;
+  }
+
+  .NavigationButtonContainer {
+    border-bottom-width: 1px;
+    border-bottom-style: dashed;
+  }
+
+  .MainViewHeader {
+    margin: 0;
+    border-radius: 0;
+  }
 }

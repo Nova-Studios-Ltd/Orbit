@@ -19,12 +19,6 @@ function AuthView(props: AuthViewProps) {
   const theme = useTheme();
   //const [AuthViewCenterContainerBackgroundGradient, setGradient] = useState(`linear-gradient(43deg, ${GenerateRandomColor()} 0%, ${GenerateRandomColor()} 46%, ${GenerateRandomColor()} 100%)`);
 
-  const AuthViewBrandingContainer = (
-    <div className="AuthViewBrandingContainer">
-      <img className="BrandingImage" src="OrbitLogo.png" alt={Localizations_AuthView("Image_Alt-BrandingLogo")} />
-    </div>
-  );
-
   const AuthViewCenterContainerBackgroundGradient = `linear-gradient(43deg, ${GenerateRandomColor()} 0%, ${GenerateRandomColor()} 46%, ${GenerateRandomColor()} 100%)`
 
   /*useEffect(() => {
@@ -55,10 +49,11 @@ function AuthView(props: AuthViewProps) {
   return (
     <ViewContainer className="AuthViewContainer" noPadding>
       <div className="AuthViewCenterContainer" style={{ backgroundImage: AuthViewCenterContainerBackground() }}>
-        {!props.sharedProps?.widthConstrained ? AuthViewBrandingContainer : null}
         <div className="AuthViewFormContainer">
           <div className="AuthViewFormContainerBackground" style={{ backgroundColor: theme.customPalette.formBackground }} />
-          {props.sharedProps?.widthConstrained ? AuthViewBrandingContainer : null}
+          <div className="AuthViewBrandingContainer">
+            <img className="BrandingImage" src="OrbitLogo.png" alt={Localizations_AuthView("Image_Alt-BrandingLogo")} />
+          </div>
           {page()}
         </div>
       </div>
