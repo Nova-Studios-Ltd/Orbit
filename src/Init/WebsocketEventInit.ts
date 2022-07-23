@@ -95,9 +95,11 @@ async function FriendRequestAdded(event: IWebSocketEvent) {
 }
 
 async function FriendRequestUpdated(event: IWebSocketEvent) {
+  console.log("Friend Updated")
   Events.send("FriendUpdated", event.User, await GETFriend(event.User));
 }
 
 async function FriendRequestRemoved(event: IWebSocketEvent) {
+  console.log("Friend Removed");
   Events.send("FriendRemoved", event.User);
 }
