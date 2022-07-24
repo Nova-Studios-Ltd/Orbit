@@ -127,7 +127,7 @@ function Message(props: MessageProps) {
   }
 
   const messageLeftClickHandler = (event: React.MouseEvent<HTMLDivElement>) => {
-    if (isTouchCapable) messageRightClickHandler(event);
+    if (isTouchCapable && !isEditing) messageRightClickHandler(event);
   }
 
   const attachmentLeftClickHandler = (event: React.MouseEvent<HTMLDivElement>, attachment: IAttachmentProps) => {

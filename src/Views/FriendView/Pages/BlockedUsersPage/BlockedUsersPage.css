@@ -1,15 +1,19 @@
-.AddFriendsPageContainer {
+.BlockedUsersPageContainer {
   display: flex;
   flex-direction: column;
+  align-items: flex-end;
+
+  gap: var(--global-margin);
 }
 
-.CreateChannelContainer {
+.NoBlockedUsersHintContainer {
   display: flex;
   flex-direction: column;
+  align-items: center;
 }
 
 @media only screen and (max-width: 600px) {
-  .AddFriendsPageContainer {
+  .BlockedUsersPageContainer {
 
   }
 }

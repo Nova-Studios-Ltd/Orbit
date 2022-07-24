@@ -35,10 +35,14 @@ function ContextMenu(props: ContextMenuProps) {
 
   const calculatePosition = (menuRef: HTMLDivElement | null) => {
     if (menuRef && anchorPos) {
-      const width = menuRef.offsetWidth;
-      const height = menuRef.offsetHeight;
+      const rect = menuRef.getBoundingClientRect();
+      const width = Number.parseInt(rect.width.toString());
+      const height = Number.parseInt(rect.height.toString());
       const viewportWidth = window.innerWidth;
       const viewportHeight = window.innerHeight;
+
+      console.log(`Menu Dimensions: ${width} x ${height} | Viewport Dimensions: ${viewportWidth} x ${viewportHeight}`);
+      console.log(`AnchorPos: (${anchorPos.x}, ${anchorPos.y})`);
 
       let calculatedAnchorPosX = anchorPos.x;
       let calculatedAnchorPosY = anchorPos.y;
@@ -51,21 +55,16 @@ function ContextMenu(props: ContextMenuProps) {
       }
 
       if (calculatedAnchorPosX !== anchorPos.x || calculatedAnchorPosY !== anchorPos.y) {
-        //setAnchorPos({ x: calculatedAnchorPosX, y: calculatedAnchorPosY }); TODO: Figure out how to keep context menu within bounds of viewport
+        setAnchorPos({ x: calculatedAnchorPosX, y: calculatedAnchorPosY }); //TODO: Figure out how to keep context menu within bounds of viewport
       }
-
-      console.log(`AnchorPos: (${anchorPos.x}, ${anchorPos.y})`);
-      console.log(`Viewport: ${viewportWidth} x ${viewportHeight}`);
-      console.log(`Menu: ${width} x ${height}`);
-      console.log(`Calculated: ${anchorPos.x + width} x ${anchorPos.y + height}`);
     }
   }
 
   if (!anchorPos || !props.open) return null;
 
   return (
-    <div ref={(el) => calculatePosition(el)} className={classNames} onClick={props.onDismiss} onContextMenu={props.onDismiss}>
-      <div className="ContextMenuItemParentContainer" style={{ backgroundColor: theme.customPalette.contextMenuBackground, position: "absolute", left: anchorPos.x, top: anchorPos.y }}>
+    <div className={classNames} onClick={props.onDismiss} onContextMenu={props.onDismiss}>
+      <div ref={(el) => calculatePosition(el)} className="ContextMenuItemParentContainer" style={{ backgroundColor: theme.customPalette.contextMenuBackground, position: "absolute", left: anchorPos.x, top: anchorPos.y }}>
         {contextMenuItemsList()}
       </div>
       <div className="ContextMenuBackdrop" style={{ backgroundColor: props.dim ? theme.palette.background.paper : "none" }}/>

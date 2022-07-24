@@ -1,4 +1,6 @@
 {
   "PageTitle": "Blocked Users",
-  "Button_Label-AddFriend": "Create Channel"
+  "Button_Label-AddFriend": "Create Channel",
+  "Typography_Heading-NoBlockedUsersHint": "No Blocked Users",
+  "Typography_Body-NoBlockedUsersHint": "If you must, then do."
 }
