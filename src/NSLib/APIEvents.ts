@@ -272,7 +272,7 @@ export function SENDMessage(channel_uuid: string, contents: string, rawAttachmen
           }
           // Generate Key and Encrypt Message
           const messageKey = await GenerateBase64Key(32);
-          const encryptedMessage = await EncryptBase64(messageKey, Base64String.CreateBase64String(contents));
+          const encryptedMessage = await EncryptBase64(messageKey, Base64String.CreateBase64String(contents.trim()));
 
           // Handle Attachments
           const failedUploads = [] as FailedUpload[];
