@@ -35,9 +35,9 @@ function AddFriendsPage(props: AddFriendsPageProps) {
 
   return (
     <PageContainer className={classNames} adaptive={false}>
-      <div className="CreateChannelContainer">
+      <div className="AddFriendContainer">
         <TextCombo submitButton={false} autoFocus value={RecipientField} textFieldPlaceholder={Localizations_AddFriendsPage("TextField_Placeholder-FriendFormat")} onChange={handleRecipientFieldChanged} onSubmit={addFriend} childrenRight={
-          <Button onClick={addFriend} disabled={RecipientField.length < 1} variant="contained">{Localizations_AddFriendsPage("Button_Label-AddFriend")}</Button>
+          <Button className="AddFriendButton" onClick={addFriend} disabled={RecipientField.length < 1} variant="contained">{Localizations_AddFriendsPage("Button_Label-AddFriend")}</Button>
         }/>
       </div>
     </PageContainer>

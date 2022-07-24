@@ -106,7 +106,7 @@ function FriendPage(props: FriendPageProps) {
 
   const NoFriendsHint = (() => {
     return (
-      <div className="NoChannelsHintContainer">
+      <div className="NoFriendsHintContainer">
       <Typography variant="h6">{Localizations_FriendPage("Typography_Heading-NoFriendHint")}</Typography>
       <Typography variant="body1">{Localizations_FriendPage("Typography_Body-NoFriendHint", { AddFriendSectionTitle: Localizations_FriendView("Tab_Label-AddFriend") })}</Typography>
     </div>
