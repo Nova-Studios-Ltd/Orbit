@@ -134,8 +134,8 @@ function MainView(props: MainViewProps) {
   }
 
   const onLoadPriorMessages = () => {
-    //console.log(messages);
-    const oldestID = parseInt(messages[messages.length - 1].message_Id); // TODO: Figure out why this spits out an error
+    if (messages.length === 0) return;
+    const oldestID = parseInt(messages[messages.length - 1].message_Id);
     GETMessages(selectedChannel.table_Id, (messages: IMessageProps[]) => {
       autoScroll.current = false;
       setMessages(prevState => {
@@ -202,6 +202,7 @@ function MainView(props: MainViewProps) {
         const cache = isCache as NCChannelCache;
         // Fully refresh cache, ignoring anything, pulling the newest messages
         if (await cache.RequiresRefresh()) {
+          console.log("Rebuilding cache...");
           //cache.ClearCache();
           GETMessagesSingle(channel.table_Id, async (message: IMessageProps) => {
             autoScroll.current = false;
@@ -216,25 +217,38 @@ function MainView(props: MainViewProps) {
         }
 
         if (!await cache.IsValidSession(session.current)) {
+          console.log("Checking and updating cache...");
           await NCChannelCache.CleanCache(channel.table_Id);
           await NCChannelCache.UpdateCache(channel.table_Id);
           cache.WriteSession(session.current);
-          GETMessagesSingle(channel.table_Id, async (message: IMessageProps) => {
+          GETMessages(channel.table_Id, (messages: IMessageProps[]) => {
+            autoScroll.current = false;
+            setMessages([...messages]);
+            autoScroll.current = true;
+          }, true);
+          /*GETMessagesSingle(channel.table_Id, async (message: IMessageProps) => {
             autoScroll.current = false;
             setMessages(prevState => {
               return [...prevState, message];
             });
             return true;
-          }, () => {autoScroll.current = true;}, true);
+          }, () => {autoScroll.current = true;}, true);*/
           return;
         }
-        GETMessagesSingle(channel.table_Id, async (message: IMessageProps) => {
+
+        GETMessages(channel.table_Id, (messages: IMessageProps[]) => {
+          autoScroll.current = false;
+          setMessages([...messages]);
+          autoScroll.current = true;
+        });
+
+        /*GETMessagesSingle(channel.table_Id, async (message: IMessageProps) => {
           autoScroll.current = false;
           setMessages(prevState => {
             return [...prevState, message];
           });
           return true;
-        }, () => {autoScroll.current = true;});
+        }, () => {autoScroll.current = true;});*/
       }
       else {
         GETMessagesSingle(channel.table_Id, async (message: IMessageProps) => {

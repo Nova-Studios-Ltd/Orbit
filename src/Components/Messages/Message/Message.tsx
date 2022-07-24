@@ -160,6 +160,26 @@ function Message(props: MessageProps) {
     }
   }
 
+  const processContent = () => {
+    let c = props.content;
+    if (c === undefined) return "";
+    const words = c.split(" ");
+    const x = [] as JSX.Element[];
+    let hasLink = false;
+    for (let w = 0; w < words.length; w++) {
+      const word = words[w];
+      if (word.match(/((https|http):\/\/[\S]*)/g) === null) {
+        x.push((<>{word} </>));
+        continue;
+      }
+      hasLink = true;
+      // eslint-disable-next-line jsx-a11y/anchor-is-valid
+      x.push((<a href="#" onClick={() => window.open(word)}>{word}</a>))
+    }
+    if (hasLink && x.length === 1) return "";
+    return x;
+  }
+
   if (props.authorID !== undefined && displayName === "") {
     UserCache.GetUserAsync(props.authorID).then((user: IUserData) => {
       setDisplayName(`${user.username}`);

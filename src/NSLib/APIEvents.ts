@@ -90,7 +90,7 @@ export async function SETKey(key_user_uuid: string, key: string) : Promise<boole
 }
 
 // Friend
-export async function GETFriend(friend_uuid: string) : Promise<string> {
+export async function GETFriendState(friend_uuid: string) : Promise<string> {
   const resp = await GET(`/Friend/${new SettingsManager().User.uuid}/Friends/${friend_uuid}`, new SettingsManager().User.token);
   if (resp.status === 200) {
     return resp.payload.state;

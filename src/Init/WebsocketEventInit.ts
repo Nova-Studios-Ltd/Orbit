@@ -3,7 +3,7 @@ import NCEvents from "NSLib/NCEvents";
 import { SettingsManager } from "NSLib/SettingsManager";
 import { UserCache } from "Views/MainView/MainView";
 import IWebSocketEvent from "../Interfaces/IWebsocketEvent";
-import { GETChannel, GETFriend, GETKey, GETKeystore, GETMessage, GETUser } from "../NSLib/APIEvents";
+import { GETChannel, GETFriendState, GETKey, GETKeystore, GETMessage, GETUser } from "../NSLib/APIEvents";
 import NCWebsocket from "../NSLib/NCWebsocket";
 
 export const Events = new NCEvents();
@@ -91,12 +91,12 @@ async function OnUsernameChanged(event: IWebSocketEvent) {
 
 async function FriendRequestAdded(event: IWebSocketEvent) {
   console.log("New request");
-  Events.send("FriendAdded", event.User, await GETFriend(event.User));
+  Events.send("FriendAdded", event.User, await GETFriendState(event.User));
 }
 
 async function FriendRequestUpdated(event: IWebSocketEvent) {
   console.log("Friend Updated")
-  Events.send("FriendUpdated", event.User, await GETFriend(event.User));
+  Events.send("FriendUpdated", event.User, await GETFriendState(event.User));
 }
 
 async function FriendRequestRemoved(event: IWebSocketEvent) {
