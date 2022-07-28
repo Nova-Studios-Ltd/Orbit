@@ -1,4 +1,4 @@
-import { Avatar, IconButton, Typography, useTheme } from "@mui/material";
+import { Avatar, IconButton, Link, Typography, useTheme } from "@mui/material";
 import { Close as CloseIcon } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
 import React, { useEffect, useState } from "react";
@@ -18,6 +18,7 @@ import UserData from "DataTypes/UserData";
 import IUserData from "Interfaces/IUserData";
 import ContextMenu from "Components/Menus/ContextMenu/ContextMenu";
 import { Coordinates } from "DataTypes/Types";
+import Linkify from "linkify-react";
 
 export interface MessageProps extends NCComponent {
   content?: string,
@@ -86,6 +87,11 @@ function Message(props: MessageProps) {
     filteredMessageProps.content = event.value;
     if (props.onMessageEdit) props.onMessageEdit(filteredMessageProps);
     setEditingState(false);
+  }
+
+  const handleURLClick = (url: string) => {
+    // Perhaps use custom viewer instead of opening externally?
+    window.open(url);
   }
 
   const copyMessage = () => {
@@ -177,7 +183,11 @@ function Message(props: MessageProps) {
           <Typography className="MessageTimestamp" variant="subtitle2">{props.timestamp?.replace("T", " ")}</Typography>
           {props.isEdited ? <Typography className="MessageTimestampEdited" variant="subtitle2">({Localizations_Message("Typography-TimestampEdited")} {props.editedTimestamp?.replace("T", " ")})</Typography> : null}
         </div>
-        <Typography variant="body1">{props.content}</Typography>
+        <Typography variant="body1">
+          <Linkify options={{ format: (value: string) => <Link onClick={(event) => { handleURLClick(value); event.preventDefault(); }}>{value}</Link> }}>
+            {props.content}
+          </Linkify>
+        </Typography>
         <div className="MessageMediaParentContainer">
           {mediaComponents()}
         </div>
