@@ -90,7 +90,7 @@ export async function SETKey(key_user_uuid: string, key: string) : Promise<boole
 }
 
 // Friend
-export async function GETFriend(friend_uuid: string) : Promise<string> {
+export async function GETFriendState(friend_uuid: string) : Promise<string> {
   const resp = await GET(`/Friend/${new SettingsManager().User.uuid}/Friends/${friend_uuid}`, new SettingsManager().User.token);
   if (resp.status === 200) {
     return resp.payload.state;
@@ -272,7 +272,7 @@ export function SENDMessage(channel_uuid: string, contents: string, rawAttachmen
           }
           // Generate Key and Encrypt Message
           const messageKey = await GenerateBase64Key(32);
-          const encryptedMessage = await EncryptBase64(messageKey, Base64String.CreateBase64String(contents));
+          const encryptedMessage = await EncryptBase64(messageKey, Base64String.CreateBase64String(contents.trim()));
 
           // Handle Attachments
           const failedUploads = [] as FailedUpload[];
