@@ -8,7 +8,7 @@ import { Menu as MenuIcon } from "@mui/icons-material";
 import { isValidUsername } from "NSLib/Util";
 import { GenerateBase64SHA256 } from "NSLib/NCEncryption";
 import { NCChannelCache } from "NSLib/NCChannelCache";
-import { UploadFile } from "NSLib/ElectronAPI";
+import { FetchImageFromClipboard, NCFile, UploadFile } from "NSLib/ElectronAPI";
 import { SettingsManager } from "NSLib/SettingsManager";
 import { NCUserCache } from "NSLib/NCUserCache";
 import { CREATEChannel, DELETEChannel, DELETEMessage, EDITMessage, GETChannel, GETOwnFriends, GETMessages, GETMessagesSingle, GETUserChannels, GETUserUUID, SENDMessage, GETUser, REQUESTFriend, ACCEPTFriend, REMOVEFriend, BLOCKFriend, UNBLOCKFriend } from "NSLib/APIEvents";
@@ -144,7 +144,17 @@ function MainView(props: MainViewProps) {
     }, false, 30, -1, oldestID - 1);
   }
 
-  const onFileUpload = () => {
+  const onFileUpload = (clipboard?: boolean, event?: React.ClipboardEvent<HTMLInputElement>) => {
+    if (clipboard) {
+      FetchImageFromClipboard(event).then(async (value: NCFile | string) => {
+        if (typeof value === "string") {
+
+          return;
+        }
+        setMessageAttachments([...MessageAttachments, new MessageAttachment(value.FileContents, value.Filename)]);
+      });
+      return;
+    }
     UploadFile(true).then((files: string | any[]) => {
       const newAttachmentList: MessageAttachment[] = [];
 

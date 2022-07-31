@@ -121,22 +121,24 @@ export function UploadFile(multiple?: boolean): Promise<NCFile[]> {
 
 /**
  * Fetches a files from the clipboard, automaticly handles switching to native
- * @param ev Event from document.onpaste
+ * @param ev Event from document.onpaste, *currently not used.
  * @returns A Uint8Array of png data
  */
-export function FetchFileFromClipboard(ev: ClipboardEvent) : Promise<Uint8Array> {
+export function FetchImageFromClipboard(event?: React.ClipboardEvent<HTMLInputElement>) : Promise<NCFile> {
   return new Promise(async (resolve) => {
     if (IsElectron()) {
-      resolve(await GetIPCRenderer().invoke("GetClipboard"));
+      const data = await GetIPCRenderer().invoke("GetClipboard");
+      resolve(data);
     }
     else {
-      const clipboardItems = ev.clipboardData?.items;
+      if (!event) return;
+      const clipboardItems = event.clipboardData?.items;
       const items = [].slice.call(clipboardItems).filter(function (item: DataTransferItem) {
         return item.type.indexOf('image') !== -1;
       }) as DataTransferItem[];
       const buf = await items[0].getAsFile()?.arrayBuffer();
       if (buf === undefined) return;
-      resolve(new Uint8Array(buf));
+      resolve(new NCFile(new Uint8Array(buf), "", "Unknown.png"));
     }
   });
 }
@@ -186,7 +188,7 @@ export function WriteImageToClipboard(data: Uint8Array, content_type: ContentTyp
 
 export function TriggerNotification(title: string, body: string, type: NotificationType) {
   if (IsElectron()) {
-    GetIPCRenderer().send("Notification", title, body, type)
+    GetIPCRenderer().send("TriggerNotif", title, body)
   }
   else {
 

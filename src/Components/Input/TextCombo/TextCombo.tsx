@@ -33,7 +33,8 @@ export interface TextComboProps extends NCAPIComponent {
   errorText?: string,
   onChange?: (event: TextComboChangeEvent) => void,
   onDismiss?: (event: TextComboDismissEvent) => void,
-  onSubmit?: (event: TextComboSubmitEvent) => void
+  onSubmit?: (event: TextComboSubmitEvent) => void,
+  onPaste?: (event: React.ClipboardEvent<HTMLInputElement>) => void
 }
 
 function TextCombo(props: TextComboProps) {
@@ -69,6 +70,10 @@ function TextCombo(props: TextComboProps) {
     if (props.onChange) props.onChange({ value: event.target.value });
   };
 
+  const paste = (event: React.ClipboardEvent<HTMLInputElement>) => {
+    if (props.onPaste) props.onPaste(event);
+  }
+
   const onKeyDownHandler = (event: React.KeyboardEvent<HTMLInputElement>) => {
     switch (event.key.toLowerCase()) {
       case "enter":
@@ -93,7 +98,7 @@ function TextCombo(props: TextComboProps) {
         <div className="TextComboBefore">
           {props.childrenLeft}
         </div>
-        <input type={TextFieldType} className="TextComboField" ref={TextFieldRef} maxLength={MaxTextFieldCharLength} style={{ backgroundColor: "transparent", color: theme.palette.text.primary, fontSize: theme.typography.subtitle1.fontSize }} placeholder={props.textFieldPlaceholder} value={props.value} onFocus={() => inputFocusHandler(true)} onBlur={() => inputFocusHandler(false)} onChange={onChangeHandler} onKeyDown={onKeyDownHandler} />
+        <input type={TextFieldType} className="TextComboField" ref={TextFieldRef} maxLength={MaxTextFieldCharLength} style={{ backgroundColor: "transparent", color: theme.palette.text.primary, fontSize: theme.typography.subtitle1.fontSize }} placeholder={props.textFieldPlaceholder} value={props.value} onFocus={() => inputFocusHandler(true)} onBlur={() => inputFocusHandler(false)} onChange={onChangeHandler} onKeyDown={onKeyDownHandler} onPaste={(event) => {paste(event);}} />
         <div className="TextComboAfter">
           {RemainingTextFieldCharLength < TextFieldCharLengthDisplayThreshold ? <Typography variant="caption" alignSelf="center">{RemainingTextFieldCharLength}</Typography> : null}
           {props.childrenRight}
