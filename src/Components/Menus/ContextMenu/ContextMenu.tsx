@@ -41,9 +41,6 @@ function ContextMenu(props: ContextMenuProps) {
       const viewportWidth = window.innerWidth;
       const viewportHeight = window.innerHeight;
 
-      console.log(`Menu Dimensions: ${width} x ${height} | Viewport Dimensions: ${viewportWidth} x ${viewportHeight}`);
-      console.log(`AnchorPos: (${anchorPos.x}, ${anchorPos.y})`);
-
       let calculatedAnchorPosX = anchorPos.x;
       let calculatedAnchorPosY = anchorPos.y;
 
