@@ -1,3 +1,4 @@
+import { NotificationType, TriggerNotification } from "NSLib/ElectronAPI";
 import { NCChannelCache } from "NSLib/NCChannelCache";
 import NCEvents from "NSLib/NCEvents";
 import { SettingsManager } from "NSLib/SettingsManager";
@@ -37,6 +38,9 @@ async function OnNewMessage(event: IWebSocketEvent) {
   const message = await GETMessage(event.Channel, event.Message, true);
   if (message === undefined) return;
   Events.send("NewMessage", message, event.Channel);
+  // Trigger notification
+  if (new SettingsManager().User.uuid !== message.author_UUID)
+    TriggerNotification(`New Message from ${(await UserCache.GetUserAsync(message.author_UUID)).username}`, message.content, NotificationType.Info);
   // Add message to cache
   new NCChannelCache(event.Channel).SetMessage(event.Message, message);
 }
@@ -91,6 +95,9 @@ async function OnUsernameChanged(event: IWebSocketEvent) {
 
 async function FriendRequestAdded(event: IWebSocketEvent) {
   console.log("New request");
+  // Trigger notification
+  if (new SettingsManager().User.uuid !== event.User)
+    TriggerNotification("New Friend Request", `${(await UserCache.GetUserAsync(event.User)).username} has requested to be your friend`, NotificationType.Info);
   Events.send("FriendAdded", event.User, await GETFriendState(event.User));
 }
 

@@ -20,7 +20,7 @@ export interface MessageInputChangeEvent extends TextComboChangeEvent {
 
 export interface MessageInputProps extends NCAPIComponent {
   attachments?: MessageAttachment[],
-  onFileUpload?: () => void,
+  onFileUpload?: (clipboard?: boolean, event?: React.ClipboardEvent<HTMLInputElement>) => void,
   onFileRemove?: (id?: string) => void,
   onChange?: (event: MessageInputChangeEvent) => void,
   onSend?: (event: MessageInputSendEvent) => void
@@ -56,6 +56,10 @@ function MessageInput({ className, attachments, onFileUpload, onFileRemove, onCh
     if (onFileUpload) onFileUpload();
   };
 
+  const pasteFile = (event: React.ClipboardEvent<HTMLInputElement>) => {
+    if (onFileUpload) onFileUpload(true, event);
+  }
+
   const onChangeHandler = (event: MessageInputChangeEvent) => {
     if (onChange) onChange({ value: event.value });
     setTextFieldValue(event.value);
@@ -66,7 +70,7 @@ function MessageInput({ className, attachments, onFileUpload, onFileRemove, onCh
       <div className="FileUploadSummaryContainer">
         {summaryItems()}
       </div>
-      <TextCombo className="MessageInputField" textFieldPlaceholder={Localizations_MessageInput("TextField_Placeholder-TypeHerePrompt")} value={TextFieldValue} onChange={onChangeHandler} onSubmit={sendMessage}
+      <TextCombo className="MessageInputField" onPaste={pasteFile} textFieldPlaceholder={Localizations_MessageInput("TextField_Placeholder-TypeHerePrompt")} value={TextFieldValue} onChange={onChangeHandler} onSubmit={sendMessage}
         childrenLeft={
           <>
             <span><IconButton title={Localizations_MessageInput("IconButton-Tooltip-UploadFile")} aria-label={Localizations_MessageInput("IconButton-Tooltip-UploadFile")} onClick={() => uploadFile()}><UploadIcon /></IconButton></span>
