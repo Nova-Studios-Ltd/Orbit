@@ -8,7 +8,7 @@ import { Menu as MenuIcon } from "@mui/icons-material";
 import { isValidUsername } from "NSLib/Util";
 import { GenerateBase64SHA256 } from "NSLib/NCEncryption";
 import { NCChannelCache } from "NSLib/NCChannelCache";
-import { FetchImageFromClipboard, NCFile, UploadFile } from "NSLib/ElectronAPI";
+import { FetchImageFromClipboard, NCFile, NotificationType, TriggerNotification, UploadFile } from "NSLib/ElectronAPI";
 import { SettingsManager } from "NSLib/SettingsManager";
 import { NCUserCache } from "NSLib/NCUserCache";
 import { CREATEChannel, DELETEChannel, DELETEMessage, EDITMessage, GETChannel, GETOwnFriends, GETMessages, GETMessagesSingle, GETUserChannels, GETUserUUID, SENDMessage, GETUser, REQUESTFriend, ACCEPTFriend, REMOVEFriend, BLOCKFriend, UNBLOCKFriend } from "NSLib/APIEvents";
@@ -486,6 +486,10 @@ function MainView(props: MainViewProps) {
     populateFriendsList();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  (window as any).notification = (tile: string, body: string, url: string) => {
+    TriggerNotification(title, body, NotificationType.Info, url);
+  }
 
   const page = () => {
     switch (props.path) {

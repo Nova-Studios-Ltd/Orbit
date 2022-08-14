@@ -1,4 +1,4 @@
-import { ContentType } from "./NCAPI";
+import { ContentType, GETFile } from "./NCAPI";
 
 /**
  * Interface representing Electrons IPCRenderer/IPCMain object
@@ -185,10 +185,23 @@ export function WriteImageToClipboard(data: Uint8Array, content_type: ContentTyp
   })
 }
 
-
-export function TriggerNotification(title: string, body: string, type: NotificationType) {
+/**
+ * Handles creating a notification for native or broswer
+ * @param title Title of the notification
+ * @param body Body of the notification
+ * @param type Type of the notification (Can be: Error, Information, etc.)
+ * @param icon Icon URL. Requesting the icon is done internally
+ */
+export function TriggerNotification(title: string, body: string, type: NotificationType, icon?: string) {
   if (IsElectron()) {
-    GetIPCRenderer().send("TriggerNotif", title, body)
+    if (icon) {
+      GETFile(icon).then((v) => {
+        GetIPCRenderer().send("TriggerNotif", title, body, v.payload);
+      });
+    }
+    else {
+      GetIPCRenderer().send("TriggerNotif", title, body)
+    }
   }
   else {
 

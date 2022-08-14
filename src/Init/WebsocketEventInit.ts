@@ -40,7 +40,7 @@ async function OnNewMessage(event: IWebSocketEvent) {
   Events.send("NewMessage", message, event.Channel);
   // Trigger notification
   if (new SettingsManager().User.uuid !== message.author_UUID)
-    TriggerNotification(`New Message from ${(await UserCache.GetUserAsync(message.author_UUID)).username}`, message.content, NotificationType.Info);
+    TriggerNotification(`New Message from ${(await UserCache.GetUserAsync(message.author_UUID)).username}`, message.content, NotificationType.Info, `User/${message.author_UUID}/Avatar?size=64`);
   // Add message to cache
   new NCChannelCache(event.Channel).SetMessage(event.Message, message);
 }
@@ -97,7 +97,7 @@ async function FriendRequestAdded(event: IWebSocketEvent) {
   console.log("New request");
   // Trigger notification
   if (new SettingsManager().User.uuid !== event.User)
-    TriggerNotification("New Friend Request", `${(await UserCache.GetUserAsync(event.User)).username} has requested to be your friend`, NotificationType.Info);
+    TriggerNotification("New Friend Request", `${(await UserCache.GetUserAsync(event.User)).username} has requested to be your friend`, NotificationType.Info, `User/${event.User}/Avatar?size=64`);
   Events.send("FriendAdded", event.User, await GETFriendState(event.User));
 }
 

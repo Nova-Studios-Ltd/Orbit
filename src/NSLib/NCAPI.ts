@@ -155,9 +155,10 @@ export async function POSTFile(endpoint: string, payload: Blob, filename: string
  * @param token Optional security token
  * @returns A NCAPIResponse with the data from the NovaChat API
  */
-export async function GETFile(endpoint: string, token?: string) : Promise<NCAPIResponse> {
+export async function GETFile(endpoint: string, token?: string, isExternal?: boolean) : Promise<NCAPIResponse> {
   if (endpoint.includes(API_DOMAIN)) endpoint = endpoint.replace(API_DOMAIN, "");
-  const resp = await fetch(`${API_DOMAIN}/${endpoint}`, {
+  const url = (isExternal)? `https://api.novastudios.tk/Proxy?url=${endpoint}` : `${API_DOMAIN}/${endpoint}`
+  const resp = await fetch(url, {
       method: "GET",
       headers: {
         "Authorization": token || ""
