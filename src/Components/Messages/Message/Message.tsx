@@ -204,7 +204,7 @@ function Message(props: MessageProps) {
           {props.isEdited ? <Typography className="MessageTimestampEdited" variant="subtitle2">({Localizations_Message("Typography-TimestampEdited")} {props.editedTimestamp?.replace("T", " ")})</Typography> : null}
         </div>
         <Typography variant="body1">
-          <Linkify options={{ format: (value: string) => <Link onClick={(event) => { handleURLClick(value); event.preventDefault(); }}>{value}</Link> }}>
+          <Linkify options={{ tagName: "span", formatHref: null, format: (value: string) => <Link href={value} onClick={(event) => { handleURLClick(value); event.preventDefault(); }}>{value}</Link> }}>
             {props.content}
           </Linkify>
         </Typography>
