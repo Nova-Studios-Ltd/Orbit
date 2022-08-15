@@ -3,7 +3,9 @@ import useClassNames from "Hooks/useClassNames";
 import { Button, TextField, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
 
+import AvatarTextButton from "Components/Buttons/AvatarTextButton/AvatarTextButton";
 import PageContainer from "Components/Containers/PageContainer/PageContainer";
+import GenericDialog from "Components/Dialogs/GenericDialog/GenericDialog";
 import TextCombo, { TextComboChangeEvent } from "Components/Input/TextCombo/TextCombo";
 
 import type Friend from "DataTypes/Friend";
@@ -18,9 +20,15 @@ interface BlockedUsersPageProps extends Page {
 
 function BlockedUsersPage(props: BlockedUsersPageProps) {
   const Localizations_BlockedUsersPage = useTranslation("BlockedUsersPage").t;
+  const Localizations_GenericDialog = useTranslation("GenericDialog").t;
   const classNames = useClassNames("BlockedUsersPageContainer", props.className);
 
   const [UnblockFriendDialogSelector, setUnblockFriendDialogSelector] = useState("");
+
+  const unblockFriend = (uuid?: string) => {
+    if (uuid && props.onUnblockFriend) props.onUnblockFriend(uuid);
+    setUnblockFriendDialogSelector("");
+  }
 
   useEffect(() => {
     if (props.sharedProps && props.sharedProps.changeTitleCallback) props.sharedProps.changeTitleCallback(Localizations_BlockedUsersPage("PageTitle"));
@@ -31,6 +39,7 @@ function BlockedUsersPage(props: BlockedUsersPageProps) {
       return props.friends.map((friend) => {
         if (!friend.friendData) return null;
 
+        const UnblockFriendDialogVisible = UnblockFriendDialogSelector === friend.friendData?.uuid;
         const isBlocked = friend.status?.toLowerCase() === "blocked";
 
         if (isBlocked) {
@@ -47,11 +56,31 @@ function BlockedUsersPage(props: BlockedUsersPageProps) {
             event.preventDefault();
           }
 
-          return null; // TODO: Return friend entry
+          return (
+            <div key={friend.friendData.uuid} className="FriendButtonContainer">
+              <AvatarTextButton onRightClick={friendRightClickHandler} showEllipsis iconSrc={friend.friendData.avatar} sharedProps={props.sharedProps}>
+                <div className="FriendButtonContent">
+                  <Typography>{friend.friendData?.username}#{friend.friendData?.discriminator}</Typography>
+                  <Typography variant="caption">{Localizations_BlockedUsersPage("Typography-UserBlocked")}</Typography>
+                </div>
+              </AvatarTextButton>
+              <GenericDialog open={UnblockFriendDialogVisible} onClose={() => setUnblockFriendDialogSelector("")} title={Localizations_BlockedUsersPage("Typography-UnblockFriendDialogTitle", { user: friend.friendData.username })} buttons={
+                <>
+                  <Button onClick={(event) => { setUnblockFriendDialogSelector(""); event.stopPropagation() }}>{Localizations_GenericDialog("Button_Label-DialogCancel")}</Button>
+                  <Button color="error" onClick={(event) => { unblockFriend(); event.stopPropagation() }}>{Localizations_GenericDialog("Button_Label-DialogUnblock")}</Button>
+                </>
+              }>
+              <div className="GenericDialogTextContainer">
+                <Typography variant="body1">{Localizations_BlockedUsersPage("Typography-UnblockFriendDialogBlurb", { user: friend.friendData.username })}</Typography>
+              </div>
+              </GenericDialog>
+            </div>
+          );
         }
         return null;
       });
     }
+    return null;
   })()
 
   const NoBlockedUsersHint = (() => {
@@ -65,7 +94,7 @@ function BlockedUsersPage(props: BlockedUsersPageProps) {
 
   return (
     <PageContainer className={classNames} adaptive={false}>
-      <Button onClick={() => { if (props.onReloadList) props.onReloadList() }}>{Localizations_BlockedUsersPage("Button_Label-ReloadFriendsList")}</Button>
+      <Button onClick={() => { if (props.onReloadList) props.onReloadList() }}>{Localizations_BlockedUsersPage("Button_Label-ReloadBlockedUsersList")}</Button>
       <div className="FriendsContainer">
         {blockedUserElements && blockedUserElements.length > 0 ? blockedUserElements : NoBlockedUsersHint}
       </div>

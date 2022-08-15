@@ -11,6 +11,7 @@
   flex-direction: column;
 
   padding: var(--global-padding);
+  overflow-x: hidden;
 
   box-sizing: border-box;
 
@@ -85,4 +86,24 @@
     margin: 0;
     border-radius: 0;
   }
+}
+
+.MainViewContainerLeft-enter {
+  width: 0;
+  padding: 0;
+}
+
+.MainViewContainerLeft-enter-done {
+  width: 18rem;
+  transition: width 200ms ease-in-out;
+}
+
+.MainViewContainerLeft-exit {
+  width: 18rem;
+}
+
+.MainViewContainerLeft-exit-done {
+  width: 0;
+  padding: 0;
+  transition: width 200ms ease-in-out;
 }

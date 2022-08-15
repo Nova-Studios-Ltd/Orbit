@@ -31,7 +31,7 @@ function AvatarTextButton(props: AvatarTextButtonProps) {
   };
 
   return (
-    <div className={classNames} style={{ backgroundColor: props.selected || isHovering ? theme.customPalette.customActions.active : theme.palette.background.paper }}>
+    <div className={classNames} style={{ backgroundColor: props.selected || isHovering ? theme.customPalette.customActions.active : theme.palette.background.paper, boxShadow: props.selected ? `4px 4px ${theme.palette.background.default}` : "none" }}>
       <ButtonBase className="AvatarTextButtonBase" onClick={props.onLeftClick} onContextMenu={props.onRightClick} onMouseEnter={() => onMouseHover(true)} onMouseLeave={() => onMouseHover(false)}>
         <div className="AvatarTextButtonLeft">
           <Avatar className="AvatarTextButtonIcon" src={props.iconSrc} />

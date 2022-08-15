@@ -42,7 +42,7 @@ function FriendView(props: FriendViewProps) {
         )
       case FriendViewRoutes.BlockedUsersList:
         return (
-          <BlockedUsersPage sharedProps={props.sharedProps} />
+          <BlockedUsersPage sharedProps={props.sharedProps} friends={props.friends} onReloadList={props.onReloadList} onUnblockFriend={props.onUnblockFriend} />
         )
       case FriendViewRoutes.AddFriend:
         return (

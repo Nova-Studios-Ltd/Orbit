@@ -1,6 +1,10 @@
 {
   "PageTitle": "Blocked Users",
-  "Button_Label-AddFriend": "Create Channel",
+  "Button_Label-ReloadBlockedUsersList": "Reload",
+  "ContextMenuItem-UnblockFriend": "Unblock",
+  "Typography-UserBlocked": "Blocked",
   "Typography_Heading-NoBlockedUsersHint": "No Blocked Users",
-  "Typography_Body-NoBlockedUsersHint": "If you must, then do."
+  "Typography_Body-NoBlockedUsersHint": "If you must, then do.",
+  "Typography-UnblockFriendDialogTitle": "Unblock {{user}}?",
+  "Typography-UnblockFriendDialogBlurb": "Do you wanna unpseudocockblock this sucker?"
 }

@@ -14,20 +14,6 @@
   gap: var(--global-margin);
 }
 
-.FriendButton {
-
-}
-
-.FriendButtonContainer {
-
-}
-
-.FriendButtonContent {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-}
-
 .NoFriendsHintContainer {
   display: flex;
   flex-direction: column;

@@ -30,6 +30,7 @@ import type { MessageProps } from "Components/Messages/Message/Message";
 import { Dictionary } from "NSLib/Dictionary";
 import type Friend from "DataTypes/Friend";
 import { AuthViewRoutes, MainViewRoutes, SettingsViewRoutes } from "DataTypes/Routes";
+import { CSSTransition } from "react-transition-group";
 
 interface MainViewProps extends View {
   path: MainViewRoutes
@@ -108,6 +109,10 @@ function MainView(props: MainViewProps) {
     if (messageCount.current < messages.length) scrollCanvas();
     messageCount.current = messages.length;
   }, [messages, messages.length]);
+
+  useEffect(() => {
+    if (props.sharedProps && !props.sharedProps.widthConstrained && !channelMenuOpen) setChannelMenuVisibility(true);
+  }, [channelMenuOpen, props, props.sharedProps?.widthConstrained]);
 
   useEffect(() => {
     if (!props.sharedProps || !props.sharedProps.changeTitleCallback) return;
@@ -511,16 +516,18 @@ function MainView(props: MainViewProps) {
   }
 
   const MainViewContainerLeft = () => {
-    if (props.sharedProps && props.sharedProps.widthConstrained && !channelMenuOpen) return null;
+    //if (props.sharedProps && props.sharedProps.widthConstrained && !channelMenuOpen) return null;
 
     return (
-      <div className="MainViewContainerLeft">
-        <div className="NavigationButtonContainer" style={{ backgroundColor: theme.palette.background.paper, borderColor: theme.palette.divider }}>
-          <AvatarTextButton className="NavigationButtonContainerItem" selected={props.path === MainViewRoutes.Settings} onLeftClick={() => navigateToPage(MainViewRoutes.Settings)} iconSrc={`${settings.User.avatarSrc}&nonce=${avatarNonce}`}>{Localizations_MainView("Typography-SettingsHeader")}</AvatarTextButton>
-          <AvatarTextButton className="NavigationButtonContainerItem" selected={props.path === MainViewRoutes.Friends} onLeftClick={() => navigateToPage(MainViewRoutes.Friends)}>{Localizations_MainView("Typography-FriendsHeader")}</AvatarTextButton>
+      <CSSTransition classNames="MainViewContainerLeft" in={channelMenuOpen} timeout={10}>
+        <div className="MainViewContainerLeft">
+          <div className="NavigationButtonContainer" style={{ backgroundColor: theme.palette.background.paper, borderColor: theme.palette.divider }}>
+            <AvatarTextButton className="NavigationButtonContainerItem" selected={props.path === MainViewRoutes.Settings} onLeftClick={() => navigateToPage(MainViewRoutes.Settings)} iconSrc={`${settings.User.avatarSrc}&nonce=${avatarNonce}`}>{Localizations_MainView("Typography-SettingsHeader")}</AvatarTextButton>
+            <AvatarTextButton className="NavigationButtonContainerItem" selected={props.path === MainViewRoutes.Friends} onLeftClick={() => navigateToPage(MainViewRoutes.Friends)}>{Localizations_MainView("Typography-FriendsHeader")}</AvatarTextButton>
+          </div>
+          <ChannelList className="MainViewChannelList" sharedProps={props.sharedProps} channels={channels} onChannelEdit={onChannelEdit} onChannelDelete={onChannelDelete} onChannelClick={onChannelClick} selectedChannel={selectedChannel} />
         </div>
-        <ChannelList className="MainViewChannelList" sharedProps={props.sharedProps} channels={channels} onChannelEdit={onChannelEdit} onChannelDelete={onChannelDelete} onChannelClick={onChannelClick} selectedChannel={selectedChannel} />
-      </div>
+      </CSSTransition>
     );
   }
 
@@ -528,7 +535,7 @@ function MainView(props: MainViewProps) {
     <ViewContainer>
       <div className="MainViewContainer">
         {MainViewContainerLeft()}
-        <div className="MainViewContainerRight" onClick={onMainViewContainerRightClick} style={{ opacity: channelMenuOpen ? 0.5 : 1 }}>
+        <div className="MainViewContainerRight" onClick={onMainViewContainerRightClick} style={{ opacity: props.sharedProps?.widthConstrained && channelMenuOpen ? 0.5 : 1 }}>
           <GenericHeader className="MainViewHeader MainViewContainerItem" sharedProps={props.sharedProps} title={title} childrenLeft={props.sharedProps?.widthConstrained ? <IconButton onClick={(event: React.MouseEvent<HTMLButtonElement>) => { event.stopPropagation(); onChannelMenuToggle(); }}><MenuIcon /></IconButton> : null} />
           {page()}
         </div>
