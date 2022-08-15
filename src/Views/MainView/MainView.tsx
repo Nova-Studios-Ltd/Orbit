@@ -205,7 +205,7 @@ function MainView(props: MainViewProps) {
       navigate(`${MainViewRoutes.Chat}${location.search}`);
 
     if (channel.channelName) setTitle(channel.channelName);
-    setChannelMenuVisibility(false);
+    if (props.sharedProps?.widthConstrained) setChannelMenuVisibility(false);
 
     setSelectedChannel(channel);
 
