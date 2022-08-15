@@ -190,7 +190,7 @@ function MainView(props: MainViewProps) {
 
   const navigateToPage = (path: MainViewRoutes) => {
     setSelectedChannel(null as unknown as IRawChannelProps);
-    setChannelMenuVisibility(false);
+    if (props.sharedProps?.widthConstrained) setChannelMenuVisibility(false);
     navigate(path);
   }
 
