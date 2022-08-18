@@ -1,5 +1,12 @@
 .GenericDialogContainer {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
 
+  display: none;
+  z-index: 2;
 }
 
 .GenericDialogInnerContainer {
@@ -18,6 +25,8 @@
 
   transform: translate(-50%, -50%);
   -ms-transform: translate(-50%, -50%);
+
+  transition: opacity 200ms ease-in-out;
 }
 
 .GenericDialogTitle {
@@ -43,6 +52,19 @@
   gap: var(--global-margin);
 }
 
+.GenericDialogBackdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+
+  opacity: var(--dialog-backdrop-opacity);
+
+  width: 100%;
+  height: 100%;
+
+  transition: opacity 200ms ease-in-out;
+}
+
 @media only screen and (max-width: 600px) {
   .GenericDialogInnerContainer {
     position: static;
@@ -64,4 +86,50 @@
     margin-top: auto;
     margin-bottom: var(--global-margin);
   }
+}
+
+.GenericDialogContainer-enter {
+  display: block;
+}
+
+.GenericDialogContainer-enter-done {
+  display: block;
+}
+
+.GenericDialogContainer-exit {
+}
+
+.GenericDialogContainer-exit-done {
+}
+
+.GenericDialogInnerContainer-enter {
+  opacity: 0;
+}
+
+.GenericDialogInnerContainer-enter-done {
+  opacity: 1;
+}
+
+.GenericDialogInnerContainer-exit {
+  opacity: 1;
+}
+
+.GenericDialogInnerContainer-exit-done {
+  opacity: 0;
+}
+
+.GenericDialogBackdrop-enter {
+  opacity: 0;
+}
+
+.GenericDialogBackdrop-enter-done {
+  opacity: var(--dialog-backdrop-opacity);
+}
+
+.GenericDialogBackdrop-exit {
+  opacity: var(--dialog-backdrop-opacity);
+}
+
+.GenericDialogBackdrop-exit-done {
+  opacity: 0;
 }

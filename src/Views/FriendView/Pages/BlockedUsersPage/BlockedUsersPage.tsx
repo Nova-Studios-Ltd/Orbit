@@ -64,7 +64,7 @@ function BlockedUsersPage(props: BlockedUsersPageProps) {
                   <Typography variant="caption">{Localizations_BlockedUsersPage("Typography-UserBlocked")}</Typography>
                 </div>
               </AvatarTextButton>
-              <GenericDialog open={UnblockFriendDialogVisible} onClose={() => setUnblockFriendDialogSelector("")} title={Localizations_BlockedUsersPage("Typography-UnblockFriendDialogTitle", { user: friend.friendData.username })} buttons={
+              <GenericDialog sharedProps={props.sharedProps} open={UnblockFriendDialogVisible} onClose={() => setUnblockFriendDialogSelector("")} title={Localizations_BlockedUsersPage("Typography-UnblockFriendDialogTitle", { user: friend.friendData.username })} buttons={
                 <>
                   <Button onClick={(event) => { setUnblockFriendDialogSelector(""); event.stopPropagation() }}>{Localizations_GenericDialog("Button_Label-DialogCancel")}</Button>
                   <Button color="error" onClick={(event) => { unblockFriend(); event.stopPropagation() }}>{Localizations_GenericDialog("Button_Label-DialogUnblock")}</Button>

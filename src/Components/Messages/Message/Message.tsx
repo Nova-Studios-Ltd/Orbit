@@ -209,7 +209,7 @@ function Message(props: MessageProps) {
       <ContextMenu open={ContextMenuVisible} anchorPos={ContextMenuAnchorPos} onDismiss={closeContextMenu}>
         <ContextMenuItem hide={!selectedAttachment} disabled>{selectedAttachment?.filename}</ContextMenuItem>
         <ContextMenuItem hide={!selectedAttachment} onLeftClick={() => downloadSelectedAttachment()}>{Localizations_Message("ContextMenuItem-Download")}</ContextMenuItem>
-        <ContextMenuItem onLeftClick={() => copyMessage()}>{Localizations_Message("ContextMenuItem-Copy")}</ContextMenuItem>
+        <ContextMenuItem disabled={(props.content !== undefined && props.content.length < 1)} onLeftClick={() => copyMessage()}>{Localizations_Message("ContextMenuItem-Copy")}</ContextMenuItem>
         <ContextMenuItem hide={!isOwnMessage} onLeftClick={() => startEditMessage()}>{Localizations_Message("ContextMenuItem-Edit")}</ContextMenuItem>
         <ContextMenuItem hide={!isOwnMessage} onLeftClick={() => { if (props.onMessageDelete) props.onMessageDelete(filteredMessageProps) }}>{Localizations_Message("ContextMenuItem-Delete")}</ContextMenuItem>
       </ContextMenu>
