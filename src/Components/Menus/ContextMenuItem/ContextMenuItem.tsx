@@ -20,6 +20,8 @@ function ContextMenuItem(props: ContextMenuItemProps) {
 
   const [backgroundColor, setBackgroundColor] = useState(theme.customPalette.contextMenuItemBackground);
 
+  if (props.hide) return null;
+
   const handleLeftClick = () => {
     if (props.onLeftClick) props.onLeftClick();
   }

@@ -1,7 +1,11 @@
 .ContextMenuContainer {
+  position: absolute;
+
   opacity: 0;
   display: none;
   transition: opacity 200ms ease-in-out;
+
+  z-index: 1;
 }
 
 .ContextMenuItemParentContainer {
@@ -11,8 +15,6 @@
   border-radius: var(--global-border-radius);
   padding: var(--global-padding);
   box-shadow: var(--generic-box-shadow);
-
-  z-index: 1;
 }
 
 .ContextMenuBackdrop {

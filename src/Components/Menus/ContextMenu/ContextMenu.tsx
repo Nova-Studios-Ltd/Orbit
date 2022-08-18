@@ -51,11 +51,11 @@ function ContextMenu(props: ContextMenuProps) {
 
   return (
     <CSSTransition classNames={classNames} in={(props.open && anchorPos !== undefined)} timeout={10}>
-      <div className={classNames} onClick={props.onDismiss} onContextMenu={props.onDismiss}>
-        <div ref={(el) => calculatePosition(el)} className="ContextMenuItemParentContainer" style={{ backgroundColor: theme.customPalette.contextMenuBackground, position: "absolute", left: anchorPos?.x, top: anchorPos?.y }}>
+      <div className={classNames} onClick={props.onDismiss} onContextMenu={props.onDismiss} style={{ left: anchorPos?.x, top: anchorPos?.y }}>
+        <div className="ContextMenuBackdrop" style={{ background: props.dim ? theme.palette.background.paper : "none" }}/>
+        <div ref={(el) => calculatePosition(el)} className="ContextMenuItemParentContainer" style={{ backgroundColor: theme.customPalette.contextMenuBackground }}>
           {props.children}
         </div>
-        <div className="ContextMenuBackdrop" style={{ backgroundColor: props.dim ? theme.palette.background.paper : "none" }}/>
       </div>
     </CSSTransition>
 
