@@ -5,14 +5,17 @@ import { SettingsManager } from "NSLib/SettingsManager";
 
 import AvatarTextButton from "Components/Buttons/AvatarTextButton/AvatarTextButton";
 import GenericDialog from "Components/Dialogs/GenericDialog/GenericDialog";
+import ContextMenu from "Components/Menus/ContextMenu/ContextMenu";
+import ContextMenuItem from "Components/Menus/ContextMenuItem/ContextMenuItem";
 
-import type { ContextMenuItemProps } from "Components/Menus/ContextMenuItem/ContextMenuItem";
 import type { NCComponent } from "DataTypes/Components";
 import type { IRawChannelProps } from "Interfaces/IRawChannelProps";
+import type { Coordinates } from "DataTypes/Types";
 
 export interface ChannelProps extends NCComponent {
   channelData: IRawChannelProps,
   isSelected?: boolean,
+  isGroup?: boolean,
   onChannelEdit?: (channel: IRawChannelProps) => void,
   onChannelDelete?: (channel: IRawChannelProps) => void,
   onClick?: (channel: IRawChannelProps) => void
@@ -36,25 +39,19 @@ function Channel(props: ChannelProps) {
     return membersThatArentYou;
   })();
 
+  const [ChannelContextMenuVisible, setChannelContextMenuVisibility] = useState(false);
+  const [ChannelContextMenuAnchorPos, setChannelContextMenuAnchorPos] = useState({} as unknown as Coordinates);
   const [ChannelInfoDialogVisible, setChannelInfoDialogVisibility] = useState(false);
   const [EditChannelDialogVisible, setEditChannelDialogVisibility] = useState(false);
   const [DeleteChannelDialogVisible, setDeleteChannelDialogVisibility] = useState(false);
-
-  const channelContextMenuItems: ContextMenuItemProps[] = [
-    props.channelData.isGroup ? { children: Localizations_Channel("ContextMenuItem-Edit"), onLeftClick: () => { setEditChannelDialogVisibility(true) }} : { children: Localizations_Channel("ContextMenuItem-Info"), onLeftClick: () => { setChannelInfoDialogVisibility(true) }},
-    { children: Localizations_Channel("ContextMenuItem-Delete"), onLeftClick: () => { setDeleteChannelDialogVisibility(true) }}
-  ]
 
   const onChannelLeftClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     if (props.onClick) props.onClick(props.channelData);
   }
 
   const onChannelRightClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    if (props.sharedProps && props.sharedProps.ContextMenu && event.currentTarget) {
-      props.sharedProps.ContextMenu.setItems(channelContextMenuItems);
-      props.sharedProps.ContextMenu.setAnchor({ x: event.clientX, y: event.clientY });
-      props.sharedProps.ContextMenu.setVisibility(true);
-    }
+    setChannelContextMenuAnchorPos({ x: event.clientX, y: event.clientY });
+    setChannelContextMenuVisibility(true);
     event.preventDefault();
   }
 
@@ -100,8 +97,11 @@ function Channel(props: ChannelProps) {
       }>
         <TextField label={Localizations_Channel("TextField_Label-ChannelInfoDialogMembers")} disabled value={channelMembersThatIsNotYou} />
       </GenericDialog>
+      <ContextMenu open={ChannelContextMenuVisible} onDismiss={() => setChannelContextMenuVisibility(false)} anchorPos={ChannelContextMenuAnchorPos}>
+        <ContextMenuItem onLeftClick={props.channelData.isGroup ? () => { setEditChannelDialogVisibility(true) } : () => { setChannelInfoDialogVisibility(true) }}>{props.channelData.isGroup ? Localizations_Channel("ContextMenuItem-Edit") : Localizations_Channel("ContextMenuItem-Info")}</ContextMenuItem>
+        <ContextMenuItem onLeftClick={() => { setDeleteChannelDialogVisibility(true) }}>{Localizations_Channel("ContextMenuItem-Delete")}</ContextMenuItem>
+      </ContextMenu>
     </>
-
   )
 }
 

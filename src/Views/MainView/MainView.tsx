@@ -50,7 +50,8 @@ function MainView(props: MainViewProps) {
   const autoScroll = useRef(true);
 
   const [title, setTitle] = useState("");
-  const [channels, setChannels] = useState([] as IRawChannelProps[]);
+  const [userChannels, setUserChannels] = useState([] as IRawChannelProps[]);
+  const [groupChannels, setGroupChannels] = useState([] as IRawChannelProps[]);
   const [selectedChannel, setSelectedChannel] = useState(null as unknown as IRawChannelProps);
   const [messages, setMessages] = useState([] as IMessageProps[]);
   const [friends, setFriends] = useState([] as Friend[]);
@@ -59,8 +60,8 @@ function MainView(props: MainViewProps) {
   const [avatarNonce, setAvatarNonce] = useState(Date.now().toString());
 
   const channelContainsUUID = (uuid: string) => {
-    for (let i = 0; i < channels.length; i++) {
-      const channel = channels[i];
+    for (let i = 0; i < userChannels.length; i++) {
+      const channel = userChannels[i];
       const containsUUID = (() => {
         if (channel.members) {
           for (let j = 0; j < channel.members.length; j++) {
@@ -400,7 +401,7 @@ function MainView(props: MainViewProps) {
     });
 
     Events.on("NewChannel", (channel: IRawChannelProps) => {
-      setChannels(prevState => {
+      setUserChannels(prevState => {
         const index = prevState.findIndex(c => c.table_Id === channel.table_Id);
         if (index > -1) return [...prevState]
         return [...prevState, channel]}
@@ -408,7 +409,7 @@ function MainView(props: MainViewProps) {
     });
 
     Events.on("DeleteChannel", (channel: string) => {
-      setChannels(prevState => {
+      setUserChannels(prevState => {
         const index = prevState.findIndex(e => e.table_Id === channel);
         if (index > -1) {
           prevState.splice(index, 1);
@@ -457,7 +458,7 @@ function MainView(props: MainViewProps) {
       Events.remove("FriendRemoved");
     });
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [channels, messages]);
+  }, [userChannels, messages]);
 
 
   useEffect(() => {
@@ -478,7 +479,7 @@ function MainView(props: MainViewProps) {
         loadedChannels.push(channel);
       }
 
-      setChannels(loadedChannels);
+      setUserChannels(loadedChannels);
 
       if (props.path === MainViewRoutes.Chat && loadedChannels.length < 1) {
         navigate(MainViewRoutes.Friends);
@@ -525,7 +526,7 @@ function MainView(props: MainViewProps) {
             <AvatarTextButton className="NavigationButtonContainerItem" selected={props.path === MainViewRoutes.Settings} onLeftClick={() => navigateToPage(MainViewRoutes.Settings)} iconSrc={`${settings.User.avatarSrc}&nonce=${avatarNonce}`}>{Localizations_MainView("Typography-SettingsHeader")}</AvatarTextButton>
             <AvatarTextButton className="NavigationButtonContainerItem" selected={props.path === MainViewRoutes.Friends} onLeftClick={() => navigateToPage(MainViewRoutes.Friends)}>{Localizations_MainView("Typography-FriendsHeader")}</AvatarTextButton>
           </div>
-          <ChannelList className="MainViewChannelList" sharedProps={props.sharedProps} channels={channels} onChannelEdit={onChannelEdit} onChannelDelete={onChannelDelete} onChannelClick={onChannelClick} selectedChannel={selectedChannel} />
+          <ChannelList className="MainViewChannelList" sharedProps={props.sharedProps} channels={userChannels} onChannelEdit={onChannelEdit} onChannelDelete={onChannelDelete} onChannelClick={onChannelClick} selectedChannel={selectedChannel} />
         </div>
       </CSSTransition>
     );

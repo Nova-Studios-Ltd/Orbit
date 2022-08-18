@@ -4,13 +4,15 @@ import { Button, TextField, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
 
 import AvatarTextButton from "Components/Buttons/AvatarTextButton/AvatarTextButton";
+import ContextMenu from "Components/Menus/ContextMenu/ContextMenu";
+import ContextMenuItem from "Components/Menus/ContextMenuItem/ContextMenuItem";
 import PageContainer from "Components/Containers/PageContainer/PageContainer";
 import GenericDialog from "Components/Dialogs/GenericDialog/GenericDialog";
 import TextCombo, { TextComboChangeEvent } from "Components/Input/TextCombo/TextCombo";
 
 import type Friend from "DataTypes/Friend";
 import type { Page } from "DataTypes/Components";
-import type { ContextMenuItemProps } from "Components/Menus/ContextMenuItem/ContextMenuItem";
+import type { Coordinates } from "DataTypes/Types";
 
 interface BlockedUsersPageProps extends Page {
   friends?: Friend[],
@@ -23,6 +25,9 @@ function BlockedUsersPage(props: BlockedUsersPageProps) {
   const Localizations_GenericDialog = useTranslation("GenericDialog").t;
   const classNames = useClassNames("BlockedUsersPageContainer", props.className);
 
+  const [FriendContextMenuVisible, setFriendContextMenuVisibility] = useState(false);
+  const [FriendContextMenuAnchorPos, setFriendContextMenuAnchorPos] = useState({} as unknown as Coordinates);
+  const [FriendContextMenuSelectedFriend, setFriendContextMenuSelectedFriend] = useState(null as unknown as Friend);
   const [UnblockFriendDialogSelector, setUnblockFriendDialogSelector] = useState("");
 
   const unblockFriend = (uuid?: string) => {
@@ -43,16 +48,11 @@ function BlockedUsersPage(props: BlockedUsersPageProps) {
         const isBlocked = friend.status?.toLowerCase() === "blocked";
 
         if (isBlocked) {
-          const friendContextMenuItems: ContextMenuItemProps[] = [
-            { children: Localizations_BlockedUsersPage("ContextMenuItem-UnblockFriend"), onLeftClick: () => friend.friendData && friend.friendData.uuid ? setUnblockFriendDialogSelector(friend.friendData.uuid) : null },
-          ];
 
           const friendRightClickHandler = (event: React.MouseEvent<HTMLButtonElement>) => {
-            if (props.sharedProps && props.sharedProps.ContextMenu && event.currentTarget) {
-              props.sharedProps.ContextMenu.setAnchor({ x: event.clientX, y: event.clientY });
-              props.sharedProps.ContextMenu.setItems(friendContextMenuItems);
-              props.sharedProps.ContextMenu.setVisibility(true);
-            }
+            setFriendContextMenuAnchorPos({ x: event.clientX, y: event.clientY });
+            setFriendContextMenuSelectedFriend(friend);
+            setFriendContextMenuVisibility(true);
             event.preventDefault();
           }
 
@@ -98,6 +98,9 @@ function BlockedUsersPage(props: BlockedUsersPageProps) {
       <div className="FriendsContainer">
         {blockedUserElements && blockedUserElements.length > 0 ? blockedUserElements : NoBlockedUsersHint}
       </div>
+      <ContextMenu open={FriendContextMenuVisible} anchorPos={FriendContextMenuAnchorPos} onDismiss={() => setFriendContextMenuVisibility(false)}>
+        <ContextMenuItem onLeftClick={() => FriendContextMenuSelectedFriend && FriendContextMenuSelectedFriend.friendData && FriendContextMenuSelectedFriend.friendData.uuid ? setUnblockFriendDialogSelector(FriendContextMenuSelectedFriend.friendData.uuid) : null}>{Localizations_BlockedUsersPage("ContextMenuItem-UnblockFriend")}</ContextMenuItem>
+      </ContextMenu>
     </PageContainer>
   );
 }

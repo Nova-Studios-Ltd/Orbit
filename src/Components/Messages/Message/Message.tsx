@@ -8,7 +8,6 @@ import MessageMedia from "Components/Messages/MessageMedia/MessageMedia";
 import TextCombo, { TextComboChangeEvent, TextComboSubmitEvent } from "Components/Input/TextCombo/TextCombo";
 
 import type { NCComponent } from "DataTypes/Components";
-import type { ContextMenuItemProps } from "Components/Menus/ContextMenuItem/ContextMenuItem";
 import { AttachmentProps, IAttachmentProps } from "Interfaces/IAttachmentProps";
 import { DownloadUint8ArrayFile, WriteToClipboard } from "NSLib/ElectronAPI";
 import { GetImageDimensions, GetMimeType } from "NSLib/ContentLinkUtil";
@@ -19,6 +18,7 @@ import IUserData from "Interfaces/IUserData";
 import ContextMenu from "Components/Menus/ContextMenu/ContextMenu";
 import { Coordinates } from "DataTypes/Types";
 import Linkify from "linkify-react";
+import ContextMenuItem from "Components/Menus/ContextMenuItem/ContextMenuItem";
 
 export interface MessageProps extends NCComponent {
   content?: string,
@@ -50,7 +50,6 @@ function Message(props: MessageProps) {
   const [selectedAttachment, setSelectedAttachment] = useState(null as unknown as IAttachmentProps);
   const [ContextMenuVisible, setContextMenuVisibility] = useState(false);
   const [ContextMenuAnchorPos, setContextMenuAnchorPos] = useState(null as unknown as Coordinates);
-  const [ContextMenuItems, setContextMenuItems] = useState(null as unknown as ContextMenuItemProps[]);
 
   useEffect(() => {
     if (props.attachments === undefined) return;
@@ -145,17 +144,6 @@ function Message(props: MessageProps) {
     showContextMenu({ x: event.clientX, y: event.clientY });
   }
 
-  useEffect(() => {
-    setContextMenuItems([
-    { hide: !selectedAttachment, children: selectedAttachment?.filename, disabled: true },
-    { children: Localizations_Message("ContextMenuItem-Copy"), onLeftClick: () => copyMessage()},
-    { hide: !selectedAttachment, children: Localizations_Message("ContextMenuItem-Download"), onLeftClick: () => downloadSelectedAttachment() },
-    { hide: !isOwnMessage, children: Localizations_Message("ContextMenuItem-Edit"), onLeftClick: () => startEditMessage()},
-    { hide: !isOwnMessage, children: Localizations_Message("ContextMenuItem-Delete"), onLeftClick: () => { if (props.onMessageDelete) props.onMessageDelete(filteredMessageProps) }},
-    ]);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedAttachment]);
-
   const mediaComponents = () => {
     if (allAttachments && allAttachments.length > 0) {
       return allAttachments.map((attachment, index) => {
@@ -219,7 +207,11 @@ function Message(props: MessageProps) {
           } /> : null}
       </div>
       <ContextMenu open={ContextMenuVisible} anchorPos={ContextMenuAnchorPos} onDismiss={closeContextMenu}>
-        {ContextMenuItems}
+        <ContextMenuItem hide={!selectedAttachment} disabled>{selectedAttachment?.filename}</ContextMenuItem>
+        <ContextMenuItem hide={!selectedAttachment} onLeftClick={() => downloadSelectedAttachment()}>{Localizations_Message("ContextMenuItem-Download")}</ContextMenuItem>
+        <ContextMenuItem onLeftClick={() => copyMessage()}>{Localizations_Message("ContextMenuItem-Copy")}</ContextMenuItem>
+        <ContextMenuItem hide={!isOwnMessage} onLeftClick={() => startEditMessage()}>{Localizations_Message("ContextMenuItem-Edit")}</ContextMenuItem>
+        <ContextMenuItem hide={!isOwnMessage} onLeftClick={() => { if (props.onMessageDelete) props.onMessageDelete(filteredMessageProps) }}>{Localizations_Message("ContextMenuItem-Delete")}</ContextMenuItem>
       </ContextMenu>
     </div>
   )

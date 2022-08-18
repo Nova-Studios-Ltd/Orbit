@@ -1,5 +1,7 @@
 .ContextMenuContainer {
-
+  opacity: 0;
+  display: none;
+  transition: opacity 200ms ease-in-out;
 }
 
 .ContextMenuItemParentContainer {
@@ -28,4 +30,22 @@
   .ContextMenuContainer {
 
   }
+}
+
+.ContextMenuContainer-enter {
+  opacity: 0;
+  display: block;
+}
+
+.ContextMenuContainer-enter-done {
+  opacity: 1;
+  display: block;
+}
+
+.ContextMenuContainer-exit {
+  opacity: 1;
+}
+
+.ContextMenuContainer-exit-done {
+  opacity: 0;
 }
