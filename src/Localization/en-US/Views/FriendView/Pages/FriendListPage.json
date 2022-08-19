@@ -7,6 +7,7 @@
   "Typography-BlockFriendDialogBlurb": "Do you wanna pseudocockblock this sucker?",
   "Typography_Heading-NoFriendHint": "Friend List Empty",
   "Typography_Body-NoFriendHint": "Head on over to the \"{{AddFriendSectionTitle}}\" section and add your first friend!",
+  "ContextMenuItem-AcceptFriend": "Accept",
   "ContextMenuItem-BlockFriend": "Block",
   "ContextMenuItem-RemoveFriend": "Remove"
 }

@@ -36,6 +36,10 @@ function FriendPage(props: FriendPageProps) {
   const [RemoveFriendDialogSelector, setRemoveFriendDialogSelector] = useState("");
   const [BlockUnblockFriendDialogSelector, setBlockFriendDialogSelector] = useState("");
 
+  const acceptFriendRequest = (friend?: Friend) => {
+    if (friend && props.onFriendClicked) props.onFriendClicked(friend);
+  }
+
   const removeFriend = (uuid?: string) => {
     if (uuid && props.onRemoveFriend) props.onRemoveFriend(uuid);
     setRemoveFriendDialogSelector("");
@@ -66,7 +70,7 @@ function FriendPage(props: FriendPageProps) {
         // TODO: Localize friend.status
         return (
           <div key={friend.friendData.uuid} className="FriendButtonContainer">
-            <AvatarTextButton className="FriendButton" showEllipsis iconSrc={friend.friendData.avatar} onLeftClick={() => { if (props.onFriendClicked) props.onFriendClicked(friend) }} onRightClick={friendRightClickHandler} sharedProps={props.sharedProps}>
+            <AvatarTextButton className="FriendButton" showEllipsis iconSrc={friend.friendData.avatar} onLeftClick={() => acceptFriendRequest(friend)} onRightClick={friendRightClickHandler} sharedProps={props.sharedProps}>
               <div className="FriendButtonContent">
                 <Typography>{friend.friendData?.username}#{friend.friendData?.discriminator}</Typography>
                 <Typography variant="caption">{friend.status}</Typography>
@@ -118,6 +122,7 @@ function FriendPage(props: FriendPageProps) {
         {friendElements && friendElements.length > 0 ? friendElements : NoFriendsHint}
       </div>
       <ContextMenu open={FriendContextMenuVisible} anchorPos={FriendContextMenuAnchorPos} onDismiss={() => setFriendContextMenuVisibility(false)}>
+        <ContextMenuItem hide={!(FriendContextMenuSelectedFriend && FriendContextMenuSelectedFriend.status?.toLowerCase() === "pending")} onLeftClick={() => FriendContextMenuSelectedFriend && FriendContextMenuSelectedFriend.friendData && FriendContextMenuSelectedFriend.friendData.uuid ? acceptFriendRequest(FriendContextMenuSelectedFriend) : null}>{Localizations_FriendPage("ContextMenuItem-AcceptFriend")}</ContextMenuItem>
         <ContextMenuItem onLeftClick={() => FriendContextMenuSelectedFriend && FriendContextMenuSelectedFriend.friendData && FriendContextMenuSelectedFriend.friendData.uuid ? setRemoveFriendDialogSelector(FriendContextMenuSelectedFriend.friendData.uuid) : null}>{Localizations_FriendPage("ContextMenuItem-RemoveFriend")}</ContextMenuItem>
         <ContextMenuItem onLeftClick={() => FriendContextMenuSelectedFriend && FriendContextMenuSelectedFriend.friendData && FriendContextMenuSelectedFriend.friendData.uuid ? setBlockFriendDialogSelector(FriendContextMenuSelectedFriend.friendData.uuid) : null}>{FriendContextMenuSelectedFriend && FriendContextMenuSelectedFriend.status && FriendContextMenuSelectedFriend.status?.toLowerCase() === "blocked" ? Localizations_FriendPage("ContextMenuItem-UnblockFriend") : Localizations_FriendPage("ContextMenuItem-BlockFriend")}</ContextMenuItem>
       </ContextMenu>
