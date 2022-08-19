@@ -67,7 +67,7 @@ function BlockedUsersPage(props: BlockedUsersPageProps) {
               <GenericDialog open={UnblockFriendDialogVisible} onClose={() => setUnblockFriendDialogSelector("")} title={Localizations_BlockedUsersPage("Typography-UnblockFriendDialogTitle", { user: friend.friendData.username })} buttons={
                 <>
                   <Button onClick={(event) => { setUnblockFriendDialogSelector(""); event.stopPropagation() }}>{Localizations_GenericDialog("Button_Label-DialogCancel")}</Button>
-                  <Button color="error" onClick={(event) => { unblockFriend(); event.stopPropagation() }}>{Localizations_GenericDialog("Button_Label-DialogUnblock")}</Button>
+                  <Button color="error" onClick={(event) => { unblockFriend(friend.friendData?.uuid); event.stopPropagation() }}>{Localizations_GenericDialog("Button_Label-DialogUnblock")}</Button>
                 </>
               }>
               <div className="GenericDialogTextContainer">
