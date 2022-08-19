@@ -41,13 +41,16 @@ function BlockedUsersPage(props: BlockedUsersPageProps) {
 
   const blockedUserElements = (() => {
     if (props.friends) {
-      return props.friends.map((friend) => {
+      let containsBlockedUsers = false;
+      const elements = props.friends.map((friend) => {
         if (!friend.friendData) return null;
 
         const UnblockFriendDialogVisible = UnblockFriendDialogSelector === friend.friendData?.uuid;
         const isBlocked = friend.status?.toLowerCase() === "blocked";
 
         if (isBlocked) {
+
+          containsBlockedUsers = true;
 
           const friendRightClickHandler = (event: React.MouseEvent<HTMLButtonElement>) => {
             setFriendContextMenuAnchorPos({ x: event.clientX, y: event.clientY });
@@ -79,6 +82,8 @@ function BlockedUsersPage(props: BlockedUsersPageProps) {
         }
         return null;
       });
+      if (!containsBlockedUsers) return null;
+      return elements;
     }
     return null;
   })()
