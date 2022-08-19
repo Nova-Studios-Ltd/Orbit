@@ -222,4 +222,17 @@ export class NCChannelCache {
     }
     return keys;
   }
+
+    /**
+   * Outright deletes a channel's cache from IndexedDB
+   * @param channel_uuid Channel to clear the cache from
+   * @returns Boolean indicating whether the cache was cleared or not
+   */
+     static async DeleteSpecificCache(channel_uuid: string) : Promise<boolean> {
+      const ce = await this.ContainsCache(channel_uuid);
+      if (ce === undefined) return false;
+      const cache = ce as NCChannelCache;
+      cache.ClearCache();
+      return true;
+    }
 }

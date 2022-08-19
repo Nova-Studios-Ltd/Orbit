@@ -340,8 +340,10 @@ function MainView(props: MainViewProps) {
   const onChannelClearCache = (channel: IRawChannelProps) => {
     console.log(`Request to clear channel ${channel.channelName}'s cache`);
     if (channel.table_Id === undefined) return;
-    NCChannelCache.CleanCache(channel.table_Id).then(() => {
+    NCChannelCache.DeleteSpecificCache(channel.table_Id).then((success: boolean) => {
+      if (!success) console.log(`Failed to clear channel ${channel.table_Id}'s cache`)
       console.log(`Cleared channel ${channel.table_Id}'s cache successfully`);
+      onChannelClick(channel);
     });
   };
 
@@ -494,7 +496,7 @@ function MainView(props: MainViewProps) {
         return;
       }
 
-      if (props.path === MainViewRoutes.Chat && loadedChannels[0]) onChannelClick(loadedChannels[0]); // Temporary channel preload
+      if (props.path === MainViewRoutes.Chat && loadedChannels[0]) onChannelClick(loadedChannels[0]); // Temporary channel preload; TODO: Store last opened channel
     });
 
     populateFriendsList();
