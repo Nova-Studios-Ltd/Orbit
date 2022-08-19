@@ -52,6 +52,21 @@
 
 }
 
+.AvatarTextButtonDragZone {
+  position: absolute;
+  width: 100%;
+  height: 10px;
+  border-radius: var(--global-border-radius);
+}
+
+.AvatarTextButtonDragZoneTop {
+  top: -5px;
+}
+
+.AvatarTextButtonDragZoneBottom {
+
+}
+
 @media only screen and (max-width: 600px) {
   .AvatarTextButtonContainer {
 

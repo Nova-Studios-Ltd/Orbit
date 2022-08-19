@@ -343,8 +343,8 @@ function MainView(props: MainViewProps) {
     });
   };
 
-  const onChannelMove = (channel: IRawChannelProps, index: number) => {
-    console.log(`Request to move channel ${channel.channelName} to new index of ${index}`);
+  const onChannelMove = (currentChannel: IRawChannelProps, otherChannel: IRawChannelProps, index: number) => {
+    console.log(`Request to move channel ${otherChannel.channelName} to new index of ${index}`);
     // TODO: Add Channel move logic here
   };
 
@@ -537,7 +537,7 @@ function MainView(props: MainViewProps) {
             <AvatarTextButton className="NavigationButtonContainerItem" selected={props.path === MainViewRoutes.Settings} onLeftClick={() => navigateToPage(MainViewRoutes.Settings)} iconSrc={`${settings.User.avatarSrc}&nonce=${avatarNonce}`}>{Localizations_MainView("Typography-SettingsHeader")}</AvatarTextButton>
             <AvatarTextButton className="NavigationButtonContainerItem" selected={props.path === MainViewRoutes.Friends} onLeftClick={() => navigateToPage(MainViewRoutes.Friends)}>{Localizations_MainView("Typography-FriendsHeader")}</AvatarTextButton>
           </div>
-          <ChannelList className="MainViewChannelList" sharedProps={props.sharedProps} channels={userChannels} onChannelEdit={onChannelEdit} onChannelDelete={onChannelDelete} onChannelClearCache={onChannelClearCache} onChannelClick={onChannelClick} selectedChannel={selectedChannel} />
+          <ChannelList className="MainViewChannelList" sharedProps={props.sharedProps} channels={userChannels} onChannelClearCache={onChannelClearCache} onChannelClick={onChannelClick} onChannelEdit={onChannelEdit} onChannelDelete={onChannelDelete} onChannelMove={onChannelMove} selectedChannel={selectedChannel} />
         </div>
       </CSSTransition>
     );

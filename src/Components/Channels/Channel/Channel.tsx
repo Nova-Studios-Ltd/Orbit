@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { Button, useTheme, Typography, TextField } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { SettingsManager } from "NSLib/SettingsManager";
@@ -10,17 +10,18 @@ import ContextMenuItem from "Components/Menus/ContextMenuItem/ContextMenuItem";
 
 import type { NCComponent } from "DataTypes/Components";
 import type { IRawChannelProps } from "Interfaces/IRawChannelProps";
-import type { Coordinates } from "DataTypes/Types";
+import type { ChannelMoveData, Coordinates } from "DataTypes/Types";
 
 export interface ChannelProps extends NCComponent {
   channelData: IRawChannelProps,
+  index: number,
   isSelected?: boolean,
   isGroup?: boolean,
   onChannelClick?: (channel: IRawChannelProps) => void,
   onChannelClearCache?: (channel: IRawChannelProps) => void,
   onChannelDelete?: (channel: IRawChannelProps) => void,
   onChannelEdit?: (channel: IRawChannelProps) => void,
-  onChannelMove?: (channel: IRawChannelProps, index: number) => void,
+  onChannelMove?: (currentChannel: IRawChannelProps, otherChannel: IRawChannelProps, index: number) => void,
 }
 
 function Channel(props: ChannelProps) {
@@ -72,9 +73,30 @@ function Channel(props: ChannelProps) {
     if (props.onChannelClearCache) props.onChannelClearCache(props.channelData);
   }
 
+  const onChannelDrag = (event: React.DragEvent<HTMLDivElement>) => {
+    event.dataTransfer.setData("text/plain", JSON.stringify({ channelData: props.channelData, index: props.index } as ChannelMoveData));
+    event.dataTransfer.effectAllowed = "copy";
+  }
+
+  const onOtherChannelDropped = (event: React.DragEvent<HTMLSpanElement>) => {
+    const rawData = event.dataTransfer?.getData("text");
+    if (rawData && rawData.length > 0) {
+      try {
+        const moveData: ChannelMoveData = JSON.parse(rawData);
+
+        if (moveData && props.onChannelMove) {
+          props.onChannelMove(props.channelData, moveData.channelData, props.index);
+        }
+      }
+      catch {
+        console.error("Channel drop event did not contain any JSON data");
+      }
+    }
+  }
+
   return (
     <>
-      <AvatarTextButton sharedProps={props.sharedProps} showEllipsisConditional draggable iconSrc={props.channelData.channelIcon} selected={props.isSelected} onLeftClick={onChannelLeftClick} onRightClick={onChannelRightClick}>
+      <AvatarTextButton sharedProps={props.sharedProps} showEllipsisConditional draggable onDrag={onChannelDrag} onDrop={onOtherChannelDropped} iconSrc={props.channelData.channelIcon} selected={props.isSelected} onLeftClick={onChannelLeftClick} onRightClick={onChannelRightClick}>
         {props.channelData.channelName}
       </AvatarTextButton>
       <GenericDialog sharedProps={props.sharedProps} onClose={() => setDeleteChannelDialogVisibility(false)} open={DeleteChannelDialogVisible} title={Localizations_Channel("Typography-DeleteChannelDialogTitle", { channelName: props.channelData.channelName })} buttons={

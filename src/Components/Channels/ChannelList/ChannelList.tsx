@@ -13,7 +13,7 @@ export interface ChannelListProps extends NCAPIComponent {
   onChannelClick?: (channel: IRawChannelProps) => void,
   onChannelDelete?: (channel: IRawChannelProps) => void,
   onChannelEdit?: (channel: IRawChannelProps) => void,
-  onChannelMove?: (channel: IRawChannelProps, index: number) => void,
+  onChannelMove?: (currentChannel: IRawChannelProps, otherChannel: IRawChannelProps, index: number) => void,
 }
 
 function ChannelList(props: ChannelListProps) {
@@ -37,7 +37,7 @@ function ChannelList(props: ChannelListProps) {
           to index the channels in user-specified order (otherwise default to order as retrieved from server)
         */
 
-        return (<Channel key={channel.table_Id} sharedProps={props.sharedProps} channelData={channel} isSelected={isSelected} isGroup={channel.isGroup} onChannelClearCache={props.onChannelClearCache} onChannelClick={props.onChannelClick} onChannelDelete={props.onChannelDelete} onChannelEdit={props.onChannelEdit} />);
+        return (<Channel key={channel.table_Id} index={index} sharedProps={props.sharedProps} channelData={channel} isSelected={isSelected} isGroup={channel.isGroup} onChannelClearCache={props.onChannelClearCache} onChannelClick={props.onChannelClick} onChannelDelete={props.onChannelDelete} onChannelEdit={props.onChannelEdit} onChannelMove={props.onChannelMove} />);
       });
     }
 
