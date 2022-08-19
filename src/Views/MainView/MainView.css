@@ -15,8 +15,10 @@
 
   box-sizing: border-box;
 
-  width: 18rem;
+  width: 0;
   height: 100%;
+
+  transition: width 200ms ease-in-out;
 }
 
 .MainViewContainerRight {
@@ -95,7 +97,6 @@
 
 .MainViewContainerLeft-enter-done {
   width: 18rem;
-  transition: width 200ms ease-in-out;
 }
 
 .MainViewContainerLeft-exit {
@@ -105,5 +106,4 @@
 .MainViewContainerLeft-exit-done {
   width: 0;
   padding: 0;
-  transition: width 200ms ease-in-out;
 }

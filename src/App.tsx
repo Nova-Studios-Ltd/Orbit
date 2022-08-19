@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Menu, Popover, ThemeProvider } from "@mui/material";
+import { Popover, ThemeProvider } from "@mui/material";
 import { Route, Routes } from "react-router-dom";
 import i18n from "i18next";
 import { initReactI18next, useTranslation } from "react-i18next";
@@ -13,16 +13,11 @@ import AuthView from "Views/AuthView/AuthView";
 import ErrorView from "Views/ErrorView/ErrorView";
 import MainView from "Views/MainView/MainView";
 
-import ContextMenuItem from "Components/Menus/ContextMenuItem/ContextMenuItem";
-
 import { AuthViewRoutes, FriendViewRoutes, MainViewRoutes } from "DataTypes/Routes";
 import type { ReactNode } from "react";
-import type { ContextMenuProps, HelpPopupProps, SharedProps } from "DataTypes/Components";
-import type { ContextMenuItemProps } from "Components/Menus/ContextMenuItem/ContextMenuItem";
-import type { Coordinates } from "DataTypes/Types";
+import type { HelpPopupProps, SharedProps } from "DataTypes/Components";
 
 import "./App.css";
-import ContextMenu from "Components/Menus/ContextMenu/ContextMenu";
 
 i18n.use(initReactI18next)
 .init({
@@ -41,18 +36,10 @@ function App() {
   const [helpVisible, setHelpVisibility] = useState(false);
   const [helpAnchorEl, setHelpAnchor] = useState(null as unknown as Element);
   const [helpContent, setHelpContent] = useState(null as unknown as ReactNode);
-  const [contextMenuVisible, setContextMenuVisibility] = useState(false);
-  const [contextMenuAnchorPos, setContextMenuAnchor] = useState(null as unknown as Coordinates);
-  const [contextMenuItems, setContextMenuItems] = useState(null as unknown as ContextMenuItemProps[]);
 
   const closeHelpPopup = () => {
     setHelpVisibility(false);
     setHelpAnchor(null as unknown as Element);
-  }
-
-  const closeContextMenu = () => {
-    setContextMenuVisibility(false);
-    setContextMenuAnchor(null as unknown as Coordinates);
   }
 
   const HelpPopup: HelpPopupProps = {
@@ -65,19 +52,8 @@ function App() {
     closePopup: closeHelpPopup
   };
 
-  const ContextMenuStruct: ContextMenuProps = {
-    visible: contextMenuVisible,
-    anchorPos: contextMenuAnchorPos,
-    items: contextMenuItems,
-    setVisibility: setContextMenuVisibility,
-    setAnchor: setContextMenuAnchor,
-    setItems: setContextMenuItems,
-    closeMenu: closeContextMenu
-  };
-
   const SharedProps: SharedProps = {
     HelpPopup: HelpPopup,
-    ContextMenu: ContextMenuStruct,
     widthConstrained: widthConstrained,
     isTouchCapable: isTouchCapable,
     changeTitleCallback: setTitle
@@ -110,9 +86,6 @@ function App() {
         }}>
           {helpContent}
         </Popover>
-        <ContextMenu className="GenericContextMenu" open={contextMenuVisible} anchorPos={contextMenuAnchorPos} onDismiss={closeContextMenu}>
-          {contextMenuItems}
-        </ContextMenu>
         <div className="ToastHolder">
 
         </div>

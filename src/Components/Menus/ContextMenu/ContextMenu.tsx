@@ -1,13 +1,14 @@
 import { Menu, useTheme } from "@mui/material";
 import useClassNames from "Hooks/useClassNames";
+import { CSSTransition } from "react-transition-group";
 
 import type { NCComponent } from "DataTypes/Components";
 import ContextMenuItem, { ContextMenuItemProps } from "../ContextMenuItem/ContextMenuItem";
 import { Coordinates } from "DataTypes/Types";
-import React, { createRef, useEffect, useRef, useState } from "react";
+import React, { createRef, ReactNode, useEffect, useRef, useState } from "react";
 
 export interface ContextMenuProps extends NCComponent {
-  children?: ContextMenuItemProps[],
+  children?: ReactNode,
   open: boolean,
   anchorPos?: Coordinates,
   dim?: boolean,
@@ -23,15 +24,6 @@ function ContextMenu(props: ContextMenuProps) {
   useEffect(() => {
     setAnchorPos(props.anchorPos);
   }, [props, props.anchorPos]);
-
-  const contextMenuItemsList = () => {
-    if (!props.children || props.children.length < 1) return null;
-
-    return props.children.map((item, index) => {
-      if (item.hide) return null;
-      return (<ContextMenuItem key={index} sharedProps={props.sharedProps} className={item.className} disabled={item.disabled} persistOnClick={item.persistOnClick} icon={item.icon} onLeftClick={item.onLeftClick} onRightClick={item.onRightClick}>{item.children}</ContextMenuItem>)
-    });
-  };
 
   const calculatePosition = (menuRef: HTMLDivElement | null) => {
     if (menuRef && anchorPos) {
@@ -57,15 +49,16 @@ function ContextMenu(props: ContextMenuProps) {
     }
   }
 
-  if (!anchorPos || !props.open) return null;
-
   return (
-    <div className={classNames} onClick={props.onDismiss} onContextMenu={props.onDismiss}>
-      <div ref={(el) => calculatePosition(el)} className="ContextMenuItemParentContainer" style={{ backgroundColor: theme.customPalette.contextMenuBackground, position: "absolute", left: anchorPos.x, top: anchorPos.y }}>
-        {contextMenuItemsList()}
+    <CSSTransition classNames={classNames} in={(props.open && anchorPos !== undefined)} timeout={10}>
+      <div className={classNames} onClick={props.onDismiss} onContextMenu={props.onDismiss} style={{ left: anchorPos?.x, top: anchorPos?.y }}>
+        <div className="ContextMenuBackdrop" style={{ background: props.dim ? theme.palette.background.paper : "none" }}/>
+        <div ref={(el) => calculatePosition(el)} className="ContextMenuItemParentContainer" style={{ backgroundColor: theme.customPalette.contextMenuBackground }}>
+          {props.children}
+        </div>
       </div>
-      <div className="ContextMenuBackdrop" style={{ backgroundColor: props.dim ? theme.palette.background.paper : "none" }}/>
-    </div>
+    </CSSTransition>
+
   )
 }
 

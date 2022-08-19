@@ -1,5 +1,11 @@
 .ContextMenuContainer {
+  position: absolute;
 
+  opacity: 0;
+  display: none;
+  transition: opacity 200ms ease-in-out;
+
+  z-index: 1;
 }
 
 .ContextMenuItemParentContainer {
@@ -9,8 +15,6 @@
   border-radius: var(--global-border-radius);
   padding: var(--global-padding);
   box-shadow: var(--generic-box-shadow);
-
-  z-index: 1;
 }
 
 .ContextMenuBackdrop {
@@ -28,4 +32,22 @@
   .ContextMenuContainer {
 
   }
+}
+
+.ContextMenuContainer-enter {
+  opacity: 0;
+  display: block;
+}
+
+.ContextMenuContainer-enter-done {
+  opacity: 1;
+  display: block;
+}
+
+.ContextMenuContainer-exit {
+  opacity: 1;
+}
+
+.ContextMenuContainer-exit-done {
+  opacity: 0;
 }

@@ -6,11 +6,13 @@ import useClassNames from "Hooks/useClassNames";
 
 import PageContainer from "Components/Containers/PageContainer/PageContainer";
 import AvatarTextButton from "Components/Buttons/AvatarTextButton/AvatarTextButton";
+import GenericDialog from "Components/Dialogs/GenericDialog/GenericDialog";
+import ContextMenu from "Components/Menus/ContextMenu/ContextMenu";
+import ContextMenuItem from "Components/Menus/ContextMenuItem/ContextMenuItem";
 
 import type { Page } from "DataTypes/Components";
 import type Friend from "DataTypes/Friend";
-import type { ContextMenuItemProps } from "Components/Menus/ContextMenuItem/ContextMenuItem";
-import GenericDialog from "Components/Dialogs/GenericDialog/GenericDialog";
+import type { Coordinates } from "DataTypes/Types";
 
 interface FriendPageProps extends Page {
   friends?: Friend[],
@@ -28,6 +30,9 @@ function FriendPage(props: FriendPageProps) {
   const Localizations_GenericDialog = useTranslation("GenericDialog").t;
   const classNames = useClassNames("FriendPageContainer", props.className);
 
+  const [FriendContextMenuVisible, setFriendContextMenuVisibility] = useState(false);
+  const [FriendContextMenuAnchorPos, setFriendContextMenuAnchorPos] = useState({} as unknown as Coordinates);
+  const [FriendContextMenuSelectedFriend, setFriendContextMenuSelectedFriend] = useState(null as unknown as Friend);
   const [RemoveFriendDialogSelector, setRemoveFriendDialogSelector] = useState("");
   const [BlockUnblockFriendDialogSelector, setBlockFriendDialogSelector] = useState("");
 
@@ -52,18 +57,10 @@ function FriendPage(props: FriendPageProps) {
 
         if (isBlocked) return null;
 
-        const friendContextMenuItems: ContextMenuItemProps[] = [
-          { children: Localizations_FriendPage("ContextMenuItem-RemoveFriend"), onLeftClick: () => friend.friendData && friend.friendData.uuid ? setRemoveFriendDialogSelector(friend.friendData.uuid) : null},
-          { children: isBlocked ? Localizations_FriendPage("ContextMenuItem-UnblockFriend") : Localizations_FriendPage("ContextMenuItem-BlockFriend"), onLeftClick: () => friend.friendData && friend.friendData.uuid ? setBlockFriendDialogSelector(friend.friendData.uuid) : null },
-        ];
-
         const friendRightClickHandler = (event: React.MouseEvent<HTMLButtonElement>) => {
-          if (props.sharedProps && props.sharedProps.ContextMenu && event.currentTarget) {
-            props.sharedProps.ContextMenu.setAnchor({ x: event.clientX, y: event.clientY });
-            props.sharedProps.ContextMenu.setItems(friendContextMenuItems);
-            props.sharedProps.ContextMenu.setVisibility(true);
-          }
-          event.preventDefault();
+          setFriendContextMenuAnchorPos({ x: event.clientX, y: event.clientY });
+          setFriendContextMenuSelectedFriend(friend);
+          setFriendContextMenuVisibility(true);
         }
 
         // TODO: Localize friend.status
@@ -75,7 +72,7 @@ function FriendPage(props: FriendPageProps) {
                 <Typography variant="caption">{friend.status}</Typography>
               </div>
             </AvatarTextButton>
-            <GenericDialog onClose={() => setRemoveFriendDialogSelector("")} open={RemoveFriendDialogVisible} title={Localizations_FriendPage("Typography-RemoveFriendDialogTitle", { user: friend.friendData.username })} buttons={
+            <GenericDialog sharedProps={props.sharedProps} onClose={() => setRemoveFriendDialogSelector("")} open={RemoveFriendDialogVisible} title={Localizations_FriendPage("Typography-RemoveFriendDialogTitle", { user: friend.friendData.username })} buttons={
               <>
                 <Button onClick={(event) => { setRemoveFriendDialogSelector(""); event.stopPropagation(); }}>{Localizations_GenericDialog("Button_Label-DialogCancel")}</Button>
                 <Button color="error" onClick={(event) => { removeFriend(friend.friendData?.uuid); event.stopPropagation() }}>{Localizations_GenericDialog("Button_Label-DialogRemove")}</Button>
@@ -85,7 +82,7 @@ function FriendPage(props: FriendPageProps) {
                 <Typography variant="body1">{Localizations_FriendPage("Typography-RemoveFriendDialogBlurb", { user: friend.friendData.username })}</Typography>
               </div>
             </GenericDialog>
-            <GenericDialog onClose={() => setBlockFriendDialogSelector("")} open={BlockUnblockFriendDialogVisible} title={Localizations_FriendPage("Typography-BlockFriendDialogTitle", { user: friend.friendData.username })} buttons={
+            <GenericDialog sharedProps={props.sharedProps} onClose={() => setBlockFriendDialogSelector("")} open={BlockUnblockFriendDialogVisible} title={Localizations_FriendPage("Typography-BlockFriendDialogTitle", { user: friend.friendData.username })} buttons={
               <>
                 <Button onClick={(event) => { setBlockFriendDialogSelector(""); event.stopPropagation() }}>{Localizations_GenericDialog("Button_Label-DialogCancel")}</Button>
                 <Button color="error" onClick={(event) => { blockFriend(friend.friendData?.uuid); event.stopPropagation() }}>{Localizations_GenericDialog("Button_Label-DialogBlock")}</Button>
@@ -120,6 +117,10 @@ function FriendPage(props: FriendPageProps) {
       <div className="FriendsContainer">
         {friendElements && friendElements.length > 0 ? friendElements : NoFriendsHint}
       </div>
+      <ContextMenu open={FriendContextMenuVisible} anchorPos={FriendContextMenuAnchorPos} onDismiss={() => setFriendContextMenuVisibility(false)}>
+        <ContextMenuItem onLeftClick={() => FriendContextMenuSelectedFriend && FriendContextMenuSelectedFriend.friendData && FriendContextMenuSelectedFriend.friendData.uuid ? setRemoveFriendDialogSelector(FriendContextMenuSelectedFriend.friendData.uuid) : null}>{Localizations_FriendPage("ContextMenuItem-RemoveFriend")}</ContextMenuItem>
+        <ContextMenuItem onLeftClick={() => FriendContextMenuSelectedFriend && FriendContextMenuSelectedFriend.friendData && FriendContextMenuSelectedFriend.friendData.uuid ? setBlockFriendDialogSelector(FriendContextMenuSelectedFriend.friendData.uuid) : null}>{FriendContextMenuSelectedFriend && FriendContextMenuSelectedFriend.status && FriendContextMenuSelectedFriend.status?.toLowerCase() === "blocked" ? Localizations_FriendPage("ContextMenuItem-UnblockFriend") : Localizations_FriendPage("ContextMenuItem-BlockFriend")}</ContextMenuItem>
+      </ContextMenu>
     </PageContainer>
   );
 }
