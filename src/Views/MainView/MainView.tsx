@@ -324,6 +324,16 @@ function MainView(props: MainViewProps) {
     REMOVEFriend(uuid);
   }
 
+  const onChannelClearCache = (channel: IRawChannelProps) => {
+    console.log(`Request to clear channel ${channel.channelName}'s cache`);
+    if (channel.table_Id === undefined) return;
+    NCChannelCache.DeleteSpecificCache(channel.table_Id).then((success: boolean) => {
+      if (!success) console.log(`Failed to clear channel ${channel.table_Id}'s cache`)
+      console.log(`Cleared channel ${channel.table_Id}'s cache successfully`);
+      onChannelClick(channel);
+    });
+  };
+
   const onChannelEdit = (channel: IRawChannelProps) => {
     console.log(`Request to edit channel ${channel.channelName}`);
     // TODO: Add Channel edit logic here
@@ -337,14 +347,9 @@ function MainView(props: MainViewProps) {
     });
   };
 
-  const onChannelClearCache = (channel: IRawChannelProps) => {
-    console.log(`Request to clear channel ${channel.channelName}'s cache`);
-    if (channel.table_Id === undefined) return;
-    NCChannelCache.DeleteSpecificCache(channel.table_Id).then((success: boolean) => {
-      if (!success) console.log(`Failed to clear channel ${channel.table_Id}'s cache`)
-      console.log(`Cleared channel ${channel.table_Id}'s cache successfully`);
-      onChannelClick(channel);
-    });
+  const onChannelMove = (channel: IRawChannelProps, index: number) => {
+    console.log(`Request to move channel ${channel.channelName} to new index of ${index}`);
+    // TODO: Add Channel move logic here
   };
 
   const onMessageEdit = async (message: MessageProps) => {

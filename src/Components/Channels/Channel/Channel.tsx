@@ -16,10 +16,11 @@ export interface ChannelProps extends NCComponent {
   channelData: IRawChannelProps,
   isSelected?: boolean,
   isGroup?: boolean,
-  onChannelEdit?: (channel: IRawChannelProps) => void,
-  onChannelDelete?: (channel: IRawChannelProps) => void,
+  onChannelClick?: (channel: IRawChannelProps) => void,
   onChannelClearCache?: (channel: IRawChannelProps) => void,
-  onClick?: (channel: IRawChannelProps) => void
+  onChannelDelete?: (channel: IRawChannelProps) => void,
+  onChannelEdit?: (channel: IRawChannelProps) => void,
+  onChannelMove?: (channel: IRawChannelProps, index: number) => void,
 }
 
 function Channel(props: ChannelProps) {
@@ -47,7 +48,7 @@ function Channel(props: ChannelProps) {
   const [DeleteChannelDialogVisible, setDeleteChannelDialogVisibility] = useState(false);
 
   const onChannelLeftClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    if (props.onClick) props.onClick(props.channelData);
+    if (props.onChannelClick) props.onChannelClick(props.channelData);
   }
 
   const onChannelRightClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -73,7 +74,7 @@ function Channel(props: ChannelProps) {
 
   return (
     <>
-      <AvatarTextButton sharedProps={props.sharedProps} showEllipsisConditional iconSrc={props.channelData.channelIcon} selected={props.isSelected} onLeftClick={onChannelLeftClick} onRightClick={onChannelRightClick}>
+      <AvatarTextButton sharedProps={props.sharedProps} showEllipsisConditional draggable iconSrc={props.channelData.channelIcon} selected={props.isSelected} onLeftClick={onChannelLeftClick} onRightClick={onChannelRightClick}>
         {props.channelData.channelName}
       </AvatarTextButton>
       <GenericDialog sharedProps={props.sharedProps} onClose={() => setDeleteChannelDialogVisibility(false)} open={DeleteChannelDialogVisible} title={Localizations_Channel("Typography-DeleteChannelDialogTitle", { channelName: props.channelData.channelName })} buttons={

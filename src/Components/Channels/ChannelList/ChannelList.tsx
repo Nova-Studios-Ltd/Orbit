@@ -9,10 +9,11 @@ import type { IRawChannelProps } from "Interfaces/IRawChannelProps";
 
 export interface ChannelListProps extends NCAPIComponent {
   channels?: IRawChannelProps[],
-  onChannelEdit?: (channel: IRawChannelProps) => void,
-  onChannelDelete?: (channel: IRawChannelProps) => void,
   onChannelClearCache?: (channel: IRawChannelProps) => void,
-  onChannelClick?: (channel: IRawChannelProps) => void
+  onChannelClick?: (channel: IRawChannelProps) => void,
+  onChannelDelete?: (channel: IRawChannelProps) => void,
+  onChannelEdit?: (channel: IRawChannelProps) => void,
+  onChannelMove?: (channel: IRawChannelProps, index: number) => void,
 }
 
 function ChannelList(props: ChannelListProps) {
@@ -29,9 +30,14 @@ function ChannelList(props: ChannelListProps) {
 
   const channelArray = () => {
     if (props.channels && props.channels.length > 0) {
-      return props.channels.map((channel) => {
+      return props.channels.map((channel, index) => {
         const isSelected = channel.table_Id === props.selectedChannel?.table_Id;
-        return (<Channel key={channel.table_Id} sharedProps={props.sharedProps} channelData={channel} isSelected={isSelected} isGroup={channel.isGroup} onChannelEdit={props.onChannelEdit} onChannelDelete={props.onChannelDelete} onChannelClearCache={props.onChannelClearCache} onClick={props.onChannelClick} />);
+
+        /* TODO: Check if channel uuid already has an index stored in localstorage, and use it
+          to index the channels in user-specified order (otherwise default to order as retrieved from server)
+        */
+
+        return (<Channel key={channel.table_Id} sharedProps={props.sharedProps} channelData={channel} isSelected={isSelected} isGroup={channel.isGroup} onChannelClearCache={props.onChannelClearCache} onChannelClick={props.onChannelClick} onChannelDelete={props.onChannelDelete} onChannelEdit={props.onChannelEdit} />);
       });
     }
 
