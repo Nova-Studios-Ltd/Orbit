@@ -11,6 +11,7 @@ export interface ChannelListProps extends NCAPIComponent {
   channels?: IRawChannelProps[],
   onChannelEdit?: (channel: IRawChannelProps) => void,
   onChannelDelete?: (channel: IRawChannelProps) => void,
+  onChannelClearCache?: (channel: IRawChannelProps) => void,
   onChannelClick?: (channel: IRawChannelProps) => void
 }
 
@@ -30,7 +31,7 @@ function ChannelList(props: ChannelListProps) {
     if (props.channels && props.channels.length > 0) {
       return props.channels.map((channel) => {
         const isSelected = channel.table_Id === props.selectedChannel?.table_Id;
-        return (<Channel key={channel.table_Id} sharedProps={props.sharedProps} channelData={channel} isSelected={isSelected} isGroup={channel.isGroup} onChannelEdit={props.onChannelEdit} onChannelDelete={props.onChannelDelete} onClick={props.onChannelClick} />);
+        return (<Channel key={channel.table_Id} sharedProps={props.sharedProps} channelData={channel} isSelected={isSelected} isGroup={channel.isGroup} onChannelEdit={props.onChannelEdit} onChannelDelete={props.onChannelDelete} onChannelClearCache={props.onChannelClearCache} onClick={props.onChannelClick} />);
       });
     }
 

@@ -18,6 +18,7 @@ export interface ChannelProps extends NCComponent {
   isGroup?: boolean,
   onChannelEdit?: (channel: IRawChannelProps) => void,
   onChannelDelete?: (channel: IRawChannelProps) => void,
+  onChannelClearCache?: (channel: IRawChannelProps) => void,
   onClick?: (channel: IRawChannelProps) => void
 }
 
@@ -66,6 +67,10 @@ function Channel(props: ChannelProps) {
     setDeleteChannelDialogVisibility(false);
   }
 
+  const clearChannelCache = () => {
+    if (props.onChannelClearCache) props.onChannelClearCache(props.channelData);
+  }
+
   return (
     <>
       <AvatarTextButton sharedProps={props.sharedProps} showEllipsisConditional iconSrc={props.channelData.channelIcon} selected={props.isSelected} onLeftClick={onChannelLeftClick} onRightClick={onChannelRightClick}>
@@ -96,6 +101,7 @@ function Channel(props: ChannelProps) {
         </>
       }>
         <TextField label={Localizations_Channel("TextField_Label-ChannelInfoDialogMembers")} disabled value={channelMembersThatIsNotYou} />
+        <Button variant="outlined" onClick={clearChannelCache}>{Localizations_Channel("Button_Label-ClearCache")}</Button>
       </GenericDialog>
       <ContextMenu open={ChannelContextMenuVisible} onDismiss={() => setChannelContextMenuVisibility(false)} anchorPos={ChannelContextMenuAnchorPos}>
         <ContextMenuItem onLeftClick={props.channelData.isGroup ? () => { setEditChannelDialogVisibility(true) } : () => { setChannelInfoDialogVisibility(true) }}>{props.channelData.isGroup ? Localizations_Channel("ContextMenuItem-Edit") : Localizations_Channel("ContextMenuItem-Info")}</ContextMenuItem>

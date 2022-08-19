@@ -337,6 +337,14 @@ function MainView(props: MainViewProps) {
     });
   };
 
+  const onChannelClearCache = (channel: IRawChannelProps) => {
+    console.log(`Request to clear channel ${channel.channelName}'s cache`);
+    if (channel.table_Id === undefined) return;
+    NCChannelCache.CleanCache(channel.table_Id).then(() => {
+      console.log(`Cleared channel ${channel.table_Id}'s cache successfully`);
+    });
+  };
+
   const onMessageEdit = async (message: MessageProps) => {
     console.log(`Request to edit message ${message.id}. New Message: ${message.content}`);
     if (message.id === undefined) return;
@@ -526,7 +534,7 @@ function MainView(props: MainViewProps) {
             <AvatarTextButton className="NavigationButtonContainerItem" selected={props.path === MainViewRoutes.Settings} onLeftClick={() => navigateToPage(MainViewRoutes.Settings)} iconSrc={`${settings.User.avatarSrc}&nonce=${avatarNonce}`}>{Localizations_MainView("Typography-SettingsHeader")}</AvatarTextButton>
             <AvatarTextButton className="NavigationButtonContainerItem" selected={props.path === MainViewRoutes.Friends} onLeftClick={() => navigateToPage(MainViewRoutes.Friends)}>{Localizations_MainView("Typography-FriendsHeader")}</AvatarTextButton>
           </div>
-          <ChannelList className="MainViewChannelList" sharedProps={props.sharedProps} channels={userChannels} onChannelEdit={onChannelEdit} onChannelDelete={onChannelDelete} onChannelClick={onChannelClick} selectedChannel={selectedChannel} />
+          <ChannelList className="MainViewChannelList" sharedProps={props.sharedProps} channels={userChannels} onChannelEdit={onChannelEdit} onChannelDelete={onChannelDelete} onChannelClearCache={onChannelClearCache} onChannelClick={onChannelClick} selectedChannel={selectedChannel} />
         </div>
       </CSSTransition>
     );
