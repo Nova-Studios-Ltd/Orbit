@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { Dictionary } from "NSLib/Dictionary";
 import { Button, Typography } from "@mui/material";
 import useClassNames from "Hooks/useClassNames";
+import { WriteToClipboard } from "NSLib/ElectronAPI";
 
 import PageContainer from "Components/Containers/PageContainer/PageContainer";
 import AvatarTextButton from "Components/Buttons/AvatarTextButton/AvatarTextButton";
@@ -27,6 +28,7 @@ interface FriendPageProps extends Page {
 function FriendPage(props: FriendPageProps) {
   const Localizations_FriendView = useTranslation("FriendView").t;
   const Localizations_FriendPage = useTranslation("FriendListPage").t;
+  const Localizations_ContextMenuItem = useTranslation("ContextMenuItem").t;
   const Localizations_GenericDialog = useTranslation("GenericDialog").t;
   const classNames = useClassNames("FriendPageContainer", props.className);
 
@@ -122,9 +124,10 @@ function FriendPage(props: FriendPageProps) {
         {friendElements && friendElements.length > 0 ? friendElements : NoFriendsHint}
       </div>
       <ContextMenu open={FriendContextMenuVisible} anchorPos={FriendContextMenuAnchorPos} onDismiss={() => setFriendContextMenuVisibility(false)}>
-        <ContextMenuItem hide={!(FriendContextMenuSelectedFriend && FriendContextMenuSelectedFriend.status?.toLowerCase() === "pending")} onLeftClick={() => FriendContextMenuSelectedFriend && FriendContextMenuSelectedFriend.friendData && FriendContextMenuSelectedFriend.friendData.uuid ? acceptFriendRequest(FriendContextMenuSelectedFriend) : null}>{Localizations_FriendPage("ContextMenuItem-AcceptFriend")}</ContextMenuItem>
-        <ContextMenuItem onLeftClick={() => FriendContextMenuSelectedFriend && FriendContextMenuSelectedFriend.friendData && FriendContextMenuSelectedFriend.friendData.uuid ? setRemoveFriendDialogSelector(FriendContextMenuSelectedFriend.friendData.uuid) : null}>{Localizations_FriendPage("ContextMenuItem-RemoveFriend")}</ContextMenuItem>
-        <ContextMenuItem onLeftClick={() => FriendContextMenuSelectedFriend && FriendContextMenuSelectedFriend.friendData && FriendContextMenuSelectedFriend.friendData.uuid ? setBlockFriendDialogSelector(FriendContextMenuSelectedFriend.friendData.uuid) : null}>{FriendContextMenuSelectedFriend && FriendContextMenuSelectedFriend.status && FriendContextMenuSelectedFriend.status?.toLowerCase() === "blocked" ? Localizations_FriendPage("ContextMenuItem-UnblockFriend") : Localizations_FriendPage("ContextMenuItem-BlockFriend")}</ContextMenuItem>
+        <ContextMenuItem onLeftClick={() => FriendContextMenuSelectedFriend && FriendContextMenuSelectedFriend.friendData && FriendContextMenuSelectedFriend.friendData.username && FriendContextMenuSelectedFriend.friendData.discriminator ? WriteToClipboard(`${FriendContextMenuSelectedFriend.friendData.username}#${FriendContextMenuSelectedFriend.friendData.discriminator}`) : null}>{Localizations_ContextMenuItem("ContextMenuItem-Copy")}</ContextMenuItem>
+        <ContextMenuItem hide={!(FriendContextMenuSelectedFriend && FriendContextMenuSelectedFriend.status?.toLowerCase() === "pending")} onLeftClick={() => FriendContextMenuSelectedFriend && FriendContextMenuSelectedFriend.friendData && FriendContextMenuSelectedFriend.friendData.uuid ? acceptFriendRequest(FriendContextMenuSelectedFriend) : null}>{Localizations_ContextMenuItem("ContextMenuItem-Accept")}</ContextMenuItem>
+        <ContextMenuItem onLeftClick={() => FriendContextMenuSelectedFriend && FriendContextMenuSelectedFriend.friendData && FriendContextMenuSelectedFriend.friendData.uuid ? setRemoveFriendDialogSelector(FriendContextMenuSelectedFriend.friendData.uuid) : null}>{Localizations_ContextMenuItem("ContextMenuItem-Remove")}</ContextMenuItem>
+        <ContextMenuItem onLeftClick={() => FriendContextMenuSelectedFriend && FriendContextMenuSelectedFriend.friendData && FriendContextMenuSelectedFriend.friendData.uuid ? setBlockFriendDialogSelector(FriendContextMenuSelectedFriend.friendData.uuid) : null}>{FriendContextMenuSelectedFriend && FriendContextMenuSelectedFriend.status && FriendContextMenuSelectedFriend.status?.toLowerCase() === "blocked" ? Localizations_ContextMenuItem("ContextMenuItem-Unblock") : Localizations_ContextMenuItem("ContextMenuItem-Block")}</ContextMenuItem>
       </ContextMenu>
     </PageContainer>
   );

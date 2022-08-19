@@ -23,6 +23,7 @@ interface BlockedUsersPageProps extends Page {
 function BlockedUsersPage(props: BlockedUsersPageProps) {
   const Localizations_BlockedUsersPage = useTranslation("BlockedUsersPage").t;
   const Localizations_GenericDialog = useTranslation("GenericDialog").t;
+  const Localizations_ContextMenuItem = useTranslation("ContextMenuItem").t;
   const classNames = useClassNames("BlockedUsersPageContainer", props.className);
 
   const [FriendContextMenuVisible, setFriendContextMenuVisibility] = useState(false);
@@ -104,7 +105,7 @@ function BlockedUsersPage(props: BlockedUsersPageProps) {
         {blockedUserElements && blockedUserElements.length > 0 ? blockedUserElements : NoBlockedUsersHint}
       </div>
       <ContextMenu open={FriendContextMenuVisible} anchorPos={FriendContextMenuAnchorPos} onDismiss={() => setFriendContextMenuVisibility(false)}>
-        <ContextMenuItem onLeftClick={() => FriendContextMenuSelectedFriend && FriendContextMenuSelectedFriend.friendData && FriendContextMenuSelectedFriend.friendData.uuid ? setUnblockFriendDialogSelector(FriendContextMenuSelectedFriend.friendData.uuid) : null}>{Localizations_BlockedUsersPage("ContextMenuItem-UnblockFriend")}</ContextMenuItem>
+        <ContextMenuItem onLeftClick={() => FriendContextMenuSelectedFriend && FriendContextMenuSelectedFriend.friendData && FriendContextMenuSelectedFriend.friendData.uuid ? setUnblockFriendDialogSelector(FriendContextMenuSelectedFriend.friendData.uuid) : null}>{Localizations_ContextMenuItem("ContextMenuItem-Unblock")}</ContextMenuItem>
       </ContextMenu>
     </PageContainer>
   );

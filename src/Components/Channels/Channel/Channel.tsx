@@ -29,6 +29,7 @@ function Channel(props: ChannelProps) {
   const settings = new SettingsManager();
   const Localizations_GenericDialog = useTranslation("GenericDialog").t;
   const Localizations_Channel = useTranslation("Channel").t;
+  const Localizations_ContextMenuItem = useTranslation("ContextMenuItem").t;
 
   const channelMembersThatIsNotYou: string[] = (() => {
     const membersThatArentYou: string[] = [];
@@ -127,8 +128,8 @@ function Channel(props: ChannelProps) {
         <Button variant="outlined" onClick={clearChannelCache}>{Localizations_Channel("Button_Label-ClearCache")}</Button>
       </GenericDialog>
       <ContextMenu open={ChannelContextMenuVisible} onDismiss={() => setChannelContextMenuVisibility(false)} anchorPos={ChannelContextMenuAnchorPos}>
-        <ContextMenuItem onLeftClick={props.channelData.isGroup ? () => { setEditChannelDialogVisibility(true) } : () => { setChannelInfoDialogVisibility(true) }}>{props.channelData.isGroup ? Localizations_Channel("ContextMenuItem-Edit") : Localizations_Channel("ContextMenuItem-Info")}</ContextMenuItem>
-        <ContextMenuItem onLeftClick={() => { setDeleteChannelDialogVisibility(true) }}>{Localizations_Channel("ContextMenuItem-Delete")}</ContextMenuItem>
+        <ContextMenuItem onLeftClick={props.channelData.isGroup ? () => { setEditChannelDialogVisibility(true) } : () => { setChannelInfoDialogVisibility(true) }}>{props.channelData.isGroup ? Localizations_ContextMenuItem("ContextMenuItem-Edit") : Localizations_ContextMenuItem("ContextMenuItem-Info")}</ContextMenuItem>
+        <ContextMenuItem onLeftClick={() => { setDeleteChannelDialogVisibility(true) }}>{Localizations_ContextMenuItem("ContextMenuItem-Delete")}</ContextMenuItem>
       </ContextMenu>
     </>
   )

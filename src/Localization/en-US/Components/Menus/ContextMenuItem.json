@@ -1,0 +1,11 @@
+{
+  "ContextMenuItem-Accept": "Accept",
+  "ContextMenuItem-Block": "Block",
+  "ContextMenuItem-Copy": "Copy",
+  "ContextMenuItem-Edit": "Edit",
+  "ContextMenuItem-Delete": "Delete",
+  "ContextMenuItem-Download": "Download",
+  "ContextMenuItem-Info": "Details",
+  "ContextMenuItem-Remove": "Remove",
+  "ContextMenuItem-Unblock": "Unblock"
+}

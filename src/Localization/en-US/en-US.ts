@@ -42,6 +42,8 @@ import GenericDialog_EN_US from "./Components/Dialog/GenericDialog.json";
 import MessageInput_EN_US from "./Components/Input/MessageInput.json";
 import TextCombo_EN_US from "./Components/Input/TextCombo.json";
 
+import ContextMenuItem_EN_US from "./Components/Menus/ContextMenuItem.json";
+
 import Message_EN_US from "./Components/Messages/Message.json";
 import MessageCanvas_EN_US from "./Components/Messages/MessageCanvas.json";
 import MessageFile_EN_US from "./Components/Messages/MessageFile.json";
@@ -91,6 +93,8 @@ export const Localizations_EN_US = {
 
   MessageInput: MessageInput_EN_US,
   TextCombo: TextCombo_EN_US,
+
+  ContextMenuItem: ContextMenuItem_EN_US,
 
   Message: Message_EN_US,
   MessageCanvas: MessageCanvas_EN_US,

@@ -38,6 +38,7 @@ function Message(props: MessageProps) {
   const settingsManager = useSettingsManager();
   const filteredMessageProps: MessageProps = { content: props.content, id: props.id, avatarURL: props.avatarURL, timestamp: props.timestamp };
   const Localizations_Message = useTranslation("Message").t;
+  const Localizations_ContextMenuItem = useTranslation("ContextMenuItem").t;
 
   const isTouchCapable = props.sharedProps && props.sharedProps.isTouchCapable;
   const isOwnMessage = props.authorID === settingsManager.User.uuid;
@@ -208,10 +209,10 @@ function Message(props: MessageProps) {
       </div>
       <ContextMenu open={ContextMenuVisible} anchorPos={ContextMenuAnchorPos} onDismiss={closeContextMenu}>
         <ContextMenuItem hide={!selectedAttachment} disabled>{selectedAttachment?.filename}</ContextMenuItem>
-        <ContextMenuItem hide={!selectedAttachment} onLeftClick={() => downloadSelectedAttachment()}>{Localizations_Message("ContextMenuItem-Download")}</ContextMenuItem>
-        <ContextMenuItem disabled={(props.content !== undefined && props.content.length < 1)} onLeftClick={() => copyMessage()}>{Localizations_Message("ContextMenuItem-Copy")}</ContextMenuItem>
-        <ContextMenuItem hide={!isOwnMessage} onLeftClick={() => startEditMessage()}>{Localizations_Message("ContextMenuItem-Edit")}</ContextMenuItem>
-        <ContextMenuItem hide={!isOwnMessage} onLeftClick={() => { if (props.onMessageDelete) props.onMessageDelete(filteredMessageProps) }}>{Localizations_Message("ContextMenuItem-Delete")}</ContextMenuItem>
+        <ContextMenuItem hide={!selectedAttachment} onLeftClick={() => downloadSelectedAttachment()}>{Localizations_ContextMenuItem("ContextMenuItem-Download")}</ContextMenuItem>
+        <ContextMenuItem disabled={(props.content !== undefined && props.content.length < 1)} onLeftClick={() => copyMessage()}>{Localizations_ContextMenuItem("ContextMenuItem-Copy")}</ContextMenuItem>
+        <ContextMenuItem hide={!isOwnMessage} onLeftClick={() => startEditMessage()}>{Localizations_ContextMenuItem("ContextMenuItem-Edit")}</ContextMenuItem>
+        <ContextMenuItem hide={!isOwnMessage} onLeftClick={() => { if (props.onMessageDelete) props.onMessageDelete(filteredMessageProps) }}>{Localizations_ContextMenuItem("ContextMenuItem-Delete")}</ContextMenuItem>
       </ContextMenu>
     </div>
   )

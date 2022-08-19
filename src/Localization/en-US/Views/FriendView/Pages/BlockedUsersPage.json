@@ -1,7 +1,6 @@
 {
   "PageTitle": "Blocked Users",
   "Button_Label-ReloadBlockedUsersList": "Reload",
-  "ContextMenuItem-UnblockFriend": "Unblock",
   "Typography-UserBlocked": "Blocked",
   "Typography_Heading-NoBlockedUsersHint": "No Blocked Users",
   "Typography_Body-NoBlockedUsersHint": "If you must, then do.",
