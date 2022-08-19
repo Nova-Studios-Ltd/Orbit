@@ -55,6 +55,10 @@ export class NCChannelCache {
     return (await this.CurrentCache.get(id))[id] !== undefined;
   }
 
+  async IsEmpty() : Promise<boolean> {
+    return (await this.CurrentCache.keys() as string[]).length === 0;
+  }
+
   async GetMessage(id: string) : Promise<NCChannelCacheResult> {
     if (!await this.ContainsMessage(id)) return new NCChannelCacheResult([], 0, 0, false);
     const message = (await this.CurrentCache.get(id))[id] as IMessageProps
@@ -199,7 +203,7 @@ export class NCChannelCache {
   }
 
   /**
-   * Cleans cache of deleted message
+   * Cleans cache of deleted messages
    * @param channel_uuid Channel to clean deleted messages from
    * @returns A array of string of message ids that have been removed
    */
@@ -223,16 +227,16 @@ export class NCChannelCache {
     return keys;
   }
 
-    /**
+  /**
    * Outright deletes a channel's cache from IndexedDB
    * @param channel_uuid Channel to clear the cache from
    * @returns Boolean indicating whether the cache was cleared or not
    */
-     static async DeleteSpecificCache(channel_uuid: string) : Promise<boolean> {
-      const ce = await this.ContainsCache(channel_uuid);
-      if (ce === undefined) return false;
-      const cache = ce as NCChannelCache;
-      cache.ClearCache();
-      return true;
-    }
+  static async DeleteSpecificCache(channel_uuid: string) : Promise<boolean> {
+    const ce = await this.ContainsCache(channel_uuid);
+    if (ce === undefined) return false;
+    const cache = ce as NCChannelCache;
+    cache.ClearCache();
+    return true;
+  }
 }

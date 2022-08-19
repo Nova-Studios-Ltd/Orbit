@@ -214,7 +214,7 @@ function MainView(props: MainViewProps) {
       setMessages([]);
       // Check if channel has cache
       const isCache = await NCChannelCache.ContainsCache(channel.table_Id);
-      if (isCache !== undefined) {
+      if (isCache !== undefined && !await (isCache as NCChannelCache).IsEmpty()) {
         const cache = isCache as NCChannelCache;
         // Fully refresh cache, ignoring anything, pulling the newest messages
         if (await cache.RequiresRefresh()) {
@@ -267,17 +267,13 @@ function MainView(props: MainViewProps) {
         }, () => {autoScroll.current = true;});*/
       }
       else {
-        GETMessagesSingle(channel.table_Id, async (message: IMessageProps) => {
+        GETMessages(channel.table_Id, async (messages: IMessageProps[]) => {
           autoScroll.current = false;
-          setMessages(prevState => {
-            return [...prevState, message];
-          });
-          return true;
-        }, async () => {
+          setMessages([...messages]);
           autoScroll.current = true;
           const cc = await NCChannelCache.ContainsCache(channel.table_Id);
           if (cc) (cc as NCChannelCache).WriteSession(session.current);
-        });
+        }, true);
       }
     }
   }
