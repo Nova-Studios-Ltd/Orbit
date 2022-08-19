@@ -325,7 +325,7 @@ function MainView(props: MainViewProps) {
     if (channel.table_Id === undefined) return;
     NCChannelCache.DeleteSpecificCache(channel.table_Id).then((success: boolean) => {
       if (!success) console.log(`Failed to clear channel ${channel.table_Id}'s cache`)
-      console.log(`Cleared channel ${channel.table_Id}'s cache successfully`);
+      console.log(`Cleared channel ${channel.channelName}'s cache successfully`);
       onChannelClick(channel);
     });
   };
@@ -339,7 +339,7 @@ function MainView(props: MainViewProps) {
     console.log(`Request to delete channel ${channel.channelName}`);
     if (channel.table_Id === undefined) return;
     DELETEChannel(channel.table_Id, (deleted: boolean) => {
-      console.log(`Request to delete channel ${channel.table_Id} successful`);
+      console.log(`Request to delete channel ${channel.channelName} successful`);
     });
   };
 
