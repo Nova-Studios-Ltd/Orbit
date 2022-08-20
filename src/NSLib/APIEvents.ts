@@ -329,6 +329,12 @@ export async function DELETEMessage(channel_uuid: string, message_id: string) : 
   return false;
 }
 
+export async function DELETEAttachment(channel_uuid: string, message_id: string, attachment_uuid: string) : Promise<boolean> {
+  const resp = await DELETE(`Channel/${channel_uuid}/Messages/${message_id}/Attachments/${attachment_uuid}`, new SettingsManager().User.token);
+  if (resp.status === 200) return true;
+  return false;
+}
+
 // Channels
 export async function GETChannel(channel_uuid: string) : Promise<IRawChannelProps | undefined> {
   const resp = await GET(`/Channel/${channel_uuid}`, new SettingsManager().User.token);
