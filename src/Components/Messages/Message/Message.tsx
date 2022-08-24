@@ -106,7 +106,6 @@ function Message(props: MessageProps) {
   }
 
   const closeContextMenu = (event: React.FocusEvent<HTMLDivElement> | React.MouseEvent<HTMLDivElement>) => {
-    setContextMenuAnchorPos(null as unknown as Coordinates);
     setContextMenuVisibility(false);
   }
 

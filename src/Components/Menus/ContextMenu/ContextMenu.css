@@ -2,8 +2,8 @@
   position: absolute;
 
   opacity: 0;
-  display: none;
-  transition: opacity 200ms ease-in-out;
+  visibility: hidden;
+  transition: visibility 200ms linear, opacity 200ms ease-in-out;
 
   z-index: 1;
 }
@@ -36,12 +36,12 @@
 
 .ContextMenuContainer-enter {
   opacity: 0;
-  display: block;
+  visibility: hidden;
 }
 
 .ContextMenuContainer-enter-done {
   opacity: 1;
-  display: block;
+  visibility: visible;
 }
 
 .ContextMenuContainer-exit {
