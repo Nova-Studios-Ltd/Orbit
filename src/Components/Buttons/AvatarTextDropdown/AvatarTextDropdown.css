@@ -1,11 +1,11 @@
-.AvatarTextButtonContainer {
+.AvatarDropdownButtonContainer {
   display: flex;
   flex-direction: row;
 
   border-radius: var(--global-border-radius);
 }
 
-.AvatarTextButtonBase {
+.AvatarDropdownButtonBase {
   display: flex !important;
   flex-direction: row;
   justify-content: flex-start !important;
@@ -18,11 +18,11 @@
   transition: background-color 100ms linear;
 }
 
-.AvatarTextButtonLeft {
+.AvatarDropdownButtonLeft {
 
 }
 
-.AvatarTextButtonRight {
+.AvatarDropdownButtonRight {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -30,16 +30,16 @@
   margin-left: var(--global-margin);
 }
 
-.AvatarTextButtonIcon {
+.AvatarDropdownButtonIcon {
 
 }
 
-.AvatarTextButtonEllipsis {
+.AvatarDropdownButtonEllipsis {
   margin-left: auto !important;
 }
 
 @media only screen and (max-width: 600px) {
-  .AvatarTextButtonContainer {
+  .AvatarDropdownButtonContainer {
 
   }
 }

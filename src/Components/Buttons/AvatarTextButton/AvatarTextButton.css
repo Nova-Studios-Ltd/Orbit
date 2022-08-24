@@ -34,22 +34,19 @@
 
 .AvatarTextButtonVeryRight {
   display: flex;
-  flex-direction: column;
-  justify-content: center;
+  flex-direction: row;
+  align-items: center;
 
-  margin-left: auto;
+  position: absolute !important;
+
+  height: 100%;
+
+  top: 0;
+  right: var(--global-margin);
 }
 
 .AvatarTextButtonIcon {
 
-}
-
-.AvatarTextButtonEllipsisContainer {
-  display: block !important;
-  position: absolute !important;
-
-  top: var(--global-margin);
-  right: var(--global-margin);
 }
 
 .AvatarTextButtonEllipsis {

@@ -54,18 +54,15 @@ function AvatarTextButton(props: AvatarTextButtonProps) {
         <div className="AvatarTextButtonRight">
           <Typography variant="h6">{props.children}</Typography>
         </div>
+      </ButtonBase>
         <div className="AvatarTextButtonVeryRight">
           {props.childrenAfter}
+          {props.showEllipsis || (isTouchCapable && props.showEllipsisConditional) ? (
+            <IconButton className="AvatarTextButtonEllipsis" onClick={onEllipsisClick} onMouseEnter={() => onMouseHover(true)} onMouseLeave={() => onMouseHover(false)}>
+              <EllipsisIcon />
+            </IconButton>
+          ) : null}
         </div>
-      </ButtonBase>
-      {props.showEllipsis || (isTouchCapable && props.showEllipsisConditional) ? (
-        <div className="AvatarTextButtonEllipsisContainer">
-          <IconButton className="AvatarTextButtonEllipsis" onClick={onEllipsisClick} onMouseEnter={() => onMouseHover(true)} onMouseLeave={() => onMouseHover(false)}>
-            <EllipsisIcon />
-          </IconButton>
-        </div>
-        ) : null
-      }
       {props.draggable ? <span className="AvatarTextButtonDragZone AvatarTextButtonDragZoneBottom" style={{ background: isDragZoneBottomHovering ? theme.palette.primary.main : "none" }} onDrop={(event) => { onDrop(event); setDragZoneBottomHoveringState(false); }} onDragOver={(event) => { setDragZoneBottomHoveringState(true); event.preventDefault(); }} onDragLeave={() => setDragZoneBottomHoveringState(false)}/> : null}
     </div>
   )
