@@ -4,6 +4,7 @@ import useClassNames from "Hooks/useClassNames";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { SettingsManager } from "NSLib/SettingsManager";
+import { APP_VERSION } from "vars";
 
 import PageContainer from "Components/Containers/PageContainer/PageContainer";
 import Section from "Components/Containers/Section/Section";
@@ -153,6 +154,9 @@ function DashboardPage(props: DashboardPageProps) {
           <Button className="SectionButton" id="DeleteAccountButton" variant="outlined" color="error" onClick={() => setDeleteAccountDialogVisibility(true)}>{Localizations_DashboardPage("Button_Label-DeleteAccount")}</Button>
         </div>
         <Typography variant="caption" color="error" textTransform="uppercase">{Localizations_DashboardPage("Typography-TokenWarning")}</Typography>
+        <span>
+          <Typography variant="caption" fontWeight="bold">{Localizations_Common("AppTitle")}</Typography> <Typography variant="caption">{Localizations_DashboardPage("Typography-AppVersion", { version: APP_VERSION })}</Typography>
+        </span>
       </Section>
       <GenericDialog sharedProps={props.sharedProps} onClose={() => setChangeUsernameDialogVisibility(false)} open={ChangeUsernameDialogVisible} title={Localizations_DashboardPage("Typography-ChangeUsernameDialogTitle")} buttons={
         <>

@@ -1,4 +1,6 @@
-export const APPVERSION = "1.0.0";
+import manifest from "../package.json";
+
+export const APP_VERSION = manifest.version;
 
 // Control values for API
 export const API_DOMAIN = "https://api.novastudios.tk"; /* http://, https:// */

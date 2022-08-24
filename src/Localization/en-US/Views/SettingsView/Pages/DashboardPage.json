@@ -10,6 +10,7 @@
   "TextField_Placeholder-ChangeEmailPrompt": "New Email",
   "TextField_Placeholder-ChangePasswordPrompt": "New Password",
   "TextField_Placeholder-ConfirmPasswordPrompt": "Confirm New Password",
+  "Typography-AppVersion": "Version {{version}}",
   "Typography-ChangeUsernameDialogTitle": "Change Username",
   "Typography-ChangeEmailDialogTitle": "Change Email",
   "Typography-ChangePasswordDialogTitle": "Change Password",
