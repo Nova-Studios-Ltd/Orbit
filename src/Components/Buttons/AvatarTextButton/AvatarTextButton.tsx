@@ -7,6 +7,7 @@ import useClassNames from "Hooks/useClassNames";
 
 export interface AvatarTextButtonProps extends NCComponent {
   children?: ReactNode,
+  childrenAfter?: ReactNode,
   draggable?: boolean,
   iconSrc?: string,
   selected?: boolean,
@@ -52,6 +53,9 @@ function AvatarTextButton(props: AvatarTextButtonProps) {
         </div>
         <div className="AvatarTextButtonRight">
           <Typography variant="h6">{props.children}</Typography>
+        </div>
+        <div className="AvatarTextButtonVeryRight">
+          {props.childrenAfter}
         </div>
       </ButtonBase>
       {props.showEllipsis || (isTouchCapable && props.showEllipsisConditional) ? (

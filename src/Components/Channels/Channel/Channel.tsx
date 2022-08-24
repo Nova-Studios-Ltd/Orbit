@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { Button, useTheme, Typography, TextField } from "@mui/material";
+import { Button, Icon, useTheme, Typography, TextField } from "@mui/material";
+import { Group as GroupIcon } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
 import { SettingsManager } from "NSLib/SettingsManager";
 
@@ -97,7 +98,9 @@ function Channel(props: ChannelProps) {
 
   return (
     <>
-      <AvatarTextButton sharedProps={props.sharedProps} showEllipsisConditional draggable onDrag={onChannelDrag} onDrop={onOtherChannelDropped} iconSrc={props.channelData.channelIcon} selected={props.isSelected} onLeftClick={onChannelLeftClick} onRightClick={onChannelRightClick}>
+      <AvatarTextButton sharedProps={props.sharedProps} showEllipsisConditional draggable onDrag={onChannelDrag} onDrop={onOtherChannelDropped} iconSrc={props.channelData.channelIcon} selected={props.isSelected} onLeftClick={onChannelLeftClick} onRightClick={onChannelRightClick} childrenAfter={
+        (props && props.isGroup) ? <Icon><GroupIcon /></Icon> : null
+      }>
         {props.channelData.channelName}
       </AvatarTextButton>
       <GenericDialog sharedProps={props.sharedProps} onClose={() => setDeleteChannelDialogVisibility(false)} open={DeleteChannelDialogVisible} title={Localizations_Channel("Typography-DeleteChannelDialogTitle", { channelName: props.channelData.channelName })} buttons={
