@@ -13,7 +13,7 @@
 }
 
 .GenericHeaderRight {
-  margin-left: var(--global-margin);
+  margin-left: auto;
 }
 
 @media only screen and (max-width: 600px) {

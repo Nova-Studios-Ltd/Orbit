@@ -1,13 +1,13 @@
+import { useEffect, useRef } from "react";
 import { Typography, useTheme } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import useClassNames from "Hooks/useClassNames";
 
 import Message, { MessageProps } from "Components/Messages/Message/Message";
+import PageContainer from "Components/Containers/PageContainer/PageContainer";
 
 import type { NCAPIComponent } from "DataTypes/Components";
 import type { IMessageProps } from "Interfaces/IMessageProps";
-import { useEffect, useRef } from "react";
-import { UserCache } from "Views/MainView/MainView";
 
 export interface MessageCanvasProps extends NCAPIComponent {
   innerClassName?: string,
@@ -53,11 +53,13 @@ function MessageCanvas(props: MessageCanvasProps) {
   };
 
   return (
-    <div className={classNames} style={{ backgroundColor: theme.palette.background.default }} ref={props.canvasRef} onScroll={onScroll}>
-      <div className={innerClassNames}>
-        {messagesArray()}
+    <PageContainer className={classNames}>
+      <div className={classNames} ref={props.canvasRef} onScroll={onScroll}>
+        <div className={innerClassNames}>
+          {messagesArray()}
+        </div>
       </div>
-    </div>
+    </PageContainer>
   );
 }
 

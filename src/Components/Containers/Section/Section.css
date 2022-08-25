@@ -1,8 +1,6 @@
 .SectionContainer {
   display: flex;
   flex-direction: column;
-
-  padding: var(--global-padding);
 }
 
 .SectionContainerItem {

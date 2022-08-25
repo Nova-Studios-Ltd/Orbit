@@ -17,31 +17,15 @@ function GenericHeader(props: GenericHeaderProps) {
   const theme = useTheme();
   const classNames = useClassNames("GenericHeaderContainer", props.className);
 
-  const GenericHeaderLeft = () => {
-    if (!props.childrenLeft) return null;
-
-    return (
+  return (
+    <div className={classNames} style={{ backgroundColor: theme.palette.background.paper }}>
       <div className="GenericHeaderLeft">
         {props.childrenLeft}
       </div>
-    );
-  }
-
-  const GenericHeaderRight = () => {
-    if (!props.childrenRight) return null;
-
-    return (
+      <Typography variant="h5">{props.title}</Typography>
       <div className="GenericHeaderRight">
         {props.childrenRight}
       </div>
-    );
-  }
-
-  return (
-    <div className={classNames} style={{ backgroundColor: theme.palette.background.paper }}>
-      {GenericHeaderLeft()}
-      <Typography variant="h5">{props.title}</Typography>
-      {GenericHeaderRight()}
     </div>
   )
 }

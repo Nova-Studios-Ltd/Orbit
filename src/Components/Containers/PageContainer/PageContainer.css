@@ -3,8 +3,10 @@
   flex-direction: column;
 
   box-sizing: border-box;
+  -webkit-box-sizing: border-box;
 
-  padding: var(--global-padding);
+  padding: 0;
+
   overflow-y: auto;
   overflow-x: hidden;
 
@@ -14,7 +16,7 @@
 
 @media only screen and (max-width: 600px) {
   .PageContainer {
-    padding: 0;
+    padding: var(--global-padding);
   }
 
   .PageContainerNonAdaptive {

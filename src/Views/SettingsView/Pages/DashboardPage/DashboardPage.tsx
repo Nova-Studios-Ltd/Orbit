@@ -124,7 +124,7 @@ function DashboardPage(props: DashboardPageProps) {
   }
 
   return (
-    <PageContainer className={classNames} noPadding>
+    <PageContainer className={classNames}>
       <Section className="UserSection">
         <Card className="UserSectionCard">
           <div className="UserInfoContainer">

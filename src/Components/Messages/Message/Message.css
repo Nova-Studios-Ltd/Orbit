@@ -1,10 +1,11 @@
 .MessageContainer {
-  padding: var(--global-padding);
   display: flex;
   flex-direction: row;
 
   -webkit-flex-shrink: 0;
   flex-shrink: 0;
+
+  margin-top: var(--global-padding);
 
   transition: background-color 200ms ease;
 }
@@ -23,6 +24,9 @@
   align-self: center;
   overflow-wrap: anywhere;
   width: 100%;
+
+  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
   padding: var(--global-padding);
   border-radius: var(--global-border-radius);
 

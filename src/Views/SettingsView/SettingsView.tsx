@@ -33,7 +33,7 @@ function SettingsView(props: SettingsViewProps) {
   }
 
   return (
-    <ViewContainer className={classNames} noPadding>
+    <ViewContainer className={classNames} adaptive>
       {page()}
     </ViewContainer>
   );

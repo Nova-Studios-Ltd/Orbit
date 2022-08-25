@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { AutoLogin, Logout } from "Init/AuthHandler";
 import { Events } from "Init/WebsocketEventInit";
 import { IconButton, useTheme } from "@mui/material";
-import { Menu as MenuIcon } from "@mui/icons-material";
+import { Add as AddIcon, Group as GroupIcon, Menu as MenuIcon } from "@mui/icons-material";
 import { isValidUsername } from "NSLib/Util";
 import { GenerateBase64SHA256 } from "NSLib/NCEncryption";
 import { NCChannelCache } from "NSLib/NCChannelCache";
@@ -323,8 +323,8 @@ function MainView(props: MainViewProps) {
     console.log(`Request to clear channel ${channel.channelName}'s cache`);
     if (channel.table_Id === undefined) return;
     NCChannelCache.DeleteSpecificCache(channel.table_Id).then((success: boolean) => {
-      if (!success) console.log(`Failed to clear channel ${channel.table_Id}'s cache`)
-      console.log(`Cleared channel ${channel.channelName}'s cache successfully`);
+      if (!success) console.error(`Failed to clear channel ${channel.table_Id}'s cache`)
+      console.success(`Cleared channel ${channel.channelName}'s cache successfully`);
       onChannelClick(channel);
     });
   };
@@ -338,7 +338,7 @@ function MainView(props: MainViewProps) {
     console.log(`Request to delete channel ${channel.channelName}`);
     if (channel.table_Id === undefined) return;
     DELETEChannel(channel.table_Id, (deleted: boolean) => {
-      console.log(`Request to delete channel ${channel.channelName} successful`);
+      console.success(`Request to delete channel ${channel.channelName} successful`);
     });
   };
 
@@ -348,17 +348,17 @@ function MainView(props: MainViewProps) {
   };
 
   const onMessageEdit = async (message: MessageProps) => {
-    console.log(`Request to edit message ${message.id}. New Message: ${message.content}`);
+    console.log(`Request to edit message ${message.id}`);
     if (message.id === undefined) return;
     if (await EDITMessage(selectedChannel.table_Id, message.id, message.content || "")) {
-      console.log(`Request to edit message ${message.id} successful`);
+      console.success(`Request to edit message ${message.id} successful`);
     }
   };
 
   const onMessageDelete = async (message: MessageProps) => {
     if (message.id === undefined) return;
     if (await DELETEMessage(selectedChannel.table_Id, message.id as string)) {
-      console.log(`Request to delete message ${message.id} successful`);
+      console.success(`Request to delete message ${message.id} successful`);
     }
   };
 
@@ -534,9 +534,16 @@ function MainView(props: MainViewProps) {
         <div className="MainViewContainerLeft">
           <div className="NavigationButtonContainer" style={{ backgroundColor: theme.palette.background.paper, borderColor: theme.palette.divider }}>
             <AvatarTextButton className="NavigationButtonContainerItem" selected={props.path === MainViewRoutes.Settings} onLeftClick={() => navigateToPage(MainViewRoutes.Settings)} iconSrc={`${settings.User.avatarSrc}&nonce=${avatarNonce}`}>{Localizations_MainView("Typography-SettingsHeader")}</AvatarTextButton>
-            <AvatarTextButton className="NavigationButtonContainerItem" selected={props.path === MainViewRoutes.Friends} onLeftClick={() => navigateToPage(MainViewRoutes.Friends)}>{Localizations_MainView("Typography-FriendsHeader")}</AvatarTextButton>
+            <AvatarTextButton className="NavigationButtonContainerItem" iconObj={<GroupIcon />} selected={props.path === MainViewRoutes.Friends} onLeftClick={() => navigateToPage(MainViewRoutes.Friends)}>{Localizations_MainView("Typography-FriendsHeader")}</AvatarTextButton>
           </div>
-          <ChannelList className="MainViewChannelList" sharedProps={props.sharedProps} channels={channels} onChannelClearCache={onChannelClearCache} onChannelClick={onChannelClick} onChannelEdit={onChannelEdit} onChannelDelete={onChannelDelete} onChannelMove={onChannelMove} selectedChannel={selectedChannel} />
+          <div className="MainViewChannelListContainer">
+            <GenericHeader className="MainViewHeader" title={Localizations_MainView("Header_Title-ChannelList")} childrenRight={
+              <div>
+                <IconButton onClick={() => null}><AddIcon /></IconButton>
+              </div>
+            } />
+            <ChannelList className="MainViewChannelList" sharedProps={props.sharedProps} channels={channels} onChannelClearCache={onChannelClearCache} onChannelClick={onChannelClick} onChannelEdit={onChannelEdit} onChannelDelete={onChannelDelete} onChannelMove={onChannelMove} selectedChannel={selectedChannel} />
+          </div>
         </div>
       </CSSTransition>
     );

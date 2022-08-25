@@ -1,4 +1,4 @@
-import { Avatar, ButtonBase, IconButton, Typography, useTheme } from "@mui/material";
+import { Avatar, ButtonBase, Icon, IconButton, Typography, useTheme } from "@mui/material";
 import { MoreHoriz as EllipsisIcon } from "@mui/icons-material";
 import React, { useState, ReactNode } from "react";
 
@@ -10,6 +10,7 @@ export interface AvatarTextButtonProps extends NCComponent {
   childrenAfter?: ReactNode,
   draggable?: boolean,
   iconSrc?: string,
+  iconObj?: ReactNode,
   selected?: boolean,
   showEllipsis?: boolean,
   showEllipsisConditional?: boolean,
@@ -49,7 +50,7 @@ function AvatarTextButton(props: AvatarTextButtonProps) {
       {props.draggable ? <span className="AvatarTextButtonDragZone AvatarTextButtonDragZoneTop" style={{ background: isDragZoneTopHovering ? theme.palette.primary.main : "none" }} onDrop={(event) => { onDrop(event); setDragZoneTopHoveringState(false); }} onDragOver={(event) => { setDragZoneTopHoveringState(true); event.preventDefault(); }} onDragLeave={() => setDragZoneTopHoveringState(false)}/> : null}
       <ButtonBase className="AvatarTextButtonBase" onClick={props.onLeftClick} onContextMenu={props.onRightClick} onMouseEnter={() => onMouseHover(true)} onMouseLeave={() => onMouseHover(false)}>
         <div className="AvatarTextButtonLeft">
-          <Avatar className="AvatarTextButtonIcon" src={props.iconSrc} />
+          <Avatar className="AvatarTextButtonIcon" src={!props.iconObj ? props.iconSrc : ""}>{props.iconObj}</Avatar>
         </div>
         <div className="AvatarTextButtonRight">
           <Typography variant="h6">{props.children}</Typography>
