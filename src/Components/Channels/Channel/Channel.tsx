@@ -57,10 +57,8 @@ function Channel(props: ChannelProps) {
             console.error(`Failed to get user data with UUID ${uuid}`);
           });
       }
+      setChannelMembersUserData(channelMembers);
     }
-
-    setChannelMembersUserData(channelMembers);
-
   }, [props.channelData, settings.User.uuid]);
 
   const onChannelLeftClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -116,7 +114,7 @@ function Channel(props: ChannelProps) {
       const user = ChannelMembersUserData[i];
 
       channelMembersEl.push(
-        <AvatarTextButton fullWidth iconSrc={user.avatar}>{user.username}</AvatarTextButton>
+        <AvatarTextButton key={user.uuid} fullWidth iconSrc={user.avatar}>{user.username}</AvatarTextButton>
       );
     }
 
