@@ -85,30 +85,33 @@ function App() {
     changeTitleCallback: setTitle
   }
 
-  const consoleMessages = debugConsoleBuffer.map((message) => {
-    const messageColor = () => {
-      switch (message.type) {
-        case DebugMessageType.Log:
-          return "primary";
-        case DebugMessageType.Warning:
-          return "yellow";
-        case DebugMessageType.Error:
-          return "error";
-        case DebugMessageType.Success:
-          return "lime";
-        default:
-          return "primary";
+  const consoleMessages = () => {
+    if (!debugConsoleVisible) return null;
+    return debugConsoleBuffer.map((message) => {
+      const messageColor = () => {
+        switch (message.type) {
+          case DebugMessageType.Log:
+            return "primary";
+          case DebugMessageType.Warning:
+            return "yellow";
+          case DebugMessageType.Error:
+            return "error";
+          case DebugMessageType.Success:
+            return "lime";
+          default:
+            return "primary";
+        }
       }
-    }
 
-    return (
-      <div className="DebugMessage" key={message.timestamp}>
-        <Typography variant="caption" fontWeight="bold" color={messageColor()}>[{message.type.toUpperCase()}]</Typography>
-        {message.timestamp ? <Typography variant="caption" fontWeight="bold" color="gray">{new Date(message.timestamp).toISOString()}</Typography> : null}
-        <Typography variant="caption">{message.message}</Typography>
-      </div>
-    )
-  });
+      return (
+        <div className="DebugMessage" key={message.timestamp}>
+          <Typography variant="caption" fontWeight="bold" color={messageColor()}>[{message.type.toUpperCase()}]</Typography>
+          {message.timestamp ? <Typography variant="caption" fontWeight="bold" color="gray">{new Date(message.timestamp).toISOString()}</Typography> : null}
+          <Typography variant="caption">{message.message}</Typography>
+        </div>
+      )
+    });
+  };
 
   window.addEventListener("resize", (event) => {
     setWidthConstrainedState(window.matchMedia("(max-width: 600px)").matches);
@@ -144,7 +147,7 @@ function App() {
             <IconButton onClick={() => setDebugConsoleVisibility(false)} style={{ marginLeft: "auto" }}><CloseIcon /></IconButton>
           </div>
           <div className="DebugConsole">
-            {consoleMessages}
+            {consoleMessages()}
           </div>
         </div>) : null}
       </ThemeProvider>

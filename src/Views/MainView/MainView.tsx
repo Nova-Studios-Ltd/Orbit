@@ -77,6 +77,14 @@ function MainView(props: MainViewProps) {
     return undefined;
   }
 
+  const channelContainsOwnerUUID = (uuid: string) => {
+    for (let i = 0; i < channels.length; i++) {
+      const channel = channels[i];
+      if (channel.owner_UUID && channel.owner_UUID === uuid) return channel;
+    }
+    return undefined;
+  }
+
   const onAvatarChanged = () => {
     const nonce = Date.now().toString();
     setAvatarNonce(nonce);
@@ -281,7 +289,7 @@ function MainView(props: MainViewProps) {
     if (friend.friendData && friend.friendData.uuid) {
       switch (friend.status?.toLowerCase()) {
         case "accepted":
-          const existingChannel = channelContainsUUID(friend.friendData.uuid);
+          const existingChannel = channelContainsOwnerUUID(friend.friendData.uuid);
           if (existingChannel) {
             onChannelClick(existingChannel);
           }
