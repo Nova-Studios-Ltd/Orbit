@@ -89,7 +89,7 @@ function App() {
   const consoleMessages = debugConsoleBuffer.map((message) => {
     const messageColor = () => {
       switch (message.type) {
-        case DebugMessageType.Normal:
+        case DebugMessageType.Log:
           return "primary";
         case DebugMessageType.Warning:
           return "yellow";

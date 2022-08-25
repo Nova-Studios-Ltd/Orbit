@@ -18,7 +18,7 @@ export function OverrideConsoleLog(onNewMessage: (message: DebugMessage, origina
       }
     }
 
-    onNewMessage({ type: DebugMessageType.Normal, timestamp: Date.now(), message: finalString }, consoleLogOrig);
+    onNewMessage({ type: DebugMessageType.Log, timestamp: Date.now(), message: finalString }, consoleLogOrig);
     consoleLogOrig(...args);
   }
 }
