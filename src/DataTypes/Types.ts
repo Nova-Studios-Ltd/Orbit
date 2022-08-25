@@ -18,5 +18,6 @@ export interface ChannelMoveData {
 
 export interface DebugMessage {
   type: DebugMessageType,
-  message: string
+  message: string,
+  timestamp?: number
 }

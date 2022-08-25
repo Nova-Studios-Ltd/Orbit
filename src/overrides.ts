@@ -1,9 +1,7 @@
 import { DebugMessageType } from "DataTypes/Enums";
 import type { DebugMessage } from "DataTypes/Types";
 
-export const consoleBuffer = [] as DebugMessage[];
-
-export function OverrideConsoleLog() {
+export function OverrideConsoleLog(onNewMessage: (message: DebugMessage, originalFunc?: Function) => void) {
   const consoleLogOrig = console.log;
 
   console.log = (...args: any[]) => {
@@ -20,12 +18,12 @@ export function OverrideConsoleLog() {
       }
     }
 
-    consoleBuffer.push({ type: DebugMessageType.Normal, message: finalString });
-    consoleLogOrig(finalString);
+    onNewMessage({ type: DebugMessageType.Normal, timestamp: Date.now(), message: finalString }, consoleLogOrig);
+    consoleLogOrig(...args);
   }
 }
 
-export function OverrideConsoleWarn() {
+export function OverrideConsoleWarn(onNewMessage: (message: DebugMessage, originalFunc?: Function) => void) {
   const consoleWarnOrig = console.warn;
 
   console.warn = (...args: any[]) => {
@@ -42,12 +40,12 @@ export function OverrideConsoleWarn() {
       }
     }
 
-    consoleBuffer.push({ type: DebugMessageType.Warning, message: finalString });
-    consoleWarnOrig(finalString);
+    onNewMessage({ type: DebugMessageType.Warning, timestamp: Date.now(), message: finalString }, consoleWarnOrig);
+    consoleWarnOrig(...args);
   }
 }
 
-export function OverrideConsoleError() {
+export function OverrideConsoleError(onNewMessage: (message: DebugMessage, originalFunc?: Function) => void) {
   const consoleErrorOrig = console.error;
 
   console.error = (...args: any[]) => {
@@ -64,7 +62,7 @@ export function OverrideConsoleError() {
       }
     }
 
-    consoleBuffer.push({ type: DebugMessageType.Error, message: finalString });
-    consoleErrorOrig(finalString);
+    onNewMessage({ type: DebugMessageType.Error, timestamp: Date.now(), message: finalString }, consoleErrorOrig);
+    consoleErrorOrig(...args);
   }
 }

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { IconButton, Popover, ThemeProvider, Typography } from "@mui/material";
 import { Close as CloseIcon } from "@mui/icons-material";
 import { Route, Routes } from "react-router-dom";
@@ -6,6 +6,7 @@ import i18n from "i18next";
 import { initReactI18next, useTranslation } from "react-i18next";
 import { Helmet } from "react-helmet";
 
+import { OverrideConsoleLog, OverrideConsoleWarn, OverrideConsoleError } from "./overrides";
 import { GetUrlFlag } from "NSLib/NCFlags";
 import { ThemeSelector } from "Theme";
 import { Localizations } from "Localization/Localizations";
@@ -21,7 +22,6 @@ import type { HelpPopupProps, SharedProps } from "DataTypes/Components";
 import type { DebugMessage } from "DataTypes/Types";
 
 import "./App.css";
-import { consoleBuffer } from "overrides";
 
 i18n.use(initReactI18next)
 .init({
@@ -33,6 +33,7 @@ i18n.use(initReactI18next)
 function App() {
   const Localizations_Common = useTranslation().t;
   const theme = ThemeSelector(GetUrlFlag("theme") || "DarkTheme_Default");
+  const consoleBuffer = useRef([] as DebugMessage[]);
 
   const [widthConstrained, setWidthConstrainedState] = useState(window.matchMedia("(max-width: 600px)").matches);
   const [isTouchCapable, setTouchCapableState] = useState("ontouchstart" in window || navigator.maxTouchPoints > 0);
@@ -42,6 +43,22 @@ function App() {
   const [helpContent, setHelpContent] = useState(null as unknown as ReactNode);
   const [debugConsoleVisible, setDebugConsoleVisibility] = useState(true); // Set this to false to disable debug console by default
   const [debugConsoleBuffer, setDebugConsoleBuffer] = useState([] as DebugMessage[]);
+
+  useEffect(() => {
+    const onNewDebugMessage = (message: DebugMessage, originalFunc?: Function) => {
+      consoleBuffer.current = [...consoleBuffer.current, message];
+      setDebugConsoleBuffer(consoleBuffer.current);
+
+      //if (originalFunc) originalFunc(`(test) ${consoleBuffer}`);
+    }
+
+    // Function overrides
+
+    OverrideConsoleLog(onNewDebugMessage);
+    OverrideConsoleWarn(onNewDebugMessage);
+    OverrideConsoleError(onNewDebugMessage);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const closeHelpPopup = () => {
     setHelpVisibility(false);
@@ -65,13 +82,13 @@ function App() {
     changeTitleCallback: setTitle
   }
 
-  const consoleMessages = consoleBuffer.map((message, index) => {
+  const consoleMessages = debugConsoleBuffer.map((message) => {
     const messageColor = () => {
       switch (message.type) {
         case DebugMessageType.Normal:
           return "primary";
         case DebugMessageType.Warning:
-          return "warning";
+          return "yellow";
         case DebugMessageType.Error:
           return "error";
         case DebugMessageType.Success:
@@ -81,10 +98,12 @@ function App() {
       }
     }
 
-    return <div className="DebugMessage">
-      <Typography variant="caption" fontWeight="bold" color={messageColor()}>[{message.type.toUpperCase()}]</Typography>
-      <Typography variant="caption">{message.message}</Typography>
+    return (
+      <div className="DebugMessage" key={message.timestamp}>
+        <Typography variant="caption" fontWeight="bold" color={messageColor()}>[{message.type.toUpperCase()}]</Typography>
+        <Typography variant="caption">{message.message}</Typography>
       </div>
+    )
   });
 
   window.addEventListener("resize", (event) => {

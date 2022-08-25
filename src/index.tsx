@@ -4,7 +4,6 @@ import { BrowserRouter as Router } from "react-router-dom";
 import reportWebVitals from "./reportWebVitals";
 
 import App from "./App";
-import { OverrideConsoleLog, OverrideConsoleWarn, OverrideConsoleError } from "./overrides";
 
 ReactDOM.render(
   <React.StrictMode>
@@ -14,12 +13,6 @@ ReactDOM.render(
   </React.StrictMode>,
   document.getElementById("root")
 );
-
-// Function overrides
-
-OverrideConsoleLog();
-OverrideConsoleWarn();
-OverrideConsoleError();
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
