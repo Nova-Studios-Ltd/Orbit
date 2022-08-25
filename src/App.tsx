@@ -41,7 +41,7 @@ function App() {
   const [helpVisible, setHelpVisibility] = useState(false);
   const [helpAnchorEl, setHelpAnchor] = useState(null as unknown as Element);
   const [helpContent, setHelpContent] = useState(null as unknown as ReactNode);
-  const [debugConsoleVisible, setDebugConsoleVisibility] = useState(true); // Set this to false to disable debug console by default
+  const [debugConsoleVisible, setDebugConsoleVisibility] = useState(false); // Set this to false to disable debug console by default
   const [debugConsoleBuffer, setDebugConsoleBuffer] = useState([] as DebugMessage[]);
 
   useEffect(() => {
