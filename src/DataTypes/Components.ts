@@ -36,5 +36,6 @@ export interface SharedProps {
   HelpPopup?: HelpPopupProps,
   widthConstrained?: boolean,
   isTouchCapable?: boolean,
+  openConsole?: () => void,
   changeTitleCallback?: (title: string) => void
 }

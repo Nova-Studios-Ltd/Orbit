@@ -1,10 +1,11 @@
 {
+  "Button_Label-CopyToken": "Copy Token to Clipboard",
+  "Button_Label-DeleteAccount": "Delete Account",
   "Button_Label-EditUsername": "Change Username",
   "Button_Label-EditPassword": "Change Password",
   "Button_Label-EditEmail": "Change Email",
   "Button_Label-Logout": "Logout",
-  "Button_Label-CopyToken": "Copy Token to Clipboard",
-  "Button_Label-DeleteAccount": "Delete Account",
+  "Button_Label-OpenConsole": "Debug Console",
   "TextField_ErrorText-NonmatchingPassword": "Passwords do not match",
   "TextField_Placeholder-ChangeUsernamePrompt": "New Username",
   "TextField_Placeholder-ChangeEmailPrompt": "New Email",

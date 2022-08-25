@@ -57,8 +57,11 @@ function App() {
     OverrideConsoleLog(onNewDebugMessage);
     OverrideConsoleWarn(onNewDebugMessage);
     OverrideConsoleError(onNewDebugMessage);
+
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const openConsole = () => setDebugConsoleVisibility(true);
 
   const closeHelpPopup = () => {
     setHelpVisibility(false);
@@ -79,6 +82,7 @@ function App() {
     HelpPopup: HelpPopup,
     widthConstrained: widthConstrained,
     isTouchCapable: isTouchCapable,
+    openConsole: openConsole,
     changeTitleCallback: setTitle
   }
 
