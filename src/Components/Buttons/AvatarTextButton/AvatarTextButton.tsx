@@ -14,6 +14,7 @@ export interface AvatarTextButtonProps extends NCComponent {
   selected?: boolean,
   showEllipsis?: boolean,
   showEllipsisConditional?: boolean,
+  fullWidth?: boolean,
   onDrag?: (event: React.DragEvent<HTMLDivElement>) => void,
   onDrop?: (event: React.DragEvent<HTMLSpanElement>) => void,
   onLeftClick?: (event: React.MouseEvent<HTMLButtonElement>) => void,
@@ -22,9 +23,8 @@ export interface AvatarTextButtonProps extends NCComponent {
 
 function AvatarTextButton(props: AvatarTextButtonProps) {
   const theme = useTheme();
-  const classNames = useClassNames("AvatarTextButtonContainer", props.className);
+  const classNames = useClassNames(useClassNames("AvatarTextButtonContainer", props.className), props.fullWidth ? "FullWidth" : "");
   const isTouchCapable = props.sharedProps && props.sharedProps.isTouchCapable;
-
   const [isHovering, setHoveringState] = useState(false);
   const [isDragZoneTopHovering, setDragZoneTopHoveringState] = useState(false);
   const [isDragZoneBottomHovering, setDragZoneBottomHoveringState] = useState(false);

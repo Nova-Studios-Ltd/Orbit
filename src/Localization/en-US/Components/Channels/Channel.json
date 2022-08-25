@@ -1,5 +1,6 @@
 {
   "Button_Label-ClearCache": "Clear Message Cache",
+  "Typography-ChannelMembersListTitle": "Members",
   "Typography-ChannelInfoDialogTitle": "About \"{{channelName}}\"",
   "Typography-DeleteChannelDialogTitle": "Delete Channel \"{{channelName}}\"?",
   "Typography-EditChannelDialogTitle": "Edit \"{{channelName}}\"",

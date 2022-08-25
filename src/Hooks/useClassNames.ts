@@ -5,7 +5,7 @@ function useClassNames(staticClassNames: string, optionalClassNames?: string) {
     classNames = classNames.concat(" ", optionalClassNames);
   }
 
-  return classNames;
+  return classNames.trim();
 }
 
 export default useClassNames;

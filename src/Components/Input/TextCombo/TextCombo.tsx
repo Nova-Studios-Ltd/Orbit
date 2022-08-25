@@ -40,7 +40,7 @@ export interface TextComboProps extends NCAPIComponent {
 function TextCombo(props: TextComboProps) {
   const Localizations_TextCombo = useTranslation("TextCombo").t;
   const theme = useTheme();
-  const classNames = useClassNames(useClassNames("TextComboContainer", props.className), props.fullWidth ? "FullWidth" : undefined);
+  const classNames = useClassNames(useClassNames("TextComboContainer", props.className), props.fullWidth ? "FullWidth" : "");
   const MaxTextFieldCharLength = props.maxLength ? props.maxLength : 4000; // How many characters remaining before it is shown
   const TextFieldCharLengthDisplayThreshold = Math.floor(MaxTextFieldCharLength * 0.2); // How many characters remaining before it is shown
   const TextFieldType = props.isPassword ? "password" : "text";
