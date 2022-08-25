@@ -13,3 +13,10 @@ export enum RegisterStatus {
   PendingStatus = 3,
   EmailUsed = 4
 }
+
+export enum DebugMessageType {
+  Normal = "Log",
+  Warning = "Warn",
+  Error = "Error",
+  Success = "Success"
+}

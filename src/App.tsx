@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Popover, ThemeProvider } from "@mui/material";
+import { IconButton, Popover, ThemeProvider, Typography } from "@mui/material";
+import { Close as CloseIcon } from "@mui/icons-material";
 import { Route, Routes } from "react-router-dom";
 import i18n from "i18next";
 import { initReactI18next, useTranslation } from "react-i18next";
@@ -14,10 +15,13 @@ import ErrorView from "Views/ErrorView/ErrorView";
 import MainView from "Views/MainView/MainView";
 
 import { AuthViewRoutes, FriendViewRoutes, MainViewRoutes } from "DataTypes/Routes";
+import { DebugMessageType } from "DataTypes/Enums";
 import type { ReactNode } from "react";
 import type { HelpPopupProps, SharedProps } from "DataTypes/Components";
+import type { DebugMessage } from "DataTypes/Types";
 
 import "./App.css";
+import { consoleBuffer } from "overrides";
 
 i18n.use(initReactI18next)
 .init({
@@ -36,6 +40,8 @@ function App() {
   const [helpVisible, setHelpVisibility] = useState(false);
   const [helpAnchorEl, setHelpAnchor] = useState(null as unknown as Element);
   const [helpContent, setHelpContent] = useState(null as unknown as ReactNode);
+  const [debugConsoleVisible, setDebugConsoleVisibility] = useState(true);
+  const [debugConsoleBuffer, setDebugConsoleBuffer] = useState([] as DebugMessage[]);
 
   const closeHelpPopup = () => {
     setHelpVisibility(false);
@@ -58,6 +64,28 @@ function App() {
     isTouchCapable: isTouchCapable,
     changeTitleCallback: setTitle
   }
+
+  const consoleMessages = consoleBuffer.map((message, index) => {
+    const messageColor = () => {
+      switch (message.type) {
+        case DebugMessageType.Normal:
+          return "primary";
+        case DebugMessageType.Warning:
+          return "warning";
+        case DebugMessageType.Error:
+          return "error";
+        case DebugMessageType.Success:
+          return "success";
+        default:
+          return "primary";
+      }
+    }
+
+    return <div className="DebugMessage">
+      <Typography variant="caption" fontWeight="bold" color={messageColor()}>[{message.type.toUpperCase()}]</Typography>
+      <Typography variant="caption">{message.message}</Typography>
+      </div>
+  });
 
   window.addEventListener("resize", (event) => {
     setWidthConstrainedState(window.matchMedia("(max-width: 600px)").matches);
@@ -86,9 +114,16 @@ function App() {
         }}>
           {helpContent}
         </Popover>
-        <div className="ToastHolder">
-
-        </div>
+        {debugConsoleVisible ? (
+        <div className="DebugConsoleContainer" style={{ color: theme.palette.text.primary, background: theme.palette.background.paper }}>
+          <div className="DebugConsoleHeader">
+            <Typography variant="h5">Debug Console</Typography>
+            <IconButton onClick={() => setDebugConsoleVisibility(false)} style={{ marginLeft: "auto" }}><CloseIcon /></IconButton>
+          </div>
+          <div className="DebugConsole">
+            {consoleMessages}
+          </div>
+        </div>) : null}
       </ThemeProvider>
     </div>
   );

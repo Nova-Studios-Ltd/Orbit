@@ -1,4 +1,5 @@
 import type { IRawChannelProps } from "Interfaces/IRawChannelProps"
+import type { DebugMessageType } from "./Enums"
 
 export interface IOpenFileDialogResults {
     path: string,
@@ -13,4 +14,9 @@ export interface Coordinates {
 export interface ChannelMoveData {
   channelData: IRawChannelProps,
   index: number
+}
+
+export interface DebugMessage {
+  type: DebugMessageType,
+  message: string
 }
