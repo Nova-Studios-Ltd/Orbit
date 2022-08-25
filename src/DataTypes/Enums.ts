@@ -16,7 +16,7 @@ export enum RegisterStatus {
 
 export enum DebugMessageType {
   Log = "Log",
-  Warning = "Warning",
-  Error = "Error",
-  Success = "Success"
+  Warning = "Warn",
+  Error = "Err",
+  Success = "Scs"
 }

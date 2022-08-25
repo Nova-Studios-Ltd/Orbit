@@ -6,7 +6,7 @@ import i18n from "i18next";
 import { initReactI18next, useTranslation } from "react-i18next";
 import { Helmet } from "react-helmet";
 
-import { OverrideConsoleLog, OverrideConsoleWarn, OverrideConsoleError } from "./overrides";
+import { OverrideConsoleLog, OverrideConsoleWarn, OverrideConsoleError, OverrideConsoleSuccess } from "./overrides";
 import { GetUrlFlag } from "NSLib/NCFlags";
 import { ThemeSelector } from "Theme";
 import { Localizations } from "Localization/Localizations";
@@ -41,15 +41,13 @@ function App() {
   const [helpVisible, setHelpVisibility] = useState(false);
   const [helpAnchorEl, setHelpAnchor] = useState(null as unknown as Element);
   const [helpContent, setHelpContent] = useState(null as unknown as ReactNode);
-  const [debugConsoleVisible, setDebugConsoleVisibility] = useState(false); // Set this to false to disable debug console by default
+  const [debugConsoleVisible, setDebugConsoleVisibility] = useState(true); // Set this to false to disable debug console by default
   const [debugConsoleBuffer, setDebugConsoleBuffer] = useState([] as DebugMessage[]);
 
   useEffect(() => {
-    const onNewDebugMessage = (message: DebugMessage, originalFunc?: Function) => {
+    const onNewDebugMessage = (message: DebugMessage) => {
       consoleBuffer.current = [...consoleBuffer.current, message];
       setDebugConsoleBuffer(consoleBuffer.current);
-
-      //if (originalFunc) originalFunc(`(test) ${consoleBuffer}`);
     }
 
     // Function overrides
@@ -57,6 +55,7 @@ function App() {
     OverrideConsoleLog(onNewDebugMessage);
     OverrideConsoleWarn(onNewDebugMessage);
     OverrideConsoleError(onNewDebugMessage);
+    OverrideConsoleSuccess(onNewDebugMessage);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -96,7 +95,7 @@ function App() {
         case DebugMessageType.Error:
           return "error";
         case DebugMessageType.Success:
-          return "success";
+          return "lime";
         default:
           return "primary";
       }
@@ -105,6 +104,7 @@ function App() {
     return (
       <div className="DebugMessage" key={message.timestamp}>
         <Typography variant="caption" fontWeight="bold" color={messageColor()}>[{message.type.toUpperCase()}]</Typography>
+        {message.timestamp ? <Typography variant="caption" fontWeight="bold" color="gray">{new Date(message.timestamp).toISOString()}</Typography> : null}
         <Typography variant="caption">{message.message}</Typography>
       </div>
     )

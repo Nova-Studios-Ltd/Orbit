@@ -156,6 +156,7 @@ export function WriteToClipboard(text: string) : Promise<boolean> {
     else {
       navigator.clipboard.writeText(text).then(() => {
         resolve(true);
+        console.success("Successfully copied text to clipboard");
       }, () => {
         resolve(false);
       });
