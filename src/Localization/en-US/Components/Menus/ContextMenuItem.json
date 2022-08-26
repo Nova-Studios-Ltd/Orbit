@@ -2,6 +2,8 @@
   "ContextMenuItem-Accept": "Accept",
   "ContextMenuItem-Block": "Block",
   "ContextMenuItem-Copy": "Copy",
+  "ContextMenuItem-CopyUser": "Copy User",
+  "ContextMenuItem-CopyUUID": "Copy UUID",
   "ContextMenuItem-Edit": "Edit",
   "ContextMenuItem-Delete": "Delete",
   "ContextMenuItem-Download": "Download",

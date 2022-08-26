@@ -94,10 +94,10 @@ function DashboardPage(props: DashboardPageProps) {
     DELETEUser((status) => {
       if (status) {
         navigate(AuthViewRoutes.Login);
-        console.log("Account Deletion Successful")
+        console.success("Account Deletion Successful")
       }
       else {
-        console.log("Account Deletion Failed")
+        console.error("Account Deletion Failed")
       }
     });
     setDeleteAccountDialogVisibility(false);
@@ -165,7 +165,7 @@ function DashboardPage(props: DashboardPageProps) {
           <Button disabled={!(NewUsernameValue.length > 0)} onClick={() => changeUsername()}>{Localizations_GenericDialog("Button_Label-DialogOK")}</Button>
         </>
       }>
-        <TextCombo fullWidth submitButton={false} textFieldPlaceholder={Localizations_DashboardPage("TextField_Placeholder-ChangeUsernamePrompt")} value={NewUsernameValue} onChange={(event) => event.value !== undefined ? setNewUsernameValue(event.value) : null} onSubmit={() => changeUsername()} />
+        <TextCombo fullWidth submitButton={false} placeholder={Localizations_DashboardPage("TextField_Placeholder-ChangeUsernamePrompt")} value={NewUsernameValue} onChange={(event) => event.value !== undefined ? setNewUsernameValue(event.value) : null} onSubmit={() => changeUsername()} />
       </GenericDialog>
       <GenericDialog sharedProps={props.sharedProps} onClose={() => setChangeEmailDialogVisibility(false)} open={ChangeEmailDialogVisible} title={Localizations_DashboardPage("Typography-ChangeEmailDialogTitle")} buttons={
         <>
@@ -173,7 +173,7 @@ function DashboardPage(props: DashboardPageProps) {
           <Button disabled={!(NewEmailValue.length > 0)} onClick={() => changeEmail()}>{Localizations_GenericDialog("Button_Label-DialogOK")}</Button>
         </>
       }>
-        <TextCombo fullWidth submitButton={false} textFieldPlaceholder={Localizations_DashboardPage("TextField_Placeholder-ChangeEmailPrompt")} value={NewEmailValue} onChange={(event) => event.value !== undefined ? setNewEmailValue(event.value) : null} onSubmit={() => changeEmail()} />
+        <TextCombo fullWidth submitButton={false} placeholder={Localizations_DashboardPage("TextField_Placeholder-ChangeEmailPrompt")} value={NewEmailValue} onChange={(event) => event.value !== undefined ? setNewEmailValue(event.value) : null} onSubmit={() => changeEmail()} />
       </GenericDialog>
       <GenericDialog sharedProps={props.sharedProps} onClose={() => setChangePasswordDialogVisibility(false)} open={ChangePasswordDialogVisible} title={Localizations_DashboardPage("Typography-ChangePasswordDialogTitle")} buttons={
         <>
@@ -181,8 +181,8 @@ function DashboardPage(props: DashboardPageProps) {
           <Button disabled={!passwordsAndLengthMatch} onClick={() => changePassword()}>{Localizations_GenericDialog("Button_Label-DialogOK")}</Button>
         </>
       }>
-        <TextCombo fullWidth isPassword submitButton={false} textFieldPlaceholder={Localizations_DashboardPage("TextField_Placeholder-ChangePasswordPrompt")} value={NewPasswordValue} onChange={(event) => event.value !== undefined ? setNewPasswordValue(event.value) : null} onSubmit={() => changePassword()} />
-        <TextCombo fullWidth isPassword submitButton={false} textFieldPlaceholder={Localizations_DashboardPage("TextField_Placeholder-ConfirmPasswordPrompt")} error={!passwordsMatch} errorText={Localizations_DashboardPage("TextField_ErrorText-NonmatchingPassword")} value={ConfirmPasswordValue} onChange={(event) => event.value !== undefined ? setConfirmPasswordValue(event.value) : null} onSubmit={() => changePassword()} />
+        <TextCombo fullWidth isPassword submitButton={false} placeholder={Localizations_DashboardPage("TextField_Placeholder-ChangePasswordPrompt")} value={NewPasswordValue} onChange={(event) => event.value !== undefined ? setNewPasswordValue(event.value) : null} onSubmit={() => changePassword()} />
+        <TextCombo fullWidth isPassword submitButton={false} placeholder={Localizations_DashboardPage("TextField_Placeholder-ConfirmPasswordPrompt")} error={!passwordsMatch} errorText={Localizations_DashboardPage("TextField_ErrorText-NonmatchingPassword")} value={ConfirmPasswordValue} onChange={(event) => event.value !== undefined ? setConfirmPasswordValue(event.value) : null} onSubmit={() => changePassword()} />
       </GenericDialog>
       <GenericDialog sharedProps={props.sharedProps} onClose={() => setDeleteAccountDialogVisibility(false)} open={DeleteAccountDialogVisible} title={Localizations_DashboardPage("Typography-DeleteAccountDialogTitle")} buttons={
         <>

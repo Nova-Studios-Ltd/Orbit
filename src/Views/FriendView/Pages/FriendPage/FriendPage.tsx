@@ -75,6 +75,7 @@ function FriendPage(props: FriendPageProps) {
             <AvatarTextButton className="FriendButton" showEllipsis iconSrc={friend.friendData.avatar} onLeftClick={() => acceptFriendRequest(friend)} onRightClick={friendRightClickHandler} sharedProps={props.sharedProps}>
               <div className="FriendButtonContent">
                 <Typography>{friend.friendData?.username}#{friend.friendData?.discriminator}</Typography>
+                <Typography variant="caption" color="gray">{friend.friendData?.uuid}</Typography>
                 <Typography variant="caption">{friend.status}</Typography>
               </div>
             </AvatarTextButton>
@@ -124,7 +125,8 @@ function FriendPage(props: FriendPageProps) {
         {friendElements && friendElements.length > 0 ? friendElements : NoFriendsHint}
       </div>
       <ContextMenu open={FriendContextMenuVisible} anchorPos={FriendContextMenuAnchorPos} onDismiss={() => setFriendContextMenuVisibility(false)}>
-        <ContextMenuItem onLeftClick={() => FriendContextMenuSelectedFriend && FriendContextMenuSelectedFriend.friendData && FriendContextMenuSelectedFriend.friendData.username && FriendContextMenuSelectedFriend.friendData.discriminator ? WriteToClipboard(`${FriendContextMenuSelectedFriend.friendData.username}#${FriendContextMenuSelectedFriend.friendData.discriminator}`) : null}>{Localizations_ContextMenuItem("ContextMenuItem-Copy")}</ContextMenuItem>
+        <ContextMenuItem onLeftClick={() => FriendContextMenuSelectedFriend && FriendContextMenuSelectedFriend.friendData && FriendContextMenuSelectedFriend.friendData.username && FriendContextMenuSelectedFriend.friendData.discriminator ? WriteToClipboard(`${FriendContextMenuSelectedFriend.friendData.username}#${FriendContextMenuSelectedFriend.friendData.discriminator}`) : null}>{Localizations_ContextMenuItem("ContextMenuItem-CopyUser")}</ContextMenuItem>
+        <ContextMenuItem onLeftClick={() => FriendContextMenuSelectedFriend && FriendContextMenuSelectedFriend.friendData && FriendContextMenuSelectedFriend.friendData.uuid ? WriteToClipboard(FriendContextMenuSelectedFriend.friendData.uuid) : null}>{Localizations_ContextMenuItem("ContextMenuItem-CopyUUID")}</ContextMenuItem>
         <ContextMenuItem hide={!(FriendContextMenuSelectedFriend && FriendContextMenuSelectedFriend.status?.toLowerCase() === "request")} onLeftClick={() => FriendContextMenuSelectedFriend && FriendContextMenuSelectedFriend.friendData && FriendContextMenuSelectedFriend.friendData.uuid ? acceptFriendRequest(FriendContextMenuSelectedFriend) : null}>{Localizations_ContextMenuItem("ContextMenuItem-Accept")}</ContextMenuItem>
         <ContextMenuItem onLeftClick={() => FriendContextMenuSelectedFriend && FriendContextMenuSelectedFriend.friendData && FriendContextMenuSelectedFriend.friendData.uuid ? setRemoveFriendDialogSelector(FriendContextMenuSelectedFriend.friendData.uuid) : null}>{Localizations_ContextMenuItem("ContextMenuItem-Remove")}</ContextMenuItem>
         <ContextMenuItem onLeftClick={() => FriendContextMenuSelectedFriend && FriendContextMenuSelectedFriend.friendData && FriendContextMenuSelectedFriend.friendData.uuid ? setBlockFriendDialogSelector(FriendContextMenuSelectedFriend.friendData.uuid) : null}>{FriendContextMenuSelectedFriend && FriendContextMenuSelectedFriend.status && FriendContextMenuSelectedFriend.status?.toLowerCase() === "blocked" ? Localizations_ContextMenuItem("ContextMenuItem-Unblock") : Localizations_ContextMenuItem("ContextMenuItem-Block")}</ContextMenuItem>

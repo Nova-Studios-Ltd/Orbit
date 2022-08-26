@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import { CSSTransition } from "react-transition-group";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { AutoLogin, Logout } from "Init/AuthHandler";
@@ -11,7 +12,7 @@ import { NCChannelCache } from "NSLib/NCChannelCache";
 import { FetchImageFromClipboard, NCFile, NotificationType, TriggerNotification, UploadFile } from "NSLib/ElectronAPI";
 import { SettingsManager } from "NSLib/SettingsManager";
 import { NCUserCache } from "NSLib/NCUserCache";
-import { CREATEChannel, DELETEChannel, DELETEMessage, EDITMessage, GETChannel, GETOwnFriends, GETMessages, GETMessagesSingle, GETUserChannels, GETUserUUID, SENDMessage, GETUser, REQUESTFriend, ACCEPTFriend, REMOVEFriend, BLOCKFriend, UNBLOCKFriend } from "NSLib/APIEvents";
+import { CREATEChannel, DELETEChannel, DELETEMessage, EDITMessage, GETChannel, GETOwnFriends, GETMessages, GETMessagesSingle, GETUserChannels, GETUserUUID, SENDMessage, GETUser, REQUESTFriend, ACCEPTFriend, REMOVEFriend, BLOCKFriend, UNBLOCKFriend, UPDATEChannelName, UPDATEChannelIcon } from "NSLib/APIEvents";
 
 import ViewContainer from "Components/Containers/ViewContainer/ViewContainer";
 import MessageAttachment from "DataTypes/MessageAttachment";
@@ -30,7 +31,7 @@ import type { MessageProps } from "Components/Messages/Message/Message";
 import { Dictionary } from "NSLib/Dictionary";
 import type Friend from "DataTypes/Friend";
 import { AuthViewRoutes, MainViewRoutes, SettingsViewRoutes } from "DataTypes/Routes";
-import { CSSTransition } from "react-transition-group";
+import type { IChannelUpdateProps } from "Interfaces/IChannelUpdateProps";
 
 interface MainViewProps extends View {
   path: MainViewRoutes
@@ -83,6 +84,29 @@ function MainView(props: MainViewProps) {
       if (channel.owner_UUID && channel.owner_UUID === uuid) return channel;
     }
     return undefined;
+  }
+
+  const loadChannels = async (doNavigate?: boolean) => {
+    GETUserChannels(async (channels: string[]) => {
+      const loadedChannels = [] as IRawChannelProps[];
+
+      for (var i = 0; i < channels.length; i++) {
+        const channel = await GETChannel(channels[i]);
+        if (channel === undefined) continue;
+        loadedChannels.push(channel);
+      }
+
+      setChannels(loadedChannels);
+
+      if (doNavigate) {
+        if (props.path === MainViewRoutes.Chat && loadedChannels.length < 1) {
+          navigate(MainViewRoutes.Friends);
+          return;
+        }
+
+        if (props.path === MainViewRoutes.Chat && loadedChannels[0]) selectChannel(loadedChannels[0]); // Temporary channel preload; TODO: Store last opened channel
+      }
+    });
   }
 
   const onAvatarChanged = () => {
@@ -208,7 +232,7 @@ function MainView(props: MainViewProps) {
     }
   }
 
-  const onChannelClick = async (channel: IRawChannelProps) => {
+  const selectChannel = async (channel: IRawChannelProps) => {
     if (!location.pathname.includes("chat"))
       navigate(`${MainViewRoutes.Chat}${location.search}`);
 
@@ -291,7 +315,7 @@ function MainView(props: MainViewProps) {
         case "accepted":
           const existingChannel = channelContainsOwnerUUID(friend.friendData.uuid);
           if (existingChannel) {
-            onChannelClick(existingChannel);
+            selectChannel(existingChannel);
           }
           else {
             CREATEChannel(friend.friendData.uuid, (status) => { console.log(`Channel creation from onFriendClicked status: ${status}`) });
@@ -333,13 +357,15 @@ function MainView(props: MainViewProps) {
     NCChannelCache.DeleteSpecificCache(channel.table_Id).then((success: boolean) => {
       if (!success) console.error(`Failed to clear channel ${channel.table_Id}'s cache`)
       console.success(`Cleared channel ${channel.channelName}'s cache successfully`);
-      onChannelClick(channel);
+      selectChannel(channel);
     });
   };
 
-  const onChannelEdit = (channel: IRawChannelProps) => {
-    console.log(`Request to edit channel ${channel.channelName}`);
-    // TODO: Add Channel edit logic here
+  const onChannelEdit = (channel: IChannelUpdateProps) => {
+    console.log(`Request to edit channel ${channel.table_Id} with new parameters ${JSON.stringify(channel)}`);
+    UPDATEChannelName(channel.table_Id, channel.channelName, (result) => { if (result) console.success(`Successfully changed channel ${channel.table_Id}'s name to ${channel.channelName}`); else console.error(`Failed to change channel ${channel.table_Id}'s channel name`) });
+    if (channel.channelIcon && channel.channelIcon.FileContents) UPDATEChannelIcon(channel.table_Id, new Blob([channel.channelIcon.FileContents]), (result) => { if (result) console.success(`Successfully changed channel ${channel.table_Id}'s icon`); else console.error(`Failed to change channel ${channel.table_Id}'s channel icon`) });
+    loadChannels();
   };
 
   const onChannelDelete = (channel: IRawChannelProps) => {
@@ -488,25 +514,7 @@ function MainView(props: MainViewProps) {
       if (!result) navigate(AuthViewRoutes.Login);
     });
 
-    GETUserChannels(async (channels: string[]) => {
-      const loadedChannels = [] as IRawChannelProps[];
-
-      for (var i = 0; i < channels.length; i++) {
-        const channel = await GETChannel(channels[i]);
-        if (channel === undefined) continue;
-        loadedChannels.push(channel);
-      }
-
-      setChannels(loadedChannels);
-
-      if (props.path === MainViewRoutes.Chat && loadedChannels.length < 1) {
-        navigate(MainViewRoutes.Friends);
-        return;
-      }
-
-      if (props.path === MainViewRoutes.Chat && loadedChannels[0]) onChannelClick(loadedChannels[0]); // Temporary channel preload; TODO: Store last opened channel
-    });
-
+    loadChannels(true);
     populateFriendsList();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -550,7 +558,7 @@ function MainView(props: MainViewProps) {
                 <IconButton onClick={() => null}><AddIcon /></IconButton>
               </div>
             } />
-            <ChannelList className="MainViewChannelList" sharedProps={props.sharedProps} channels={channels} onChannelClearCache={onChannelClearCache} onChannelClick={onChannelClick} onChannelEdit={onChannelEdit} onChannelDelete={onChannelDelete} onChannelMove={onChannelMove} selectedChannel={selectedChannel} />
+            <ChannelList className="MainViewChannelList" sharedProps={props.sharedProps} channels={channels} onChannelClearCache={onChannelClearCache} onChannelClick={selectChannel} onChannelEdit={onChannelEdit} onChannelDelete={onChannelDelete} onChannelMove={onChannelMove} selectedChannel={selectedChannel} />
           </div>
         </div>
       </CSSTransition>

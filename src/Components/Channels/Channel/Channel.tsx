@@ -1,30 +1,32 @@
 import React, { useEffect, useState } from "react";
-import { Button, Icon, useTheme, Typography, TextField, CircularProgress } from "@mui/material";
-import { Group as GroupIcon } from "@mui/icons-material";
+import { Avatar, Button, Icon, IconButton, useTheme, Typography, CircularProgress } from "@mui/material";
+import { Add as AddIcon, Group as GroupIcon, Security as OwnerIcon } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
 import { SettingsManager } from "NSLib/SettingsManager";
 import useClassNames from "Hooks/useClassNames";
+import { GETUser, SETAvatar } from "NSLib/APIEvents";
+import { NCFile, UploadFile } from "NSLib/ElectronAPI";
 
 import AvatarTextButton from "Components/Buttons/AvatarTextButton/AvatarTextButton";
-import GenericDialog from "Components/Dialogs/GenericDialog/GenericDialog";
 import ContextMenu from "Components/Menus/ContextMenu/ContextMenu";
 import ContextMenuItem from "Components/Menus/ContextMenuItem/ContextMenuItem";
+import GenericDialog from "Components/Dialogs/GenericDialog/GenericDialog";
+import TextCombo from "Components/Input/TextCombo/TextCombo";
 
 import type { NCComponent } from "DataTypes/Components";
 import type { IRawChannelProps } from "Interfaces/IRawChannelProps";
 import type { ChannelMoveData, Coordinates } from "DataTypes/Types";
-import { GETUser } from "NSLib/APIEvents";
-import IUserData from "Interfaces/IUserData";
+import type IUserData from "Interfaces/IUserData";
+import type { IChannelUpdateProps } from "Interfaces/IChannelUpdateProps";
 
 export interface ChannelProps extends NCComponent {
   channelData: IRawChannelProps,
   index: number,
   isSelected?: boolean,
-  isGroup?: boolean,
   onChannelClick?: (channel: IRawChannelProps) => void,
   onChannelClearCache?: (channel: IRawChannelProps) => void,
   onChannelDelete?: (channel: IRawChannelProps) => void,
-  onChannelEdit?: (channel: IRawChannelProps) => void,
+  onChannelEdit?: (channel: IChannelUpdateProps) => void,
   onChannelMove?: (currentChannel: IRawChannelProps, otherChannel: IRawChannelProps, index: number) => void,
 }
 
@@ -36,6 +38,9 @@ function Channel(props: ChannelProps) {
   const Localizations_Channel = useTranslation("Channel").t;
   const Localizations_ContextMenuItem = useTranslation("ContextMenuItem").t;
 
+  const [ChannelContextMenuChangeTitleTextField, setChannelContextMenuChangeTitleTextField] = useState("");
+  const [ChannelContextMenuIconFile, setChannelContextMenuIconFile] = useState(null as unknown as NCFile);
+  const [ChannelContextMenuIconPreview, setChannelContextMenuIconPreview] = useState(props.channelData.channelIcon);
   const [ChannelContextMenuVisible, setChannelContextMenuVisibility] = useState(false);
   const [ChannelContextMenuAnchorPos, setChannelContextMenuAnchorPos] = useState({} as unknown as Coordinates);
   const [ChannelInfoDialogVisible, setChannelInfoDialogVisibility] = useState(false);
@@ -71,15 +76,38 @@ function Channel(props: ChannelProps) {
     event.preventDefault();
   }
 
-  const editChannel = () => {
-    if (props.onChannelEdit) props.onChannelEdit(props.channelData);
-    // TODO: Implement channel editing logic
+  const closeEditChannelDialog = () => {
+    setChannelContextMenuChangeTitleTextField("");
+    setChannelContextMenuIconFile(null as unknown as NCFile);
+    setChannelContextMenuIconPreview(props.channelData.channelIcon);
     setEditChannelDialogVisibility(false);
+  }
+
+  const editChannel = () => {
+    const newChannelData: IChannelUpdateProps = {
+      table_Id: props.channelData.table_Id,
+      owner_UUID: props.channelData.owner_UUID,
+      isGroup: props.channelData.isGroup,
+      channelName: (ChannelContextMenuChangeTitleTextField.length > 0 && props.channelData.channelName !== ChannelContextMenuChangeTitleTextField) ? ChannelContextMenuChangeTitleTextField : props.channelData.channelName,
+      channelIcon: ChannelContextMenuIconFile,
+      members: props.channelData.members
+    };
+
+    if (props.onChannelEdit) props.onChannelEdit(newChannelData);
+    closeEditChannelDialog();
   }
 
   const deleteChannel = () => {
     if (props.onChannelDelete) props.onChannelDelete(props.channelData);
     setDeleteChannelDialogVisibility(false);
+  }
+
+  const pickChannelIcon = async () => {
+    UploadFile(false).then((files: NCFile[]) => {
+      if (files.length === 0) return;
+      setChannelContextMenuIconFile(files[0]);
+      setChannelContextMenuIconPreview(URL.createObjectURL(new Blob([files[0].FileContents])));
+    });
   }
 
   const clearChannelCache = () => {
@@ -114,7 +142,9 @@ function Channel(props: ChannelProps) {
       const user = ChannelMembersUserData[i];
 
       channelMembersEl.push(
-        <AvatarTextButton key={user.uuid} fullWidth iconSrc={user.avatar}>{user.username}</AvatarTextButton>
+        <AvatarTextButton key={user.uuid} fullWidth iconSrc={user.avatar} childrenAfter={
+          props.channelData.isGroup && props.channelData.owner_UUID === user.uuid ? <Icon><OwnerIcon /></Icon> : null
+        }>{user.username}</AvatarTextButton>
       );
     }
 
@@ -130,7 +160,7 @@ function Channel(props: ChannelProps) {
   return (
     <div className={classNames}>
       <AvatarTextButton sharedProps={props.sharedProps} showEllipsisConditional draggable onDrag={onChannelDrag} onDrop={onOtherChannelDropped} iconSrc={props.channelData.channelIcon} selected={props.isSelected} onLeftClick={onChannelLeftClick} onRightClick={onChannelRightClick} childrenAfter={
-        (props && props.isGroup) ? <Icon><GroupIcon /></Icon> : null
+        (props && props.channelData.isGroup) ? <Icon><GroupIcon /></Icon> : null
       }>
         {props.channelData.channelName}
       </AvatarTextButton>
@@ -145,13 +175,26 @@ function Channel(props: ChannelProps) {
           <Typography variant="body1">{Localizations_Channel("Typography-DeleteChannelBlurb2")}</Typography>
         </div>
       </GenericDialog>
-      <GenericDialog sharedProps={props.sharedProps} onClose={() => setEditChannelDialogVisibility(false)} open={EditChannelDialogVisible} title={Localizations_Channel("Typography-EditChannelDialogTitle", { channelName: props.channelData.channelName })} buttons={
+      <GenericDialog sharedProps={props.sharedProps} onClose={() => closeEditChannelDialog()} open={EditChannelDialogVisible} title={Localizations_Channel("Typography-EditChannelDialogTitle", { channelName: props.channelData.channelName })} buttons={
         <>
-          <Button onClick={() => setEditChannelDialogVisibility(false)}>{Localizations_GenericDialog("Button_Label-DialogCancel")}</Button>
+          <Button onClick={() => closeEditChannelDialog()}>{Localizations_GenericDialog("Button_Label-DialogCancel")}</Button>
           <Button color="success" onClick={() => editChannel()}>{Localizations_GenericDialog("Button_Label-DialogSave")}</Button>
         </>
       }>
         {channelMembersList}
+        <div className="GenericDialogTextContainer">
+          <Typography>{Localizations_Channel("Typography-ChangeChannelIcon")}</Typography>
+          <div style={{ alignSelf: "center" }}>
+            <IconButton className="OverlayContainer" onClick={pickChannelIcon}>
+              <Avatar sx={{ width: 128, height: 128 }} src={ChannelContextMenuIconPreview}/>
+              <AddIcon fontSize="large" className="Overlay" color="inherit" />
+            </IconButton>
+          </div>
+        </div>
+        <div className="GenericDialogTextContainer">
+          <Typography>{Localizations_Channel("Typography-ChangeChannelName")}</Typography>
+          <TextCombo submitButton={false} placeholder={props.channelData.channelName} onChange={(e) => (e.value !== undefined) ? setChannelContextMenuChangeTitleTextField(e.value) : null} value={ChannelContextMenuChangeTitleTextField}></TextCombo>
+        </div>
         <Button variant="outlined" onClick={clearChannelCache}>{Localizations_Channel("Button_Label-ClearCache")}</Button>
       </GenericDialog>
       <GenericDialog sharedProps={props.sharedProps} onClose={() => setChannelInfoDialogVisibility(false)} open={ChannelInfoDialogVisible} title={Localizations_Channel("Typography-ChannelInfoDialogTitle", { channelName: props.channelData.channelName })} buttons={

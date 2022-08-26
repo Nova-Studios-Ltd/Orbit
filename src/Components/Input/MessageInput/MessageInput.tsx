@@ -70,7 +70,7 @@ function MessageInput({ className, attachments, onFileUpload, onFileRemove, onCh
       <div className="FileUploadSummaryContainer">
         {summaryItems()}
       </div>
-      <TextCombo className="MessageInputField" onPaste={pasteFile} textFieldPlaceholder={Localizations_MessageInput("TextField_Placeholder-TypeHerePrompt")} value={TextFieldValue} onChange={onChangeHandler} onSubmit={sendMessage}
+      <TextCombo className="MessageInputField" onPaste={pasteFile} placeholder={Localizations_MessageInput("TextField_Placeholder-TypeHerePrompt")} value={TextFieldValue} onChange={onChangeHandler} onSubmit={sendMessage}
         childrenLeft={
           <>
             <span><IconButton title={Localizations_MessageInput("IconButton-Tooltip-UploadFile")} aria-label={Localizations_MessageInput("IconButton-Tooltip-UploadFile")} onClick={() => uploadFile()}><UploadIcon /></IconButton></span>

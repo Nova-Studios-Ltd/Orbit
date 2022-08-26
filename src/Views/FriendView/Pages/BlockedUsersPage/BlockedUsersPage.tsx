@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import useClassNames from "Hooks/useClassNames";
 import { Button, TextField, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
+import { WriteToClipboard } from "NSLib/ElectronAPI";
 
 import AvatarTextButton from "Components/Buttons/AvatarTextButton/AvatarTextButton";
 import ContextMenu from "Components/Menus/ContextMenu/ContextMenu";
@@ -65,6 +66,7 @@ function BlockedUsersPage(props: BlockedUsersPageProps) {
               <AvatarTextButton onRightClick={friendRightClickHandler} showEllipsis iconSrc={friend.friendData.avatar} sharedProps={props.sharedProps}>
                 <div className="FriendButtonContent">
                   <Typography>{friend.friendData?.username}#{friend.friendData?.discriminator}</Typography>
+                  <Typography variant="caption" color="gray">{friend.friendData?.uuid}</Typography>
                   <Typography variant="caption">{Localizations_BlockedUsersPage("Typography-UserBlocked")}</Typography>
                 </div>
               </AvatarTextButton>
@@ -105,6 +107,8 @@ function BlockedUsersPage(props: BlockedUsersPageProps) {
         {blockedUserElements && blockedUserElements.length > 0 ? blockedUserElements : NoBlockedUsersHint}
       </div>
       <ContextMenu open={FriendContextMenuVisible} anchorPos={FriendContextMenuAnchorPos} onDismiss={() => setFriendContextMenuVisibility(false)}>
+        <ContextMenuItem onLeftClick={() => FriendContextMenuSelectedFriend && FriendContextMenuSelectedFriend.friendData && FriendContextMenuSelectedFriend.friendData.username && FriendContextMenuSelectedFriend.friendData.discriminator ? WriteToClipboard(`${FriendContextMenuSelectedFriend.friendData.username}#${FriendContextMenuSelectedFriend.friendData.discriminator}`) : null}>{Localizations_ContextMenuItem("ContextMenuItem-CopyUser")}</ContextMenuItem>
+        <ContextMenuItem onLeftClick={() => FriendContextMenuSelectedFriend && FriendContextMenuSelectedFriend.friendData && FriendContextMenuSelectedFriend.friendData.uuid ? WriteToClipboard(FriendContextMenuSelectedFriend.friendData.uuid) : null}>{Localizations_ContextMenuItem("ContextMenuItem-CopyUUID")}</ContextMenuItem>
         <ContextMenuItem onLeftClick={() => FriendContextMenuSelectedFriend && FriendContextMenuSelectedFriend.friendData && FriendContextMenuSelectedFriend.friendData.uuid ? setUnblockFriendDialogSelector(FriendContextMenuSelectedFriend.friendData.uuid) : null}>{Localizations_ContextMenuItem("ContextMenuItem-Unblock")}</ContextMenuItem>
       </ContextMenu>
     </PageContainer>

@@ -199,7 +199,7 @@ function Message(props: MessageProps) {
         <div className="MessageMediaParentContainer">
           {mediaComponents()}
         </div>
-        {isEditing ? <TextCombo className="MessageEditField" autoFocus value={editFieldValue} textFieldPlaceholder={props.content} onChange={editMessageFieldChangedHandler} onSubmit={finishEditMessage} onDismiss={() => setEditingState(false)}
+        {isEditing ? <TextCombo className="MessageEditField" autoFocus value={editFieldValue} placeholder={props.content} onChange={editMessageFieldChangedHandler} onSubmit={finishEditMessage} onDismiss={() => setEditingState(false)}
           childrenRight={
             <>
               <IconButton onClick={() => setEditingState(false)}><CloseIcon /></IconButton>
