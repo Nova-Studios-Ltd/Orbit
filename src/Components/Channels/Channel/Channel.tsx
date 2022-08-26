@@ -28,6 +28,7 @@ export interface ChannelProps extends NCComponent {
   onChannelDelete?: (channel: IRawChannelProps) => void,
   onChannelEdit?: (channel: IChannelUpdateProps) => void,
   onChannelMove?: (currentChannel: IRawChannelProps, otherChannel: IRawChannelProps, index: number) => void,
+  onChannelResetIcon?: (channel: IRawChannelProps) => void
 }
 
 function Channel(props: ChannelProps) {
@@ -190,6 +191,7 @@ function Channel(props: ChannelProps) {
               <AddIcon fontSize="large" className="Overlay" color="inherit" />
             </IconButton>
           </div>
+          <Button variant="outlined" color="error" onClick={() => props.onChannelResetIcon ? props.onChannelResetIcon(props.channelData) : null}>{Localizations_Channel("Button_Label-ResetIcon")}</Button>
         </div>
         <div className="GenericDialogTextContainer">
           <Typography>{Localizations_Channel("Typography-ChangeChannelName")}</Typography>

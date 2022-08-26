@@ -364,14 +364,14 @@ export function UPDATEChannelName(channel_uuid: string, newName: string, callbac
 }
 
 export function UPDATEChannelIcon(channel_uuid: string, file: Blob, callback: (updated: boolean) => void) {
-    POSTFile(`/Media/Channel/${channel_uuid}/Icon`, file, new SettingsManager().User.token).then((resp: NCAPIResponse) => {
+    POSTFile(`/Channel/${channel_uuid}/Icon`, file, new SettingsManager().User.token).then((resp: NCAPIResponse) => {
         if (resp.status === 200) callback(true);
         else callback(false);
     });
 }
 
 export function REMOVEChannelIcon(channel_uuid: string, callback: (removed: boolean) => void) {
-    POST(`/Media/Channel/${channel_uuid}/ClearIcon`, ContentType.EMPTY, "", new SettingsManager().User.token).then((resp: NCAPIResponse) => {
+    POST(`/Channel/${channel_uuid}/ClearIcon`, ContentType.EMPTY, "", new SettingsManager().User.token).then((resp: NCAPIResponse) => {
         if (resp.status === 200) callback(true);
         else callback(false);
     });

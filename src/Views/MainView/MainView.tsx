@@ -12,7 +12,7 @@ import { NCChannelCache } from "NSLib/NCChannelCache";
 import { FetchImageFromClipboard, NCFile, NotificationType, TriggerNotification, UploadFile } from "NSLib/ElectronAPI";
 import { SettingsManager } from "NSLib/SettingsManager";
 import { NCUserCache } from "NSLib/NCUserCache";
-import { CREATEChannel, DELETEChannel, DELETEMessage, EDITMessage, GETChannel, GETOwnFriends, GETMessages, GETMessagesSingle, GETUserChannels, GETUserUUID, SENDMessage, GETUser, REQUESTFriend, ACCEPTFriend, REMOVEFriend, BLOCKFriend, UNBLOCKFriend, UPDATEChannelName, UPDATEChannelIcon } from "NSLib/APIEvents";
+import { CREATEChannel, DELETEChannel, DELETEMessage, EDITMessage, GETChannel, GETOwnFriends, GETMessages, GETMessagesSingle, GETUserChannels, GETUserUUID, SENDMessage, GETUser, REQUESTFriend, ACCEPTFriend, REMOVEFriend, BLOCKFriend, UNBLOCKFriend, UPDATEChannelName, UPDATEChannelIcon, REMOVEChannelIcon } from "NSLib/APIEvents";
 
 import ViewContainer from "Components/Containers/ViewContainer/ViewContainer";
 import MessageAttachment from "DataTypes/MessageAttachment";
@@ -184,10 +184,7 @@ function MainView(props: MainViewProps) {
   const onFileUpload = (clipboard?: boolean, event?: React.ClipboardEvent<HTMLInputElement>) => {
     if (clipboard) {
       FetchImageFromClipboard(event).then(async (value: NCFile | string) => {
-        if (typeof value === "string") {
-
-          return;
-        }
+        if (typeof value === "string") return;
         setMessageAttachments([...MessageAttachments, new MessageAttachment(value.FileContents, value.Filename)]);
       });
       return;
@@ -381,6 +378,10 @@ function MainView(props: MainViewProps) {
     // TODO: Add Channel move logic here
   };
 
+  const onChannelResetIcon = (channel: IRawChannelProps) => {
+    REMOVEChannelIcon(channel.table_Id, (result) => { if (result) console.success(`Successfully reset channel ${channel.table_Id}'s icon`); else console.error(`Failed to reset channel ${channel.table_Id}'s channel icon`) });
+  }
+
   const onMessageEdit = async (message: MessageProps) => {
     console.log(`Request to edit message ${message.id}`);
     if (message.id === undefined) return;
@@ -558,7 +559,7 @@ function MainView(props: MainViewProps) {
                 <IconButton onClick={() => null}><AddIcon /></IconButton>
               </div>
             } />
-            <ChannelList className="MainViewChannelList" sharedProps={props.sharedProps} channels={channels} onChannelClearCache={onChannelClearCache} onChannelClick={selectChannel} onChannelEdit={onChannelEdit} onChannelDelete={onChannelDelete} onChannelMove={onChannelMove} selectedChannel={selectedChannel} />
+            <ChannelList className="MainViewChannelList" sharedProps={props.sharedProps} channels={channels} onChannelClearCache={onChannelClearCache} onChannelClick={selectChannel} onChannelEdit={onChannelEdit} onChannelDelete={onChannelDelete} onChannelMove={onChannelMove} onChannelResetIcon={onChannelResetIcon} selectedChannel={selectedChannel} />
           </div>
         </div>
       </CSSTransition>
