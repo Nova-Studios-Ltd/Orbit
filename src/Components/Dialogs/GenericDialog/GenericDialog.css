@@ -5,9 +5,6 @@
   width: 100%;
   height: 100%;
 
-  overflow-y: auto;
-  overflow-x: hidden;
-
   visibility: hidden;
   z-index: 2;
 
@@ -22,6 +19,9 @@
 
   box-sizing: border-box;
   -webkit-box-sizing: border-box;
+
+  overflow-y: auto;
+  overflow-x: hidden;
 
   position: absolute;
   min-width: 25rem;
@@ -76,7 +76,7 @@
     position: static;
     height: 100%;
 
-    border-radius: 0;;
+    border-radius: 0;
 
     padding: var(--dialog-padding-top-constrained) var(--dialog-padding-right-constrained) var(--dialog-padding-bottom-constrained) var(--dialog-padding-left-constrained);    ;
 
