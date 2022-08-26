@@ -93,6 +93,7 @@ function MainView(props: MainViewProps) {
       for (var i = 0; i < channels.length; i++) {
         const channel = await GETChannel(channels[i]);
         if (channel === undefined) continue;
+        channel.channelIcon = `${channel.channelIcon}&nonce=${avatarNonce}`;
         loadedChannels.push(channel);
       }
 
@@ -363,6 +364,7 @@ function MainView(props: MainViewProps) {
     UPDATEChannelName(channel.table_Id, channel.channelName, (result) => { if (result) console.success(`Successfully changed channel ${channel.table_Id}'s name to ${channel.channelName}`); else console.error(`Failed to change channel ${channel.table_Id}'s channel name`) });
     if (channel.channelIcon && channel.channelIcon.FileContents) UPDATEChannelIcon(channel.table_Id, new Blob([channel.channelIcon.FileContents]), (result) => { if (result) console.success(`Successfully changed channel ${channel.table_Id}'s icon`); else console.error(`Failed to change channel ${channel.table_Id}'s channel icon`) });
     loadChannels();
+    onAvatarChanged();
   };
 
   const onChannelDelete = (channel: IRawChannelProps) => {
@@ -375,6 +377,7 @@ function MainView(props: MainViewProps) {
 
   const onChannelMove = (currentChannel: IRawChannelProps, otherChannel: IRawChannelProps, index: number) => {
     console.log(`Request to move channel ${otherChannel.channelName} to new index of ${index}`);
+    console.warn("Moving channels isn't actually implemented yet");
     // TODO: Add Channel move logic here
   };
 
