@@ -189,7 +189,7 @@ function Channel(props: ChannelProps) {
       }>
         {channelMembersList}
         <div className="GenericDialogTextContainer">
-          <Typography>{Localizations_Channel("Typography-ChangeChannelIcon")}</Typography>
+          <Typography variant="h6">{Localizations_Channel("Typography-ChangeChannelIcon")}</Typography>
           <div style={{ alignSelf: "center" }}>
             <IconButton className="OverlayContainer" onClick={pickChannelIcon}>
               <Avatar sx={{ width: 128, height: 128 }} src={ChannelContextMenuIconPreview}/>
@@ -199,7 +199,7 @@ function Channel(props: ChannelProps) {
           <Button variant="outlined" color="error" onClick={() => props.onChannelResetIcon ? props.onChannelResetIcon(props.channelData) : null}>{Localizations_Channel("Button_Label-ResetIcon")}</Button>
         </div>
         <div className="GenericDialogTextContainer">
-          <Typography>{Localizations_Channel("Typography-ChangeChannelName")}</Typography>
+          <Typography variant="h6">{Localizations_Channel("Typography-ChangeChannelName")}</Typography>
           <TextCombo submitButton={false} placeholder={props.channelData.channelName} onChange={(e) => (e.value !== undefined) ? setChannelContextMenuChangeTitleTextField(e.value) : null} value={ChannelContextMenuChangeTitleTextField}></TextCombo>
         </div>
         <Button variant="outlined" onClick={clearChannelCache}>{Localizations_Channel("Button_Label-ClearCache")}</Button>
