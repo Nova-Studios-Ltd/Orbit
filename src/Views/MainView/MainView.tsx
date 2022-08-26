@@ -359,6 +359,7 @@ function MainView(props: MainViewProps) {
   };
 
   const onChannelEdit = (channel: IChannelUpdateProps) => {
+    console.log(`Request to edit channel ${channel.table_Id}`);
     UPDATEChannelName(channel.table_Id, channel.channelName, (result) => { if (result) console.success(`Successfully changed channel ${channel.table_Id}'s name to ${channel.channelName}`); else console.error(`Failed to change channel ${channel.table_Id}'s channel name`) });
     if (channel.channelIcon && channel.channelIcon.FileContents) UPDATEChannelIcon(channel.table_Id, new Blob([channel.channelIcon.FileContents]), (result) => { if (result) console.success(`Successfully changed channel ${channel.table_Id}'s icon`); else console.error(`Failed to change channel ${channel.table_Id}'s channel icon`) });
     loadChannels();
