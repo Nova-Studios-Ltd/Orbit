@@ -1,6 +1,16 @@
 import { API_DOMAIN } from "vars";
-import { StripExif } from "./NCExifStripper";
 
+/**
+ * Represents commonly used HTTP Status Codes (HTTPStatusCodes.OK, 400, 401, 403, 404, 500)
+ */
+export enum HTTPStatusCodes {
+  OK = 200,
+  NotFound = 404,
+  ServerError = 500,
+  BadRequest = 400,
+  Unauthorized = 401,
+  Forbidden = 403
+}
 
 /**
  * Represents a response from the NovaChat API
@@ -43,7 +53,7 @@ export async function GET(endpoint: string, token?: string, json: boolean = true
       "Authorization": token || ""
     }
   });
-  if (json && resp.status === 200)
+  if (json && resp.status === HTTPStatusCodes.OK)
     return new NCAPIResponse(resp.status, resp.statusText, await resp.json());
   else
     return new NCAPIResponse(resp.status, resp.statusText, await resp.text());
@@ -67,7 +77,7 @@ export async function POST(endpoint: string, content_type: ContentType, payload:
     body: payload
   });
 
-  if (json && resp.status === 200)
+  if (json && resp.status === HTTPStatusCodes.OK)
     return new NCAPIResponse(resp.status, resp.statusText, await resp.json());
   else
     return new NCAPIResponse(resp.status, resp.statusText, await resp.text());
@@ -136,9 +146,10 @@ export async function DELETE(endpoint: string, token?: string) : Promise<NCAPIRe
  * @param token Optional security token
  * @returns A NCAPIResponse with the data from the NovaChat API
  */
-export async function POSTFile(endpoint: string, payload: Blob, filename: string, token?: string) : Promise<NCAPIResponse> {
+export async function POSTFile(endpoint: string, payload: Blob, filename: string, keys?: string, token?: string) : Promise<NCAPIResponse> {
   const formData = new FormData();
   formData.append("file", payload, filename);
+  formData.append("keys", keys || "");
   const resp = await fetch(`${API_DOMAIN}/${endpoint}`, {
     method: "POST",
     body: formData,
