@@ -283,13 +283,24 @@ export function SENDMessage(channel_uuid: string, contents: string, rawAttachmen
             token = postToken.payload;
             if (postToken.status !== HTTPStatusCodes.OK) return;
             for (let a = 0; a < rawAttachments.length; a++) {
-                const attachment = rawAttachments[a];
-                const imageSize = (await GetImageDimensions(attachment.contents)) || new Dimensions(0, 0);
-                const contents = (await EncryptUint8Array(messageKey, attachment.contents, new Base64String(encryptedMessage.iv))).content;
-                const encFilename = await EncryptBase64(messageKey, Base64String.CreateBase64String(attachment.filename), new Base64String(encryptedMessage.iv));
-                const re = await POSTFile(`/Channel/${channel_uuid}?width=${imageSize.width}&height=${imageSize.height}&contentToken=${token}&fileType=${GetExtension(attachment.filename)}`, new Blob([contents]), encFilename.content as string, Manager.User.token)
-                if (re.status === HTTPStatusCodes.OK) attachments.push(re.payload as string);
-                else failedUploads.push(new FailedUpload(re.status as FailReason, attachment.filename, attachment.id));
+
+              // Generate Attachment key and encrypt with everyones pub key
+              const attachmentKey = await GenerateBase64Key(32);
+
+              const attachment = rawAttachments[a];
+
+              // Image Size
+              const imageSize = (await GetImageDimensions(attachment.contents)) || new Dimensions(0, 0);
+
+              // Encrypted Attachment
+              const encAttachment = (await EncryptUint8Array(attachmentKey, attachment.contents));
+
+              // Encrypted Filename
+              const encFilename = await EncryptBase64(messageKey, Base64String.CreateBase64String(attachment.filename), new Base64String(encAttachment.iv));
+
+              const re = await POSTFile(`/Channel/${channel_uuid}?width=${imageSize.width}&height=${imageSize.height}&contentToken=${token}&fileType=${GetExtension(attachment.filename)}`, new Blob([contents]), encFilename.content as string, Manager.User.token)
+              if (re.status === HTTPStatusCodes.OK) attachments.push(re.payload as string);
+              else failedUploads.push(new FailedUpload(re.status as FailReason, attachment.filename, attachment.id));
             }
           }
           const encKeys = {} as {[uuid: string]: string};
