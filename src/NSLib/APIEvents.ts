@@ -296,9 +296,23 @@ export function SENDMessage(channel_uuid: string, contents: string, rawAttachmen
               const encAttachment = (await EncryptUint8Array(attachmentKey, attachment.contents));
 
               // Encrypted Filename
-              const encFilename = await EncryptBase64(messageKey, Base64String.CreateBase64String(attachment.filename), new Base64String(encAttachment.iv));
+              const encFilename = await EncryptBase64(attachmentKey, Base64String.CreateBase64String(attachment.filename), new Base64String(encAttachment.iv));
 
-              const re = await POSTFile(`/Channel/${channel_uuid}?width=${imageSize.width}&height=${imageSize.height}&contentToken=${token}&fileType=${GetExtension(attachment.filename)}`, new Blob([contents]), encFilename.content as string, Manager.User.token)
+
+              // Generate keys for each user of the channel
+              const encKeys = {} as {[uuid: string]: string};
+              for (let m = 0; m < channel.members.length; m++) {
+                const member = channel.members[m];
+                if (member !== Manager.User.uuid) {
+                  const pubKey = await Manager.ReadKey(member);
+                  if (pubKey !== undefined) {
+                    const encryptedKey = await EncryptBase64WithPub(pubKey, attachmentKey);
+                    encKeys[member] = encryptedKey.Base64;
+                  }
+                }
+              }
+
+              const re = await POSTFile(`/Channel/${channel_uuid}?width=${imageSize.width}&height=${imageSize.height}&contentToken=${token}&fileType=${GetExtension(attachment.filename)}`, new Blob([contents]), encFilename.content as string, JSON.stringify(encKeys), encAttachment.iv, Manager.User.token)
               if (re.status === HTTPStatusCodes.OK) attachments.push(re.payload as string);
               else failedUploads.push(new FailedUpload(re.status as FailReason, attachment.filename, attachment.id));
             }
