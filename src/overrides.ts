@@ -22,7 +22,7 @@ export function OverrideConsoleLog(onNewMessage: (message: DebugMessage) => void
         finalString += ` ${argToString}`;
       }
       catch {
-        onNewMessage({ type: DebugMessageType.Error, timestamp: Date.now(), message: "Unable to log message" });
+        consoleErrorOrig("Unable to log message");
       }
     }
 
@@ -42,7 +42,7 @@ export function OverrideConsoleWarn(onNewMessage: (message: DebugMessage) => voi
         finalString += ` ${argToString}`;
       }
       catch {
-        onNewMessage({ type: DebugMessageType.Error, timestamp: Date.now(), message: "Unable to log warn message" });
+        consoleErrorOrig("Unable to log warn message");
       }
     }
 
@@ -62,7 +62,7 @@ export function OverrideConsoleError(onNewMessage: (message: DebugMessage) => vo
         finalString += ` ${argToString}`;
       }
       catch {
-        onNewMessage({ type: DebugMessageType.Error, timestamp: Date.now(), message: "Unable to log error message" });
+        consoleErrorOrig("Unable to log error message");
       }
     }
 
@@ -82,7 +82,7 @@ export function OverrideConsoleSuccess(onNewMessage: (message: DebugMessage) => 
         finalString += ` ${argToString}`;
       }
       catch {
-        onNewMessage({ type: DebugMessageType.Error, timestamp: Date.now(), message: "Unable to log success message" });
+        consoleErrorOrig("Unable to log success message");
       }
     }
 
