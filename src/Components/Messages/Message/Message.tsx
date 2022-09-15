@@ -66,10 +66,10 @@ function Message(props: MessageProps) {
         if (type === FileType.Image) {
           const size = await GetImageDimensions(link);
           if (size.height === -1) continue;
-          att.push(new AttachmentProps(link, new Uint8Array(), "Unknown", "image/png", 0, size.width, size.height, true));
+          att.push(new AttachmentProps(link, new Uint8Array(), "Unknown", "image/png", 0, size.width, size.height, {}, "", true));
         }
         else if (type === FileType.Video) {
-          att.push(new AttachmentProps(link, new Uint8Array(), "Unknown", "video/mp4", 0, 0, 0, true));
+          att.push(new AttachmentProps(link, new Uint8Array(), "Unknown", "video/mp4", 0, 0, 0, {}, "", true));
         }
       }
       if (props.attachments === undefined) return;

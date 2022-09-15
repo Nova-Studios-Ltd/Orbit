@@ -6,6 +6,8 @@ export interface IAttachmentProps {
   size: number,
   contentWidth: number,
   contentHeight: number,
+  keys: { [key: string] : string; },
+  iv: string,
   isExternal: boolean
 }
 
@@ -18,7 +20,8 @@ export class AttachmentProps implements IAttachmentProps {
   contentWidth: number;
   contentHeight: number;
   isExternal: boolean;
-
+  keys: { [key: string] : string; };
+  iv: string;
 
   constructor(
     contentUrl: string,
@@ -28,6 +31,8 @@ export class AttachmentProps implements IAttachmentProps {
     size: number,
     contentWidth: number,
     contentHeight: number,
+    keys: { [key: string] : string; },
+    iv: string,
     isExternal: boolean
 ) {
     this.contentUrl = contentUrl
@@ -37,6 +42,8 @@ export class AttachmentProps implements IAttachmentProps {
     this.size = size
     this.contentWidth = contentWidth
     this.contentHeight = contentHeight
+    this.keys = keys;
+    this.iv = iv;
     this.isExternal = isExternal
   }
 

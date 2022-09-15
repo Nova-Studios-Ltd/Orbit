@@ -49,7 +49,7 @@ function MessageMedia(props: MessageMediaProps) {
     event.stopPropagation();
     event.preventDefault();
 
-    const attachmentProps = { contentUrl: props.contentUrl || "", content: props.content || new Uint8Array(), filename: props.fileName || "", mimeType: props.mimeType || "", size: props.fileSize || 0, contentWidth: props.contentWidth || 0, contentHeight: props.contentHeight || 0, isExternal: props.isExternal || false };
+    const attachmentProps = { contentUrl: props.contentUrl || "", content: props.content || new Uint8Array(), filename: props.fileName || "", mimeType: props.mimeType || "", size: props.fileSize || 0, contentWidth: props.contentWidth || 0, contentHeight: props.contentHeight || 0, keys: {}, iv: "", isExternal: props.isExternal || false };
 
     if (event.button === 0) { // Left Click
       if (props.onLeftClick) props.onLeftClick(event, attachmentProps);

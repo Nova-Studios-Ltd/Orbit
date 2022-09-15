@@ -157,9 +157,10 @@ async function DecryptMessage(message: IMessageProps) : Promise<IMessageProps> {
     for (let a = 0; a < message.attachments.length; a++) {
       const attachment = message.attachments[a];
       const content = await GETFile(attachment.contentUrl, Manager.User.token);
-      const filename = message.attachments[a].filename;
-      const decryptedContent = await DecryptUint8Array(key, new AESMemoryEncryptData( message.iv, content.payload as Uint8Array));
-      const decryptedFilename = await DecryptBase64(key, new AESMemoryEncryptData( message.iv, filename));
+      const filename = attachment.filename;
+      const att_key = await DecryptBase64WithPriv(Manager.User.keyPair.PrivateKey, new Base64String(attachment.keys[Manager.User.uuid]));
+      const decryptedContent = await DecryptUint8Array(att_key, new AESMemoryEncryptData(attachment.iv, content.payload as Uint8Array));
+      const decryptedFilename = await DecryptBase64(att_key, new AESMemoryEncryptData(attachment.iv, filename));
       message.attachments[a].content = decryptedContent;
       message.attachments[a].filename = decryptedFilename.String;
     }
@@ -303,16 +304,16 @@ export function SENDMessage(channel_uuid: string, contents: string, rawAttachmen
               const encKeys = {} as {[uuid: string]: string};
               for (let m = 0; m < channel.members.length; m++) {
                 const member = channel.members[m];
-                if (member !== Manager.User.uuid) {
-                  const pubKey = await Manager.ReadKey(member);
-                  if (pubKey !== undefined) {
-                    const encryptedKey = await EncryptBase64WithPub(pubKey, attachmentKey);
-                    encKeys[member] = encryptedKey.Base64;
-                  }
+                const pubKey = await Manager.ReadKey(member);
+                if (pubKey !== undefined) {
+                  const encryptedKey = await EncryptBase64WithPub(pubKey, attachmentKey);
+                  encKeys[member] = encryptedKey.Base64;
                 }
               }
 
-              const re = await POSTFile(`/Channel/${channel_uuid}?width=${imageSize.width}&height=${imageSize.height}&contentToken=${token}&fileType=${GetExtension(attachment.filename)}`, new Blob([contents]), encFilename.content as string, JSON.stringify(encKeys), encAttachment.iv, Manager.User.token)
+              encKeys[Manager.User.uuid] = (await EncryptBase64WithPub(Manager.User.keyPair.PublicKey, attachmentKey)).Base64;
+
+              const re = await POSTFile(`/Channel/${channel_uuid}?width=${imageSize.width}&height=${imageSize.height}&contentToken=${token}&fileType=${GetExtension(attachment.filename)}`, new Blob([encAttachment.content]), encFilename.content as string, JSON.stringify(encKeys), encAttachment.iv, Manager.User.token)
               if (re.status === HTTPStatusCodes.OK) attachments.push(re.payload as string);
               else failedUploads.push(new FailedUpload(re.status as FailReason, attachment.filename, attachment.id));
             }
