@@ -9,10 +9,10 @@ Repository for the official Orbit Web Interface. The purpose is to allow it's us
 - NPM
 
 ## Gettings the sources
-Download a zipped version [here](https://gitlab.novastudios.tk/orbit/orbit-web-interface/-/archive/main/orbit-web-interface-main.zip)
+Download a zipped version [here](https://gitlab.novastudios.uk/orbit/orbit-web-interface/-/archive/main/orbit-web-interface-main.zip)
 or via HTTPS:
 ```
-git clone https://gitlab.novastudios.tk/orbit/orbit-web-interface.git
+git clone https://gitlab.novastudios.uk/orbit/orbit-web-interface.git
 ```
 
 ## Running/Building

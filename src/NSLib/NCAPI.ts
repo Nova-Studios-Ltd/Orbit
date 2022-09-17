@@ -169,7 +169,7 @@ export async function POSTFile(endpoint: string, payload: Blob, filename: string
  */
 export async function GETFile(endpoint: string, token?: string, isExternal?: boolean) : Promise<NCAPIResponse> {
   if (endpoint.includes(API_DOMAIN)) endpoint = endpoint.replace(API_DOMAIN, "");
-  const url = (isExternal)? `https://api.novastudios.tk/Proxy?url=${endpoint}` : `${API_DOMAIN}/${endpoint}`
+  const url = (isExternal)? `https://api.novastudios.uk/Proxy?url=${endpoint}` : `${API_DOMAIN}/${endpoint}`
   const resp = await fetch(url, {
       method: "GET",
       headers: {
