@@ -1,15 +1,21 @@
 @import "Pages/Pages.css";
 
 .FriendViewContainer {
-
+  gap: var(--global-margin);
 }
 
 .FriendButton {
-
+  width: 100%;
 }
 
 .FriendButtonContainer {
+  display: flex;
+  flex-direction: row;
+}
 
+.FriendButtonSelectorContainer {
+  display: flex;
+  align-items: center;
 }
 
 .FriendButtonContent {

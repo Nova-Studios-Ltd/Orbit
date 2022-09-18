@@ -7,6 +7,7 @@ import Channel, { ChannelProps } from "Components/Channels/Channel/Channel";
 import type { NCAPIComponent } from "DataTypes/Components";
 import type { IRawChannelProps } from "Interfaces/IRawChannelProps";
 import type { IChannelUpdateProps } from "Interfaces/IChannelUpdateProps";
+import type IUserData from "Interfaces/IUserData";
 
 export interface ChannelListProps extends NCAPIComponent {
   channels?: IRawChannelProps[],
@@ -15,6 +16,7 @@ export interface ChannelListProps extends NCAPIComponent {
   onChannelDelete?: (channel: IRawChannelProps) => void,
   onChannelEdit?: (channel: IChannelUpdateProps) => void,
   onChannelMove?: (currentChannel: IRawChannelProps, otherChannel: IRawChannelProps, index: number) => void,
+  onChannelRemoveRecipient?: (channel: IRawChannelProps, recipient: IUserData) => void,
   onChannelResetIcon?: (channel: IRawChannelProps) => void
 }
 
@@ -39,7 +41,7 @@ function ChannelList(props: ChannelListProps) {
           to index the channels in user-specified order (otherwise default to order as retrieved from server)
         */
 
-        return (<Channel key={channel.table_Id} index={index} sharedProps={props.sharedProps} channelData={channel} isSelected={isSelected} onChannelClearCache={props.onChannelClearCache} onChannelClick={props.onChannelClick} onChannelDelete={props.onChannelDelete} onChannelEdit={props.onChannelEdit} onChannelMove={props.onChannelMove} onChannelResetIcon={props.onChannelResetIcon} />);
+        return (<Channel key={channel.table_Id} index={index} sharedProps={props.sharedProps} channelData={channel} isSelected={isSelected} onChannelClearCache={props.onChannelClearCache} onChannelClick={props.onChannelClick} onChannelDelete={props.onChannelDelete} onChannelEdit={props.onChannelEdit} onChannelMove={props.onChannelMove} onChannelRemoveRecipient={props.onChannelRemoveRecipient} onChannelResetIcon={props.onChannelResetIcon} />);
       });
     }
 

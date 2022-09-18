@@ -12,7 +12,7 @@ import { NCChannelCache } from "NSLib/NCChannelCache";
 import { FetchImageFromClipboard, NCFile, NotificationType, TriggerNotification, UploadFile } from "NSLib/ElectronAPI";
 import { SettingsManager } from "NSLib/SettingsManager";
 import { NCUserCache } from "NSLib/NCUserCache";
-import { CREATEChannel, DELETEChannel, DELETEMessage, EDITMessage, GETChannel, GETOwnFriends, GETMessages, GETMessagesSingle, GETUserChannels, GETUserUUID, SENDMessage, GETUser, REQUESTFriend, ACCEPTFriend, REMOVEFriend, BLOCKFriend, UNBLOCKFriend, UPDATEChannelName, UPDATEChannelIcon, REMOVEChannelIcon } from "NSLib/APIEvents";
+import { CREATEChannel, DELETEChannel, DELETEMessage, EDITMessage, GETChannel, GETOwnFriends, GETMessages, GETMessagesSingle, GETUserChannels, GETUserUUID, SENDMessage, GETUser, REQUESTFriend, ACCEPTFriend, REMOVEFriend, BLOCKFriend, UNBLOCKFriend, UPDATEChannelName, UPDATEChannelIcon, REMOVEChannelIcon, CREATEGroupChannel, REMOVEChannelMember } from "NSLib/APIEvents";
 
 import ViewContainer from "Components/Containers/ViewContainer/ViewContainer";
 import MessageAttachment from "DataTypes/MessageAttachment";
@@ -30,11 +30,12 @@ import type { IMessageProps } from "Interfaces/IMessageProps";
 import type { MessageProps } from "Components/Messages/Message/Message";
 import { Dictionary } from "NSLib/Dictionary";
 import type Friend from "DataTypes/Friend";
-import { AuthViewRoutes, MainViewRoutes, SettingsViewRoutes } from "DataTypes/Routes";
+import { AuthViewRoutes, FriendViewRoutes, MainViewRoutes, SettingsViewRoutes } from "DataTypes/Routes";
 import type { IChannelUpdateProps } from "Interfaces/IChannelUpdateProps";
+import IUserData from "Interfaces/IUserData";
 
 interface MainViewProps extends View {
-  path: MainViewRoutes
+  path: MainViewRoutes | FriendViewRoutes | SettingsViewRoutes
 }
 
 export const UserCache = new NCUserCache();
@@ -326,6 +327,29 @@ function MainView(props: MainViewProps) {
     }
   }
 
+  const onCreateGroup = (friends: Friend[]) => {
+    console.log(`Requested to create group with recipients ${friends}`);
+    if (friends.length > 0) {
+      let groupChannelName = "";
+      const groupChannelRecipients: string[] = [];
+      for (let i = 0; i < friends.length; i++) {
+        const friend = friends[i];
+        if (friend.friendData) {
+          groupChannelName += `${friend.friendData.username}${i < friends.length - 1 ? ", " : ""}`;
+          groupChannelRecipients.push(friend.friendData.uuid);
+        }
+      }
+
+      CREATEGroupChannel(groupChannelName, groupChannelRecipients, (created) => {
+        if (created) console.success(`Group channel successfully created`)
+        else console.error(`Unable to create group channel`);
+      });
+
+      return;
+    }
+    console.warn(`Unable to create group channel because there were no recipients`);
+  }
+
   const onAddFriend = async (recipient: string) => {
     if (isValidUsername(recipient)) {
       const ud = recipient.split("#");
@@ -380,6 +404,13 @@ function MainView(props: MainViewProps) {
     console.warn("Moving channels isn't actually implemented yet");
     // TODO: Add Channel move logic here
   };
+
+  const onChannelRemoveRecipient = (channel: IRawChannelProps, recipient: IUserData) => {
+    REMOVEChannelMember(channel.table_Id, recipient.uuid, (removed) => {
+      if (removed) console.success(`Successfully removed user ${recipient.username} from the channel ${channel.channelName}`)
+      else console.error(`Unable to remove user ${recipient.username} from the channel ${channel.channelName}`);
+    });
+  }
 
   const onChannelResetIcon = (channel: IRawChannelProps) => {
     REMOVEChannelIcon(channel.table_Id, (result) => { if (result) console.success(`Successfully reset channel ${channel.table_Id}'s icon`); else console.error(`Failed to reset channel ${channel.table_Id}'s channel icon`) });
@@ -537,7 +568,7 @@ function MainView(props: MainViewProps) {
           </>
         )
       case MainViewRoutes.Friends:
-        return (<FriendView sharedProps={modifiedSharedProps} friends={friends} onReloadList={populateFriendsList} onFriendClicked={onFriendClicked} onAddFriend={onAddFriend} onBlockFriend={onBlockFriend} onUnblockFriend={onUnblockFriend} onRemoveFriend={onRemoveFriend} />);
+        return (<FriendView sharedProps={modifiedSharedProps} friends={friends} onReloadList={populateFriendsList} onFriendClicked={onFriendClicked} onAddFriend={onAddFriend} onCreateGroup={onCreateGroup} onBlockFriend={onBlockFriend} onUnblockFriend={onUnblockFriend} onRemoveFriend={onRemoveFriend} />);
       case MainViewRoutes.Settings:
         return (<SettingsView sharedProps={modifiedSharedProps} avatarNonce={avatarNonce} onAvatarChanged={onAvatarChanged} onLogout={onLogout} path={SettingsViewRoutes.Dashboard} />);
       default:
@@ -559,10 +590,10 @@ function MainView(props: MainViewProps) {
           <div className="MainViewChannelListContainer">
             <GenericHeader className="MainViewHeader" title={Localizations_MainView("Header_Title-ChannelList")} childrenRight={
               <div>
-                <IconButton onClick={() => null}><AddIcon /></IconButton>
+                <IconButton onClick={() => navigate(MainViewRoutes.Friends)}><AddIcon /></IconButton>
               </div>
             } />
-            <ChannelList className="MainViewChannelList" sharedProps={props.sharedProps} channels={channels} onChannelClearCache={onChannelClearCache} onChannelClick={selectChannel} onChannelEdit={onChannelEdit} onChannelDelete={onChannelDelete} onChannelMove={onChannelMove} onChannelResetIcon={onChannelResetIcon} selectedChannel={selectedChannel} />
+            <ChannelList className="MainViewChannelList" sharedProps={props.sharedProps} channels={channels} onChannelClearCache={onChannelClearCache} onChannelClick={selectChannel} onChannelEdit={onChannelEdit} onChannelDelete={onChannelDelete} onChannelMove={onChannelMove} onChannelRemoveRecipient={onChannelRemoveRecipient} onChannelResetIcon={onChannelResetIcon} selectedChannel={selectedChannel} />
           </div>
         </div>
       </CSSTransition>

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Dictionary } from "NSLib/Dictionary";
-import { Button, Typography } from "@mui/material";
+import { Button, Checkbox, Typography } from "@mui/material";
 import useClassNames from "Hooks/useClassNames";
 import { WriteToClipboard } from "NSLib/ElectronAPI";
 
@@ -19,7 +19,7 @@ interface FriendPageProps extends Page {
   friends?: Friend[],
   onReloadList?: () => void,
   onFriendClicked?: (friend: Friend) => void,
-  onAddFriend?: (recipient: string) => void,
+  onCreateGroup?: (friends: Friend[]) => void,
   onRemoveFriend?: (uuid: string) => void,
   onBlockFriend?: (uuid: string) => void,
   onUnblockFriend?: (uuid: string) => void
@@ -35,6 +35,7 @@ function FriendPage(props: FriendPageProps) {
   const [FriendContextMenuVisible, setFriendContextMenuVisibility] = useState(false);
   const [FriendContextMenuAnchorPos, setFriendContextMenuAnchorPos] = useState({} as unknown as Coordinates);
   const [FriendContextMenuSelectedFriend, setFriendContextMenuSelectedFriend] = useState(null as unknown as Friend);
+  const [GroupChannelRecipientsList, setGroupChannelRecipientsList] = useState([] as Friend[]);
   const [RemoveFriendDialogSelector, setRemoveFriendDialogSelector] = useState("");
   const [BlockUnblockFriendDialogSelector, setBlockFriendDialogSelector] = useState("");
 
@@ -50,6 +51,27 @@ function FriendPage(props: FriendPageProps) {
   const blockFriend = (uuid?: string) => {
     if (uuid && props.onBlockFriend) props.onBlockFriend(uuid);
     setBlockFriendDialogSelector("");
+  }
+
+  const friendTicked = (e: React.ChangeEvent<HTMLInputElement>, friend: Friend) => {
+    if (e.target.checked) {
+      for (let i = 0; i < GroupChannelRecipientsList.length; i++) {
+        const selectedFriend = GroupChannelRecipientsList[i];
+        if (selectedFriend.friendData?.uuid === friend.friendData?.uuid) return;
+      }
+
+      setGroupChannelRecipientsList([...GroupChannelRecipientsList, friend]);
+      return;
+    }
+
+    const NewGroupChannelRecipientsList = [];
+
+    for (let i = 0; i < GroupChannelRecipientsList.length; i++) {
+      const selectedFriend = GroupChannelRecipientsList[i];
+      if (selectedFriend.friendData?.uuid !== friend.friendData?.uuid) NewGroupChannelRecipientsList.push(selectedFriend);
+    }
+
+    setGroupChannelRecipientsList(NewGroupChannelRecipientsList);
   }
 
   const friendElements = (() => {
@@ -72,6 +94,9 @@ function FriendPage(props: FriendPageProps) {
         // TODO: Localize friend.status
         return (
           <div key={friend.friendData.uuid} className="FriendButtonContainer">
+            <div className="FriendButtonSelectorContainer">
+              <Checkbox onChange={(e) => friendTicked(e, friend)} />
+            </div>
             <AvatarTextButton className="FriendButton" showEllipsis iconSrc={friend.friendData.avatar} onLeftClick={() => acceptFriendRequest(friend)} onRightClick={friendRightClickHandler} sharedProps={props.sharedProps}>
               <div className="FriendButtonContent">
                 <Typography>{friend.friendData?.username}#{friend.friendData?.discriminator}</Typography>
@@ -120,7 +145,10 @@ function FriendPage(props: FriendPageProps) {
 
   return (
     <PageContainer className={classNames} adaptive={false}>
-      <Button onClick={() => { if (props.onReloadList) props.onReloadList() }}>{Localizations_FriendPage("Button_Label-ReloadFriendsList")}</Button>
+      <div className="FriendsPageButtonContainer">
+        <Button disabled={GroupChannelRecipientsList.length < 1} variant="outlined" color="success" onClick={() => { if (props.onCreateGroup) props.onCreateGroup(GroupChannelRecipientsList) }}>{Localizations_FriendPage("Button_Label-CreateGroupChannel")}</Button>
+        <Button variant="outlined" style={{ marginLeft: "auto" }} onClick={() => { if (props.onReloadList) props.onReloadList() }}>{Localizations_FriendPage("Button_Label-ReloadFriendsList")}</Button>
+      </div>
       <div className="FriendsContainer">
         {friendElements && friendElements.length > 0 ? friendElements : NoFriendsHint}
       </div>
