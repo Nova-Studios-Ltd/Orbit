@@ -131,7 +131,9 @@ function App() {
           <Route path={AuthViewRoutes.Register} element={<AuthView sharedProps={SharedProps} path={AuthViewRoutes.Register} />} />
           <Route path={`${MainViewRoutes.Chat}/*`} element={<MainView sharedProps={SharedProps} path={MainViewRoutes.Chat} />} />
           <Route path={MainViewRoutes.Friends} element={<MainView sharedProps={SharedProps} path={MainViewRoutes.Friends} />}>
-            <Route path={FriendViewRoutes.FriendsList} element={<MainView sharedProps={SharedProps} path={MainViewRoutes.Friends} />} />
+            <Route path={FriendViewRoutes.FriendsList} element={<MainView sharedProps={SharedProps} path={FriendViewRoutes.FriendsList} />} />
+            <Route path={FriendViewRoutes.BlockedUsersList} element={<MainView sharedProps={SharedProps} path={FriendViewRoutes.BlockedUsersList} />} />
+            <Route path={FriendViewRoutes.AddFriend} element={<MainView sharedProps={SharedProps} path={FriendViewRoutes.AddFriend} />} />
           </Route>
           <Route path={MainViewRoutes.Settings} element={<MainView sharedProps={SharedProps} path={MainViewRoutes.Settings} />} />
         </Routes>

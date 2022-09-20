@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Avatar, Button, Icon, IconButton, useTheme, Typography, CircularProgress } from "@mui/material";
-import { Add as AddIcon, Group as GroupIcon, Security as OwnerIcon } from "@mui/icons-material";
+import { Add as AddIcon, Delete as DeleteIcon, Group as GroupIcon, Security as OwnerIcon } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
 import { SettingsManager } from "NSLib/SettingsManager";
 import useClassNames from "Hooks/useClassNames";
@@ -28,6 +28,7 @@ export interface ChannelProps extends NCComponent {
   onChannelDelete?: (channel: IRawChannelProps) => void,
   onChannelEdit?: (channel: IChannelUpdateProps) => void,
   onChannelMove?: (currentChannel: IRawChannelProps, otherChannel: IRawChannelProps, index: number) => void,
+  onChannelRemoveRecipient?: (channel: IRawChannelProps, recipient: IUserData) => void,
   onChannelResetIcon?: (channel: IRawChannelProps) => void
 }
 
@@ -108,6 +109,10 @@ function Channel(props: ChannelProps) {
     setDeleteChannelDialogVisibility(false);
   }
 
+  const removeRecipient = (recipient: IUserData) => {
+    if (props.onChannelRemoveRecipient) props.onChannelRemoveRecipient(props.channelData, recipient);
+  }
+
   const pickChannelIcon = async () => {
     UploadFile(false).then((files: NCFile[]) => {
       if (files.length === 0) return;
@@ -149,7 +154,7 @@ function Channel(props: ChannelProps) {
 
       channelMembersEl.push(
         <AvatarTextButton key={user.uuid} fullWidth iconSrc={user.avatar} childrenAfter={
-          props.channelData.isGroup && props.channelData.owner_UUID === user.uuid ? <Icon><OwnerIcon /></Icon> : null
+          props.channelData.isGroup ? (props.channelData.owner_UUID === user.uuid ? <IconButton disabled><OwnerIcon /></IconButton> : <IconButton onClick={() => removeRecipient(user)}><DeleteIcon /></IconButton>) : null
         }>{user.username}</AvatarTextButton>
       );
     }

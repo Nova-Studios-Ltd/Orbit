@@ -1,7 +1,6 @@
 .FriendPageContainer {
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
 
   gap: var(--global-margin);
 }
@@ -12,6 +11,10 @@
   width: 100%;
 
   gap: var(--global-margin);
+}
+
+.FriendsPageButtonContainer {
+  display: flex;
 }
 
 .NoFriendsHintContainer {
