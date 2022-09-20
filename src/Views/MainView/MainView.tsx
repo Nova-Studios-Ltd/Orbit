@@ -32,6 +32,7 @@ import { Dictionary } from "NSLib/Dictionary";
 import type Friend from "DataTypes/Friend";
 import { AuthViewRoutes, MainViewRoutes, SettingsViewRoutes } from "DataTypes/Routes";
 import type { IChannelUpdateProps } from "Interfaces/IChannelUpdateProps";
+import { URLGetChannelUUID } from "NSLib/LibURL";
 
 interface MainViewProps extends View {
   path: MainViewRoutes
@@ -58,6 +59,8 @@ function MainView(props: MainViewProps) {
   const [MessageAttachments, setMessageAttachments] = useState([] as MessageAttachment[]);
   const [channelMenuOpen, setChannelMenuVisibility] = useState(false);
   const [avatarNonce, setAvatarNonce] = useState(Date.now().toString());
+
+  //console.log(`Current channel from url is ${URLGetChannelUUID(location.pathname)}`);
 
   const channelContainsUUID = (uuid: string) => {
     for (let i = 0; i < channels.length; i++) {

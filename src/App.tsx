@@ -22,6 +22,7 @@ import type { HelpPopupProps, SharedProps } from "DataTypes/Components";
 import type { DebugMessage } from "DataTypes/Types";
 
 import "./App.css";
+import { URLGetChannelUUID } from "NSLib/LibURL";
 
 i18n.use(initReactI18next)
 .init({
@@ -128,7 +129,7 @@ function App() {
           <Route path="/" element={<AuthView sharedProps={SharedProps} path={AuthViewRoutes.Login} />} />
           <Route path={AuthViewRoutes.Login} element={<AuthView sharedProps={SharedProps} path={AuthViewRoutes.Login} />} />
           <Route path={AuthViewRoutes.Register} element={<AuthView sharedProps={SharedProps} path={AuthViewRoutes.Register} />} />
-          <Route path={MainViewRoutes.Chat} element={<MainView sharedProps={SharedProps} path={MainViewRoutes.Chat} />} />
+          <Route path={`${MainViewRoutes.Chat}/*`} element={<MainView sharedProps={SharedProps} path={MainViewRoutes.Chat} />} />
           <Route path={MainViewRoutes.Friends} element={<MainView sharedProps={SharedProps} path={MainViewRoutes.Friends} />}>
             <Route path={FriendViewRoutes.FriendsList} element={<MainView sharedProps={SharedProps} path={MainViewRoutes.Friends} />} />
           </Route>

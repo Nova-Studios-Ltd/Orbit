@@ -411,10 +411,10 @@ export function REMOVEChannelIcon(channel_uuid: string, callback: (removed: bool
 }
 
 export function ADDChannelMember(channel_uuid: string, recipients: string[], callback: (added: boolean) => void) {
-    PATCH(`Channel/${channel_uuid}`, ContentType.JSON, JSON.stringify(recipients), new SettingsManager().User.token).then((resp: NCAPIResponse) => {
-        if (resp.status === HTTPStatusCodes.OK) callback(true);
-        else callback(false);
-    });
+  PATCH(`Channel/${channel_uuid}/Members`, ContentType.JSON, JSON.stringify(recipients), new SettingsManager().User.token).then((resp: NCAPIResponse) => {
+    if (resp.status === HTTPStatusCodes.OK) callback(true);
+    else callback(false);
+  });
 }
 
 export function REMOVEChannelMember(channel_uuid: string, recipient: string, callback: (removed: boolean) => void) {
