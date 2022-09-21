@@ -9,7 +9,6 @@ import type { View } from "Types/UI/Components";
 import { Routes } from "Types/UI/Routes";
 
 interface SettingsViewProps extends View {
-  path: Routes,
   avatarNonce?: string,
   onLogout?: () => void,
   onAvatarChanged?: () => void

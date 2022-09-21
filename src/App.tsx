@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { IconButton, Popover, ThemeProvider, Typography. useTheme } from "@mui/material";
+import { IconButton, Popover, ThemeProvider, Typography, useTheme } from "@mui/material";
 import { Close as CloseIcon } from "@mui/icons-material";
 import { Route, Routes as RoutingGroup } from "react-router-dom";
 import i18n from "i18next";
@@ -25,8 +25,13 @@ import { Localizations } from "Localization/Localizations";
 
 import AuthView from "Views/AuthView/AuthView";
 import ErrorView from "Views/ErrorView/ErrorView";
+import FriendView from "Views/FriendView/FriendView";
 import MainView from "Views/MainView/MainView";
+import SettingsView from "Views/SettingsView/SettingsView";
 
+import BlockedUsersPage from "Views/FriendView/Pages/BlockedUsersPage/BlockedUsersPage";
+import DashboardPage from "Views/SettingsView/Pages/DashboardPage/DashboardPage";
+import FriendPage from "Views/FriendView/Pages/FriendPage/FriendPage";
 import LoginPage from "Views/AuthView/Pages/LoginPage/LoginPage";
 import RegisterPage from "Views/AuthView/Pages/RegisterPage/RegisterPage";
 
@@ -38,10 +43,11 @@ import type { DebugMessage } from "Types/General";
 import type { IRawChannelProps } from "Types/API/Interfaces/IRawChannelProps";
 import type { IMessageProps } from "Types/API/Interfaces/IMessageProps";
 import type { MessageProps } from "Components/Messages/Message/Message";
+import type { MessageInputSendEvent } from "Components/Input/MessageInput/MessageInput";
 import { Dictionary } from "NSLib/Dictionary";
 import type Friend from "Types/UI/Friend";
 import type { IChannelUpdateProps } from "Types/API/Interfaces/IChannelUpdateProps";
-import type MessageAttachment from "Types/API/MessageAttachment";
+import MessageAttachment from "Types/API/MessageAttachment";
 import type IUserData from "Types/API/Interfaces/IUserData";
 
 import "./App.css";
@@ -70,6 +76,7 @@ function App() {
   const autoScroll = useRef(true);
 
   const [title, setTitle] = useState("");
+  const [channelMenuVisible, setChannelMenuVisibility] = useState(false);
   const [channels, setChannels] = useState([] as IRawChannelProps[]);
   const [selectedChannel, setSelectedChannel] = useState(null as unknown as IRawChannelProps);
   const [messages, setMessages] = useState([] as IMessageProps[]);
@@ -202,12 +209,12 @@ function App() {
       setChannels(loadedChannels);
 
       if (doNavigate) {
-        if (props.path === Routes.Chat && loadedChannels.length < 1) {
+        if (location.pathname === Routes.Chat && loadedChannels.length < 1) {
           navigate(Routes.Friends);
           return;
         }
 
-        if (props.path === Routes.Chat && loadedChannels[0]) selectChannel(loadedChannels[0]); // Temporary channel preload; TODO: Store last opened channel
+        if (location.pathname === Routes.Chat && loadedChannels[0]) selectChannel(loadedChannels[0]); // Temporary channel preload; TODO: Store last opened channel
       }
     });
   }
@@ -218,12 +225,7 @@ function App() {
   }
 
   const changeTitleCallbackOverride = (_title: string) => {
-    if (props.path !== Routes.Chat && title !== _title) setTitle(_title);
-  };
-
-  const modifiedSharedProps: SharedProps = {
-    ...props.sharedProps,
-    changeTitleCallback: changeTitleCallbackOverride
+    if (location.pathname !== Routes.Chat && title !== _title) setTitle(_title);
   };
 
   const scrollCanvas = () => {
@@ -246,19 +248,8 @@ function App() {
   }, [messages, messages.length]);
 
   useEffect(() => {
-    if (props.sharedProps && !props.sharedProps.widthConstrained && !channelMenuOpen) setChannelMenuVisibility(true);
-  }, [channelMenuOpen, props, props.sharedProps?.widthConstrained]);
-
-  useEffect(() => {
-    if (!props.sharedProps || !props.sharedProps.changeTitleCallback) return;
-
-    if (props.path === Routes.Chat) {
-      props.sharedProps.changeTitleCallback(`@${title}`);
-    }
-    else {
-      props.sharedProps.changeTitleCallback(title);
-    }
-  }, [props, props.sharedProps?.changeTitleCallback, title]);
+    if (!widthConstrained && !channelMenuVisible) setChannelMenuVisibility(true);
+  }, [channelMenuVisible, widthConstrained]);
 
   const MessageInputSendHandler = (event: MessageInputSendEvent) => {
     if (selectedChannel === undefined || event.value === undefined || (event.value === "" && MessageAttachments.length === 0)) return;
@@ -270,7 +261,7 @@ function App() {
   };
 
   const onChannelMenuToggle = () => {
-    setChannelMenuVisibility(!channelMenuOpen);
+    setChannelMenuVisibility(!channelMenuVisible);
   }
 
   const onLoadPriorMessages = () => {
@@ -322,7 +313,7 @@ function App() {
 
   const navigateToPage = (path: Routes) => {
     setSelectedChannel(null as unknown as IRawChannelProps);
-    if (props.sharedProps?.widthConstrained) setChannelMenuVisibility(false);
+    if (widthConstrained) setChannelMenuVisibility(false);
     navigate(path);
   }
 
@@ -331,7 +322,7 @@ function App() {
       navigate(`${Routes.Chat}${location.search}`);
 
     if (channel.channelName) setTitle(channel.channelName);
-    if (props.sharedProps?.widthConstrained) setChannelMenuVisibility(false);
+    if (widthConstrained) setChannelMenuVisibility(false);
 
     setSelectedChannel(channel);
 
@@ -668,12 +659,12 @@ function App() {
             <Route path={Routes.Login} element={<AuthView page={<LoginPage />} />} />
             <Route path={Routes.Register} element={<AuthView page={<RegisterPage />} />} />
             <Route path={`${Routes.Chat}/*`} element={<MainView page />} />
-            <Route path={Routes.Friends} element={<MainView path={Routes.Friends} />}>
-              <Route path={Routes.FriendsList} element={<MainView path={Routes.FriendsList} />} />
-              <Route path={Routes.BlockedUsersList} element={<MainView path={Routes.BlockedUsersList} />} />
-              <Route path={Routes.AddFriend} element={<MainView path={Routes.AddFriend} />} />
+            <Route path={Routes.Friends} element={<MainView page={<FriendView page={<FriendPage friends={friends} onReloadList={populateFriendsList} onFriendClicked={onFriendClicked} onCreateGroup={onCreateGroup} onBlockFriend={onBlockFriend} onUnblockFriend={onUnblockFriend} onRemoveFriend={onRemoveFriend} />} />} />}>
+              <Route path={Routes.FriendsList} element={<MainView page={<FriendView page={<FriendPage friends={friends} onReloadList={populateFriendsList} onFriendClicked={onFriendClicked} onCreateGroup={onCreateGroup} onBlockFriend={onBlockFriend} onUnblockFriend={onUnblockFriend} onRemoveFriend={onRemoveFriend} />} />} />} />
+              <Route path={Routes.BlockedUsersList} element={<MainView page={<FriendView page={<BlockedUsersPage friends={friends} onReloadList={populateFriendsList} onUnblockFriend={onUnblockFriend} />} />} />} />
+              <Route path={Routes.AddFriend} element={<MainView page={<FriendView />} />} />
             </Route>
-            <Route path={Routes.Settings} element={<MainView path={Routes.Settings} />} />
+            <Route path={Routes.Settings} element={<MainView page={<SettingsView page={<DashboardPage avatarNonce={avatarNonce} onAvatarChanged={onAvatarChanged} onLogout={onLogout} />} />} />} />
           </RoutingGroup>
           <Popover className="GenericPopover" open={helpVisible} anchorEl={helpAnchorEl} onClose={() => {
             setHelpAnchor(null as unknown as Element);

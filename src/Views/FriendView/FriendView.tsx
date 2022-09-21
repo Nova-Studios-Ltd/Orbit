@@ -12,27 +12,19 @@ import type { View } from "Types/UI/Components";
 import type { Dictionary } from "NSLib/Dictionary";
 import type Friend from "Types/UI/Friend";
 import { Routes } from "Types/UI/Routes";
+import { useNavigate } from "react-router-dom";
 
 interface FriendViewProps extends View {
-  path?: never,
-  friends?: Friend[],
-  onReloadList?: () => void,
-  onFriendClicked?: (friend: Friend) => void,
-  onAddFriend?: (recipient: string) => void,
-  onCreateGroup?: (friends: Friend[]) => void,
-  onRemoveFriend?: (uuid: string) => void,
-  onBlockFriend?: (uuid: string) => void,
-  onUnblockFriend?: (uuid: string) => void
+
 }
 
 function FriendView(props: FriendViewProps) {
   const Localizations_FriendView = useTranslation("FriendView").t;
   const classNames = useClassNames("FriendViewContainer", props.className);
-
-  const [path, setPath] = useState(Routes.FriendsList);
+  const navigate = useNavigate();
 
   const onTabChange = (event: SyntheticEvent, value: Routes) => {
-    setPath(value);
+    navigate(value);
   }
 
   const page = () => {
@@ -43,7 +35,7 @@ function FriendView(props: FriendViewProps) {
         )
       case Routes.BlockedUsersList:
         return (
-          <BlockedUsersPage friends={props.friends} onReloadList={props.onReloadList} onUnblockFriend={props.onUnblockFriend} />
+
         )
       case Routes.AddFriend:
         return (

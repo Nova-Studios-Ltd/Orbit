@@ -11,7 +11,7 @@ import { Routes } from "Types/UI/Routes";
 import type { ReactNode } from "react";
 
 interface AuthViewProps extends View {
-  page: ReactNode
+
 }
 
 function AuthView(props: AuthViewProps) {
