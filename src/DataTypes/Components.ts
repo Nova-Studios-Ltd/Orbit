@@ -28,7 +28,6 @@ export interface Page {
 export interface View {
   sharedProps?: SharedProps,
   className?: string,
-  path?: unknown,
   pageSpecificProps?: unknown
 }
 
