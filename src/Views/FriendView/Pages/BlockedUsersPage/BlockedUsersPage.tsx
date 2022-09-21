@@ -63,14 +63,14 @@ function BlockedUsersPage(props: BlockedUsersPageProps) {
 
           return (
             <div key={friend.friendData.uuid} className="FriendButtonContainer">
-              <AvatarTextButton onRightClick={friendRightClickHandler} showEllipsis iconSrc={friend.friendData.avatar} sharedProps={props.sharedProps}>
+              <AvatarTextButton onRightClick={friendRightClickHandler} showEllipsis iconSrc={friend.friendData.avatar}>
                 <div className="FriendButtonContent">
                   <Typography>{friend.friendData?.username}#{friend.friendData?.discriminator}</Typography>
                   <Typography variant="caption" color="gray">{friend.friendData?.uuid}</Typography>
                   <Typography variant="caption">{Localizations_BlockedUsersPage("Typography-UserBlocked")}</Typography>
                 </div>
               </AvatarTextButton>
-              <GenericDialog sharedProps={props.sharedProps} open={UnblockFriendDialogVisible} onClose={() => setUnblockFriendDialogSelector("")} title={Localizations_BlockedUsersPage("Typography-UnblockFriendDialogTitle", { user: friend.friendData.username })} buttons={
+              <GenericDialog open={UnblockFriendDialogVisible} onClose={() => setUnblockFriendDialogSelector("")} title={Localizations_BlockedUsersPage("Typography-UnblockFriendDialogTitle", { user: friend.friendData.username })} buttons={
                 <>
                   <Button onClick={(event) => { setUnblockFriendDialogSelector(""); event.stopPropagation() }}>{Localizations_GenericDialog("Button_Label-DialogCancel")}</Button>
                   <Button color="error" onClick={(event) => { unblockFriend(friend.friendData?.uuid); event.stopPropagation() }}>{Localizations_GenericDialog("Button_Label-DialogUnblock")}</Button>

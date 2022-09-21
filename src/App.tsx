@@ -53,6 +53,8 @@ i18n.use(initReactI18next)
   fallbackLng: "en"
 });
 
+export const UserCache = new NCUserCache();
+
 function App() {
   const Localizations_Common = useTranslation().t;
   const theme = ThemeSelector(GetUrlFlag("theme") || "DarkTheme_Default");
@@ -82,7 +84,7 @@ function App() {
   const [debugConsoleVisible, setDebugConsoleVisibility] = useState(GetUrlFlag("console") ? true : false);
   const [debugConsoleBuffer, setDebugConsoleBuffer] = useState([] as DebugMessage[]);
 
-  const SharedPropsContext = React.createContext({});
+  const SharedPropsContext = React.createContext({} as SharedProps);
 
   const openConsole = () => setDebugConsoleVisibility(true);
 
@@ -661,17 +663,17 @@ function App() {
       <ThemeProvider theme={theme}>
         <SharedPropsContext.Provider value={SharedProps}>
           <RoutingGroup>
-            <Route path="*" element={<ErrorView sharedProps={SharedProps} errorCode={404} />}></Route>
-            <Route path="/" element={<AuthView sharedProps={SharedProps} page={<LoginPage />} />} />
-            <Route path={Routes.Login} element={<AuthView sharedProps={SharedProps} page={<LoginPage />} />} />
-            <Route path={Routes.Register} element={<AuthView sharedProps={SharedProps} page={<RegisterPage />} />} />
-            <Route path={`${Routes.Chat}/*`} element={<MainView sharedProps={SharedProps} path={Routes.Chat} />} />
-            <Route path={Routes.Friends} element={<MainView sharedProps={SharedProps} path={Routes.Friends} />}>
-              <Route path={Routes.FriendsList} element={<MainView sharedProps={SharedProps} path={Routes.FriendsList} />} />
-              <Route path={Routes.BlockedUsersList} element={<MainView sharedProps={SharedProps} path={Routes.BlockedUsersList} />} />
-              <Route path={Routes.AddFriend} element={<MainView sharedProps={SharedProps} path={Routes.AddFriend} />} />
+            <Route path="*" element={<ErrorView errorCode={404} />}></Route>
+            <Route path="/" element={<AuthView page={<LoginPage />} />} />
+            <Route path={Routes.Login} element={<AuthView page={<LoginPage />} />} />
+            <Route path={Routes.Register} element={<AuthView page={<RegisterPage />} />} />
+            <Route path={`${Routes.Chat}/*`} element={<MainView page />} />
+            <Route path={Routes.Friends} element={<MainView path={Routes.Friends} />}>
+              <Route path={Routes.FriendsList} element={<MainView path={Routes.FriendsList} />} />
+              <Route path={Routes.BlockedUsersList} element={<MainView path={Routes.BlockedUsersList} />} />
+              <Route path={Routes.AddFriend} element={<MainView path={Routes.AddFriend} />} />
             </Route>
-            <Route path={Routes.Settings} element={<MainView sharedProps={SharedProps} path={Routes.Settings} />} />
+            <Route path={Routes.Settings} element={<MainView path={Routes.Settings} />} />
           </RoutingGroup>
           <Popover className="GenericPopover" open={helpVisible} anchorEl={helpAnchorEl} onClose={() => {
             setHelpAnchor(null as unknown as Element);

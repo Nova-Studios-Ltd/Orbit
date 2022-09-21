@@ -41,7 +41,7 @@ function ChannelList(props: ChannelListProps) {
           to index the channels in user-specified order (otherwise default to order as retrieved from server)
         */
 
-        return (<Channel key={channel.table_Id} index={index} sharedProps={props.sharedProps} channelData={channel} isSelected={isSelected} onChannelClearCache={props.onChannelClearCache} onChannelClick={props.onChannelClick} onChannelDelete={props.onChannelDelete} onChannelEdit={props.onChannelEdit} onChannelMove={props.onChannelMove} onChannelRemoveRecipient={props.onChannelRemoveRecipient} onChannelResetIcon={props.onChannelResetIcon} />);
+        return (<Channel key={channel.table_Id} index={index} channelData={channel} isSelected={isSelected} onChannelClearCache={props.onChannelClearCache} onChannelClick={props.onChannelClick} onChannelDelete={props.onChannelDelete} onChannelEdit={props.onChannelEdit} onChannelMove={props.onChannelMove} onChannelRemoveRecipient={props.onChannelRemoveRecipient} onChannelResetIcon={props.onChannelResetIcon} />);
       });
     }
 

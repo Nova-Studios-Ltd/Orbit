@@ -39,15 +39,15 @@ function FriendView(props: FriendViewProps) {
     switch (path) {
       case Routes.FriendsList:
         return (
-          <FriendPage friends={props.friends} onReloadList={props.onReloadList} onFriendClicked={props.onFriendClicked} onBlockFriend={props.onBlockFriend} onCreateGroup={props.onCreateGroup} onUnblockFriend={props.onUnblockFriend} onRemoveFriend={props.onRemoveFriend} sharedProps={props.sharedProps} />
+          <FriendPage friends={props.friends} onReloadList={props.onReloadList} onFriendClicked={props.onFriendClicked} onBlockFriend={props.onBlockFriend} onCreateGroup={props.onCreateGroup} onUnblockFriend={props.onUnblockFriend} onRemoveFriend={props.onRemoveFriend} />
         )
       case Routes.BlockedUsersList:
         return (
-          <BlockedUsersPage sharedProps={props.sharedProps} friends={props.friends} onReloadList={props.onReloadList} onUnblockFriend={props.onUnblockFriend} />
+          <BlockedUsersPage friends={props.friends} onReloadList={props.onReloadList} onUnblockFriend={props.onUnblockFriend} />
         )
       case Routes.AddFriend:
         return (
-          <AddFriendsPage sharedProps={props.sharedProps} onAddFriend={props.onAddFriend} />
+          <AddFriendsPage onAddFriend={props.onAddFriend} />
         )
       default:
         return null;

@@ -12,7 +12,6 @@ export interface HelpPopupProps {
 }
 
 export interface NCComponent {
-  sharedProps?: SharedProps,
   className?: string,
 }
 
@@ -20,14 +19,11 @@ export interface NCAPIComponent extends NCComponent {
   selectedChannel?: IRawChannelProps,
 }
 
-export interface Page {
-  sharedProps?: SharedProps,
-  className?: string,
+export interface Page extends NCComponent {
+
 }
 
-export interface View {
-  sharedProps?: SharedProps,
-  className?: string,
+export interface View extends NCComponent {
   pageSpecificProps?: unknown
 }
 

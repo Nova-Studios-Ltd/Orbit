@@ -97,14 +97,14 @@ function FriendPage(props: FriendPageProps) {
             <div className="FriendButtonSelectorContainer">
               <Checkbox onChange={(e) => friendTicked(e, friend)} />
             </div>
-            <AvatarTextButton className="FriendButton" showEllipsis iconSrc={friend.friendData.avatar} onLeftClick={() => acceptFriendRequest(friend)} onRightClick={friendRightClickHandler} sharedProps={props.sharedProps}>
+            <AvatarTextButton className="FriendButton" showEllipsis iconSrc={friend.friendData.avatar} onLeftClick={() => acceptFriendRequest(friend)} onRightClick={friendRightClickHandler}>
               <div className="FriendButtonContent">
                 <Typography>{friend.friendData?.username}#{friend.friendData?.discriminator}</Typography>
                 <Typography variant="caption" color="gray">{friend.friendData?.uuid}</Typography>
                 <Typography variant="caption">{friend.status}</Typography>
               </div>
             </AvatarTextButton>
-            <GenericDialog sharedProps={props.sharedProps} onClose={() => setRemoveFriendDialogSelector("")} open={RemoveFriendDialogVisible} title={Localizations_FriendPage("Typography-RemoveFriendDialogTitle", { user: friend.friendData.username })} buttons={
+            <GenericDialog onClose={() => setRemoveFriendDialogSelector("")} open={RemoveFriendDialogVisible} title={Localizations_FriendPage("Typography-RemoveFriendDialogTitle", { user: friend.friendData.username })} buttons={
               <>
                 <Button onClick={(event) => { setRemoveFriendDialogSelector(""); event.stopPropagation(); }}>{Localizations_GenericDialog("Button_Label-DialogCancel")}</Button>
                 <Button color="error" onClick={(event) => { removeFriend(friend.friendData?.uuid); event.stopPropagation() }}>{Localizations_GenericDialog("Button_Label-DialogRemove")}</Button>
@@ -114,7 +114,7 @@ function FriendPage(props: FriendPageProps) {
                 <Typography variant="body1">{Localizations_FriendPage("Typography-RemoveFriendDialogBlurb", { user: friend.friendData.username })}</Typography>
               </div>
             </GenericDialog>
-            <GenericDialog sharedProps={props.sharedProps} onClose={() => setBlockFriendDialogSelector("")} open={BlockUnblockFriendDialogVisible} title={Localizations_FriendPage("Typography-BlockFriendDialogTitle", { user: friend.friendData.username })} buttons={
+            <GenericDialog onClose={() => setBlockFriendDialogSelector("")} open={BlockUnblockFriendDialogVisible} title={Localizations_FriendPage("Typography-BlockFriendDialogTitle", { user: friend.friendData.username })} buttons={
               <>
                 <Button onClick={(event) => { setBlockFriendDialogSelector(""); event.stopPropagation() }}>{Localizations_GenericDialog("Button_Label-DialogCancel")}</Button>
                 <Button color="error" onClick={(event) => { blockFriend(friend.friendData?.uuid); event.stopPropagation() }}>{Localizations_GenericDialog("Button_Label-DialogBlock")}</Button>
