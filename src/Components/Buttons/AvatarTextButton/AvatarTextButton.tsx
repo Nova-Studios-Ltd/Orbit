@@ -2,7 +2,7 @@ import { Avatar, ButtonBase, Icon, IconButton, Typography, useTheme } from "@mui
 import { MoreHoriz as EllipsisIcon } from "@mui/icons-material";
 import React, { useState, ReactNode } from "react";
 
-import type { NCComponent } from "DataTypes/Components";
+import type { NCComponent } from "Types/UI/Components";
 import useClassNames from "Hooks/useClassNames";
 
 export interface AvatarTextButtonProps extends NCComponent {

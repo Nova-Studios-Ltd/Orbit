@@ -13,11 +13,11 @@ import ContextMenuItem from "Components/Menus/ContextMenuItem/ContextMenuItem";
 import GenericDialog from "Components/Dialogs/GenericDialog/GenericDialog";
 import TextCombo from "Components/Input/TextCombo/TextCombo";
 
-import type { NCComponent } from "DataTypes/Components";
-import type { IRawChannelProps } from "Interfaces/IRawChannelProps";
-import type { ChannelMoveData, Coordinates } from "DataTypes/Types";
-import type IUserData from "Interfaces/IUserData";
-import type { IChannelUpdateProps } from "Interfaces/IChannelUpdateProps";
+import type { NCComponent } from "Types/UI/Components";
+import type { IRawChannelProps } from "Types/API/Interfaces/IRawChannelProps";
+import type { ChannelMoveData, Coordinates } from "Types/General";
+import type IUserData from "Types/API/Interfaces/IUserData";
+import type { IChannelUpdateProps } from "Types/API/Interfaces/IChannelUpdateProps";
 
 export interface ChannelProps extends NCComponent {
   channelData: IRawChannelProps,

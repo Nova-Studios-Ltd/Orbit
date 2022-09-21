@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 import PageContainer from "Components/Containers/PageContainer/PageContainer";
 import TextCombo, { TextComboChangeEvent } from "Components/Input/TextCombo/TextCombo";
 
-import type { Page } from "DataTypes/Components";
+import type { Page } from "Types/UI/Components";
 import { useEffect, useState } from "react";
 
 interface AddFriendsPageProps extends Page {

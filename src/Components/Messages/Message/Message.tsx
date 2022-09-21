@@ -7,16 +7,16 @@ import useSettingsManager from "Hooks/useSettingsManager";
 import MessageMedia from "Components/Messages/MessageMedia/MessageMedia";
 import TextCombo, { TextComboChangeEvent, TextComboSubmitEvent } from "Components/Input/TextCombo/TextCombo";
 
-import type { NCComponent } from "DataTypes/Components";
-import { AttachmentProps, IAttachmentProps } from "Interfaces/IAttachmentProps";
+import type { NCComponent } from "Types/UI/Components";
+import { AttachmentProps, IAttachmentProps } from "Types/API/Interfaces/IAttachmentProps";
 import { DownloadUint8ArrayFile, WriteToClipboard } from "NSLib/ElectronAPI";
 import { GetImageDimensions, GetMimeType } from "NSLib/ContentLinkUtil";
 import { FileType } from "NSLib/MimeTypeParser";
 import { UserCache } from "Views/MainView/MainView";
-import UserData from "DataTypes/UserData";
-import IUserData from "Interfaces/IUserData";
+import UserData from "Types/API/UserData";
+import IUserData from "Types/API/Interfaces/IUserData";
 import ContextMenu from "Components/Menus/ContextMenu/ContextMenu";
-import { Coordinates } from "DataTypes/Types";
+import { Coordinates } from "Types/General";
 import Linkify from "linkify-react";
 import ContextMenuItem from "Components/Menus/ContextMenuItem/ContextMenuItem";
 

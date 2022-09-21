@@ -4,10 +4,10 @@ import useClassNames from "Hooks/useClassNames";
 
 import Channel, { ChannelProps } from "Components/Channels/Channel/Channel";
 
-import type { NCAPIComponent } from "DataTypes/Components";
-import type { IRawChannelProps } from "Interfaces/IRawChannelProps";
-import type { IChannelUpdateProps } from "Interfaces/IChannelUpdateProps";
-import type IUserData from "Interfaces/IUserData";
+import type { NCAPIComponent } from "Types/UI/Components";
+import type { IRawChannelProps } from "Types/API/Interfaces/IRawChannelProps";
+import type { IChannelUpdateProps } from "Types/API/Interfaces/IChannelUpdateProps";
+import type IUserData from "Types/API/Interfaces/IUserData";
 
 export interface ChannelListProps extends NCAPIComponent {
   channels?: IRawChannelProps[],

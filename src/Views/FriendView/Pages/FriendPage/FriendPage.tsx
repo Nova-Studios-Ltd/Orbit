@@ -11,9 +11,9 @@ import GenericDialog from "Components/Dialogs/GenericDialog/GenericDialog";
 import ContextMenu from "Components/Menus/ContextMenu/ContextMenu";
 import ContextMenuItem from "Components/Menus/ContextMenuItem/ContextMenuItem";
 
-import type { Page } from "DataTypes/Components";
-import type Friend from "DataTypes/Friend";
-import type { Coordinates } from "DataTypes/Types";
+import type { Page } from "Types/UI/Components";
+import type Friend from "Types/UI/Friend";
+import type { Coordinates } from "Types/General";
 
 interface FriendPageProps extends Page {
   friends?: Friend[],

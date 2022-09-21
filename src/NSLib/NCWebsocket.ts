@@ -1,4 +1,4 @@
-import IWebSocketEvent from "../Interfaces/IWebsocketEvent";
+import IWebSocketEvent from "Types/API/Interfaces/IWebsocketEvent";
 import { Dictionary } from "./Dictionary";
 
 export enum NCWebsocketState {

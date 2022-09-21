@@ -1,4 +1,4 @@
-import { MainViewRoutes } from "DataTypes/Routes";
+import { Routes } from "Types/UI/Routes";
 
 /**
  * Checks if the provided url is valid for the Route given
@@ -6,7 +6,7 @@ import { MainViewRoutes } from "DataTypes/Routes";
  * @param page The Route to check against the url the Url
  * @returns True if the URL matches the page else false
  */
-export function IsMainViewPage(url: string, page: MainViewRoutes) : boolean {
+export function IsMainViewPage(url: string, page: Routes) : boolean {
   if (url.includes(page)) return true;
   return false;
 }
@@ -17,7 +17,7 @@ export function IsMainViewPage(url: string, page: MainViewRoutes) : boolean {
  * @returns A UUID or if the url isnt valid undefined
  */
 export function URLGetChannelUUID(url: string) : string | undefined {
-  if (!IsMainViewPage(url, MainViewRoutes.Chat)) return undefined;
+  if (!IsMainViewPage(url, Routes.Chat)) return undefined;
   const components = url.split("/");
   if (components.length > 5 || components.length < 4) return undefined;
   if (components[4].length !== 32) return undefined;

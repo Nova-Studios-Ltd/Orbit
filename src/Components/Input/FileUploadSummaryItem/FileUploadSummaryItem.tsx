@@ -3,9 +3,9 @@ import { Close as CloseIcon, InsertDriveFile as FileIcon } from "@mui/icons-mate
 import useClassNames from "Hooks/useClassNames";
 import { useTranslation } from "react-i18next";
 
-import type { NCComponent } from "DataTypes/Components";
+import type { NCComponent } from "Types/UI/Components";
 import { ChangeEvent, useEffect, useState } from "react";
-import type MessageAttachment from "DataTypes/MessageAttachment";
+import type MessageAttachment from "Types/API/MessageAttachment";
 
 export interface FileUploadSummaryItemProps extends NCComponent {
   fileHandle?: MessageAttachment,

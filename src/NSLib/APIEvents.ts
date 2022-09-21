@@ -1,19 +1,19 @@
-import { IRawChannelProps } from "../Interfaces/IRawChannelProps";
-import { IMessageProps } from "../Interfaces/IMessageProps";
-import MessageAttachment from "../DataTypes/MessageAttachment";
+import { IRawChannelProps } from "Types/API/Interfaces/IRawChannelProps";
+import { IMessageProps } from "Types/API/Interfaces/IMessageProps";
+import MessageAttachment from "Types/API/MessageAttachment";
 import { Dictionary, Indexable } from "./Dictionary";
 import { ContentType, DELETE, GET, GETFile, HTTPStatusCodes, NCAPIResponse, PATCH, POST, POSTFile, PUT } from "./NCAPI";
 import { AESMemoryEncryptData } from "./NCEncrytUtil";
 import { GetExtension, GetImageDimensions } from "./Util";
-import Dimensions from "../DataTypes/Dimensions";
-import IUserData from "../Interfaces/IUserData";
+import Dimensions from "Types/Dimensions";
+import IUserData from "Types/API/Interfaces/IUserData";
 import { SettingsManager } from "./SettingsManager";
 import { Base64String } from "./Base64";
 import { DecryptBase64, DecryptBase64WithPriv, DecryptUint8Array, EncryptBase64, EncryptBase64WithPub, EncryptUint8Array, GenerateBase64Key, GenerateBase64SHA256 } from "./NCEncryption";
 import { NCChannelCache } from "./NCChannelCache";
 import { HasFlag } from "./NCFlags";
-import FailedUpload, { FailReason } from "DataTypes/FailedUpload";
-import { PasswordPayloadKey, UpdatePasswordPayload } from "DataTypes/UpdatePasswordPayload";
+import FailedUpload, { FailReason } from "Types/API/FailedUpload";
+import { PasswordPayloadKey, UpdatePasswordPayload } from "Types/API/UpdatePasswordPayload";
 
 // User
 export async function GETUser(user_uuid: string) : Promise<IUserData | undefined> {

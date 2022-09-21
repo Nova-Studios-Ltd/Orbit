@@ -1,4 +1,4 @@
-import type { IRawChannelProps } from "Interfaces/IRawChannelProps";
+import type { IRawChannelProps } from "Types/API/Interfaces/IRawChannelProps";
 import type { ReactNode } from "react";
 
 export interface HelpPopupProps {

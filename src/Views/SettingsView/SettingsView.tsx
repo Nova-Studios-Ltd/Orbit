@@ -5,11 +5,11 @@ import { useTranslation } from "react-i18next";
 import ViewContainer from "Components/Containers/ViewContainer/ViewContainer";
 import DashboardPage from "Views/SettingsView/Pages/DashboardPage/DashboardPage";
 
-import type { View } from "DataTypes/Components";
-import { SettingsViewRoutes } from "DataTypes/Routes";
+import type { View } from "Types/UI/Components";
+import { Routes } from "Types/UI/Routes";
 
 interface SettingsViewProps extends View {
-  path: SettingsViewRoutes,
+  path: Routes,
   avatarNonce?: string,
   onLogout?: () => void,
   onAvatarChanged?: () => void
@@ -25,7 +25,7 @@ function SettingsView(props: SettingsViewProps) {
 
   const page = () => {
     switch (props.path) {
-      case SettingsViewRoutes.Dashboard:
+      case Routes.Dashboard:
         return <DashboardPage sharedProps={props.sharedProps} avatarNonce={props.avatarNonce} onAvatarChanged={props.onAvatarChanged} onLogout={props.onLogout} />
       default:
         return null;

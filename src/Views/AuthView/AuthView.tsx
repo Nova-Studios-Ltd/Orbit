@@ -5,12 +5,13 @@ import LoginPage from "./Pages/LoginPage/LoginPage";
 import RegisterPage from "./Pages/RegisterPage/RegisterPage";
 import ViewContainer from "Components/Containers/ViewContainer/ViewContainer";
 
-import type { View } from "DataTypes/Components";
+import type { View } from "Types/UI/Components";
 import GenerateRandomColor from "NSLib/ColorGeneration";
-import { AuthViewRoutes } from "DataTypes/Routes";
+import { Routes } from "Types/UI/Routes";
+import type { ReactNode } from "react";
 
 interface AuthViewProps extends View {
-  path: AuthViewRoutes
+  page: ReactNode
 }
 
 function AuthView(props: AuthViewProps) {
@@ -34,18 +35,6 @@ function AuthView(props: AuthViewProps) {
     return props.sharedProps?.widthConstrained ? theme.customPalette.formBackground : theme.palette.background.default;
   };
 
-  const page = () => {
-    switch (props.path) {
-      case AuthViewRoutes.Login:
-        return (<LoginPage sharedProps={props.sharedProps} />);
-      case AuthViewRoutes.Register:
-        return (<RegisterPage sharedProps={props.sharedProps} />);
-      default:
-        console.warn("[AuthView] Invalid Page");
-        return null;
-    }
-  }
-
   return (
     <ViewContainer className="AuthViewContainer" noPadding>
       <div className="AuthViewCenterContainer" style={{ backgroundImage: AuthViewCenterContainerBackground() }}>
@@ -54,7 +43,7 @@ function AuthView(props: AuthViewProps) {
           <div className="AuthViewBrandingContainer">
             <img className="BrandingImage" src="OrbitLogo.png" alt={Localizations_AuthView("Image_Alt-BrandingLogo")} />
           </div>
-          {page()}
+          {props.page}
         </div>
       </div>
     </ViewContainer>

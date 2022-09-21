@@ -3,13 +3,13 @@ import { Button, Card, Link, TextField, Typography, useTheme } from "@mui/materi
 import { useTranslation } from "react-i18next";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { ContentType, NCAPIResponse, POST } from "NSLib/NCAPI";
-import { RegisterPayload, RegPayloadKey } from "DataTypes/RegisterPayload";
+import { RegisterPayload, RegPayloadKey } from "Types/API/RegisterPayload";
 
-import type { Page } from "DataTypes/Components";
-import { RegisterStatus } from "DataTypes/Enums";
+import type { Page } from "Types/UI/Components";
+import { RegisterStatus } from "Types/Enums";
 import { EncryptBase64, GenerateBase64SHA256, GenerateRSAKeyPair } from "NSLib/NCEncryption";
 import { Base64String } from "NSLib/Base64";
-import { AuthViewRoutes } from "DataTypes/Routes";
+import { Routes } from "Types/UI/Routes";
 
 interface RegisterPageProps extends Page {
 
@@ -43,7 +43,7 @@ function RegisterPage(props: RegisterPageProps) {
 
     POST("Auth/Register", ContentType.JSON, JSON.stringify(new RegisterPayload(username, hashPassword.Base64, email, new RegPayloadKey(encPriv.content as string, encPriv.iv, keypair.PublicKey))), undefined, false).then((response: NCAPIResponse) => {
       if (response.status === 200) {
-        navigate(AuthViewRoutes.Login);
+        navigate(Routes.Login);
         setFailStatus(RegisterStatus.Success);
       }
       else if (response.status === 409) {
@@ -122,7 +122,7 @@ function RegisterPage(props: RegisterPageProps) {
         }/>
         <Button className="RegisterFormItem" variant="outlined" type="submit">{Localizations_RegisterPage("Button_Text-Register")}</Button>
       </form>
-      <Typography marginTop={1.5}>{Localizations_RegisterPage("Typography-HaveAccountQuestion")} <RouterLink to="/login" style={{ color: theme.palette.primary.main }}>{Localizations_RegisterPage("Link-ToLoginForm")}</RouterLink></Typography>
+      <Typography marginTop={1.5}>{Localizations_RegisterPage("Typography-HaveAccountQuestion")} <RouterLink to={Routes.Login} style={{ color: theme.palette.primary.main }}>{Localizations_RegisterPage("Link-ToLoginForm")}</RouterLink></Typography>
     </div>
   );
 }

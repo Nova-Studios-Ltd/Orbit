@@ -9,14 +9,14 @@ import { APP_VERSION } from "vars";
 import PageContainer from "Components/Containers/PageContainer/PageContainer";
 import Section from "Components/Containers/Section/Section";
 
-import type { Page } from "DataTypes/Components";
+import type { Page } from "Types/UI/Components";
 import { NCFile, UploadFile, WriteToClipboard } from "NSLib/ElectronAPI";
 import { DELETEUser, SETAvatar, UPDATEEmail, UPDATEPassword, UPDATEUsername } from "NSLib/APIEvents";
 import NetworkDiag from "./DebugTools/NetworkDiagnostics";
 import React, { useState } from "react";
 import TextCombo from "Components/Input/TextCombo/TextCombo";
 import GenericDialog from "Components/Dialogs/GenericDialog/GenericDialog";
-import { AuthViewRoutes } from "DataTypes/Routes";
+import { Routes } from "Types/UI/Routes";
 
 interface DashboardPageProps extends Page {
   avatarNonce?: string,
@@ -93,7 +93,7 @@ function DashboardPage(props: DashboardPageProps) {
   const deleteAccount = () => {
     DELETEUser((status) => {
       if (status) {
-        navigate(AuthViewRoutes.Login);
+        navigate(Routes.Login);
         console.success("Account Deletion Successful")
       }
       else {

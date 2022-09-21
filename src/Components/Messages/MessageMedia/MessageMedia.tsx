@@ -2,7 +2,7 @@ import { useTheme } from "@mui/material";
 import React, { memo, useEffect, useRef, useState } from "react";
 import useClassNames from "Hooks/useClassNames";
 import { ComputeCSSDims } from "NSLib/Util";
-import Dimensions from "DataTypes/Dimensions";
+import Dimensions from "Types/Dimensions";
 import MimeTypeParser, { FileType } from "NSLib/MimeTypeParser";
 
 import MessageFile from "./Subcomponents/MessageFile/MessageFile";
@@ -10,8 +10,8 @@ import MessageImage from "./Subcomponents/MessageImage/MessageImage";
 import MessageVideo from "./Subcomponents/MessageVideo/MessageVideo";
 import MessageAudio from "./Subcomponents/MessageAudio/MessageAudio";
 
-import type { NCComponent } from "DataTypes/Components";
-import type { IAttachmentProps } from "Interfaces/IAttachmentProps";
+import type { NCComponent } from "Types/UI/Components";
+import type { IAttachmentProps } from "Types/API/Interfaces/IAttachmentProps";
 
 export interface MessageMediaProps extends NCComponent {
   content?: Uint8Array,

@@ -1,4 +1,4 @@
-import type { NCComponent } from "DataTypes/Components";
+import type { NCComponent } from "Types/UI/Components";
 
 export interface DebugButtonProps extends NCComponent {
   click?: () => void;

@@ -2,7 +2,7 @@ import { Avatar, ButtonBase, IconButton, Typography, useTheme } from "@mui/mater
 import { ArrowDropDown as DropdownIcon } from "@mui/icons-material";
 import React, { useState, ReactNode } from "react";
 
-import type { NCComponent } from "DataTypes/Components";
+import type { NCComponent } from "Types/UI/Components";
 import useClassNames from "Hooks/useClassNames";
 
 export interface AvatarTextDropdownProps extends NCComponent {

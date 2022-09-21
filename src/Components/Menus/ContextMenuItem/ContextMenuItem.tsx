@@ -2,7 +2,7 @@ import React, { ReactNode, useState } from "react";
 import { MenuItem, useTheme } from "@mui/material";
 import useClassNames from "Hooks/useClassNames";
 
-import type { NCComponent } from "DataTypes/Components";
+import type { NCComponent } from "Types/UI/Components";
 import type { ReactSVGElement } from "react";
 
 export interface ContextMenuItemProps extends NCComponent {

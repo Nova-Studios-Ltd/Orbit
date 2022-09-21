@@ -1,12 +1,12 @@
 import { ContentType, POST } from "../NSLib/NCAPI";
 import NCWebsocket from "../NSLib/NCWebsocket";
 import { SettingsManager } from "../NSLib/SettingsManager";
-import IUserLoginData from "../Interfaces/IUserLoginData";
+import IUserLoginData from "Types/API/Interfaces/IUserLoginData";
 import { RSAMemoryKeyPair } from "../NSLib/NCEncrytUtil";
 import { GETKeystore, GETUser } from "../NSLib/APIEvents";
 import WebsocketInit from "./WebsocketEventInit";
 import { ToBase64String, ToUint8Array } from "../NSLib/Base64";
-import { LoginStatus } from "DataTypes/Enums";
+import { LoginStatus } from "Types/Enums";
 import { DecryptBase64, GenerateBase64SHA256 } from "NSLib/NCEncryption";
 import { HasFlag } from "NSLib/NCFlags";
 import { NCChannelCache } from "NSLib/NCChannelCache";

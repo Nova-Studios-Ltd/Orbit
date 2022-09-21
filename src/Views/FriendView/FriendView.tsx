@@ -8,10 +8,10 @@ import AddFriendsPage from "Views/FriendView/Pages/AddFriendsPage/AddFriendsPage
 import BlockedUsersPage from "./Pages/BlockedUsersPage/BlockedUsersPage";
 import FriendPage from "Views/FriendView/Pages/FriendPage/FriendPage";
 
-import type { View } from "DataTypes/Components";
+import type { View } from "Types/UI/Components";
 import type { Dictionary } from "NSLib/Dictionary";
-import type Friend from "DataTypes/Friend";
-import { FriendViewRoutes } from "DataTypes/Routes";
+import type Friend from "Types/UI/Friend";
+import { Routes } from "Types/UI/Routes";
 
 interface FriendViewProps extends View {
   path?: never,
@@ -29,23 +29,23 @@ function FriendView(props: FriendViewProps) {
   const Localizations_FriendView = useTranslation("FriendView").t;
   const classNames = useClassNames("FriendViewContainer", props.className);
 
-  const [path, setPath] = useState(FriendViewRoutes.FriendsList);
+  const [path, setPath] = useState(Routes.FriendsList);
 
-  const onTabChange = (event: SyntheticEvent, value: FriendViewRoutes) => {
+  const onTabChange = (event: SyntheticEvent, value: Routes) => {
     setPath(value);
   }
 
   const page = () => {
     switch (path) {
-      case FriendViewRoutes.FriendsList:
+      case Routes.FriendsList:
         return (
           <FriendPage friends={props.friends} onReloadList={props.onReloadList} onFriendClicked={props.onFriendClicked} onBlockFriend={props.onBlockFriend} onCreateGroup={props.onCreateGroup} onUnblockFriend={props.onUnblockFriend} onRemoveFriend={props.onRemoveFriend} sharedProps={props.sharedProps} />
         )
-      case FriendViewRoutes.BlockedUsersList:
+      case Routes.BlockedUsersList:
         return (
           <BlockedUsersPage sharedProps={props.sharedProps} friends={props.friends} onReloadList={props.onReloadList} onUnblockFriend={props.onUnblockFriend} />
         )
-      case FriendViewRoutes.AddFriend:
+      case Routes.AddFriend:
         return (
           <AddFriendsPage sharedProps={props.sharedProps} onAddFriend={props.onAddFriend} />
         )
@@ -57,9 +57,9 @@ function FriendView(props: FriendViewProps) {
   return (
     <ViewContainer className={classNames} noPadding>
       <Tabs variant="scrollable" visibleScrollbar={!props.sharedProps?.isTouchCapable} value={path} onChange={onTabChange}>
-        <Tab label={Localizations_FriendView("Tab_Label-FriendsList")} value={FriendViewRoutes.FriendsList} />
-        <Tab label={Localizations_FriendView("Tab_Label-BlockedUsers")} value={FriendViewRoutes.BlockedUsersList} />
-        <Tab label={Localizations_FriendView("Tab_Label-AddFriend")} value={FriendViewRoutes.AddFriend} />
+        <Tab label={Localizations_FriendView("Tab_Label-FriendsList")} value={Routes.FriendsList} />
+        <Tab label={Localizations_FriendView("Tab_Label-BlockedUsers")} value={Routes.BlockedUsersList} />
+        <Tab label={Localizations_FriendView("Tab_Label-AddFriend")} value={Routes.AddFriend} />
       </Tabs>
       {page()}
     </ViewContainer>

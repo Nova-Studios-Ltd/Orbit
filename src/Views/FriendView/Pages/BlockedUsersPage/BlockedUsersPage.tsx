@@ -11,9 +11,9 @@ import PageContainer from "Components/Containers/PageContainer/PageContainer";
 import GenericDialog from "Components/Dialogs/GenericDialog/GenericDialog";
 import TextCombo, { TextComboChangeEvent } from "Components/Input/TextCombo/TextCombo";
 
-import type Friend from "DataTypes/Friend";
-import type { Page } from "DataTypes/Components";
-import type { Coordinates } from "DataTypes/Types";
+import type Friend from "Types/UI/Friend";
+import type { Page } from "Types/UI/Components";
+import type { Coordinates } from "Types/General";
 
 interface BlockedUsersPageProps extends Page {
   friends?: Friend[],

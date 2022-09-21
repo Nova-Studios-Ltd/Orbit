@@ -1,4 +1,4 @@
-import IUserData from "Interfaces/IUserData";
+import IUserData from "Types/API/Interfaces/IUserData";
 import { GETUser } from "./APIEvents";
 import { Dictionary } from "./Dictionary";
 
