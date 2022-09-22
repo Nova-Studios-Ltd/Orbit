@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { IconButton, Popover, ThemeProvider, Typography } from "@mui/material";
 import { Close as CloseIcon } from "@mui/icons-material";
-import { Route, Routes as RoutingGroup } from "react-router-dom";
+import { Route, Routes as RoutingGroup, useParams } from "react-router-dom";
 import i18n from "i18next";
 import { initReactI18next, useTranslation } from "react-i18next";
 import { Helmet } from "react-helmet";
@@ -66,11 +66,11 @@ function App() {
   const Localizations_Common = useTranslation().t;
   const theme = ThemeSelector(GetUrlFlag("theme") || "DarkTheme_Default");
   const navigate = useNavigate();
-  const consoleBuffer = useRef([] as DebugMessage[]);
-
   const location = useLocation();
+  const params = useParams();
   const settings = new SettingsManager();
 
+  const consoleBuffer = useRef([] as DebugMessage[]);
   const canvasRef = useRef() as React.MutableRefObject<HTMLDivElement>;
   const messageCount = useRef(0);
   const session = useRef("");
@@ -249,10 +249,6 @@ function App() {
     messageCount.current = messages.length;
   }, [messages, messages.length]);
 
-  useEffect(() => {
-    if (!widthConstrained && !channelMenuVisible) setChannelMenuVisibility(true);
-  }, [channelMenuVisible, widthConstrained]);
-
   const onMessageInputSubmit = (event: MessageInputSendEvent) => {
     if (selectedChannel === undefined || event.value === undefined || (event.value === "" && MessageAttachments.length === 0)) return;
     SENDMessage(selectedChannel.table_Id, event.value, MessageAttachments, (sent: boolean) => {
@@ -320,8 +316,9 @@ function App() {
   }
 
   const selectChannel = async (channel: IRawChannelProps) => {
-    if (!location.pathname.includes("chat"))
-      navigate(`${Routes.Chat}${location.search}`);
+    if (selectedChannel && channel.table_Id === selectedChannel.table_Id) return;
+
+    navigate(`${Routes.Chat}/${channel.table_Id}`);
 
     if (channel.channelName) setTitle(channel.channelName);
     if (widthConstrained) setChannelMenuVisibility(false);
@@ -672,7 +669,7 @@ function App() {
             <Route path={Routes.Settings} element={<SettingsView sharedProps={SharedProps} />}>
               <Route path={Routes.Dashboard} element={<DashboardPage sharedProps={SharedProps} avatarNonce={avatarNonce} onAvatarChanged={onAvatarChanged} onLogout={onLogout} />} />
             </Route>
-            <Route path={Routes.Chat} element={<ChatPage sharedProps={SharedProps} attachments={MessageAttachments} canvasRef={canvasRef} messages={messages} onFileUpload={onFileUpload} onFileRemove={onFileRemove} onMessageEdit={onMessageEdit} onMessageDelete={onMessageDelete} onMessageInputSubmit={onMessageInputSubmit} onLoadPriorMessages={onLoadPriorMessages} />} />
+            <Route path={`${Routes.Chat}/:uuid`} element={<ChatPage sharedProps={SharedProps} attachments={MessageAttachments} canvasRef={canvasRef} channels={channels} messages={messages} selectChannel={selectChannel} onFileUpload={onFileUpload} onFileRemove={onFileRemove} onMessageEdit={onMessageEdit} onMessageDelete={onMessageDelete} onMessageInputSubmit={onMessageInputSubmit} onLoadPriorMessages={onLoadPriorMessages} />} />
           </Route>
         </RoutingGroup>
         <Popover className="GenericPopover" open={helpVisible} anchorEl={helpAnchorEl} onClose={() => {

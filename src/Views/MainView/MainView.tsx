@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { CSSTransition } from "react-transition-group";
 import { useNavigate, useLocation, Outlet } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -40,6 +40,10 @@ function MainView(props: MainViewProps) {
   const location = useLocation();
   const theme = useTheme();
   const settings = new SettingsManager();
+
+  useEffect(() => {
+    if (!(props.sharedProps && props.sharedProps.widthConstrained) && !props.channelMenuVisible && props.setChannelMenuVisibility) props.setChannelMenuVisibility(true);
+  }, [props]);
 
   const onMainViewContainerRightClick = (event: React.MouseEvent<HTMLDivElement>) => {
     if (props.setChannelMenuVisibility && props.sharedProps && props.sharedProps.widthConstrained) {
