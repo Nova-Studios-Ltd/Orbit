@@ -201,7 +201,7 @@ function App() {
     return undefined;
   }
 
-  const loadChannels = async (doNavigate?: boolean) => {
+  const loadChannels = async () => {
     GETUserChannels(async (channels: string[]) => {
       const loadedChannels = [] as IRawChannelProps[];
 
@@ -213,13 +213,6 @@ function App() {
       }
 
       setChannels(loadedChannels);
-
-      if (doNavigate && location.pathname === Routes.Chat && loadedChannels[0]) {
-        selectChannel(loadedChannels[0]); // Temporary channel preload; TODO: Store last opened channel
-      }
-      else if (doNavigate && location.pathname === Routes.Chat) {
-        navigate(Routes.FriendsList);
-      }
     });
   }
 
@@ -619,7 +612,7 @@ function App() {
       if (!result && location.pathname !== Routes.Register) navigate(Routes.Login);
     });
 
-    loadChannels(true);
+    loadChannels();
     populateFriendsList();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

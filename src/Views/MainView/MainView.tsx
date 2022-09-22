@@ -48,6 +48,9 @@ function MainView(props: MainViewProps) {
     if ((!uuid || uuid.length < 1) && location.pathname === Routes.Chat && props.channels && props.channels[0]) {
       navigate(`${Routes.Chat}/${props.channels[0].table_Id}`);
     }
+    else if (location.pathname === Routes.Chat) {
+      navigate(Routes.FriendsList);
+    }
   }, [location.pathname, navigate, props, uuid]);
 
   const onMainViewContainerRightClick = (event: React.MouseEvent<HTMLDivElement>) => {
