@@ -26,7 +26,7 @@ function FriendView(props: FriendViewProps) {
   return (
     <ViewContainer className={classNames} noPadding>
       <Tabs variant="scrollable" visibleScrollbar={!props.sharedProps?.isTouchCapable} value={location.pathname} onChange={onTabChange}>
-        <Tab label={Localizations_FriendView("Tab_Label-FriendsList")} value={Routes.FriendsList} />
+        <Tab label={Localizations_FriendView("Tab_Label-FriendsList")} value={Routes.Friends} />
         <Tab label={Localizations_FriendView("Tab_Label-BlockedUsers")} value={Routes.BlockedUsersList} />
         <Tab label={Localizations_FriendView("Tab_Label-AddFriend")} value={Routes.AddFriend} />
       </Tabs>

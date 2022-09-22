@@ -13,6 +13,7 @@ import ContextMenuItem from "Components/Menus/ContextMenuItem/ContextMenuItem";
 import type { Page } from "Types/UI/Components";
 import type Friend from "Types/UI/Friend";
 import type { Coordinates } from "Types/General";
+import { useLocation } from "react-router-dom";
 
 interface FriendPageProps extends Page {
   friends?: Friend[],
@@ -30,6 +31,21 @@ function FriendPage(props: FriendPageProps) {
   const Localizations_ContextMenuItem = useTranslation("ContextMenuItem").t;
   const Localizations_GenericDialog = useTranslation("GenericDialog").t;
   const classNames = useClassNames("FriendPageContainer", props.className);
+  const location = useLocation();
+
+  const createGroupChannelMode = (() => {
+    const params = location.search.split("&");
+
+    for (let i = 0; i < params.length; i++) {
+      const param = params[i].toLowerCase();
+      if (param.match("cgc")) {
+        return true;
+      }
+    }
+
+    return false;
+
+  })()
 
   const [FriendContextMenuVisible, setFriendContextMenuVisibility] = useState(false);
   const [FriendContextMenuAnchorPos, setFriendContextMenuAnchorPos] = useState({} as unknown as Coordinates);
@@ -97,9 +113,9 @@ function FriendPage(props: FriendPageProps) {
         // TODO: Localize friend.status
         return (
           <div key={friend.friendData.uuid} className="FriendButtonContainer">
-            <div className="FriendButtonSelectorContainer">
+            {createGroupChannelMode ? <div className="FriendButtonSelectorContainer">
               <Checkbox onChange={(e) => friendTicked(e, friend)} />
-            </div>
+            </div> : null}
             <AvatarTextButton className="FriendButton" showEllipsis iconSrc={friend.friendData.avatar} onLeftClick={() => acceptFriendRequest(friend)} onRightClick={friendRightClickHandler}>
               <div className="FriendButtonContent">
                 <Typography>{friend.friendData?.username}#{friend.friendData?.discriminator}</Typography>
@@ -145,7 +161,7 @@ function FriendPage(props: FriendPageProps) {
   return (
     <PageContainer className={classNames} adaptive={false}>
       <div className="FriendsPageButtonContainer">
-        <Button disabled={GroupChannelRecipientsList.length < 1} variant="outlined" color="success" onClick={() => { if (props.onCreateGroup) props.onCreateGroup(GroupChannelRecipientsList) }}>{Localizations_FriendPage("Button_Label-CreateGroupChannel")}</Button>
+        {createGroupChannelMode ? <Button disabled={GroupChannelRecipientsList.length < 1} variant="outlined" color="success" onClick={() => { if (props.onCreateGroup) props.onCreateGroup(GroupChannelRecipientsList) }}>{Localizations_FriendPage("Button_Label-CreateGroupChannel")}</Button> : null}
         <Button variant="outlined" style={{ marginLeft: "auto" }} onClick={() => { if (props.onReloadList) props.onReloadList() }}>{Localizations_FriendPage("Button_Label-ReloadFriendsList")}</Button>
       </div>
       <div className="FriendsContainer">

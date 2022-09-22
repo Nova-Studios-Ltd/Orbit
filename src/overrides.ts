@@ -90,3 +90,7 @@ export function OverrideConsoleSuccess(onNewMessage: (message: DebugMessage) => 
     consoleLogOrig(...args);
   }
 }
+
+export function DummyConsoleSuccess() {
+  console.success = consoleLogOrig;
+}

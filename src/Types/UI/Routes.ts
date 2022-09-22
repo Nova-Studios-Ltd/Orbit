@@ -7,5 +7,6 @@ export enum Routes {
   FriendsList = "/friends/list",
   BlockedUsersList = "/friends/blacklist",
   AddFriend = "/friends/add",
+  AddFriendGroup = "/friends/list?cgc",
   Dashboard = "/settings/dash"
 }
