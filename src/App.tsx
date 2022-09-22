@@ -52,6 +52,7 @@ import MessageAttachment from "Types/API/MessageAttachment";
 import type IUserData from "Types/API/Interfaces/IUserData";
 
 import "./App.css";
+import ChatPage from "Views/MainView/Pages/ChatPage/ChatPage";
 
 i18n.use(initReactI18next)
 .init({
@@ -249,7 +250,7 @@ function App() {
     if (!widthConstrained && !channelMenuVisible) setChannelMenuVisibility(true);
   }, [channelMenuVisible, widthConstrained]);
 
-  const MessageInputSendHandler = (event: MessageInputSendEvent) => {
+  const onMessageInputSubmit = (event: MessageInputSendEvent) => {
     if (selectedChannel === undefined || event.value === undefined || (event.value === "" && MessageAttachments.length === 0)) return;
     SENDMessage(selectedChannel.table_Id, event.value, MessageAttachments, (sent: boolean) => {
       if (sent) {
@@ -656,7 +657,7 @@ function App() {
             <Route path="/" element={<AuthView page={<LoginPage />} />} />
             <Route path={Routes.Login} element={<AuthView page={<LoginPage />} />} />
             <Route path={Routes.Register} element={<AuthView page={<RegisterPage />} />} />
-            <Route path={`${Routes.Chat}/*`} element={<MainView />} />
+            <Route path={`${Routes.Chat}/*`} element={<MainView page={<ChatPage attachments={MessageAttachments} canvasRef={canvasRef} messages={messages} onFileUpload={onFileUpload} onFileRemove={onFileRemove} onMessageEdit={onMessageEdit} onMessageDelete={onMessageDelete} onMessageInputSubmit={onMessageInputSubmit} onLoadPriorMessages={onLoadPriorMessages} />} />} />
             <Route path={Routes.Friends} element={<MainView page={<FriendView page={<FriendPage friends={friends} onReloadList={populateFriendsList} onFriendClicked={onFriendClicked} onCreateGroup={onCreateGroup} onBlockFriend={onBlockFriend} onUnblockFriend={onUnblockFriend} onRemoveFriend={onRemoveFriend} />} />} />}>
               <Route path={Routes.FriendsList} element={<MainView page={<FriendView page={<FriendPage friends={friends} onReloadList={populateFriendsList} onFriendClicked={onFriendClicked} onCreateGroup={onCreateGroup} onBlockFriend={onBlockFriend} onUnblockFriend={onUnblockFriend} onRemoveFriend={onRemoveFriend} />} />} />} />
               <Route path={Routes.BlockedUsersList} element={<MainView page={<FriendView page={<BlockedUsersPage friends={friends} onReloadList={populateFriendsList} onUnblockFriend={onUnblockFriend} />} />} />} />

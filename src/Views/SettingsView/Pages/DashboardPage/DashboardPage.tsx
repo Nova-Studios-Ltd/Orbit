@@ -1,5 +1,6 @@
+import { createContext } from "react";
 import { Avatar, Button, Card, IconButton, Typography, useTheme } from "@mui/material";
-import { Add as AddIcon } from "@mui/icons-material";
+import { Add as AddIcon, Share } from "@mui/icons-material";
 import useClassNames from "Hooks/useClassNames";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
@@ -9,7 +10,7 @@ import { APP_VERSION } from "vars";
 import PageContainer from "Components/Containers/PageContainer/PageContainer";
 import Section from "Components/Containers/Section/Section";
 
-import type { Page } from "Types/UI/Components";
+import type { Page, SharedProps } from "Types/UI/Components";
 import { NCFile, UploadFile, WriteToClipboard } from "NSLib/ElectronAPI";
 import { DELETEUser, SETAvatar, UPDATEEmail, UPDATEPassword, UPDATEUsername } from "NSLib/APIEvents";
 import NetworkDiag from "./DebugTools/NetworkDiagnostics";
@@ -45,6 +46,8 @@ function DashboardPage(props: DashboardPageProps) {
   const [ChangePasswordDialogVisible, setChangePasswordDialogVisibility] = useState(false);
   const [DeleteAccountDialogVisible, setDeleteAccountDialogVisibility] = useState(false);
   const [LogoutDialogVisible, setLogoutDialogVisibility] = useState(false);
+
+  const SharedPropsContext = createContext({} as SharedProps);
 
   const passwordsMatch = (NewPasswordValue === ConfirmPasswordValue);
   const passwordsAndLengthMatch = passwordsMatch && NewPasswordValue.length > 0 && ConfirmPasswordValue.length > 0;
@@ -124,86 +127,94 @@ function DashboardPage(props: DashboardPageProps) {
   }
 
   return (
-    <PageContainer className={classNames}>
-      <Section className="UserSection">
-        <Card className="UserSectionCard">
-          <div className="UserInfoContainer">
-            <IconButton className="OverlayContainer" onClick={pickProfile}>
-              <Avatar sx={{ width: 128, height: 128 }} src={avatarSrc}/>
-              <AddIcon fontSize="large" className="Overlay" color="inherit" />
-            </IconButton>
-            <div className="UserInfoButtonContainer">
-              <Button color="inherit" style={{ textTransform: "none" }} onClick={() => WriteToClipboard(usernameText)} onContextMenu={() => WriteToClipboard(settings.User.uuid)}><Typography variant="h5">{usernameText}</Typography></Button>
-              <Typography>{settings.User.email}</Typography>
-            </div>
-          </div>
-          <div className="UserSectionButtonContainer">
-            <Button className="SectionButton" id="EditUsernameButton" onClick={onChangeUsername}>{Localizations_DashboardPage("Button_Label-EditUsername")}</Button>
-            <Button className="SectionButton" id="EditEmailButton" onClick={onChangeEmail}>{Localizations_DashboardPage("Button_Label-EditEmail")}</Button>
-            <Button className="SectionButton" id="EditPasswordButton" onClick={onChangePassword}>{Localizations_DashboardPage("Button_Label-EditPassword")}</Button>
-            <Button className="SectionButton" id="LogoutButton" color="error" onClick={() => setLogoutDialogVisibility(true)}>{Localizations_DashboardPage("Button_Label-Logout")}</Button>
-          </div>
-        </Card>
-      </Section>
-      <Section title={Localizations_DashboardPage("Section_Title-Diagnostics")}>
-        <NetworkDiag showAdvanced={true}/>
-      </Section>
-      <Section title={Localizations_DashboardPage("Section_Title-Advanced")}>
-        <div className="SectionButtonContainer">
-          <Button className="SectionButton" id="CopyTokenButton" variant="outlined" color="warning" onClick={() => WriteToClipboard(settings.User.token)}>{Localizations_DashboardPage("Button_Label-CopyToken")}</Button>
-          <Button className="SectionButton" id="DeleteAccountButton" variant="outlined" color="error" onClick={() => setDeleteAccountDialogVisibility(true)}>{Localizations_DashboardPage("Button_Label-DeleteAccount")}</Button>
-          <Button className="SectionButton" id="OpenConsoleButton" variant="outlined" color="primary" onClick={() => props.sharedProps && props.sharedProps.openConsole ? props.sharedProps.openConsole() : null}>{Localizations_DashboardPage("Button_Label-OpenConsole")}</Button>
-        </div>
-        <Typography variant="caption" color="error" textTransform="uppercase">{Localizations_DashboardPage("Typography-TokenWarning")}</Typography>
-        <span>
-          <Typography variant="caption" fontWeight="bold">{Localizations_Common("AppTitle")}</Typography> <Typography variant="caption">{Localizations_DashboardPage("Typography-AppVersion", { version: APP_VERSION })}</Typography>
-        </span>
-      </Section>
-      <GenericDialog onClose={() => setChangeUsernameDialogVisibility(false)} open={ChangeUsernameDialogVisible} title={Localizations_DashboardPage("Typography-ChangeUsernameDialogTitle")} buttons={
-        <>
-          <Button onClick={() => setChangeUsernameDialogVisibility(false)}>{Localizations_GenericDialog("Button_Label-DialogCancel")}</Button>
-          <Button disabled={!(NewUsernameValue.length > 0)} onClick={() => changeUsername()}>{Localizations_GenericDialog("Button_Label-DialogOK")}</Button>
-        </>
-      }>
-        <TextCombo fullWidth submitButton={false} placeholder={Localizations_DashboardPage("TextField_Placeholder-ChangeUsernamePrompt")} value={NewUsernameValue} onChange={(event) => event.value !== undefined ? setNewUsernameValue(event.value) : null} onSubmit={() => changeUsername()} />
-      </GenericDialog>
-      <GenericDialog onClose={() => setChangeEmailDialogVisibility(false)} open={ChangeEmailDialogVisible} title={Localizations_DashboardPage("Typography-ChangeEmailDialogTitle")} buttons={
-        <>
-          <Button onClick={() => setChangeEmailDialogVisibility(false)}>{Localizations_GenericDialog("Button_Label-DialogCancel")}</Button>
-          <Button disabled={!(NewEmailValue.length > 0)} onClick={() => changeEmail()}>{Localizations_GenericDialog("Button_Label-DialogOK")}</Button>
-        </>
-      }>
-        <TextCombo fullWidth submitButton={false} placeholder={Localizations_DashboardPage("TextField_Placeholder-ChangeEmailPrompt")} value={NewEmailValue} onChange={(event) => event.value !== undefined ? setNewEmailValue(event.value) : null} onSubmit={() => changeEmail()} />
-      </GenericDialog>
-      <GenericDialog onClose={() => setChangePasswordDialogVisibility(false)} open={ChangePasswordDialogVisible} title={Localizations_DashboardPage("Typography-ChangePasswordDialogTitle")} buttons={
-        <>
-          <Button onClick={() => setChangePasswordDialogVisibility(false)}>{Localizations_GenericDialog("Button_Label-DialogCancel")}</Button>
-          <Button disabled={!passwordsAndLengthMatch} onClick={() => changePassword()}>{Localizations_GenericDialog("Button_Label-DialogOK")}</Button>
-        </>
-      }>
-        <TextCombo fullWidth isPassword submitButton={false} placeholder={Localizations_DashboardPage("TextField_Placeholder-ChangePasswordPrompt")} value={NewPasswordValue} onChange={(event) => event.value !== undefined ? setNewPasswordValue(event.value) : null} onSubmit={() => changePassword()} />
-        <TextCombo fullWidth isPassword submitButton={false} placeholder={Localizations_DashboardPage("TextField_Placeholder-ConfirmPasswordPrompt")} error={!passwordsMatch} errorText={Localizations_DashboardPage("TextField_ErrorText-NonmatchingPassword")} value={ConfirmPasswordValue} onChange={(event) => event.value !== undefined ? setConfirmPasswordValue(event.value) : null} onSubmit={() => changePassword()} />
-      </GenericDialog>
-      <GenericDialog onClose={() => setDeleteAccountDialogVisibility(false)} open={DeleteAccountDialogVisible} title={Localizations_DashboardPage("Typography-DeleteAccountDialogTitle")} buttons={
-        <>
-          <Button onClick={() => setDeleteAccountDialogVisibility(false)}>{Localizations_GenericDialog("Button_Label-DialogCancel")}</Button>
-          <Button color="error" onClick={() => deleteAccount()}>{Localizations_GenericDialog("Button_Label-DialogDelete")}</Button>
-        </>
-      }>
-        <div className="GenericDialogTextContainer">
-          <Typography variant="body1">{Localizations_DashboardPage("Typography-DeleteAccountBlurb", { AppTitle: Localizations_Common("AppTitle") })}</Typography>
-          <Typography variant="caption">{Localizations_DashboardPage("Typography-DeleteAccountThanks", { AppTitle: Localizations_Common("AppTitle") })}</Typography>
-        </div>
-      </GenericDialog>
-      <GenericDialog onClose={() => setLogoutDialogVisibility(false)} open={LogoutDialogVisible} title={Localizations_DashboardPage("Typography-LogoutDialogTitle")} buttons={
-        <>
-          <Button onClick={() => setLogoutDialogVisibility(false)}>{Localizations_GenericDialog("Button_Label-DialogCancel")}</Button>
-          <Button color="error" onClick={() => logout()}>{Localizations_GenericDialog("Button_Label-DialogOK")}</Button>
-        </>
-      }>
-        <Typography variant="body1">{Localizations_DashboardPage("Typography-LogoutBlurb")}</Typography>
-      </GenericDialog>
-    </PageContainer>
+    <SharedPropsContext.Consumer>
+      {
+        sharedProps => {
+          return (
+            <PageContainer className={classNames}>
+              <Section className="UserSection">
+                <Card className="UserSectionCard">
+                  <div className="UserInfoContainer">
+                    <IconButton className="OverlayContainer" onClick={pickProfile}>
+                      <Avatar sx={{ width: 128, height: 128 }} src={avatarSrc}/>
+                      <AddIcon fontSize="large" className="Overlay" color="inherit" />
+                    </IconButton>
+                    <div className="UserInfoButtonContainer">
+                      <Button color="inherit" style={{ textTransform: "none" }} onClick={() => WriteToClipboard(usernameText)} onContextMenu={() => WriteToClipboard(settings.User.uuid)}><Typography variant="h5">{usernameText}</Typography></Button>
+                      <Typography>{settings.User.email}</Typography>
+                    </div>
+                  </div>
+                  <div className="UserSectionButtonContainer">
+                    <Button className="SectionButton" id="EditUsernameButton" onClick={onChangeUsername}>{Localizations_DashboardPage("Button_Label-EditUsername")}</Button>
+                    <Button className="SectionButton" id="EditEmailButton" onClick={onChangeEmail}>{Localizations_DashboardPage("Button_Label-EditEmail")}</Button>
+                    <Button className="SectionButton" id="EditPasswordButton" onClick={onChangePassword}>{Localizations_DashboardPage("Button_Label-EditPassword")}</Button>
+                    <Button className="SectionButton" id="LogoutButton" color="error" onClick={() => setLogoutDialogVisibility(true)}>{Localizations_DashboardPage("Button_Label-Logout")}</Button>
+                  </div>
+                </Card>
+              </Section>
+              <Section title={Localizations_DashboardPage("Section_Title-Diagnostics")}>
+                <NetworkDiag showAdvanced={true}/>
+              </Section>
+              <Section title={Localizations_DashboardPage("Section_Title-Advanced")}>
+                <div className="SectionButtonContainer">
+                  <Button className="SectionButton" id="CopyTokenButton" variant="outlined" color="warning" onClick={() => WriteToClipboard(settings.User.token)}>{Localizations_DashboardPage("Button_Label-CopyToken")}</Button>
+                  <Button className="SectionButton" id="DeleteAccountButton" variant="outlined" color="error" onClick={() => setDeleteAccountDialogVisibility(true)}>{Localizations_DashboardPage("Button_Label-DeleteAccount")}</Button>
+                  <Button className="SectionButton" id="OpenConsoleButton" variant="outlined" color="primary" onClick={() => sharedProps && sharedProps.openConsole ? sharedProps.openConsole() : null}>{Localizations_DashboardPage("Button_Label-OpenConsole")}</Button>
+                </div>
+                <Typography variant="caption" color="error" textTransform="uppercase">{Localizations_DashboardPage("Typography-TokenWarning")}</Typography>
+                <span>
+                  <Typography variant="caption" fontWeight="bold">{Localizations_Common("AppTitle")}</Typography> <Typography variant="caption">{Localizations_DashboardPage("Typography-AppVersion", { version: APP_VERSION })}</Typography>
+                </span>
+              </Section>
+              <GenericDialog onClose={() => setChangeUsernameDialogVisibility(false)} open={ChangeUsernameDialogVisible} title={Localizations_DashboardPage("Typography-ChangeUsernameDialogTitle")} buttons={
+                <>
+                  <Button onClick={() => setChangeUsernameDialogVisibility(false)}>{Localizations_GenericDialog("Button_Label-DialogCancel")}</Button>
+                  <Button disabled={!(NewUsernameValue.length > 0)} onClick={() => changeUsername()}>{Localizations_GenericDialog("Button_Label-DialogOK")}</Button>
+                </>
+              }>
+                <TextCombo fullWidth submitButton={false} placeholder={Localizations_DashboardPage("TextField_Placeholder-ChangeUsernamePrompt")} value={NewUsernameValue} onChange={(event) => event.value !== undefined ? setNewUsernameValue(event.value) : null} onSubmit={() => changeUsername()} />
+              </GenericDialog>
+              <GenericDialog onClose={() => setChangeEmailDialogVisibility(false)} open={ChangeEmailDialogVisible} title={Localizations_DashboardPage("Typography-ChangeEmailDialogTitle")} buttons={
+                <>
+                  <Button onClick={() => setChangeEmailDialogVisibility(false)}>{Localizations_GenericDialog("Button_Label-DialogCancel")}</Button>
+                  <Button disabled={!(NewEmailValue.length > 0)} onClick={() => changeEmail()}>{Localizations_GenericDialog("Button_Label-DialogOK")}</Button>
+                </>
+              }>
+                <TextCombo fullWidth submitButton={false} placeholder={Localizations_DashboardPage("TextField_Placeholder-ChangeEmailPrompt")} value={NewEmailValue} onChange={(event) => event.value !== undefined ? setNewEmailValue(event.value) : null} onSubmit={() => changeEmail()} />
+              </GenericDialog>
+              <GenericDialog onClose={() => setChangePasswordDialogVisibility(false)} open={ChangePasswordDialogVisible} title={Localizations_DashboardPage("Typography-ChangePasswordDialogTitle")} buttons={
+                <>
+                  <Button onClick={() => setChangePasswordDialogVisibility(false)}>{Localizations_GenericDialog("Button_Label-DialogCancel")}</Button>
+                  <Button disabled={!passwordsAndLengthMatch} onClick={() => changePassword()}>{Localizations_GenericDialog("Button_Label-DialogOK")}</Button>
+                </>
+              }>
+                <TextCombo fullWidth isPassword submitButton={false} placeholder={Localizations_DashboardPage("TextField_Placeholder-ChangePasswordPrompt")} value={NewPasswordValue} onChange={(event) => event.value !== undefined ? setNewPasswordValue(event.value) : null} onSubmit={() => changePassword()} />
+                <TextCombo fullWidth isPassword submitButton={false} placeholder={Localizations_DashboardPage("TextField_Placeholder-ConfirmPasswordPrompt")} error={!passwordsMatch} errorText={Localizations_DashboardPage("TextField_ErrorText-NonmatchingPassword")} value={ConfirmPasswordValue} onChange={(event) => event.value !== undefined ? setConfirmPasswordValue(event.value) : null} onSubmit={() => changePassword()} />
+              </GenericDialog>
+              <GenericDialog onClose={() => setDeleteAccountDialogVisibility(false)} open={DeleteAccountDialogVisible} title={Localizations_DashboardPage("Typography-DeleteAccountDialogTitle")} buttons={
+                <>
+                  <Button onClick={() => setDeleteAccountDialogVisibility(false)}>{Localizations_GenericDialog("Button_Label-DialogCancel")}</Button>
+                  <Button color="error" onClick={() => deleteAccount()}>{Localizations_GenericDialog("Button_Label-DialogDelete")}</Button>
+                </>
+              }>
+                <div className="GenericDialogTextContainer">
+                  <Typography variant="body1">{Localizations_DashboardPage("Typography-DeleteAccountBlurb", { AppTitle: Localizations_Common("AppTitle") })}</Typography>
+                  <Typography variant="caption">{Localizations_DashboardPage("Typography-DeleteAccountThanks", { AppTitle: Localizations_Common("AppTitle") })}</Typography>
+                </div>
+              </GenericDialog>
+              <GenericDialog onClose={() => setLogoutDialogVisibility(false)} open={LogoutDialogVisible} title={Localizations_DashboardPage("Typography-LogoutDialogTitle")} buttons={
+                <>
+                  <Button onClick={() => setLogoutDialogVisibility(false)}>{Localizations_GenericDialog("Button_Label-DialogCancel")}</Button>
+                  <Button color="error" onClick={() => logout()}>{Localizations_GenericDialog("Button_Label-DialogOK")}</Button>
+                </>
+              }>
+                <Typography variant="body1">{Localizations_DashboardPage("Typography-LogoutBlurb")}</Typography>
+              </GenericDialog>
+            </PageContainer>
+          );
+        }
+      }
+    </SharedPropsContext.Consumer>
   );
 }
 

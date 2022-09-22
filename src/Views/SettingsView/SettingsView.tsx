@@ -1,12 +1,10 @@
-import { useEffect } from "react";
+import { createContext, useEffect } from "react";
 import useClassNames from "Hooks/useClassNames";
 import { useTranslation } from "react-i18next";
 
 import ViewContainer from "Components/Containers/ViewContainer/ViewContainer";
-import DashboardPage from "Views/SettingsView/Pages/DashboardPage/DashboardPage";
 
-import type { View } from "Types/UI/Components";
-import { Routes } from "Types/UI/Routes";
+import type { View, SharedProps } from "Types/UI/Components";
 
 interface SettingsViewProps extends View {
   avatarNonce?: string,
@@ -18,23 +16,23 @@ function SettingsView(props: SettingsViewProps) {
   const Localizations_SettingsView = useTranslation("SettingsView").t;
   const classNames = useClassNames("SettingsViewContainer", props.className);
 
-  useEffect(() => {
-    if (props.sharedProps && props.sharedProps.changeTitleCallback) props.sharedProps.changeTitleCallback(Localizations_SettingsView("ViewTitle"));
-  }, [Localizations_SettingsView, props, props.sharedProps?.changeTitleCallback]);
-
-  const page = () => {
-    switch (props.path) {
-      case Routes.Dashboard:
-        return <DashboardPage avatarNonce={props.avatarNonce} onAvatarChanged={props.onAvatarChanged} onLogout={props.onLogout} />
-      default:
-        return null;
-    }
-  }
+  const SharedPropsContext = createContext({} as SharedProps);
 
   return (
-    <ViewContainer className={classNames} adaptive>
-      {page()}
-    </ViewContainer>
+    <SharedPropsContext.Consumer>
+      {
+        sharedProps => {
+
+          if (sharedProps && sharedProps.changeTitleCallback) sharedProps.changeTitleCallback(Localizations_SettingsView("ViewTitle"));
+
+          return (
+            <ViewContainer className={classNames} adaptive>
+              {props.page}
+            </ViewContainer>
+          );
+        }
+      }
+    </SharedPropsContext.Consumer>
   );
 }
 

@@ -19,6 +19,7 @@ import type IUserData from "Types/API/Interfaces/IUserData";
 
 interface MainViewProps extends View {
   channels?: IRawChannelProps[],
+  avatarNonce?: string,
   selectedChannel?: IRawChannelProps,
   channelMenuVisible?: boolean,
   onNavigateToPage?: (path: Routes) => void,
@@ -27,6 +28,7 @@ interface MainViewProps extends View {
   onChannelClick?: (channel: IRawChannelProps) => void,
   onChannelDelete?: (channel: IRawChannelProps) => void,
   onChannelEdit?: (channel: IChannelUpdateProps) => void,
+  onChannelMenuToggle?: () => void,
   onChannelMove?: (currentChannel: IRawChannelProps, otherChannel: IRawChannelProps, index: number) => void,
   onChannelRemoveRecipient?: (channel: IRawChannelProps, recipient: IUserData) => void,
   onChannelResetIcon?: (channel: IRawChannelProps) => void
@@ -57,8 +59,8 @@ function MainView(props: MainViewProps) {
                 <CSSTransition classNames="MainViewContainerLeft" in={props.channelMenuVisible} timeout={10}>
                   <div className="MainViewContainerLeft">
                     <div className="NavigationButtonContainer" style={{ backgroundColor: theme.palette.background.paper, borderColor: theme.palette.divider }}>
-                      <AvatarTextButton className="NavigationButtonContainerItem" selected={location.pathname === Routes.Settings} onLeftClick={() => navigate(Routes.Settings)} iconSrc={`${settings.User.avatarSrc}&nonce=${avatarNonce}`}>{Localizations_MainView("Typography-SettingsHeader")}</AvatarTextButton>
-                      <AvatarTextButton className="NavigationButtonContainerItem" iconObj={<GroupIcon />} selected={location.pathname === Routes.Friends} onLeftClick={() => if (props.onNavigateToPage) props.onNavigateToPage(Routes.Friends)}>{Localizations_MainView("Typography-FriendsHeader")}</AvatarTextButton>
+                      <AvatarTextButton className="NavigationButtonContainerItem" selected={location.pathname === Routes.Settings} onLeftClick={() => navigate(Routes.Settings)} iconSrc={`${settings.User.avatarSrc}&nonce=${props.avatarNonce || ""}`}>{Localizations_MainView("Typography-SettingsHeader")}</AvatarTextButton>
+                      <AvatarTextButton className="NavigationButtonContainerItem" iconObj={<GroupIcon />} selected={location.pathname === Routes.Friends} onLeftClick={() => props.onNavigateToPage ? props.onNavigateToPage(Routes.Friends) : null}>{Localizations_MainView("Typography-FriendsHeader")}</AvatarTextButton>
                     </div>
                     <div className="MainViewChannelListContainer">
                       <GenericHeader className="MainViewHeader" title={Localizations_MainView("Header_Title-ChannelList")} childrenRight={
@@ -71,7 +73,7 @@ function MainView(props: MainViewProps) {
                   </div>
                 </CSSTransition>
                 <div className="MainViewContainerRight" onClick={onMainViewContainerRightClick} style={{ opacity: sharedProps?.widthConstrained && props.channelMenuVisible ? 0.5 : 1 }}>
-                  <GenericHeader className="MainViewHeader MainViewContainerItem" title={sharedProps.title} childrenLeft={sharedProps?.widthConstrained ? <IconButton onClick={(event: React.MouseEvent<HTMLButtonElement>) => { event.stopPropagation(); onChannelMenuToggle(); }}><MenuIcon /></IconButton> : null} />
+                  <GenericHeader className="MainViewHeader MainViewContainerItem" title={sharedProps.title} childrenLeft={sharedProps?.widthConstrained ? <IconButton onClick={(event: React.MouseEvent<HTMLButtonElement>) => { event.stopPropagation(); if (props.onChannelMenuToggle) props.onChannelMenuToggle(); }}><MenuIcon /></IconButton> : null} />
                   {props.page}
                 </div>
               </div>
