@@ -1,4 +1,5 @@
 import { useTheme } from "@mui/material";
+import { Outlet } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
 import ViewContainer from "Components/Containers/ViewContainer/ViewContainer";
@@ -37,9 +38,9 @@ function AuthView(props: AuthViewProps) {
       <div className="AuthViewFormContainer">
         <div className="AuthViewFormContainerBackground" style={{ backgroundColor: theme.customPalette.formBackground }} />
         <div className="AuthViewBrandingContainer">
-          <img className="BrandingImage" src="OrbitLogo.png" alt={Localizations_AuthView("Image_Alt-BrandingLogo")} />
+          <img className="BrandingImage" src="/OrbitLogo.png" alt={Localizations_AuthView("Image_Alt-BrandingLogo")} />
         </div>
-        {props.page}
+        <Outlet />
       </div>
     </div>
   </ViewContainer>

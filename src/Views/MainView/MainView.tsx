@@ -1,6 +1,6 @@
 import React from "react";
 import { CSSTransition } from "react-transition-group";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, Outlet } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { IconButton, useTheme } from "@mui/material";
 import { Add as AddIcon, Group as GroupIcon, Menu as MenuIcon } from "@mui/icons-material";
@@ -53,22 +53,22 @@ function MainView(props: MainViewProps) {
         <CSSTransition classNames="MainViewContainerLeft" in={props.channelMenuVisible} timeout={10}>
           <div className="MainViewContainerLeft">
             <div className="NavigationButtonContainer" style={{ backgroundColor: theme.palette.background.paper, borderColor: theme.palette.divider }}>
-              <AvatarTextButton className="NavigationButtonContainerItem" selected={location.pathname === Routes.Settings} onLeftClick={() => navigate(Routes.Settings)} iconSrc={`${settings.User.avatarSrc}&nonce=${props.avatarNonce || ""}`}>{Localizations_MainView("Typography-SettingsHeader")}</AvatarTextButton>
-              <AvatarTextButton className="NavigationButtonContainerItem" iconObj={<GroupIcon />} selected={location.pathname === Routes.Friends} onLeftClick={() => props.onNavigateToPage ? props.onNavigateToPage(Routes.Friends) : null}>{Localizations_MainView("Typography-FriendsHeader")}</AvatarTextButton>
+              <AvatarTextButton className="NavigationButtonContainerItem" selected={location.pathname === Routes.Dashboard} onLeftClick={() => props.onNavigateToPage ? props.onNavigateToPage(Routes.Dashboard) : null} iconSrc={`${settings.User.avatarSrc}&nonce=${props.avatarNonce || ""}`}>{Localizations_MainView("Typography-SettingsHeader")}</AvatarTextButton>
+              <AvatarTextButton className="NavigationButtonContainerItem" iconObj={<GroupIcon />} selected={location.pathname === Routes.FriendsList} onLeftClick={() => props.onNavigateToPage ? props.onNavigateToPage(Routes.FriendsList) : null}>{Localizations_MainView("Typography-FriendsHeader")}</AvatarTextButton>
             </div>
             <div className="MainViewChannelListContainer">
               <GenericHeader className="MainViewHeader" title={Localizations_MainView("Header_Title-ChannelList")} childrenRight={
                 <div>
-                  <IconButton onClick={() => navigate(Routes.Friends)}><AddIcon /></IconButton>
+                  <IconButton onClick={() => navigate(Routes.AddFriendGroup)}><AddIcon /></IconButton>
                 </div>
               } />
-              <ChannelList className="MainViewChannelList" channels={props.channels} onChannelClearCache={props.onChannelClearCache} onChannelClick={props.onChannelClick} onChannelEdit={props.onChannelEdit} onChannelDelete={props.onChannelDelete} onChannelMove={props.onChannelMove} onChannelRemoveRecipient={props.onChannelRemoveRecipient} onChannelResetIcon={props.onChannelResetIcon} selectedChannel={props.selectedChannel} />
+              <ChannelList className="MainViewChannelList" sharedProps={props.sharedProps} channels={props.channels} onChannelClearCache={props.onChannelClearCache} onChannelClick={props.onChannelClick} onChannelEdit={props.onChannelEdit} onChannelDelete={props.onChannelDelete} onChannelMove={props.onChannelMove} onChannelRemoveRecipient={props.onChannelRemoveRecipient} onChannelResetIcon={props.onChannelResetIcon} selectedChannel={props.selectedChannel} />
             </div>
           </div>
         </CSSTransition>
         <div className="MainViewContainerRight" onClick={onMainViewContainerRightClick} style={{ opacity: props.sharedProps?.widthConstrained && props.channelMenuVisible ? 0.5 : 1 }}>
           <GenericHeader className="MainViewHeader MainViewContainerItem" title={props.sharedProps?.title} childrenLeft={props.sharedProps?.widthConstrained ? <IconButton onClick={(event: React.MouseEvent<HTMLButtonElement>) => { event.stopPropagation(); if (props.onChannelMenuToggle) props.onChannelMenuToggle(); }}><MenuIcon /></IconButton> : null} />
-          {props.page}
+          <Outlet />
         </div>
       </div>
     </ViewContainer>

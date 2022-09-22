@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { Outlet } from "react-router-dom";
 import useClassNames from "Hooks/useClassNames";
 import { useTranslation } from "react-i18next";
 
@@ -22,7 +23,7 @@ function SettingsView(props: SettingsViewProps) {
 
   return (
     <ViewContainer className={classNames} adaptive>
-      {props.page}
+      <Outlet />
     </ViewContainer>
   );
 }

@@ -216,7 +216,7 @@ function App() {
 
       if (doNavigate) {
         if (location.pathname === Routes.Chat && loadedChannels.length < 1) {
-          navigate(Routes.Friends);
+          navigate(Routes.FriendsList);
           return;
         }
 
@@ -416,7 +416,7 @@ function App() {
   }
 
   const onCreateGroup = (friends: Friend[]) => {
-    navigate(Routes.Friends);
+    navigate(Routes.FriendsList);
 
     console.log(`Requested to create group with recipients ${friends}`);
     if (friends.length > 0) {
@@ -657,16 +657,23 @@ function App() {
       </Helmet>
       <ThemeProvider theme={theme}>
         <RoutingGroup>
-          <Route path="*" element={<ErrorView sharedProps={SharedProps} errorCode={404} />}></Route>
-          <Route path="/" element={<AuthView sharedProps={SharedProps} page={<LoginPage />} />} />
-          <Route path={Routes.Login} element={<AuthView sharedProps={SharedProps} page={<LoginPage />} />} />
-          <Route path={Routes.Register} element={<AuthView sharedProps={SharedProps} page={<RegisterPage />} />} />
-          <Route path={`${Routes.Chat}/*`} element={<MainView sharedProps={SharedProps} channels={channels} avatarNonce={avatarNonce} selectedChannel={selectedChannel} channelMenuVisible={channelMenuVisible} onNavigateToPage={onMainViewNavigateToPage} setChannelMenuVisibility={setChannelMenuVisibility} onChannelClearCache={onChannelClearCache} onChannelClick={selectChannel} onChannelDelete={onChannelDelete} onChannelEdit={onChannelEdit} onChannelMenuToggle={onChannelMenuToggle} onChannelMove={onChannelMove} onChannelRemoveRecipient={onChannelRemoveRecipient} onChannelResetIcon={onChannelResetIcon} page={<ChatPage sharedProps={SharedProps} attachments={MessageAttachments} canvasRef={canvasRef} messages={messages} onFileUpload={onFileUpload} onFileRemove={onFileRemove} onMessageEdit={onMessageEdit} onMessageDelete={onMessageDelete} onMessageInputSubmit={onMessageInputSubmit} onLoadPriorMessages={onLoadPriorMessages} />} />} />
-          <Route path={Routes.Friends} element={<MainView sharedProps={SharedProps} channels={channels} avatarNonce={avatarNonce} selectedChannel={selectedChannel} channelMenuVisible={channelMenuVisible} onNavigateToPage={onMainViewNavigateToPage} setChannelMenuVisibility={setChannelMenuVisibility} onChannelClearCache={onChannelClearCache} onChannelClick={selectChannel} onChannelDelete={onChannelDelete} onChannelEdit={onChannelEdit} onChannelMenuToggle={onChannelMenuToggle} onChannelMove={onChannelMove} onChannelRemoveRecipient={onChannelRemoveRecipient} onChannelResetIcon={onChannelResetIcon} page={<FriendView sharedProps={SharedProps} page={<FriendPage friends={friends} onReloadList={populateFriendsList} onFriendClicked={onFriendClicked} onCreateGroup={onCreateGroup} onBlockFriend={onBlockFriend} onUnblockFriend={onUnblockFriend} onRemoveFriend={onRemoveFriend} />} />} />}>
-            <Route path={Routes.BlockedUsersList} element={<MainView sharedProps={SharedProps} channels={channels} avatarNonce={avatarNonce} selectedChannel={selectedChannel} channelMenuVisible={channelMenuVisible} onNavigateToPage={onMainViewNavigateToPage} setChannelMenuVisibility={setChannelMenuVisibility} onChannelClearCache={onChannelClearCache} onChannelClick={selectChannel} onChannelDelete={onChannelDelete} onChannelEdit={onChannelEdit} onChannelMenuToggle={onChannelMenuToggle} onChannelMove={onChannelMove} onChannelRemoveRecipient={onChannelRemoveRecipient} onChannelResetIcon={onChannelResetIcon} page={<FriendView sharedProps={SharedProps} page={<BlockedUsersPage friends={friends} onReloadList={populateFriendsList} onUnblockFriend={onUnblockFriend} />} />} />} />
-            <Route path={Routes.AddFriend} element={<MainView sharedProps={SharedProps} channels={channels} avatarNonce={avatarNonce} selectedChannel={selectedChannel} channelMenuVisible={channelMenuVisible} onNavigateToPage={onMainViewNavigateToPage} setChannelMenuVisibility={setChannelMenuVisibility} onChannelClearCache={onChannelClearCache} onChannelClick={selectChannel} onChannelDelete={onChannelDelete} onChannelEdit={onChannelEdit} onChannelMenuToggle={onChannelMenuToggle} onChannelMove={onChannelMove} onChannelRemoveRecipient={onChannelRemoveRecipient} onChannelResetIcon={onChannelResetIcon} page={<FriendView sharedProps={SharedProps} page={<AddFriendsPage onAddFriend={onAddFriend} />} />} />} />
+          <Route path="*" element={<ErrorView sharedProps={SharedProps} errorCode={404} />} />
+          <Route path={Routes.Auth} element={<AuthView sharedProps={SharedProps} />}>
+            <Route path={Routes.Login} element={<LoginPage sharedProps={SharedProps} />} />
+            <Route path={Routes.Register} element={<RegisterPage sharedProps={SharedProps} />} />
           </Route>
-          <Route path={Routes.Settings} element={<MainView sharedProps={SharedProps} channels={channels} avatarNonce={avatarNonce} selectedChannel={selectedChannel} channelMenuVisible={channelMenuVisible} onNavigateToPage={onMainViewNavigateToPage} setChannelMenuVisibility={setChannelMenuVisibility} onChannelClearCache={onChannelClearCache} onChannelClick={selectChannel} onChannelDelete={onChannelDelete} onChannelEdit={onChannelEdit} onChannelMenuToggle={onChannelMenuToggle} onChannelMove={onChannelMove} onChannelRemoveRecipient={onChannelRemoveRecipient} onChannelResetIcon={onChannelResetIcon} page={<SettingsView sharedProps={SharedProps} page={<DashboardPage avatarNonce={avatarNonce} onAvatarChanged={onAvatarChanged} onLogout={onLogout} />} />} />} />
+          <Route path="/" element={<MainView sharedProps={SharedProps} channels={channels} avatarNonce={avatarNonce} selectedChannel={selectedChannel} channelMenuVisible={channelMenuVisible} onNavigateToPage={onMainViewNavigateToPage} setChannelMenuVisibility={setChannelMenuVisibility} onChannelClearCache={onChannelClearCache} onChannelClick={selectChannel} onChannelDelete={onChannelDelete} onChannelEdit={onChannelEdit} onChannelMenuToggle={onChannelMenuToggle} onChannelMove={onChannelMove} onChannelRemoveRecipient={onChannelRemoveRecipient} onChannelResetIcon={onChannelResetIcon} />}>
+            <Route path={Routes.Friends} element={<FriendView />}>
+              <Route path={Routes.FriendsList} element={<FriendPage sharedProps={SharedProps} friends={friends} onReloadList={populateFriendsList} onFriendClicked={onFriendClicked} onCreateGroup={onCreateGroup} onBlockFriend={onBlockFriend} onUnblockFriend={onUnblockFriend} onRemoveFriend={onRemoveFriend} />} />
+              <Route path={Routes.AddFriend} element={<AddFriendsPage sharedProps={SharedProps} onAddFriend={onAddFriend} />} />
+              <Route path={Routes.AddFriendGroup} element={<FriendPage sharedProps={SharedProps} friends={friends} onReloadList={populateFriendsList} onFriendClicked={onFriendClicked} onCreateGroup={onCreateGroup} onBlockFriend={onBlockFriend} onUnblockFriend={onUnblockFriend} onRemoveFriend={onRemoveFriend} />} />
+              <Route path={Routes.BlockedUsersList} element={<BlockedUsersPage sharedProps={SharedProps} friends={friends} onReloadList={populateFriendsList} onUnblockFriend={onUnblockFriend} />} />
+            </Route>
+            <Route path={Routes.Settings} element={<SettingsView sharedProps={SharedProps} />}>
+              <Route path={Routes.Dashboard} element={<DashboardPage sharedProps={SharedProps} avatarNonce={avatarNonce} onAvatarChanged={onAvatarChanged} onLogout={onLogout} />} />
+            </Route>
+            <Route path={Routes.Chat} element={<ChatPage sharedProps={SharedProps} attachments={MessageAttachments} canvasRef={canvasRef} messages={messages} onFileUpload={onFileUpload} onFileRemove={onFileRemove} onMessageEdit={onMessageEdit} onMessageDelete={onMessageDelete} onMessageInputSubmit={onMessageInputSubmit} onLoadPriorMessages={onLoadPriorMessages} />} />
+          </Route>
         </RoutingGroup>
         <Popover className="GenericPopover" open={helpVisible} anchorEl={helpAnchorEl} onClose={() => {
           setHelpAnchor(null as unknown as Element);

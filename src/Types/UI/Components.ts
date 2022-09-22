@@ -25,8 +25,7 @@ export interface Page extends NCComponent {
 }
 
 export interface View extends NCComponent {
-  page?: ReactNode,
-  pageSpecificProps?: unknown
+
 }
 
 export interface SharedProps {
