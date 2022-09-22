@@ -20,3 +20,8 @@ export enum DebugMessageType {
   Error = "Err",
   Success = "Scs"
 }
+
+export enum SelectionType {
+  Single,
+  MultiSelect
+}

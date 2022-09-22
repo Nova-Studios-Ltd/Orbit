@@ -4,6 +4,7 @@ import React, { useState, ReactNode } from "react";
 
 import type { NCComponent } from "Types/UI/Components";
 import useClassNames from "Hooks/useClassNames";
+import { SelectionType } from "Types/Enums";
 
 export interface AvatarTextButtonProps extends NCComponent {
   children?: ReactNode,
@@ -12,6 +13,7 @@ export interface AvatarTextButtonProps extends NCComponent {
   iconSrc?: string,
   iconObj?: ReactNode,
   selected?: boolean,
+  selectionType?: SelectionType,
   showEllipsis?: boolean,
   showEllipsisConditional?: boolean,
   fullWidth?: boolean,
@@ -26,9 +28,28 @@ function AvatarTextButton(props: AvatarTextButtonProps) {
   const classNames = useClassNames(useClassNames("AvatarTextButtonContainer", props.className), props.fullWidth ? "FullWidth" : "");
   const isTouchCapable = props.sharedProps && props.sharedProps.isTouchCapable;
 
+  const selectionType = props.selectionType !== undefined ? props.selectionType : SelectionType.Single;
+
   const [isHovering, setHoveringState] = useState(false);
   const [isDragZoneTopHovering, setDragZoneTopHoveringState] = useState(false);
   const [isDragZoneBottomHovering, setDragZoneBottomHoveringState] = useState(false);
+
+  const backgroundColor = (() => {
+    if (props.selected) {
+      switch (props.selectionType) {
+        case SelectionType.MultiSelect:
+          return theme.palette.primary.main;
+        case SelectionType.Single:
+        default:
+          return theme.customPalette.customActions.active;
+      }
+    }
+    else if (isHovering) {
+      return theme.customPalette.customActions.active;
+    }
+
+    return theme.palette.background.paper;
+  })();
 
   const onMouseHover = (isHovering: boolean) => {
     setHoveringState(isHovering);
@@ -47,7 +68,7 @@ function AvatarTextButton(props: AvatarTextButtonProps) {
   }
 
   return (
-    <div className={classNames} style={{ backgroundColor: props.selected || isHovering ? theme.customPalette.customActions.active : theme.palette.background.paper, boxShadow: props.selected ? `4px 4px ${theme.palette.background.default}` : "none" }} draggable={props.draggable} onDragStart={onDrag}>
+    <div className={classNames} style={{ backgroundColor: backgroundColor, boxShadow: props.selected ? `4px 4px ${theme.palette.background.default}` : "none" }} draggable={props.draggable} onDragStart={onDrag}>
       {props.draggable ? <span className="AvatarTextButtonDragZone AvatarTextButtonDragZoneTop" style={{ background: isDragZoneTopHovering ? theme.palette.primary.main : "none" }} onDrop={(event) => { onDrop(event); setDragZoneTopHoveringState(false); }} onDragOver={(event) => { setDragZoneTopHoveringState(true); event.preventDefault(); }} onDragLeave={() => setDragZoneTopHoveringState(false)}/> : null}
       <ButtonBase className="AvatarTextButtonBase" onClick={props.onLeftClick} onContextMenu={props.onRightClick} onMouseEnter={() => onMouseHover(true)} onMouseLeave={() => onMouseHover(false)}>
         <div className="AvatarTextButtonLeft">
