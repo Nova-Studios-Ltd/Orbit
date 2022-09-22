@@ -636,7 +636,7 @@ function App() {
     })();
 
     AutoLogin().then((result: boolean) => {
-      if (!result) navigate(Routes.Login);
+      if (!result && location.pathname !== Routes.Register) navigate(Routes.Login);
     });
 
     loadChannels(true);
