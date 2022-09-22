@@ -19,7 +19,6 @@ export function IsMainViewPage(url: string, page: MainViewRoutes) : boolean {
 export function URLGetChannelUUID(url: string) : string | undefined {
   if (!IsMainViewPage(url, MainViewRoutes.Chat)) return undefined;
   const components = url.split("/");
-  if (components.length > 5 || components.length < 4) return undefined;
-  if (components[4].length !== 32) return undefined;
-  return components[4];
+  if (components[2].length !== 32) return undefined;
+  return components[2];
 }
