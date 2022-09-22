@@ -51,6 +51,7 @@ import MessageAttachment from "Types/API/MessageAttachment";
 import type IUserData from "Types/API/Interfaces/IUserData";
 
 import "./App.css";
+import { DEBUG } from "vars";
 
 i18n.use(initReactI18next)
 .init({
@@ -125,10 +126,15 @@ function App() {
 
     // Function overrides
 
-    OverrideConsoleLog(onNewDebugMessage);
-    OverrideConsoleWarn(onNewDebugMessage);
-    OverrideConsoleError(onNewDebugMessage);
-    OverrideConsoleSuccess(onNewDebugMessage);
+    if (DEBUG) {
+      OverrideConsoleLog(onNewDebugMessage);
+      OverrideConsoleWarn(onNewDebugMessage);
+      OverrideConsoleError(onNewDebugMessage);
+      OverrideConsoleSuccess(onNewDebugMessage);
+    }
+    else {
+      console.warn("Not overriding console logging because debug mode is disabled. Change this in vars.ts.");
+    }
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

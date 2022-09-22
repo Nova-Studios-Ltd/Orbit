@@ -4,7 +4,7 @@ import useClassNames from "Hooks/useClassNames";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { SettingsManager } from "NSLib/SettingsManager";
-import { APP_VERSION } from "vars";
+import { APP_VERSION, DEBUG } from "vars";
 
 import PageContainer from "Components/Containers/PageContainer/PageContainer";
 import Section from "Components/Containers/Section/Section";
@@ -152,7 +152,7 @@ function DashboardPage(props: DashboardPageProps) {
         <div className="SectionButtonContainer">
           <Button className="SectionButton" id="CopyTokenButton" variant="outlined" color="warning" onClick={() => WriteToClipboard(settings.User.token)}>{Localizations_DashboardPage("Button_Label-CopyToken")}</Button>
           <Button className="SectionButton" id="DeleteAccountButton" variant="outlined" color="error" onClick={() => setDeleteAccountDialogVisibility(true)}>{Localizations_DashboardPage("Button_Label-DeleteAccount")}</Button>
-          <Button className="SectionButton" id="OpenConsoleButton" variant="outlined" color="primary" onClick={() => props.sharedProps && props.sharedProps.openConsole ? props.sharedProps.openConsole() : null}>{Localizations_DashboardPage("Button_Label-OpenConsole")}</Button>
+          <Button className="SectionButton" id="OpenConsoleButton" variant="outlined" color="primary" disabled={!DEBUG} onClick={() => props.sharedProps && props.sharedProps.openConsole ? props.sharedProps.openConsole() : null}>{Localizations_DashboardPage("Button_Label-OpenConsole")}</Button>
         </div>
         <Typography variant="caption" color="error" textTransform="uppercase">{Localizations_DashboardPage("Typography-TokenWarning")}</Typography>
         <span>
