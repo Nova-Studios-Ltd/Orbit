@@ -357,13 +357,6 @@ function App() {
             setMessages([...messages]);
             autoScroll.current = true;
           }, true);
-          /*GETMessagesSingle(channel.table_Id, async (message: IMessageProps) => {
-            autoScroll.current = false;
-            setMessages(prevState => {
-              return [...prevState, message];
-            });
-            return true;
-          }, () => {autoScroll.current = true;}, true);*/
           return;
         }
 
@@ -372,14 +365,6 @@ function App() {
           setMessages([...messages]);
           autoScroll.current = true;
         });
-
-        /*GETMessagesSingle(channel.table_Id, async (message: IMessageProps) => {
-          autoScroll.current = false;
-          setMessages(prevState => {
-            return [...prevState, message];
-          });
-          return true;
-        }, () => {autoScroll.current = true;});*/
       }
       else {
         GETMessages(channel.table_Id, async (messages: IMessageProps[]) => {
@@ -669,7 +654,9 @@ function App() {
             <Route path={Routes.Settings} element={<SettingsView sharedProps={SharedProps} />}>
               <Route path={Routes.Dashboard} element={<DashboardPage sharedProps={SharedProps} avatarNonce={avatarNonce} onAvatarChanged={onAvatarChanged} onLogout={onLogout} />} />
             </Route>
-            <Route path={`${Routes.Chat}/:uuid`} element={<ChatPage sharedProps={SharedProps} attachments={MessageAttachments} canvasRef={canvasRef} channels={channels} messages={messages} selectChannel={selectChannel} onFileUpload={onFileUpload} onFileRemove={onFileRemove} onMessageEdit={onMessageEdit} onMessageDelete={onMessageDelete} onMessageInputSubmit={onMessageInputSubmit} onLoadPriorMessages={onLoadPriorMessages} />} />
+            <Route path={`${Routes.Chat}`} element={<ChatPage sharedProps={SharedProps} attachments={MessageAttachments} canvasRef={canvasRef} channels={channels} messages={messages} selectChannel={selectChannel} onFileUpload={onFileUpload} onFileRemove={onFileRemove} onMessageEdit={onMessageEdit} onMessageDelete={onMessageDelete} onMessageInputSubmit={onMessageInputSubmit} onLoadPriorMessages={onLoadPriorMessages} />}>
+              <Route path={`${Routes.Chat}/:uuid`} element={<ChatPage sharedProps={SharedProps} attachments={MessageAttachments} canvasRef={canvasRef} channels={channels} messages={messages} selectChannel={selectChannel} onFileUpload={onFileUpload} onFileRemove={onFileRemove} onMessageEdit={onMessageEdit} onMessageDelete={onMessageDelete} onMessageInputSubmit={onMessageInputSubmit} onLoadPriorMessages={onLoadPriorMessages} />} />
+            </Route>
           </Route>
         </RoutingGroup>
         <Popover className="GenericPopover" open={helpVisible} anchorEl={helpAnchorEl} onClose={() => {
