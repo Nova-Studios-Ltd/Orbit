@@ -1,10 +1,11 @@
+import { createContext } from "react";
 import { useTheme } from "@mui/material";
 import useClassNames from "Hooks/useClassNames";
 import { useTranslation } from "react-i18next";
 
 import PageContainer from "Components/Containers/PageContainer/PageContainer";
 
-import type { Page } from "DataTypes/Components";
+import type { Page, SharedProps } from "Types/UI/Components";
 
 interface PageProps extends Page {
 
@@ -15,10 +16,20 @@ function Page(props: PageProps) {
   const classNames = useClassNames("PageContainer", props.className);
   const theme = useTheme();
 
-  return (
-    <PageContainer className={classNames} noPadding>
+  const SharedPropsContext = createContext({} as SharedProps);
 
-    </PageContainer>
+  return (
+    <SharedPropsContext.Consumer>
+    {
+      sharedProps => {
+        return (
+          <PageContainer className={classNames} noPadding>
+
+          </PageContainer>
+        );
+      }
+    }
+  </SharedPropsContext.Consumer>
   );
 }
 

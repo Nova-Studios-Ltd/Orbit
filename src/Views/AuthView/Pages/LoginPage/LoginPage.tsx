@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { createContext, useEffect, useState } from "react";
 import { Button, TextField, Typography, useTheme } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { Link as RouterLink, useLocation, useNavigate } from "react-router-dom";
 import { LoginNewUser } from "Init/AuthHandler";
 
-import type { Page } from "Types/UI/Components";
+import type { Page, SharedProps } from "Types/UI/Components";
 import { LoginStatus } from "Types/Enums";
 import { Routes } from "Types/UI/Routes";
 import { SettingsManager } from "NSLib/SettingsManager";
@@ -20,13 +20,11 @@ function LoginPage(props: LoginPageProps) {
   const navigate = useNavigate();
   const location = useLocation();
 
+  const SharedPropsContext = createContext({} as SharedProps);
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [failureStatus, setFailStatus] = useState(LoginStatus.PendingStatus);
-
-  useEffect(() => {
-    if (props.sharedProps && props.sharedProps.changeTitleCallback) props.sharedProps.changeTitleCallback(Localizations_LoginPage("PageTitle"));
-  }, [Localizations_LoginPage, props, props.sharedProps?.changeTitleCallback]);
 
   const login = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -79,16 +77,26 @@ function LoginPage(props: LoginPageProps) {
   }
 
   return (
-    <div className="LoginPageContainer">
-      <Typography variant="h6" align="center">{Localizations_LoginPage("Typography-FormCaption")}</Typography>
-      <FormStatus />
-      <form className="AuthForm LoginForm" onSubmit={login}>
-        <TextField id="emailField" className="LoginFormItem" autoFocus error={failureStatus === LoginStatus.UnknownUser} required label={Localizations_LoginPage("TextField_Label-Email")} placeholder={Localizations_LoginPage("TextField_Placeholder-Email")} value={email} onChange={TextFieldChanged} />
-        <TextField id="passwordField" className="LoginFormItem" type="password" error={failureStatus === LoginStatus.InvalidCredentials} required label={Localizations_LoginPage("TextField_Label-Password")} placeholder={Localizations_LoginPage("TextField_Placeholder-Password")} value={password} onChange={TextFieldChanged} />
-        <Button className="LoginFormItem" variant="outlined" type="submit">{Localizations_LoginPage("Button_Text-Login")}</Button>
-      </form>
-      <Typography marginTop={1.5}>{Localizations_LoginPage("Typography-DontHaveAccountQuestion")} <RouterLink to={Routes.Register} style={{ color: theme.palette.primary.main }}>{Localizations_LoginPage("Link-ToRegisterForm")}</RouterLink></Typography>
-    </div>
+    <SharedPropsContext.Consumer>
+      {
+        sharedProps => {
+          if (sharedProps && sharedProps.changeTitleCallback) sharedProps.changeTitleCallback(Localizations_LoginPage("PageTitle"));
+
+          return (
+            <div className="LoginPageContainer">
+              <Typography variant="h6" align="center">{Localizations_LoginPage("Typography-FormCaption")}</Typography>
+              <FormStatus />
+              <form className="AuthForm LoginForm" onSubmit={login}>
+                <TextField id="emailField" className="LoginFormItem" autoFocus error={failureStatus === LoginStatus.UnknownUser} required label={Localizations_LoginPage("TextField_Label-Email")} placeholder={Localizations_LoginPage("TextField_Placeholder-Email")} value={email} onChange={TextFieldChanged} />
+                <TextField id="passwordField" className="LoginFormItem" type="password" error={failureStatus === LoginStatus.InvalidCredentials} required label={Localizations_LoginPage("TextField_Label-Password")} placeholder={Localizations_LoginPage("TextField_Placeholder-Password")} value={password} onChange={TextFieldChanged} />
+                <Button className="LoginFormItem" variant="outlined" type="submit">{Localizations_LoginPage("Button_Text-Login")}</Button>
+              </form>
+              <Typography marginTop={1.5}>{Localizations_LoginPage("Typography-DontHaveAccountQuestion")} <RouterLink to={Routes.Register} style={{ color: theme.palette.primary.main }}>{Localizations_LoginPage("Link-ToRegisterForm")}</RouterLink></Typography>
+            </div>
+          );
+        }
+      }
+    </SharedPropsContext.Consumer>
   );
 }
 

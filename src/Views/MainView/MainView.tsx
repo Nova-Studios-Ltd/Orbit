@@ -1,6 +1,6 @@
-import React, { ReactNode, useState } from "react";
+import React, {  } from "react";
 import { CSSTransition } from "react-transition-group";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { IconButton, useTheme } from "@mui/material";
 import { Add as AddIcon, Group as GroupIcon, Menu as MenuIcon } from "@mui/icons-material";
@@ -9,11 +9,7 @@ import { SettingsManager } from "NSLib/SettingsManager";
 import ViewContainer from "Components/Containers/ViewContainer/ViewContainer";
 import ChannelList from "Components/Channels/ChannelList/ChannelList";
 import AvatarTextButton from "Components/Buttons/AvatarTextButton/AvatarTextButton";
-import MessageCanvas from "Components/Messages/MessageCanvas/MessageCanvas";
 import GenericHeader from "Components/Headers/GenericHeader/GenericHeader";
-import MessageInput from "Components/Input/MessageInput/MessageInput";
-import FriendView from "Views/FriendView/FriendView";
-import SettingsView from "Views/SettingsView/SettingsView";
 
 import type { SharedProps, View } from "Types/UI/Components";
 import { Routes } from "Types/UI/Routes";
@@ -25,6 +21,7 @@ interface MainViewProps extends View {
   channels?: IRawChannelProps[],
   selectedChannel?: IRawChannelProps,
   channelMenuVisible?: boolean,
+  onNavigateToPage?: (path: Routes) => void,
   setChannelMenuVisibility?: React.Dispatch<React.SetStateAction<boolean>>,
   onChannelClearCache?: (channel: IRawChannelProps) => void,
   onChannelClick?: (channel: IRawChannelProps) => void,
@@ -38,8 +35,10 @@ interface MainViewProps extends View {
 function MainView(props: MainViewProps) {
   const Localizations_MainView = useTranslation("MainView").t;
   const navigate = useNavigate();
+  const location = useLocation();
   const theme = useTheme();
   const settings = new SettingsManager();
+
   const SharedPropsContext = React.createContext({} as SharedProps);
 
   return (
@@ -58,8 +57,8 @@ function MainView(props: MainViewProps) {
                 <CSSTransition classNames="MainViewContainerLeft" in={props.channelMenuVisible} timeout={10}>
                   <div className="MainViewContainerLeft">
                     <div className="NavigationButtonContainer" style={{ backgroundColor: theme.palette.background.paper, borderColor: theme.palette.divider }}>
-                      <AvatarTextButton className="NavigationButtonContainerItem" selected={props.path === Routes.Settings} onLeftClick={() => navigateToPage(Routes.Settings)} iconSrc={`${settings.User.avatarSrc}&nonce=${avatarNonce}`}>{Localizations_MainView("Typography-SettingsHeader")}</AvatarTextButton>
-                      <AvatarTextButton className="NavigationButtonContainerItem" iconObj={<GroupIcon />} selected={props.path === Routes.Friends} onLeftClick={() => navigateToPage(Routes.Friends)}>{Localizations_MainView("Typography-FriendsHeader")}</AvatarTextButton>
+                      <AvatarTextButton className="NavigationButtonContainerItem" selected={location.pathname === Routes.Settings} onLeftClick={() => navigate(Routes.Settings)} iconSrc={`${settings.User.avatarSrc}&nonce=${avatarNonce}`}>{Localizations_MainView("Typography-SettingsHeader")}</AvatarTextButton>
+                      <AvatarTextButton className="NavigationButtonContainerItem" iconObj={<GroupIcon />} selected={location.pathname === Routes.Friends} onLeftClick={() => if (props.onNavigateToPage) props.onNavigateToPage(Routes.Friends)}>{Localizations_MainView("Typography-FriendsHeader")}</AvatarTextButton>
                     </div>
                     <div className="MainViewChannelListContainer">
                       <GenericHeader className="MainViewHeader" title={Localizations_MainView("Header_Title-ChannelList")} childrenRight={

@@ -29,6 +29,7 @@ import FriendView from "Views/FriendView/FriendView";
 import MainView from "Views/MainView/MainView";
 import SettingsView from "Views/SettingsView/SettingsView";
 
+import AddFriendsPage from "Views/FriendView/Pages/AddFriendsPage/AddFriendsPage";
 import BlockedUsersPage from "Views/FriendView/Pages/BlockedUsersPage/BlockedUsersPage";
 import DashboardPage from "Views/SettingsView/Pages/DashboardPage/DashboardPage";
 import FriendPage from "Views/FriendView/Pages/FriendPage/FriendPage";
@@ -115,6 +116,7 @@ function App() {
     widthConstrained: widthConstrained,
     isTouchCapable: isTouchCapable,
     openConsole: openConsole,
+    title: title,
     changeTitleCallback: setTitle
   }
 
@@ -224,10 +226,6 @@ function App() {
     setAvatarNonce(nonce);
   }
 
-  const changeTitleCallbackOverride = (_title: string) => {
-    if (location.pathname !== Routes.Chat && title !== _title) setTitle(_title);
-  };
-
   const scrollCanvas = () => {
     const canvas = canvasRef.current;
     if (canvas && autoScroll.current) {
@@ -311,7 +309,7 @@ function App() {
     setMessageAttachments(updatedMessageAttachments);
   };
 
-  const navigateToPage = (path: Routes) => {
+  const MainViewNavigateToPage = (path: Routes) => {
     setSelectedChannel(null as unknown as IRawChannelProps);
     if (widthConstrained) setChannelMenuVisibility(false);
     navigate(path);
@@ -658,11 +656,11 @@ function App() {
             <Route path="/" element={<AuthView page={<LoginPage />} />} />
             <Route path={Routes.Login} element={<AuthView page={<LoginPage />} />} />
             <Route path={Routes.Register} element={<AuthView page={<RegisterPage />} />} />
-            <Route path={`${Routes.Chat}/*`} element={<MainView page />} />
+            <Route path={`${Routes.Chat}/*`} element={<MainView />} />
             <Route path={Routes.Friends} element={<MainView page={<FriendView page={<FriendPage friends={friends} onReloadList={populateFriendsList} onFriendClicked={onFriendClicked} onCreateGroup={onCreateGroup} onBlockFriend={onBlockFriend} onUnblockFriend={onUnblockFriend} onRemoveFriend={onRemoveFriend} />} />} />}>
               <Route path={Routes.FriendsList} element={<MainView page={<FriendView page={<FriendPage friends={friends} onReloadList={populateFriendsList} onFriendClicked={onFriendClicked} onCreateGroup={onCreateGroup} onBlockFriend={onBlockFriend} onUnblockFriend={onUnblockFriend} onRemoveFriend={onRemoveFriend} />} />} />} />
               <Route path={Routes.BlockedUsersList} element={<MainView page={<FriendView page={<BlockedUsersPage friends={friends} onReloadList={populateFriendsList} onUnblockFriend={onUnblockFriend} />} />} />} />
-              <Route path={Routes.AddFriend} element={<MainView page={<FriendView />} />} />
+              <Route path={Routes.AddFriend} element={<MainView page={<FriendView page={<AddFriendsPage onAddFriend={onAddFriend} />} />} />} />
             </Route>
             <Route path={Routes.Settings} element={<MainView page={<SettingsView page={<DashboardPage avatarNonce={avatarNonce} onAvatarChanged={onAvatarChanged} onLogout={onLogout} />} />} />} />
           </RoutingGroup>

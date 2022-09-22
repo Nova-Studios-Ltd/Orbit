@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { createContext, useEffect, useState } from "react";
 import { Button, Card, Link, TextField, Typography, useTheme } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { ContentType, NCAPIResponse, POST } from "NSLib/NCAPI";
 import { RegisterPayload, RegPayloadKey } from "Types/API/RegisterPayload";
 
-import type { Page } from "Types/UI/Components";
+import type { Page, SharedProps } from "Types/UI/Components";
 import { RegisterStatus } from "Types/Enums";
 import { EncryptBase64, GenerateBase64SHA256, GenerateRSAKeyPair } from "NSLib/NCEncryption";
 import { Base64String } from "NSLib/Base64";
@@ -21,14 +21,12 @@ function RegisterPage(props: RegisterPageProps) {
   const theme = useTheme();
   const navigate = useNavigate();
 
+  const SharedPropsContext = createContext({} as SharedProps);
+
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [failureStatus, setFailStatus] = useState(RegisterStatus.PendingStatus);
-
-  useEffect(() => {
-    if (props.sharedProps && props.sharedProps.changeTitleCallback) props.sharedProps.changeTitleCallback(Localizations_RegisterPage("PageTitle"));
-  }, [Localizations_RegisterPage, props, props.sharedProps?.changeTitleCallback]);
 
   const register = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -100,30 +98,40 @@ function RegisterPage(props: RegisterPageProps) {
   );
 
   return (
-    <div className="RegisterPageContainer">
-      <Typography variant="h6" align="center">{Localizations_RegisterPage("Typography-FormCaption")}</Typography>
-      <FormStatus />
-      <form className="AuthForm RegisterForm" onSubmit={register}>
-        <TextField id="emailField" className="RegisterFormItem" autoFocus required error={failureStatus === RegisterStatus.EmailUsed} label={Localizations_RegisterPage("TextField_Label-Email")} placeholder={Localizations_RegisterPage("TextField_Placeholder-Email")} value={email} onChange={TextFieldChanged} helperText={
-          <Typography variant="caption">{Localizations_RegisterPage("TextField_HelperText-EmailHint")}</Typography>
-        }/>
-        <TextField id="usernameField" className="RegisterFormItem" required label={Localizations_RegisterPage("TextField_Label-Username")} placeholder={Localizations_RegisterPage("TextField_Placeholder-Username")} value={username} onChange={TextFieldChanged} />
-        <TextField id="passwordField" className="RegisterFormItem" type="password" required label={Localizations_RegisterPage("TextField_Label-Password")} placeholder={Localizations_RegisterPage("TextField_Placeholder-Password")} value={password} onChange={TextFieldChanged} helperText={
-          <>
-            <Typography variant="caption" color="red">{Localizations_RegisterPage("TextField_HelperText-ForgottenPasswordWarning").toUpperCase()}</Typography>
-            <Link underline="none" style={{ cursor: "pointer", marginLeft: 8 }} onClick={(event) => {
-              if (props.sharedProps && props.sharedProps.HelpPopup) {
-                props.sharedProps.HelpPopup.setAnchor(event.currentTarget);
-                props.sharedProps.HelpPopup.setContent(E2ELearnMore);
-                props.sharedProps.HelpPopup.setVisibility(true);
-              }
-            }}>{Localizations_RegisterPage("Link-LearnMore")}</Link>
-          </>
-        }/>
-        <Button className="RegisterFormItem" variant="outlined" type="submit">{Localizations_RegisterPage("Button_Text-Register")}</Button>
-      </form>
-      <Typography marginTop={1.5}>{Localizations_RegisterPage("Typography-HaveAccountQuestion")} <RouterLink to={Routes.Login} style={{ color: theme.palette.primary.main }}>{Localizations_RegisterPage("Link-ToLoginForm")}</RouterLink></Typography>
-    </div>
+    <SharedPropsContext.Consumer>
+      {
+        sharedProps => {
+          if (sharedProps && sharedProps.changeTitleCallback) sharedProps.changeTitleCallback(Localizations_RegisterPage("PageTitle"));
+
+          return (
+            <div className="RegisterPageContainer">
+              <Typography variant="h6" align="center">{Localizations_RegisterPage("Typography-FormCaption")}</Typography>
+              <FormStatus />
+              <form className="AuthForm RegisterForm" onSubmit={register}>
+                <TextField id="emailField" className="RegisterFormItem" autoFocus required error={failureStatus === RegisterStatus.EmailUsed} label={Localizations_RegisterPage("TextField_Label-Email")} placeholder={Localizations_RegisterPage("TextField_Placeholder-Email")} value={email} onChange={TextFieldChanged} helperText={
+                  <Typography variant="caption">{Localizations_RegisterPage("TextField_HelperText-EmailHint")}</Typography>
+                }/>
+                <TextField id="usernameField" className="RegisterFormItem" required label={Localizations_RegisterPage("TextField_Label-Username")} placeholder={Localizations_RegisterPage("TextField_Placeholder-Username")} value={username} onChange={TextFieldChanged} />
+                <TextField id="passwordField" className="RegisterFormItem" type="password" required label={Localizations_RegisterPage("TextField_Label-Password")} placeholder={Localizations_RegisterPage("TextField_Placeholder-Password")} value={password} onChange={TextFieldChanged} helperText={
+                  <>
+                    <Typography variant="caption" color="red">{Localizations_RegisterPage("TextField_HelperText-ForgottenPasswordWarning").toUpperCase()}</Typography>
+                    <Link underline="none" style={{ cursor: "pointer", marginLeft: 8 }} onClick={(event) => {
+                      if (sharedProps && sharedProps.HelpPopup) {
+                        sharedProps.HelpPopup.setAnchor(event.currentTarget);
+                        sharedProps.HelpPopup.setContent(E2ELearnMore);
+                        sharedProps.HelpPopup.setVisibility(true);
+                      }
+                    }}>{Localizations_RegisterPage("Link-LearnMore")}</Link>
+                  </>
+                }/>
+                <Button className="RegisterFormItem" variant="outlined" type="submit">{Localizations_RegisterPage("Button_Text-Register")}</Button>
+              </form>
+              <Typography marginTop={1.5}>{Localizations_RegisterPage("Typography-HaveAccountQuestion")} <RouterLink to={Routes.Login} style={{ color: theme.palette.primary.main }}>{Localizations_RegisterPage("Link-ToLoginForm")}</RouterLink></Typography>
+            </div>
+          );
+        }
+      }
+    </SharedPropsContext.Consumer>
   );
 }
 

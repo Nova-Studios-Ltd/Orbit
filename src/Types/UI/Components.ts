@@ -33,5 +33,6 @@ export interface SharedProps {
   widthConstrained?: boolean,
   isTouchCapable?: boolean,
   openConsole?: () => void,
+  title?: string,
   changeTitleCallback?: (title: string) => void
 }

@@ -1,19 +1,18 @@
+import React, { createContext, useEffect, useState } from "react";
 import { Avatar, IconButton, Link, Typography, useTheme } from "@mui/material";
 import { Close as CloseIcon } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
-import React, { useEffect, useState } from "react";
 import useSettingsManager from "Hooks/useSettingsManager";
 
 import MessageMedia from "Components/Messages/MessageMedia/MessageMedia";
 import TextCombo, { TextComboChangeEvent, TextComboSubmitEvent } from "Components/Input/TextCombo/TextCombo";
 
-import type { NCComponent } from "Types/UI/Components";
+import type { NCComponent, SharedProps } from "Types/UI/Components";
 import { AttachmentProps, IAttachmentProps } from "Types/API/Interfaces/IAttachmentProps";
 import { DownloadUint8ArrayFile, WriteToClipboard } from "NSLib/ElectronAPI";
 import { GetImageDimensions, GetMimeType } from "NSLib/ContentLinkUtil";
 import { FileType } from "NSLib/MimeTypeParser";
-import { UserCache } from "Views/MainView/MainView";
-import UserData from "Types/API/UserData";
+import { UserCache } from "App";
 import IUserData from "Types/API/Interfaces/IUserData";
 import ContextMenu from "Components/Menus/ContextMenu/ContextMenu";
 import { Coordinates } from "Types/General";
@@ -40,8 +39,9 @@ function Message(props: MessageProps) {
   const Localizations_Message = useTranslation("Message").t;
   const Localizations_ContextMenuItem = useTranslation("ContextMenuItem").t;
 
-  const isTouchCapable = props.sharedProps && props.sharedProps.isTouchCapable;
   const isOwnMessage = props.authorID === settingsManager.User.uuid;
+
+  const SharedPropsContext = createContext({} as SharedProps);
 
   const [isHovering, setHoveringState] = useState(false);
   const [isEditing, setEditingState] = useState(false);
@@ -117,24 +117,6 @@ function Message(props: MessageProps) {
     setHoveringState(isHovering);
   }
 
-  const downloadSelectedAttachment = () => {
-    if (selectedAttachment && selectedAttachment.content) {
-      DownloadUint8ArrayFile(selectedAttachment.content, selectedAttachment.filename);
-      return;
-    }
-    console.warn("File does not contain content to download");
-  };
-
-  const messageRightClickHandler = (event: React.MouseEvent<HTMLDivElement>) => {
-    setSelectedAttachment(null as unknown as IAttachmentProps);
-    showContextMenu({ x: event.clientX, y: event.clientY });
-    event.preventDefault();
-  }
-
-  const messageLeftClickHandler = (event: React.MouseEvent<HTMLDivElement>) => {
-    if (isTouchCapable && !isEditing) messageRightClickHandler(event);
-  }
-
   const attachmentLeftClickHandler = (event: React.MouseEvent<HTMLDivElement>, attachment: IAttachmentProps) => {
     setSelectedAttachment(attachment);
   }
@@ -144,15 +126,13 @@ function Message(props: MessageProps) {
     showContextMenu({ x: event.clientX, y: event.clientY });
   }
 
-  const mediaComponents = () => {
-    if (allAttachments && allAttachments.length > 0) {
-      return allAttachments.map((attachment, index) => {
-        return (
-          <MessageMedia key={`${props.id}-${index}`} onLeftClick={attachmentLeftClickHandler} onRightClick={attachmentRightClickHandler} content={attachment.content} contentUrl={attachment.contentUrl} fileName={attachment.filename} fileSize={attachment.size} mimeType={attachment.mimeType} contentWidth={attachment.contentWidth} contentHeight={attachment.contentHeight} isExternal={attachment.isExternal}/>
-        )
-      });
+  const downloadSelectedAttachment = () => {
+    if (selectedAttachment && selectedAttachment.content) {
+      DownloadUint8ArrayFile(selectedAttachment.content, selectedAttachment.filename);
+      return;
     }
-  }
+    console.warn("File does not contain content to download");
+  };
 
   const processContent = () => {
     let c = props.content;
@@ -181,39 +161,70 @@ function Message(props: MessageProps) {
   }
 
   return (
-    <div className="MessageContainer" style={{ backgroundColor: "transparent" }}>
-      <div className="MessageLeft">
-        <Avatar src={`${props.avatarURL}`} />
-      </div>
-      <div className="MessageRight" style={{ backgroundColor: isHovering ? theme.customPalette.customActions.messageHover : theme.customPalette.messageBackground }} onMouseEnter={() => mouseHoverEventHandler(true)} onMouseLeave={() => mouseHoverEventHandler(false)} onClick={messageLeftClickHandler} onContextMenu={messageRightClickHandler}>
-        <div className="MessageRightHeader">
-          <Typography className="MessageName" fontWeight="bold">{displayName}</Typography>
-          <Typography className="MessageTimestamp" variant="subtitle2">{props.timestamp?.replace("T", " ")}</Typography>
-          {props.isEdited ? <Typography className="MessageTimestampEdited" variant="subtitle2">({Localizations_Message("Typography-TimestampEdited")} {props.editedTimestamp?.replace("T", " ")})</Typography> : null}
-        </div>
-        <Typography variant="body1">
-          <Linkify options={{ tagName: "span", formatHref: null, format: (value: string) => <Link href={value} onClick={(event) => { handleURLClick(value); event.preventDefault(); }}>{value}</Link> }}>
-            {props.content}
-          </Linkify>
-        </Typography>
-        <div className="MessageMediaParentContainer">
-          {mediaComponents()}
-        </div>
-        {isEditing ? <TextCombo className="MessageEditField" autoFocus value={editFieldValue} placeholder={props.content} onChange={editMessageFieldChangedHandler} onSubmit={finishEditMessage} onDismiss={() => setEditingState(false)}
-          childrenRight={
-            <>
-              <IconButton onClick={() => setEditingState(false)}><CloseIcon /></IconButton>
-            </>
-          } /> : null}
-      </div>
-      <ContextMenu open={ContextMenuVisible} anchorPos={ContextMenuAnchorPos} onDismiss={closeContextMenu}>
-        <ContextMenuItem hide={!selectedAttachment} disabled>{selectedAttachment?.filename}</ContextMenuItem>
-        <ContextMenuItem hide={!selectedAttachment} onLeftClick={() => downloadSelectedAttachment()}>{Localizations_ContextMenuItem("ContextMenuItem-Download")}</ContextMenuItem>
-        <ContextMenuItem disabled={(props.content !== undefined && props.content.length < 1)} onLeftClick={() => copyMessage()}>{Localizations_ContextMenuItem("ContextMenuItem-Copy")}</ContextMenuItem>
-        <ContextMenuItem hide={!isOwnMessage} onLeftClick={() => startEditMessage()}>{Localizations_ContextMenuItem("ContextMenuItem-Edit")}</ContextMenuItem>
-        <ContextMenuItem hide={!isOwnMessage} onLeftClick={() => { if (props.onMessageDelete) props.onMessageDelete(filteredMessageProps) }}>{Localizations_ContextMenuItem("ContextMenuItem-Delete")}</ContextMenuItem>
-      </ContextMenu>
-    </div>
+    <SharedPropsContext.Consumer>
+      {
+        sharedProps => {
+
+          const isTouchCapable = sharedProps && sharedProps.isTouchCapable;
+
+          const messageRightClickHandler = (event: React.MouseEvent<HTMLDivElement>) => {
+            setSelectedAttachment(null as unknown as IAttachmentProps);
+            showContextMenu({ x: event.clientX, y: event.clientY });
+            event.preventDefault();
+          }
+
+          const messageLeftClickHandler = (event: React.MouseEvent<HTMLDivElement>) => {
+            if (isTouchCapable && !isEditing) messageRightClickHandler(event);
+          }
+
+          const mediaComponents = () => {
+            if (allAttachments && allAttachments.length > 0) {
+              return allAttachments.map((attachment, index) => {
+                return (
+                  <MessageMedia key={`${props.id}-${index}`} onLeftClick={attachmentLeftClickHandler} onRightClick={attachmentRightClickHandler} content={attachment.content} contentUrl={attachment.contentUrl} fileName={attachment.filename} fileSize={attachment.size} mimeType={attachment.mimeType} contentWidth={attachment.contentWidth} contentHeight={attachment.contentHeight} isExternal={attachment.isExternal}/>
+                )
+              });
+            }
+          }
+
+          return (
+            <div className="MessageContainer" style={{ backgroundColor: "transparent" }}>
+              <div className="MessageLeft">
+                <Avatar src={`${props.avatarURL}`} />
+              </div>
+              <div className="MessageRight" style={{ backgroundColor: isHovering ? theme.customPalette.customActions.messageHover : theme.customPalette.messageBackground }} onMouseEnter={() => mouseHoverEventHandler(true)} onMouseLeave={() => mouseHoverEventHandler(false)} onClick={messageLeftClickHandler} onContextMenu={messageRightClickHandler}>
+                <div className="MessageRightHeader">
+                  <Typography className="MessageName" fontWeight="bold">{displayName}</Typography>
+                  <Typography className="MessageTimestamp" variant="subtitle2">{props.timestamp?.replace("T", " ")}</Typography>
+                  {props.isEdited ? <Typography className="MessageTimestampEdited" variant="subtitle2">({Localizations_Message("Typography-TimestampEdited")} {props.editedTimestamp?.replace("T", " ")})</Typography> : null}
+                </div>
+                <Typography variant="body1">
+                  <Linkify options={{ tagName: "span", formatHref: null, format: (value: string) => <Link href={value} onClick={(event) => { handleURLClick(value); event.preventDefault(); }}>{value}</Link> }}>
+                    {props.content}
+                  </Linkify>
+                </Typography>
+                <div className="MessageMediaParentContainer">
+                  {mediaComponents()}
+                </div>
+                {isEditing ? <TextCombo className="MessageEditField" autoFocus value={editFieldValue} placeholder={props.content} onChange={editMessageFieldChangedHandler} onSubmit={finishEditMessage} onDismiss={() => setEditingState(false)}
+                  childrenRight={
+                    <>
+                      <IconButton onClick={() => setEditingState(false)}><CloseIcon /></IconButton>
+                    </>
+                  } /> : null}
+              </div>
+              <ContextMenu open={ContextMenuVisible} anchorPos={ContextMenuAnchorPos} onDismiss={closeContextMenu}>
+                <ContextMenuItem hide={!selectedAttachment} disabled>{selectedAttachment?.filename}</ContextMenuItem>
+                <ContextMenuItem hide={!selectedAttachment} onLeftClick={() => downloadSelectedAttachment()}>{Localizations_ContextMenuItem("ContextMenuItem-Download")}</ContextMenuItem>
+                <ContextMenuItem disabled={(props.content !== undefined && props.content.length < 1)} onLeftClick={() => copyMessage()}>{Localizations_ContextMenuItem("ContextMenuItem-Copy")}</ContextMenuItem>
+                <ContextMenuItem hide={!isOwnMessage} onLeftClick={() => startEditMessage()}>{Localizations_ContextMenuItem("ContextMenuItem-Edit")}</ContextMenuItem>
+                <ContextMenuItem hide={!isOwnMessage} onLeftClick={() => { if (props.onMessageDelete) props.onMessageDelete(filteredMessageProps) }}>{Localizations_ContextMenuItem("ContextMenuItem-Delete")}</ContextMenuItem>
+              </ContextMenu>
+            </div>
+          )
+        }
+      }
+    </SharedPropsContext.Consumer>
   )
 }
 

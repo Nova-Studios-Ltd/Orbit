@@ -1,3 +1,5 @@
+@import "Pages/Pages.css";
+
 .MainViewContainer {
   display: flex;
   flex-direction: row;
