@@ -1,10 +1,11 @@
 import { useTheme } from "@mui/material";
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
 import ViewContainer from "Components/Containers/ViewContainer/ViewContainer";
 
 import type { View } from "Types/UI/Components";
+import { Routes } from "Types/UI/Routes";
 import GenerateRandomColor from "NSLib/ColorGeneration";
 
 interface AuthViewProps extends View {
@@ -15,6 +16,8 @@ function AuthView(props: AuthViewProps) {
   const Localizations_Common = useTranslation().t;
   const Localizations_AuthView = useTranslation("AuthView").t;
   const theme = useTheme();
+  const navigate = useNavigate();
+  const location = useLocation();
   const AuthViewCenterContainerBackgroundGradient = `linear-gradient(43deg, ${GenerateRandomColor()} 0%, ${GenerateRandomColor()} 46%, ${GenerateRandomColor()} 100%)`
 
   //const [AuthViewCenterContainerBackgroundGradient, setGradient] = useState(`linear-gradient(43deg, ${GenerateRandomColor()} 0%, ${GenerateRandomColor()} 46%, ${GenerateRandomColor()} 100%)`);
@@ -23,6 +26,8 @@ function AuthView(props: AuthViewProps) {
     setGradient(`linear-gradient(43deg, ${GenerateRandomColor()} 0%, ${GenerateRandomColor()} 46%, ${GenerateRandomColor()} 100%)`)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [useLocation()]);*/
+
+  if (location.pathname === Routes.Auth) navigate(Routes.Login);
 
   const AuthViewCenterContainerBackground = () => {
     if (CSS.supports("background-image", AuthViewCenterContainerBackgroundGradient)) {
