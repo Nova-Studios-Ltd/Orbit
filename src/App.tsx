@@ -214,13 +214,11 @@ function App() {
 
       setChannels(loadedChannels);
 
-      if (doNavigate) {
-        if (location.pathname === Routes.Chat && loadedChannels.length < 1) {
-          navigate(Routes.FriendsList);
-          return;
-        }
-
-        if (location.pathname === Routes.Chat && loadedChannels[0]) selectChannel(loadedChannels[0]); // Temporary channel preload; TODO: Store last opened channel
+      if (doNavigate && location.pathname === Routes.Chat && loadedChannels[0]) {
+        selectChannel(loadedChannels[0]); // Temporary channel preload; TODO: Store last opened channel
+      }
+      else if (doNavigate && location.pathname === Routes.Chat) {
+        navigate(Routes.FriendsList);
       }
     });
   }
@@ -654,7 +652,7 @@ function App() {
             <Route path={Routes.Settings} element={<SettingsView sharedProps={SharedProps} />}>
               <Route path={Routes.Dashboard} element={<DashboardPage sharedProps={SharedProps} avatarNonce={avatarNonce} onAvatarChanged={onAvatarChanged} onLogout={onLogout} />} />
             </Route>
-            <Route path={`${Routes.Chat}`} element={<ChatPage sharedProps={SharedProps} attachments={MessageAttachments} canvasRef={canvasRef} channels={channels} messages={messages} selectChannel={selectChannel} onFileUpload={onFileUpload} onFileRemove={onFileRemove} onMessageEdit={onMessageEdit} onMessageDelete={onMessageDelete} onMessageInputSubmit={onMessageInputSubmit} onLoadPriorMessages={onLoadPriorMessages} />}>
+            <Route path={Routes.Chat} element={<ChatPage sharedProps={SharedProps} attachments={MessageAttachments} canvasRef={canvasRef} channels={channels} messages={messages} selectChannel={selectChannel} onFileUpload={onFileUpload} onFileRemove={onFileRemove} onMessageEdit={onMessageEdit} onMessageDelete={onMessageDelete} onMessageInputSubmit={onMessageInputSubmit} onLoadPriorMessages={onLoadPriorMessages} />}>
               <Route path={`${Routes.Chat}/:uuid`} element={<ChatPage sharedProps={SharedProps} attachments={MessageAttachments} canvasRef={canvasRef} channels={channels} messages={messages} selectChannel={selectChannel} onFileUpload={onFileUpload} onFileRemove={onFileRemove} onMessageEdit={onMessageEdit} onMessageDelete={onMessageDelete} onMessageInputSubmit={onMessageInputSubmit} onLoadPriorMessages={onLoadPriorMessages} />} />
             </Route>
           </Route>

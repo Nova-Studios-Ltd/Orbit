@@ -33,13 +33,12 @@ function ChatPage(props: ChatPageProps) {
 
   const { uuid } = useParams();
 
-  console.log(uuid);
-
   if (uuid && uuid.length > 0 && props.channels && props.selectChannel) {
     for (let i = 0; i < props.channels.length; i++) {
       const channel = props.channels[i];
       if (channel.table_Id === uuid) {
         props.selectChannel(channel);
+        if (props.sharedProps && props.sharedProps.changeTitleCallback && channel.channelName) props.sharedProps.changeTitleCallback(channel.channelName);
         break;
       }
     }

@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { CSSTransition } from "react-transition-group";
-import { useNavigate, useLocation, Outlet } from "react-router-dom";
+import { useNavigate, useLocation, Outlet, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { IconButton, useTheme } from "@mui/material";
 import { Add as AddIcon, Group as GroupIcon, Menu as MenuIcon } from "@mui/icons-material";
@@ -38,12 +38,17 @@ function MainView(props: MainViewProps) {
   const Localizations_MainView = useTranslation("MainView").t;
   const navigate = useNavigate();
   const location = useLocation();
+  const { uuid } = useParams();
   const theme = useTheme();
   const settings = new SettingsManager();
 
   useEffect(() => {
     if (!(props.sharedProps && props.sharedProps.widthConstrained) && !props.channelMenuVisible && props.setChannelMenuVisibility) props.setChannelMenuVisibility(true);
-  }, [props]);
+
+    if ((!uuid || uuid.length < 1) && location.pathname === Routes.Chat && props.channels && props.channels[0]) {
+      navigate(`${Routes.Chat}/${props.channels[0].table_Id}`);
+    }
+  }, [location.pathname, navigate, props, uuid]);
 
   const onMainViewContainerRightClick = (event: React.MouseEvent<HTMLDivElement>) => {
     if (props.setChannelMenuVisibility && props.sharedProps && props.sharedProps.widthConstrained) {
