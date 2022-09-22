@@ -1,12 +1,12 @@
-import { createContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import useClassNames from "Hooks/useClassNames";
-import { Button, TextField } from "@mui/material";
+import { Button } from "@mui/material";
 import { useTranslation } from "react-i18next";
 
 import PageContainer from "Components/Containers/PageContainer/PageContainer";
 import TextCombo, { TextComboChangeEvent } from "Components/Input/TextCombo/TextCombo";
 
-import type { Page, SharedProps } from "Types/UI/Components";
+import type { Page } from "Types/UI/Components";
 
 interface AddFriendsPageProps extends Page {
   onAddFriend?: (recipient: string) => void,
@@ -18,7 +18,9 @@ function AddFriendsPage(props: AddFriendsPageProps) {
 
   const [RecipientField, setRecipientField] = useState("");
 
-  const SharedPropsContext = createContext({} as SharedProps);
+  useEffect(() => {
+    if (props.sharedProps && props.sharedProps.changeTitleCallback) props.sharedProps.changeTitleCallback(Localizations_AddFriendsPage("PageTitle"));
+  });
 
   const handleRecipientFieldChanged = (event: TextComboChangeEvent) => {
     if (event.value !== undefined) setRecipientField(event.value);
@@ -32,24 +34,13 @@ function AddFriendsPage(props: AddFriendsPageProps) {
   };
 
   return (
-    <SharedPropsContext.Consumer>
-      {
-        sharedProps => {
-
-          if (sharedProps && sharedProps.changeTitleCallback) sharedProps.changeTitleCallback(Localizations_AddFriendsPage("PageTitle"));
-
-          return (
-            <PageContainer className={classNames} adaptive={false}>
-              <div className="AddFriendContainer">
-                <TextCombo submitButton={false} autoFocus value={RecipientField} placeholder={Localizations_AddFriendsPage("TextField_Placeholder-FriendFormat")} onChange={handleRecipientFieldChanged} onSubmit={addFriend} childrenRight={
-                  <Button className="AddFriendButton" onClick={addFriend} disabled={RecipientField.length < 1} variant="contained">{Localizations_AddFriendsPage("Button_Label-AddFriend")}</Button>
-                }/>
-              </div>
-            </PageContainer>
-          );
-        }
-      }
-    </SharedPropsContext.Consumer>
+    <PageContainer className={classNames} adaptive={false}>
+      <div className="AddFriendContainer">
+        <TextCombo submitButton={false} autoFocus value={RecipientField} placeholder={Localizations_AddFriendsPage("TextField_Placeholder-FriendFormat")} onChange={handleRecipientFieldChanged} onSubmit={addFriend} childrenRight={
+          <Button className="AddFriendButton" onClick={addFriend} disabled={RecipientField.length < 1} variant="contained">{Localizations_AddFriendsPage("Button_Label-AddFriend")}</Button>
+        }/>
+      </div>
+    </PageContainer>
   );
 }
 

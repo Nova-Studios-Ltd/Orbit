@@ -1,10 +1,10 @@
-import { createContext, useEffect } from "react";
+import { useEffect } from "react";
 import useClassNames from "Hooks/useClassNames";
 import { useTranslation } from "react-i18next";
 
 import ViewContainer from "Components/Containers/ViewContainer/ViewContainer";
 
-import type { View, SharedProps } from "Types/UI/Components";
+import type { View } from "Types/UI/Components";
 
 interface SettingsViewProps extends View {
   avatarNonce?: string,
@@ -16,23 +16,14 @@ function SettingsView(props: SettingsViewProps) {
   const Localizations_SettingsView = useTranslation("SettingsView").t;
   const classNames = useClassNames("SettingsViewContainer", props.className);
 
-  const SharedPropsContext = createContext({} as SharedProps);
+  useEffect(() => {
+    if (props.sharedProps && props.sharedProps.changeTitleCallback) props.sharedProps.changeTitleCallback(Localizations_SettingsView("ViewTitle"));
+  })
 
   return (
-    <SharedPropsContext.Consumer>
-      {
-        sharedProps => {
-
-          if (sharedProps && sharedProps.changeTitleCallback) sharedProps.changeTitleCallback(Localizations_SettingsView("ViewTitle"));
-
-          return (
-            <ViewContainer className={classNames} adaptive>
-              {props.page}
-            </ViewContainer>
-          );
-        }
-      }
-    </SharedPropsContext.Consumer>
+    <ViewContainer className={classNames} adaptive>
+      {props.page}
+    </ViewContainer>
   );
 }
 

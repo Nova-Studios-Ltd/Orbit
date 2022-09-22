@@ -1,4 +1,3 @@
-import { createContext } from "react";
 import { useTheme } from "@mui/material";
 import useClassNames from "Hooks/useClassNames";
 import { useTranslation } from "react-i18next";
@@ -6,7 +5,7 @@ import { useTranslation } from "react-i18next";
 import MessageCanvas from "Components/Messages/MessageCanvas/MessageCanvas";
 import MessageInput, { MessageInputSendEvent } from "Components/Input/MessageInput/MessageInput";
 
-import type { NCComponent, SharedProps } from "Types/UI/Components";
+import type { NCComponent } from "Types/UI/Components";
 import type { IMessageProps } from "Types/API/Interfaces/IMessageProps";
 import type { MessageProps } from "Components/Messages/Message/Message";
 import type MessageAttachment from "Types/API/MessageAttachment";
@@ -28,22 +27,12 @@ function ChatPage(props: ChatPageProps) {
   const classNames = useClassNames("ComponentContainer", props.className);
   const Localizations_MainView = useTranslation("MainView").t;
 
-  const SharedPropsContext = createContext({} as SharedProps);
-
   return (
-    <SharedPropsContext.Consumer>
-      {
-        sharedProps => {
-          return (
-            <>
-              <MessageCanvas className="MainViewContainerItem" canvasRef={props.canvasRef} messages={props.messages} onMessageEdit={props.onMessageEdit} onMessageDelete={props.onMessageDelete} onLoadPriorMessages={props.onLoadPriorMessages} />
-              <MessageInput className="MainViewContainerItem" attachments={props.attachments} onFileRemove={props.onFileRemove} onFileUpload={props.onFileUpload} onSend={props.onMessageInputSubmit} />
-            </>
-          );
-        }
-      }
-    </SharedPropsContext.Consumer>
-  )
+    <>
+      <MessageCanvas className="MainViewContainerItem" canvasRef={props.canvasRef} messages={props.messages} onMessageEdit={props.onMessageEdit} onMessageDelete={props.onMessageDelete} onLoadPriorMessages={props.onLoadPriorMessages} />
+      <MessageInput className="MainViewContainerItem" attachments={props.attachments} onFileRemove={props.onFileRemove} onFileUpload={props.onFileUpload} onSend={props.onMessageInputSubmit} />
+    </>
+  );
 }
 
 export default ChatPage;

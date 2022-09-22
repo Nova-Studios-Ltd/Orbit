@@ -1,6 +1,5 @@
-import { createContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Dictionary } from "NSLib/Dictionary";
 import { Button, Checkbox, Typography } from "@mui/material";
 import useClassNames from "Hooks/useClassNames";
 import { WriteToClipboard } from "NSLib/ElectronAPI";
@@ -11,7 +10,7 @@ import GenericDialog from "Components/Dialogs/GenericDialog/GenericDialog";
 import ContextMenu from "Components/Menus/ContextMenu/ContextMenu";
 import ContextMenuItem from "Components/Menus/ContextMenuItem/ContextMenuItem";
 
-import type { Page, SharedProps } from "Types/UI/Components";
+import type { Page } from "Types/UI/Components";
 import type Friend from "Types/UI/Friend";
 import type { Coordinates } from "Types/General";
 
@@ -39,7 +38,9 @@ function FriendPage(props: FriendPageProps) {
   const [RemoveFriendDialogSelector, setRemoveFriendDialogSelector] = useState("");
   const [BlockUnblockFriendDialogSelector, setBlockFriendDialogSelector] = useState("");
 
-  const SharedPropsContext = createContext({} as SharedProps);
+  useEffect(() => {
+    if (props.sharedProps && props.sharedProps.changeTitleCallback) props.sharedProps.changeTitleCallback(Localizations_FriendPage("PageTitle"));
+  })
 
   const acceptFriendRequest = (friend?: Friend) => {
     if (friend && props.onFriendClicked) props.onFriendClicked(friend);
@@ -142,33 +143,22 @@ function FriendPage(props: FriendPageProps) {
   })()
 
   return (
-    <SharedPropsContext.Consumer>
-      {
-        sharedProps => {
-
-          if (sharedProps && sharedProps.changeTitleCallback) sharedProps.changeTitleCallback(Localizations_FriendPage("PageTitle"));
-
-          return (
-            <PageContainer className={classNames} adaptive={false}>
-              <div className="FriendsPageButtonContainer">
-                <Button disabled={GroupChannelRecipientsList.length < 1} variant="outlined" color="success" onClick={() => { if (props.onCreateGroup) props.onCreateGroup(GroupChannelRecipientsList) }}>{Localizations_FriendPage("Button_Label-CreateGroupChannel")}</Button>
-                <Button variant="outlined" style={{ marginLeft: "auto" }} onClick={() => { if (props.onReloadList) props.onReloadList() }}>{Localizations_FriendPage("Button_Label-ReloadFriendsList")}</Button>
-              </div>
-              <div className="FriendsContainer">
-                {friendElements && friendElements.length > 0 ? friendElements : NoFriendsHint}
-              </div>
-              <ContextMenu open={FriendContextMenuVisible} anchorPos={FriendContextMenuAnchorPos} onDismiss={() => setFriendContextMenuVisibility(false)}>
-                <ContextMenuItem onLeftClick={() => FriendContextMenuSelectedFriend && FriendContextMenuSelectedFriend.friendData && FriendContextMenuSelectedFriend.friendData.username && FriendContextMenuSelectedFriend.friendData.discriminator ? WriteToClipboard(`${FriendContextMenuSelectedFriend.friendData.username}#${FriendContextMenuSelectedFriend.friendData.discriminator}`) : null}>{Localizations_ContextMenuItem("ContextMenuItem-CopyUser")}</ContextMenuItem>
-                <ContextMenuItem onLeftClick={() => FriendContextMenuSelectedFriend && FriendContextMenuSelectedFriend.friendData && FriendContextMenuSelectedFriend.friendData.uuid ? WriteToClipboard(FriendContextMenuSelectedFriend.friendData.uuid) : null}>{Localizations_ContextMenuItem("ContextMenuItem-CopyUUID")}</ContextMenuItem>
-                <ContextMenuItem hide={!(FriendContextMenuSelectedFriend && FriendContextMenuSelectedFriend.status?.toLowerCase() === "request")} onLeftClick={() => FriendContextMenuSelectedFriend && FriendContextMenuSelectedFriend.friendData && FriendContextMenuSelectedFriend.friendData.uuid ? acceptFriendRequest(FriendContextMenuSelectedFriend) : null}>{Localizations_ContextMenuItem("ContextMenuItem-Accept")}</ContextMenuItem>
-                <ContextMenuItem onLeftClick={() => FriendContextMenuSelectedFriend && FriendContextMenuSelectedFriend.friendData && FriendContextMenuSelectedFriend.friendData.uuid ? setRemoveFriendDialogSelector(FriendContextMenuSelectedFriend.friendData.uuid) : null}>{Localizations_ContextMenuItem("ContextMenuItem-Remove")}</ContextMenuItem>
-                <ContextMenuItem onLeftClick={() => FriendContextMenuSelectedFriend && FriendContextMenuSelectedFriend.friendData && FriendContextMenuSelectedFriend.friendData.uuid ? setBlockFriendDialogSelector(FriendContextMenuSelectedFriend.friendData.uuid) : null}>{FriendContextMenuSelectedFriend && FriendContextMenuSelectedFriend.status && FriendContextMenuSelectedFriend.status?.toLowerCase() === "blocked" ? Localizations_ContextMenuItem("ContextMenuItem-Unblock") : Localizations_ContextMenuItem("ContextMenuItem-Block")}</ContextMenuItem>
-              </ContextMenu>
-            </PageContainer>
-          );
-        }
-      }
-    </SharedPropsContext.Consumer>
+    <PageContainer className={classNames} adaptive={false}>
+      <div className="FriendsPageButtonContainer">
+        <Button disabled={GroupChannelRecipientsList.length < 1} variant="outlined" color="success" onClick={() => { if (props.onCreateGroup) props.onCreateGroup(GroupChannelRecipientsList) }}>{Localizations_FriendPage("Button_Label-CreateGroupChannel")}</Button>
+        <Button variant="outlined" style={{ marginLeft: "auto" }} onClick={() => { if (props.onReloadList) props.onReloadList() }}>{Localizations_FriendPage("Button_Label-ReloadFriendsList")}</Button>
+      </div>
+      <div className="FriendsContainer">
+        {friendElements && friendElements.length > 0 ? friendElements : NoFriendsHint}
+      </div>
+      <ContextMenu open={FriendContextMenuVisible} anchorPos={FriendContextMenuAnchorPos} onDismiss={() => setFriendContextMenuVisibility(false)}>
+        <ContextMenuItem onLeftClick={() => FriendContextMenuSelectedFriend && FriendContextMenuSelectedFriend.friendData && FriendContextMenuSelectedFriend.friendData.username && FriendContextMenuSelectedFriend.friendData.discriminator ? WriteToClipboard(`${FriendContextMenuSelectedFriend.friendData.username}#${FriendContextMenuSelectedFriend.friendData.discriminator}`) : null}>{Localizations_ContextMenuItem("ContextMenuItem-CopyUser")}</ContextMenuItem>
+        <ContextMenuItem onLeftClick={() => FriendContextMenuSelectedFriend && FriendContextMenuSelectedFriend.friendData && FriendContextMenuSelectedFriend.friendData.uuid ? WriteToClipboard(FriendContextMenuSelectedFriend.friendData.uuid) : null}>{Localizations_ContextMenuItem("ContextMenuItem-CopyUUID")}</ContextMenuItem>
+        <ContextMenuItem hide={!(FriendContextMenuSelectedFriend && FriendContextMenuSelectedFriend.status?.toLowerCase() === "request")} onLeftClick={() => FriendContextMenuSelectedFriend && FriendContextMenuSelectedFriend.friendData && FriendContextMenuSelectedFriend.friendData.uuid ? acceptFriendRequest(FriendContextMenuSelectedFriend) : null}>{Localizations_ContextMenuItem("ContextMenuItem-Accept")}</ContextMenuItem>
+        <ContextMenuItem onLeftClick={() => FriendContextMenuSelectedFriend && FriendContextMenuSelectedFriend.friendData && FriendContextMenuSelectedFriend.friendData.uuid ? setRemoveFriendDialogSelector(FriendContextMenuSelectedFriend.friendData.uuid) : null}>{Localizations_ContextMenuItem("ContextMenuItem-Remove")}</ContextMenuItem>
+        <ContextMenuItem onLeftClick={() => FriendContextMenuSelectedFriend && FriendContextMenuSelectedFriend.friendData && FriendContextMenuSelectedFriend.friendData.uuid ? setBlockFriendDialogSelector(FriendContextMenuSelectedFriend.friendData.uuid) : null}>{FriendContextMenuSelectedFriend && FriendContextMenuSelectedFriend.status && FriendContextMenuSelectedFriend.status?.toLowerCase() === "blocked" ? Localizations_ContextMenuItem("ContextMenuItem-Unblock") : Localizations_ContextMenuItem("ContextMenuItem-Block")}</ContextMenuItem>
+      </ContextMenu>
+    </PageContainer>
   );
 }
 

@@ -13,6 +13,7 @@ export interface HelpPopupProps {
 
 export interface NCComponent {
   className?: string,
+  sharedProps?: SharedProps
 }
 
 export interface NCAPIComponent extends NCComponent {

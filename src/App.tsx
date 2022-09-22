@@ -1,15 +1,13 @@
 import React, { useEffect, useRef, useState } from "react";
-import { IconButton, Popover, ThemeProvider, Typography, useTheme } from "@mui/material";
+import { IconButton, Popover, ThemeProvider, Typography } from "@mui/material";
 import { Close as CloseIcon } from "@mui/icons-material";
 import { Route, Routes as RoutingGroup } from "react-router-dom";
 import i18n from "i18next";
 import { initReactI18next, useTranslation } from "react-i18next";
 import { Helmet } from "react-helmet";
-import { CSSTransition } from "react-transition-group";
 import { useLocation, useNavigate } from "react-router-dom";
 import { AutoLogin, Logout } from "Init/AuthHandler";
 import { Events } from "Init/WebsocketEventInit";
-import { Add as AddIcon, Group as GroupIcon, Menu as MenuIcon } from "@mui/icons-material";
 import { isValidUsername } from "NSLib/Util";
 import { GenerateBase64SHA256 } from "NSLib/NCEncryption";
 import { NCChannelCache } from "NSLib/NCChannelCache";
@@ -31,6 +29,7 @@ import SettingsView from "Views/SettingsView/SettingsView";
 
 import AddFriendsPage from "Views/FriendView/Pages/AddFriendsPage/AddFriendsPage";
 import BlockedUsersPage from "Views/FriendView/Pages/BlockedUsersPage/BlockedUsersPage";
+import ChatPage from "Views/MainView/Pages/ChatPage/ChatPage";
 import DashboardPage from "Views/SettingsView/Pages/DashboardPage/DashboardPage";
 import FriendPage from "Views/FriendView/Pages/FriendPage/FriendPage";
 import LoginPage from "Views/AuthView/Pages/LoginPage/LoginPage";
@@ -52,7 +51,6 @@ import MessageAttachment from "Types/API/MessageAttachment";
 import type IUserData from "Types/API/Interfaces/IUserData";
 
 import "./App.css";
-import ChatPage from "Views/MainView/Pages/ChatPage/ChatPage";
 
 i18n.use(initReactI18next)
 .init({
@@ -93,8 +91,6 @@ function App() {
   const [debugConsoleVisible, setDebugConsoleVisibility] = useState(GetUrlFlag("console") ? true : false);
   const [debugConsoleBuffer, setDebugConsoleBuffer] = useState([] as DebugMessage[]);
 
-  const SharedPropsContext = React.createContext({} as SharedProps);
-
   const openConsole = () => setDebugConsoleVisibility(true);
 
   const closeHelpPopup = () => {
@@ -113,11 +109,11 @@ function App() {
   };
 
   const SharedProps: SharedProps = {
-    HelpPopup: HelpPopup,
     widthConstrained: widthConstrained,
     isTouchCapable: isTouchCapable,
-    openConsole: openConsole,
     title: title,
+    HelpPopup: HelpPopup,
+    openConsole: openConsole,
     changeTitleCallback: setTitle
   }
 
@@ -310,7 +306,7 @@ function App() {
     setMessageAttachments(updatedMessageAttachments);
   };
 
-  const MainViewNavigateToPage = (path: Routes) => {
+  const onMainViewNavigateToPage = (path: Routes) => {
     setSelectedChannel(null as unknown as IRawChannelProps);
     if (widthConstrained) setChannelMenuVisibility(false);
     navigate(path);
@@ -651,37 +647,35 @@ function App() {
         <title>{title && title.length > 0 ? `${Localizations_Common("AppTitle")} - ${title}` : Localizations_Common("AppTitle")}</title>
       </Helmet>
       <ThemeProvider theme={theme}>
-        <SharedPropsContext.Provider value={SharedProps}>
-          <RoutingGroup>
-            <Route path="*" element={<ErrorView errorCode={404} />}></Route>
-            <Route path="/" element={<AuthView page={<LoginPage />} />} />
-            <Route path={Routes.Login} element={<AuthView page={<LoginPage />} />} />
-            <Route path={Routes.Register} element={<AuthView page={<RegisterPage />} />} />
-            <Route path={`${Routes.Chat}/*`} element={<MainView page={<ChatPage attachments={MessageAttachments} canvasRef={canvasRef} messages={messages} onFileUpload={onFileUpload} onFileRemove={onFileRemove} onMessageEdit={onMessageEdit} onMessageDelete={onMessageDelete} onMessageInputSubmit={onMessageInputSubmit} onLoadPriorMessages={onLoadPriorMessages} />} />} />
-            <Route path={Routes.Friends} element={<MainView page={<FriendView page={<FriendPage friends={friends} onReloadList={populateFriendsList} onFriendClicked={onFriendClicked} onCreateGroup={onCreateGroup} onBlockFriend={onBlockFriend} onUnblockFriend={onUnblockFriend} onRemoveFriend={onRemoveFriend} />} />} />}>
-              <Route path={Routes.FriendsList} element={<MainView page={<FriendView page={<FriendPage friends={friends} onReloadList={populateFriendsList} onFriendClicked={onFriendClicked} onCreateGroup={onCreateGroup} onBlockFriend={onBlockFriend} onUnblockFriend={onUnblockFriend} onRemoveFriend={onRemoveFriend} />} />} />} />
-              <Route path={Routes.BlockedUsersList} element={<MainView page={<FriendView page={<BlockedUsersPage friends={friends} onReloadList={populateFriendsList} onUnblockFriend={onUnblockFriend} />} />} />} />
-              <Route path={Routes.AddFriend} element={<MainView page={<FriendView page={<AddFriendsPage onAddFriend={onAddFriend} />} />} />} />
-            </Route>
-            <Route path={Routes.Settings} element={<MainView page={<SettingsView page={<DashboardPage avatarNonce={avatarNonce} onAvatarChanged={onAvatarChanged} onLogout={onLogout} />} />} />} />
-          </RoutingGroup>
-          <Popover className="GenericPopover" open={helpVisible} anchorEl={helpAnchorEl} onClose={() => {
-            setHelpAnchor(null as unknown as Element);
-            setHelpVisibility(false);
-          }}>
-            {helpContent}
-          </Popover>
-          {debugConsoleVisible ? (
-          <div className="DebugConsoleContainer" style={{ color: theme.palette.text.primary, background: theme.palette.background.paper }}>
-            <div className="DebugConsoleHeader">
-              <Typography variant="h5">Debug Console</Typography>
-              <IconButton onClick={() => setDebugConsoleVisibility(false)} style={{ marginLeft: "auto" }}><CloseIcon /></IconButton>
-            </div>
-            <div className="DebugConsole">
-              {consoleMessages()}
-            </div>
-          </div>) : null}
-        </SharedPropsContext.Provider>
+        <RoutingGroup>
+          <Route path="*" element={<ErrorView sharedProps={SharedProps} errorCode={404} />}></Route>
+          <Route path="/" element={<AuthView sharedProps={SharedProps} page={<LoginPage />} />} />
+          <Route path={Routes.Login} element={<AuthView sharedProps={SharedProps} page={<LoginPage />} />} />
+          <Route path={Routes.Register} element={<AuthView sharedProps={SharedProps} page={<RegisterPage />} />} />
+          <Route path={`${Routes.Chat}/*`} element={<MainView sharedProps={SharedProps} channels={channels} avatarNonce={avatarNonce} selectedChannel={selectedChannel} channelMenuVisible={channelMenuVisible} onNavigateToPage={onMainViewNavigateToPage} setChannelMenuVisibility={setChannelMenuVisibility} onChannelClearCache={onChannelClearCache} onChannelClick={selectChannel} onChannelDelete={onChannelDelete} onChannelEdit={onChannelEdit} onChannelMenuToggle={onChannelMenuToggle} onChannelMove={onChannelMove} onChannelRemoveRecipient={onChannelRemoveRecipient} onChannelResetIcon={onChannelResetIcon} page={<ChatPage sharedProps={SharedProps} attachments={MessageAttachments} canvasRef={canvasRef} messages={messages} onFileUpload={onFileUpload} onFileRemove={onFileRemove} onMessageEdit={onMessageEdit} onMessageDelete={onMessageDelete} onMessageInputSubmit={onMessageInputSubmit} onLoadPriorMessages={onLoadPriorMessages} />} />} />
+          <Route path={Routes.Friends} element={<MainView sharedProps={SharedProps} channels={channels} avatarNonce={avatarNonce} selectedChannel={selectedChannel} channelMenuVisible={channelMenuVisible} onNavigateToPage={onMainViewNavigateToPage} setChannelMenuVisibility={setChannelMenuVisibility} onChannelClearCache={onChannelClearCache} onChannelClick={selectChannel} onChannelDelete={onChannelDelete} onChannelEdit={onChannelEdit} onChannelMenuToggle={onChannelMenuToggle} onChannelMove={onChannelMove} onChannelRemoveRecipient={onChannelRemoveRecipient} onChannelResetIcon={onChannelResetIcon} page={<FriendView sharedProps={SharedProps} page={<FriendPage friends={friends} onReloadList={populateFriendsList} onFriendClicked={onFriendClicked} onCreateGroup={onCreateGroup} onBlockFriend={onBlockFriend} onUnblockFriend={onUnblockFriend} onRemoveFriend={onRemoveFriend} />} />} />}>
+            <Route path={Routes.FriendsList} element={<MainView sharedProps={SharedProps} channels={channels} avatarNonce={avatarNonce} selectedChannel={selectedChannel} channelMenuVisible={channelMenuVisible} onNavigateToPage={onMainViewNavigateToPage} setChannelMenuVisibility={setChannelMenuVisibility} onChannelClearCache={onChannelClearCache} onChannelClick={selectChannel} onChannelDelete={onChannelDelete} onChannelEdit={onChannelEdit} onChannelMenuToggle={onChannelMenuToggle} onChannelMove={onChannelMove} onChannelRemoveRecipient={onChannelRemoveRecipient} onChannelResetIcon={onChannelResetIcon} page={<FriendView sharedProps={SharedProps} page={<FriendPage friends={friends} onReloadList={populateFriendsList} onFriendClicked={onFriendClicked} onCreateGroup={onCreateGroup} onBlockFriend={onBlockFriend} onUnblockFriend={onUnblockFriend} onRemoveFriend={onRemoveFriend} />} />} />} />
+            <Route path={Routes.BlockedUsersList} element={<MainView sharedProps={SharedProps} channels={channels} avatarNonce={avatarNonce} selectedChannel={selectedChannel} channelMenuVisible={channelMenuVisible} onNavigateToPage={onMainViewNavigateToPage} setChannelMenuVisibility={setChannelMenuVisibility} onChannelClearCache={onChannelClearCache} onChannelClick={selectChannel} onChannelDelete={onChannelDelete} onChannelEdit={onChannelEdit} onChannelMenuToggle={onChannelMenuToggle} onChannelMove={onChannelMove} onChannelRemoveRecipient={onChannelRemoveRecipient} onChannelResetIcon={onChannelResetIcon} page={<FriendView sharedProps={SharedProps} page={<BlockedUsersPage friends={friends} onReloadList={populateFriendsList} onUnblockFriend={onUnblockFriend} />} />} />} />
+            <Route path={Routes.AddFriend} element={<MainView sharedProps={SharedProps} channels={channels} avatarNonce={avatarNonce} selectedChannel={selectedChannel} channelMenuVisible={channelMenuVisible} onNavigateToPage={onMainViewNavigateToPage} setChannelMenuVisibility={setChannelMenuVisibility} onChannelClearCache={onChannelClearCache} onChannelClick={selectChannel} onChannelDelete={onChannelDelete} onChannelEdit={onChannelEdit} onChannelMenuToggle={onChannelMenuToggle} onChannelMove={onChannelMove} onChannelRemoveRecipient={onChannelRemoveRecipient} onChannelResetIcon={onChannelResetIcon} page={<FriendView sharedProps={SharedProps} page={<AddFriendsPage onAddFriend={onAddFriend} />} />} />} />
+          </Route>
+          <Route path={Routes.Settings} element={<MainView sharedProps={SharedProps} channels={channels} avatarNonce={avatarNonce} selectedChannel={selectedChannel} channelMenuVisible={channelMenuVisible} onNavigateToPage={onMainViewNavigateToPage} setChannelMenuVisibility={setChannelMenuVisibility} onChannelClearCache={onChannelClearCache} onChannelClick={selectChannel} onChannelDelete={onChannelDelete} onChannelEdit={onChannelEdit} onChannelMenuToggle={onChannelMenuToggle} onChannelMove={onChannelMove} onChannelRemoveRecipient={onChannelRemoveRecipient} onChannelResetIcon={onChannelResetIcon} page={<SettingsView sharedProps={SharedProps} page={<DashboardPage avatarNonce={avatarNonce} onAvatarChanged={onAvatarChanged} onLogout={onLogout} />} />} />} />
+        </RoutingGroup>
+        <Popover className="GenericPopover" open={helpVisible} anchorEl={helpAnchorEl} onClose={() => {
+          setHelpAnchor(null as unknown as Element);
+          setHelpVisibility(false);
+        }}>
+          {helpContent}
+        </Popover>
+        {debugConsoleVisible ? (
+        <div className="DebugConsoleContainer" style={{ color: theme.palette.text.primary, background: theme.palette.background.paper }}>
+          <div className="DebugConsoleHeader">
+            <Typography variant="h5">Debug Console</Typography>
+            <IconButton onClick={() => setDebugConsoleVisibility(false)} style={{ marginLeft: "auto" }}><CloseIcon /></IconButton>
+          </div>
+          <div className="DebugConsole">
+            {consoleMessages()}
+          </div>
+        </div>) : null}
       </ThemeProvider>
     </div>
   );

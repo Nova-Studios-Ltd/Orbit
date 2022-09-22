@@ -1,8 +1,8 @@
-import { Avatar, ButtonBase, Icon, IconButton, Typography, useTheme } from "@mui/material";
+import { Avatar, ButtonBase, IconButton, Typography, useTheme } from "@mui/material";
 import { MoreHoriz as EllipsisIcon } from "@mui/icons-material";
-import React, { useState, ReactNode, createContext } from "react";
+import React, { useState, ReactNode } from "react";
 
-import type { NCComponent, SharedProps } from "Types/UI/Components";
+import type { NCComponent } from "Types/UI/Components";
 import useClassNames from "Hooks/useClassNames";
 
 export interface AvatarTextButtonProps extends NCComponent {
@@ -24,8 +24,7 @@ export interface AvatarTextButtonProps extends NCComponent {
 function AvatarTextButton(props: AvatarTextButtonProps) {
   const theme = useTheme();
   const classNames = useClassNames(useClassNames("AvatarTextButtonContainer", props.className), props.fullWidth ? "FullWidth" : "");
-
-  const SharedPropsContext = createContext({} as SharedProps);
+  const isTouchCapable = props.sharedProps && props.sharedProps.isTouchCapable;
 
   const [isHovering, setHoveringState] = useState(false);
   const [isDragZoneTopHovering, setDragZoneTopHoveringState] = useState(false);
@@ -48,37 +47,27 @@ function AvatarTextButton(props: AvatarTextButtonProps) {
   }
 
   return (
-    <SharedPropsContext.Consumer>
-      {
-        sharedProps => {
-          const isTouchCapable = sharedProps && sharedProps.isTouchCapable;
-
-          return (
-            <div className={classNames} style={{ backgroundColor: props.selected || isHovering ? theme.customPalette.customActions.active : theme.palette.background.paper, boxShadow: props.selected ? `4px 4px ${theme.palette.background.default}` : "none" }} draggable={props.draggable} onDragStart={onDrag}>
-              {props.draggable ? <span className="AvatarTextButtonDragZone AvatarTextButtonDragZoneTop" style={{ background: isDragZoneTopHovering ? theme.palette.primary.main : "none" }} onDrop={(event) => { onDrop(event); setDragZoneTopHoveringState(false); }} onDragOver={(event) => { setDragZoneTopHoveringState(true); event.preventDefault(); }} onDragLeave={() => setDragZoneTopHoveringState(false)}/> : null}
-              <ButtonBase className="AvatarTextButtonBase" onClick={props.onLeftClick} onContextMenu={props.onRightClick} onMouseEnter={() => onMouseHover(true)} onMouseLeave={() => onMouseHover(false)}>
-                <div className="AvatarTextButtonLeft">
-                  <Avatar className="AvatarTextButtonIcon" src={!props.iconObj ? props.iconSrc : ""}>{props.iconObj}</Avatar>
-                </div>
-                <div className="AvatarTextButtonRight">
-                  <Typography variant="h6">{props.children}</Typography>
-                </div>
-              </ButtonBase>
-                <div className="AvatarTextButtonVeryRight">
-                  {props.childrenAfter}
-                  {props.showEllipsis || (isTouchCapable && props.showEllipsisConditional) ? (
-                    <IconButton className="AvatarTextButtonEllipsis" onClick={onEllipsisClick} onMouseEnter={() => onMouseHover(true)} onMouseLeave={() => onMouseHover(false)}>
-                      <EllipsisIcon />
-                    </IconButton>
-                  ) : null}
-                </div>
-              {props.draggable ? <span className="AvatarTextButtonDragZone AvatarTextButtonDragZoneBottom" style={{ background: isDragZoneBottomHovering ? theme.palette.primary.main : "none" }} onDrop={(event) => { onDrop(event); setDragZoneBottomHoveringState(false); }} onDragOver={(event) => { setDragZoneBottomHoveringState(true); event.preventDefault(); }} onDragLeave={() => setDragZoneBottomHoveringState(false)}/> : null}
-            </div>
-          );
-        }
-      }
-    </SharedPropsContext.Consumer>
-  )
+    <div className={classNames} style={{ backgroundColor: props.selected || isHovering ? theme.customPalette.customActions.active : theme.palette.background.paper, boxShadow: props.selected ? `4px 4px ${theme.palette.background.default}` : "none" }} draggable={props.draggable} onDragStart={onDrag}>
+      {props.draggable ? <span className="AvatarTextButtonDragZone AvatarTextButtonDragZoneTop" style={{ background: isDragZoneTopHovering ? theme.palette.primary.main : "none" }} onDrop={(event) => { onDrop(event); setDragZoneTopHoveringState(false); }} onDragOver={(event) => { setDragZoneTopHoveringState(true); event.preventDefault(); }} onDragLeave={() => setDragZoneTopHoveringState(false)}/> : null}
+      <ButtonBase className="AvatarTextButtonBase" onClick={props.onLeftClick} onContextMenu={props.onRightClick} onMouseEnter={() => onMouseHover(true)} onMouseLeave={() => onMouseHover(false)}>
+        <div className="AvatarTextButtonLeft">
+          <Avatar className="AvatarTextButtonIcon" src={!props.iconObj ? props.iconSrc : ""}>{props.iconObj}</Avatar>
+        </div>
+        <div className="AvatarTextButtonRight">
+          <Typography variant="h6">{props.children}</Typography>
+        </div>
+      </ButtonBase>
+        <div className="AvatarTextButtonVeryRight">
+          {props.childrenAfter}
+          {props.showEllipsis || (isTouchCapable && props.showEllipsisConditional) ? (
+            <IconButton className="AvatarTextButtonEllipsis" onClick={onEllipsisClick} onMouseEnter={() => onMouseHover(true)} onMouseLeave={() => onMouseHover(false)}>
+              <EllipsisIcon />
+            </IconButton>
+          ) : null}
+        </div>
+      {props.draggable ? <span className="AvatarTextButtonDragZone AvatarTextButtonDragZoneBottom" style={{ background: isDragZoneBottomHovering ? theme.palette.primary.main : "none" }} onDrop={(event) => { onDrop(event); setDragZoneBottomHoveringState(false); }} onDragOver={(event) => { setDragZoneBottomHoveringState(true); event.preventDefault(); }} onDragLeave={() => setDragZoneBottomHoveringState(false)}/> : null}
+    </div>
+  );
 }
 
 export default AvatarTextButton;

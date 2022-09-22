@@ -10,7 +10,7 @@ import MessageImage from "./Subcomponents/MessageImage/MessageImage";
 import MessageVideo from "./Subcomponents/MessageVideo/MessageVideo";
 import MessageAudio from "./Subcomponents/MessageAudio/MessageAudio";
 
-import type { NCComponent, SharedProps } from "Types/UI/Components";
+import type { NCComponent } from "Types/UI/Components";
 import type { IAttachmentProps } from "Types/API/Interfaces/IAttachmentProps";
 
 export interface MessageMediaProps extends NCComponent {
@@ -32,7 +32,18 @@ function MessageMedia(props: MessageMediaProps) {
   const isPreviewableMediaType = useRef(false);
   const [dimensions, setDimensions] = useState({});
 
-  const SharedPropsContext = createContext({} as SharedProps);
+  useEffect(() => {
+    let _dimensions = {};
+
+    if (props.contentWidth && props.contentHeight) {
+      const size = ComputeCSSDims(new Dimensions(props.contentWidth, props.contentHeight), new Dimensions(575, 400));
+      _dimensions = props.sharedProps?.widthConstrained ? { width: "100%", height: "auto" } : { width: size.width > 0 ? size.width : "18rem", height: size.height > 0 ? size.height : "30rem" };
+    }
+
+    if (isPreviewableMediaType.current) {
+      setDimensions(_dimensions);
+    }
+  }, [props.contentWidth, props.contentHeight, props.sharedProps?.widthConstrained]);
 
   const onMediaClick = (event: React.MouseEvent<HTMLDivElement>) => {
     event.stopPropagation();
@@ -71,29 +82,9 @@ function MessageMedia(props: MessageMediaProps) {
   }
 
   return (
-    <SharedPropsContext.Consumer>
-      {
-        sharedProps => {
-
-          let _dimensions = {};
-
-          if (props.contentWidth && props.contentHeight) {
-            const size = ComputeCSSDims(new Dimensions(props.contentWidth, props.contentHeight), new Dimensions(575, 400));
-            _dimensions = sharedProps?.widthConstrained ? { width: "100%", height: "auto" } : { width: size.width > 0 ? size.width : "18rem", height: size.height > 0 ? size.height : "30rem" };
-          }
-
-          if (isPreviewableMediaType.current) {
-            setDimensions(_dimensions);
-          }
-
-          return (
-            <div className={classNames} style={{ backgroundColor: theme.palette.background.paper, ...dimensions }} onClick={onMediaClick} onContextMenu={onMediaClick}>
-              {mediaElement()}
-            </div>
-          );
-        }
-      }
-    </SharedPropsContext.Consumer>
+    <div className={classNames} style={{ backgroundColor: theme.palette.background.paper, ...dimensions }} onClick={onMediaClick} onContextMenu={onMediaClick}>
+      {mediaElement()}
+    </div>
   )
 }
 

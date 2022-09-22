@@ -2,7 +2,7 @@ import { Avatar, ButtonBase, IconButton, Typography, useTheme } from "@mui/mater
 import { ArrowDropDown as DropdownIcon } from "@mui/icons-material";
 import React, { createContext, useState, ReactNode } from "react";
 
-import type { NCComponent, SharedProps } from "Types/UI/Components";
+import type { NCComponent } from "Types/UI/Components";
 import useClassNames from "Hooks/useClassNames";
 
 export interface AvatarTextDropdownProps extends NCComponent {
@@ -15,8 +15,7 @@ export interface AvatarTextDropdownProps extends NCComponent {
 function AvatarTextDropdown(props: AvatarTextDropdownProps) {
   const theme = useTheme();
   const classNames = useClassNames("AvatarTextButtonContainer", props.className);
-
-  const SharedPropsContext = createContext({} as SharedProps);
+  const isTouchCapable = props.sharedProps && props.sharedProps.isTouchCapable;
 
   const [isHovering, setHoveringState] = useState(false);
 
@@ -29,31 +28,20 @@ function AvatarTextDropdown(props: AvatarTextDropdownProps) {
   };
 
   return (
-    <SharedPropsContext.Consumer>
-      {
-        sharedProps => {
-
-          const isTouchCapable = sharedProps && sharedProps.isTouchCapable;
-
-          return (
-            <div className={classNames} style={{ backgroundColor: isHovering ? theme.customPalette.customActions.active : theme.palette.background.paper }}>
-              <ButtonBase className="AvatarDropdownButtonBase" onClick={props.onLeftClick} onContextMenu={props.onRightClick} onMouseEnter={() => onMouseHover(true)} onMouseLeave={() => onMouseHover(false)}>
-                <div className="AvatarDropdownButtonLeft">
-                  <Avatar className="AvatarDropdownButtonIcon" src={props.iconSrc} />
-                </div>
-                <div className="AvatarDropdownButtonRight">
-                  <Typography variant="h6">{props.children}</Typography>
-                </div>
-              </ButtonBase>
-                <IconButton className="AvatarDropdownButtonEllipsis" onClick={onEllipsisClick} onMouseEnter={() => onMouseHover(true)} onMouseLeave={() => onMouseHover(false)}>
-                  <DropdownIcon />
-                </IconButton>
-            </div>
-          );
-        }
-      }
-    </SharedPropsContext.Consumer>
-  )
+    <div className={classNames} style={{ backgroundColor: isHovering ? theme.customPalette.customActions.active : theme.palette.background.paper }}>
+      <ButtonBase className="AvatarDropdownButtonBase" onClick={props.onLeftClick} onContextMenu={props.onRightClick} onMouseEnter={() => onMouseHover(true)} onMouseLeave={() => onMouseHover(false)}>
+        <div className="AvatarDropdownButtonLeft">
+          <Avatar className="AvatarDropdownButtonIcon" src={props.iconSrc} />
+        </div>
+        <div className="AvatarDropdownButtonRight">
+          <Typography variant="h6">{props.children}</Typography>
+        </div>
+      </ButtonBase>
+        <IconButton className="AvatarDropdownButtonEllipsis" onClick={onEllipsisClick} onMouseEnter={() => onMouseHover(true)} onMouseLeave={() => onMouseHover(false)}>
+          <DropdownIcon />
+        </IconButton>
+    </div>
+  );
 }
 
 export default AvatarTextDropdown;
