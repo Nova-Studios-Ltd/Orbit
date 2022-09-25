@@ -67,8 +67,6 @@ function App() {
   const theme = ThemeSelector(GetUrlFlag("theme") || "DarkTheme_Default");
   const navigate = useNavigate();
   const location = useLocation();
-  const params = useParams();
-  const settings = new SettingsManager();
 
   const consoleBuffer = useRef([] as DebugMessage[]);
   const canvasRef = useRef() as React.MutableRefObject<HTMLDivElement>;
