@@ -1,9 +1,0 @@
-import { Transition } from "react-transition-group";
-
-import type { FadeTransitionProps } from "DataTypes/Transitions";
-
-export const FadeTransition = ({ children, ...TransitionComponentProps }: FadeTransitionProps) => (
-  <Transition {...TransitionComponentProps}>
-    {state => <div state>{children}</div>}
-  </Transition>
-)
