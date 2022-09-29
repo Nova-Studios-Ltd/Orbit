@@ -55,15 +55,17 @@ function MainView(props: MainViewProps) {
   const theme = useTheme();
   const settings = new SettingsManager();
 
-  useEffect(() => {
-    if (!(props.sharedProps && props.sharedProps.widthConstrained) && !props.channelMenuVisible && props.setChannelMenuVisibility) props.setChannelMenuVisibility(true);
-
-    if ((!uuid || uuid.length < 1) && location.pathname === Routes.Chat && props.channels && props.channels[0]) {
+  const autoNavigate = () => {
+    if ((!uuid || uuid.length < 1) && ((location.pathname === Routes.Chat) || (location.pathname === Routes.Root)) && props.channels && props.channels[0]) {
       navigate(`${Routes.Chat}/${props.channels[0].table_Id}`);
     }
-    else if (location.pathname === Routes.Chat) {
+    else if ((location.pathname === Routes.Chat) || (location.pathname === Routes.Root)) {
       navigate(Routes.FriendsList);
     }
+  }
+
+  useEffect(() => {
+    if (!(props.sharedProps && props.sharedProps.widthConstrained) && !props.channelMenuVisible && props.setChannelMenuVisibility) props.setChannelMenuVisibility(true);
   }, [location.pathname, navigate, props, uuid]);
 
   const onMainViewContainerRightClick = (event: React.MouseEvent<HTMLDivElement>) => {
@@ -216,7 +218,12 @@ function MainView(props: MainViewProps) {
     })();
 
     AutoLogin().then((result: boolean) => {
-      if (!result && location.pathname !== Routes.Register) navigate(Routes.Login);
+      if (result) {
+        autoNavigate();
+      }
+      else {
+        navigate(Routes.Login);
+      }
     });
 
     if (props.loadChannels) props.loadChannels();

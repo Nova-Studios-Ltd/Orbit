@@ -1,4 +1,6 @@
 export enum Routes {
+  Root = "/", // X
+
   Auth = "/auth", // X
   Login = "/auth/login",
   Register = "/auth/register",
