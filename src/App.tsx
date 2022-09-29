@@ -1,18 +1,15 @@
 import React, { useEffect, useRef, useState } from "react";
 import { IconButton, Popover, ThemeProvider, Typography } from "@mui/material";
 import { Close as CloseIcon } from "@mui/icons-material";
-import { Route, Routes as RoutingGroup, useParams } from "react-router-dom";
+import { Route, Routes as RoutingGroup } from "react-router-dom";
 import i18n from "i18next";
 import { initReactI18next, useTranslation } from "react-i18next";
 import { Helmet } from "react-helmet";
 import { useLocation, useNavigate } from "react-router-dom";
-import { AutoLogin, Logout } from "Init/AuthHandler";
-import { Events } from "Init/WebsocketEventInit";
+import { Logout } from "Init/AuthHandler";
 import { isValidUsername } from "NSLib/Util";
-import { GenerateBase64SHA256 } from "NSLib/NCEncryption";
 import { NCChannelCache } from "NSLib/NCChannelCache";
 import { FetchImageFromClipboard, NCFile, NotificationType, TriggerNotification, UploadFile } from "NSLib/ElectronAPI";
-import { SettingsManager } from "NSLib/SettingsManager";
 import { NCUserCache } from "NSLib/NCUserCache";
 import { CREATEChannel, DELETEChannel, DELETEMessage, EDITMessage, GETChannel, GETOwnFriends, GETMessages, GETMessagesSingle, GETUserChannels, GETUserUUID, SENDMessage, GETUser, REQUESTFriend, ACCEPTFriend, REMOVEFriend, BLOCKFriend, UNBLOCKFriend, UPDATEChannelName, UPDATEChannelIcon, REMOVEChannelIcon, CREATEGroupChannel, REMOVEChannelMember } from "NSLib/APIEvents";
 
@@ -512,109 +509,6 @@ function App() {
     setFriends(newFriendsArray);
   }
 
-  useEffect(() => {
-    Events.on("NewMessage", (message: IMessageProps, channel_uuid: string) => {
-      if (selectedChannel.table_Id !== channel_uuid) return;
-      setMessages(prevState => {
-        return [message, ...prevState];
-      });
-    });
-
-    Events.on("DeleteMessage", (message: string) => {
-      setMessages(prevState => {
-        const index = prevState.findIndex(e => e.message_Id === message);
-        if (index > -1) {
-          prevState.splice(index, 1);
-        }
-        return [...prevState];
-      });
-    });
-
-    Events.on("EditMessage", (message: IMessageProps) => {
-      setMessages(prevState => {
-        const index = prevState.findIndex(e => e.message_Id === message.message_Id);
-        if (index > -1) {
-          prevState[index] = message;
-        }
-        return [...prevState];
-      });
-    });
-
-    Events.on("NewChannel", (channel: IRawChannelProps) => {
-      setChannels(prevState => {
-        const index = prevState.findIndex(c => c.table_Id === channel.table_Id);
-        if (index > -1) return [...prevState]
-        return [...prevState, channel]}
-      );
-    });
-
-    Events.on("DeleteChannel", (channel: string) => {
-      setChannels(prevState => {
-        const index = prevState.findIndex(e => e.table_Id === channel);
-        if (index > -1) {
-          prevState.splice(index, 1);
-        }
-        return [...prevState];
-      });
-      setMessages([]);
-    });
-
-    Events.on("FriendAdded", async (request_uuid: string, status: string) => {
-      const friendData = UserCache.GetUser(request_uuid);
-      setFriends(prevState => {
-        return [...prevState, {friendData, status} as Friend ];
-      });
-    });
-
-    Events.on("FriendUpdated", async (request_uuid: string, status: string) => {
-      const friendData = await UserCache.GetUserAsync(request_uuid);
-      setFriends(prevState => {
-        const index = prevState.findIndex(c => c.friendData?.uuid === request_uuid);
-        if (index > -1) {
-          prevState[index] = {friendData, status} as Friend
-        }
-        return [...prevState];
-      });
-    });
-
-    Events.on("FriendRemoved", async (request_uuid: string) => {
-      setFriends(prevState => {
-        const index = prevState.findIndex(c => c.friendData?.uuid === request_uuid);
-        if (index > -1) {
-          prevState.splice(index, 1);
-        }
-        return [...prevState];
-      });
-    });
-
-    return (() => {
-      Events.remove("NewMessage");
-      Events.remove("DeleteMessage");
-      Events.remove("EditMessage");
-      Events.remove("NewChannel");
-      Events.remove("DeleteChannel");
-      Events.remove("FriendUpdated")
-      Events.remove("FriendAdded");
-      Events.remove("FriendRemoved");
-    });
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [channels, messages]);
-
-
-  useEffect(() => {
-    (async () => {
-      session.current = (await GenerateBase64SHA256(Date.now().toString())).Base64;
-    })();
-
-    AutoLogin().then((result: boolean) => {
-      if (!result && location.pathname !== Routes.Register) navigate(Routes.Login);
-    });
-
-    loadChannels();
-    populateFriendsList();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   (window as any).notification = (tile: string, body: string, url: string) => {
     TriggerNotification(title, body, NotificationType.Info, url);
   }
@@ -633,7 +527,7 @@ function App() {
             <Route path={Routes.Login} element={<LoginPage sharedProps={SharedProps} />} />
             <Route path={Routes.Register} element={<RegisterPage sharedProps={SharedProps} />} />
           </Route>
-          <Route path="/" element={<MainView sharedProps={SharedProps} channels={channels} avatarNonce={avatarNonce} selectedChannel={selectedChannel} channelMenuVisible={channelMenuVisible} onNavigateToPage={onMainViewNavigateToPage} setChannelMenuVisibility={setChannelMenuVisibility} onChannelClearCache={onChannelClearCache} onChannelClick={selectChannel} onChannelDelete={onChannelDelete} onChannelEdit={onChannelEdit} onChannelMenuToggle={onChannelMenuToggle} onChannelMove={onChannelMove} onChannelRemoveRecipient={onChannelRemoveRecipient} onChannelResetIcon={onChannelResetIcon} />}>
+          <Route path="/" element={<MainView sharedProps={SharedProps} sessionRef={session} channels={channels} messages={messages} setChannels={setChannels} setFriends={setFriends} setMessages={setMessages} avatarNonce={avatarNonce} selectedChannel={selectedChannel} channelMenuVisible={channelMenuVisible} onNavigateToPage={onMainViewNavigateToPage} setChannelMenuVisibility={setChannelMenuVisibility} loadChannels={loadChannels} populateFriendsList={populateFriendsList} onChannelClearCache={onChannelClearCache} onChannelClick={selectChannel} onChannelDelete={onChannelDelete} onChannelEdit={onChannelEdit} onChannelMenuToggle={onChannelMenuToggle} onChannelMove={onChannelMove} onChannelRemoveRecipient={onChannelRemoveRecipient} onChannelResetIcon={onChannelResetIcon} />}>
             <Route path={Routes.Friends} element={<FriendView />}>
               <Route path={Routes.FriendsList} element={<FriendPage sharedProps={SharedProps} friends={friends} onReloadList={populateFriendsList} onFriendClicked={onFriendClicked} onCreateGroup={onCreateGroup} onBlockFriend={onBlockFriend} onUnblockFriend={onUnblockFriend} onRemoveFriend={onRemoveFriend} />} />
               <Route path={Routes.AddFriend} element={<AddFriendsPage sharedProps={SharedProps} onAddFriend={onAddFriend} />} />

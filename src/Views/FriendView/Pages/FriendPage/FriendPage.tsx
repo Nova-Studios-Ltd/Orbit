@@ -171,7 +171,7 @@ function FriendPage(props: FriendPageProps) {
     <PageContainer className={classNames} adaptive={false}>
       <div className="FriendsPageButtonContainer">
         {createGroupChannelMode ? <Button disabled={GroupChannelRecipientsList.length < 1} variant="outlined" color="success" onClick={() => { if (props.onCreateGroup) props.onCreateGroup(GroupChannelRecipientsList) }}>{Localizations_FriendPage("Button_Label-CreateGroupChannel")}</Button> : null}
-        {createGroupChannelMode ? <Button variant="outlined" color="error" onClick={() => { navigate(Routes.FriendsList) }}>{Localizations_FriendPage("Button_Label-CancelCreateGroupChannel")}</Button> : null}
+        {createGroupChannelMode ? <Button variant="outlined" color="error" onClick={() => { navigate(Routes.FriendsList); setGroupChannelRecipientsList([]); }}>{Localizations_FriendPage("Button_Label-CancelCreateGroupChannel")}</Button> : null}
         <Button variant="outlined" style={{ marginLeft: "auto" }} onClick={() => { if (props.onReloadList) props.onReloadList() }}>{Localizations_FriendPage("Button_Label-ReloadFriendsList")}</Button>
       </div>
       <div className="FriendsContainer">
