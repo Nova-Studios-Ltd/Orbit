@@ -34,6 +34,8 @@ import DashboardPage_EN_US from "./Views/SettingsView/Pages/DashboardPage.json";
 import NeworkDiagnostics_EN_US from "./Views/SettingsView/Pages/NetworkDiagnostics.json";
 
 // Components
+import Button_EN_US from "./Components/Buttons/Button.json"
+
 import Channel_EN_US from "./Components/Channels/Channel.json";
 import ChannelList_EN_US from "./Components/Channels/ChannelList.json";
 
@@ -86,6 +88,8 @@ export const Localizations_EN_US = {
   NetworkDiagnostics: NeworkDiagnostics_EN_US,
 
   // Components
+  Button: Button_EN_US,
+
   Channel: Channel_EN_US,
   ChannelList: ChannelList_EN_US,
 

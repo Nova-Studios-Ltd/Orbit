@@ -1,6 +1,8 @@
 {
   "PageTitle": "Friends",
   "Button_Label-ReloadFriendsList": "Reload",
+  "Button_Label-CreateGroupChannel": "Create Group Channel",
+  "Button_Label-CancelCreateGroupChannel": "Cancel",
   "Typography-RemoveFriendDialogTitle": "Unfriend {{user}}?",
   "Typography-BlockFriendDialogTitle": "Block {{user}}?",
   "Typography-RemoveFriendDialogBlurb": "You will not be able to message this person directly until you readd them. However, you will still be able to talk to one another in any group DMs you are in together.",
