@@ -1,15 +1,13 @@
 import { useEffect } from "react";
+import { Outlet } from "react-router-dom";
 import useClassNames from "Hooks/useClassNames";
 import { useTranslation } from "react-i18next";
 
 import ViewContainer from "Components/Containers/ViewContainer/ViewContainer";
-import DashboardPage from "Views/SettingsView/Pages/DashboardPage/DashboardPage";
 
-import type { View } from "DataTypes/Components";
-import { SettingsViewRoutes } from "DataTypes/Routes";
+import type { View } from "Types/UI/Components";
 
 interface SettingsViewProps extends View {
-  path: SettingsViewRoutes,
   avatarNonce?: string,
   onLogout?: () => void,
   onAvatarChanged?: () => void
@@ -21,20 +19,11 @@ function SettingsView(props: SettingsViewProps) {
 
   useEffect(() => {
     if (props.sharedProps && props.sharedProps.changeTitleCallback) props.sharedProps.changeTitleCallback(Localizations_SettingsView("ViewTitle"));
-  }, [Localizations_SettingsView, props, props.sharedProps?.changeTitleCallback]);
-
-  const page = () => {
-    switch (props.path) {
-      case SettingsViewRoutes.Dashboard:
-        return <DashboardPage sharedProps={props.sharedProps} avatarNonce={props.avatarNonce} onAvatarChanged={props.onAvatarChanged} onLogout={props.onLogout} />
-      default:
-        return null;
-    }
-  }
+  })
 
   return (
     <ViewContainer className={classNames} adaptive>
-      {page()}
+      <Outlet />
     </ViewContainer>
   );
 }

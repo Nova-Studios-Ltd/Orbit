@@ -1,8 +1,8 @@
+import React, { createContext, memo, useEffect, useRef, useState } from "react";
 import { useTheme } from "@mui/material";
-import React, { memo, useEffect, useRef, useState } from "react";
 import useClassNames from "Hooks/useClassNames";
 import { ComputeCSSDims } from "NSLib/Util";
-import Dimensions from "DataTypes/Dimensions";
+import Dimensions from "Types/Dimensions";
 import MimeTypeParser, { FileType } from "NSLib/MimeTypeParser";
 
 import MessageFile from "./Subcomponents/MessageFile/MessageFile";
@@ -10,8 +10,8 @@ import MessageImage from "./Subcomponents/MessageImage/MessageImage";
 import MessageVideo from "./Subcomponents/MessageVideo/MessageVideo";
 import MessageAudio from "./Subcomponents/MessageAudio/MessageAudio";
 
-import type { NCComponent } from "DataTypes/Components";
-import type { IAttachmentProps } from "Interfaces/IAttachmentProps";
+import type { NCComponent } from "Types/UI/Components";
+import type { IAttachmentProps } from "Types/API/Interfaces/IAttachmentProps";
 
 export interface MessageMediaProps extends NCComponent {
   content?: Uint8Array,
@@ -34,6 +34,7 @@ function MessageMedia(props: MessageMediaProps) {
 
   useEffect(() => {
     let _dimensions = {};
+
     if (props.contentWidth && props.contentHeight) {
       const size = ComputeCSSDims(new Dimensions(props.contentWidth, props.contentHeight), new Dimensions(575, 400));
       _dimensions = props.sharedProps?.widthConstrained ? { width: "100%", height: "auto" } : { width: size.width > 0 ? size.width : "18rem", height: size.height > 0 ? size.height : "30rem" };
@@ -42,8 +43,7 @@ function MessageMedia(props: MessageMediaProps) {
     if (isPreviewableMediaType.current) {
       setDimensions(_dimensions);
     }
-
-  }, [props.contentHeight, props.contentWidth, isPreviewableMediaType, props.sharedProps?.widthConstrained]);
+  }, [props.contentWidth, props.contentHeight, props.sharedProps?.widthConstrained]);
 
   const onMediaClick = (event: React.MouseEvent<HTMLDivElement>) => {
     event.stopPropagation();

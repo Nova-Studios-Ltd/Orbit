@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import useClassNames from "Hooks/useClassNames";
-import { Button, TextField, Typography } from "@mui/material";
+import { Button, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { WriteToClipboard } from "NSLib/ElectronAPI";
 
@@ -9,11 +9,10 @@ import ContextMenu from "Components/Menus/ContextMenu/ContextMenu";
 import ContextMenuItem from "Components/Menus/ContextMenuItem/ContextMenuItem";
 import PageContainer from "Components/Containers/PageContainer/PageContainer";
 import GenericDialog from "Components/Dialogs/GenericDialog/GenericDialog";
-import TextCombo, { TextComboChangeEvent } from "Components/Input/TextCombo/TextCombo";
 
-import type Friend from "DataTypes/Friend";
-import type { Page } from "DataTypes/Components";
-import type { Coordinates } from "DataTypes/Types";
+import type Friend from "Types/UI/Friend";
+import type { Page } from "Types/UI/Components";
+import type { Coordinates } from "Types/General";
 
 interface BlockedUsersPageProps extends Page {
   friends?: Friend[],
@@ -32,14 +31,14 @@ function BlockedUsersPage(props: BlockedUsersPageProps) {
   const [FriendContextMenuSelectedFriend, setFriendContextMenuSelectedFriend] = useState(null as unknown as Friend);
   const [UnblockFriendDialogSelector, setUnblockFriendDialogSelector] = useState("");
 
+  useEffect(() => {
+    if (props.sharedProps && props.sharedProps.changeTitleCallback) props.sharedProps.changeTitleCallback(Localizations_BlockedUsersPage("PageTitle"));
+  })
+
   const unblockFriend = (uuid?: string) => {
     if (uuid && props.onUnblockFriend) props.onUnblockFriend(uuid);
     setUnblockFriendDialogSelector("");
   }
-
-  useEffect(() => {
-    if (props.sharedProps && props.sharedProps.changeTitleCallback) props.sharedProps.changeTitleCallback(Localizations_BlockedUsersPage("PageTitle"));
-  }, [Localizations_BlockedUsersPage, props, props.sharedProps?.changeTitleCallback]);
 
   const blockedUserElements = (() => {
     if (props.friends) {
@@ -63,14 +62,14 @@ function BlockedUsersPage(props: BlockedUsersPageProps) {
 
           return (
             <div key={friend.friendData.uuid} className="FriendButtonContainer">
-              <AvatarTextButton onRightClick={friendRightClickHandler} showEllipsis iconSrc={friend.friendData.avatar} sharedProps={props.sharedProps}>
+              <AvatarTextButton onRightClick={friendRightClickHandler} showEllipsis iconSrc={friend.friendData.avatar}>
                 <div className="FriendButtonContent">
                   <Typography>{friend.friendData?.username}#{friend.friendData?.discriminator}</Typography>
                   <Typography variant="caption" color="gray">{friend.friendData?.uuid}</Typography>
                   <Typography variant="caption">{Localizations_BlockedUsersPage("Typography-UserBlocked")}</Typography>
                 </div>
               </AvatarTextButton>
-              <GenericDialog sharedProps={props.sharedProps} open={UnblockFriendDialogVisible} onClose={() => setUnblockFriendDialogSelector("")} title={Localizations_BlockedUsersPage("Typography-UnblockFriendDialogTitle", { user: friend.friendData.username })} buttons={
+              <GenericDialog open={UnblockFriendDialogVisible} onClose={() => setUnblockFriendDialogSelector("")} title={Localizations_BlockedUsersPage("Typography-UnblockFriendDialogTitle", { user: friend.friendData.username })} buttons={
                 <>
                   <Button onClick={(event) => { setUnblockFriendDialogSelector(""); event.stopPropagation() }}>{Localizations_GenericDialog("Button_Label-DialogCancel")}</Button>
                   <Button color="error" onClick={(event) => { unblockFriend(friend.friendData?.uuid); event.stopPropagation() }}>{Localizations_GenericDialog("Button_Label-DialogUnblock")}</Button>

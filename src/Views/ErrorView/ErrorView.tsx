@@ -6,7 +6,7 @@ import { useTranslation } from "react-i18next";
 import ViewContainer from "Components/Containers/ViewContainer/ViewContainer";
 import E404 from "Views/ErrorView/Pages/E404/E404";
 
-import type { View } from "DataTypes/Components";
+import type { View } from "Types/UI/Components";
 
 interface ErrorViewProps extends View {
   errorCode: number

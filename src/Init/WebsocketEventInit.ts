@@ -2,8 +2,8 @@ import { NotificationType, TriggerNotification } from "NSLib/ElectronAPI";
 import { NCChannelCache } from "NSLib/NCChannelCache";
 import NCEvents from "NSLib/NCEvents";
 import { SettingsManager } from "NSLib/SettingsManager";
-import { UserCache } from "Views/MainView/MainView";
-import IWebSocketEvent from "../Interfaces/IWebsocketEvent";
+import { UserCache } from "App";
+import IWebSocketEvent from "Types/API/Interfaces/IWebsocketEvent";
 import { GETChannel, GETFriendState, GETKey, GETKeystore, GETMessage, GETUser } from "../NSLib/APIEvents";
 import NCWebsocket from "../NSLib/NCWebsocket";
 

@@ -4,9 +4,9 @@ import { useTranslation } from "react-i18next";
 import { Link as RouterLink, useLocation, useNavigate } from "react-router-dom";
 import { LoginNewUser } from "Init/AuthHandler";
 
-import type { Page } from "DataTypes/Components";
-import { LoginStatus } from "DataTypes/Enums";
-import { AuthViewRoutes, MainViewRoutes } from "DataTypes/Routes";
+import type { Page } from "Types/UI/Components";
+import { LoginStatus } from "Types/Enums";
+import { Routes } from "Types/UI/Routes";
 import { SettingsManager } from "NSLib/SettingsManager";
 
 interface LoginPageProps extends Page {
@@ -26,14 +26,14 @@ function LoginPage(props: LoginPageProps) {
 
   useEffect(() => {
     if (props.sharedProps && props.sharedProps.changeTitleCallback) props.sharedProps.changeTitleCallback(Localizations_LoginPage("PageTitle"));
-  }, [Localizations_LoginPage, props, props.sharedProps?.changeTitleCallback]);
+  })
 
   const login = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     LoginNewUser(email, password).then((status: LoginStatus) => {
       if (status === LoginStatus.Success)
-        navigate(MainViewRoutes.Chat)
+        navigate(Routes.Chat)
       else
         setFailStatus(status);
     });
@@ -41,9 +41,9 @@ function LoginPage(props: LoginPageProps) {
 
   const Manager = new SettingsManager();
   Manager.ContainsLocalStorage("LoggedIn").then(async (value: boolean) => {
-    if ((location.pathname.toLowerCase().includes(AuthViewRoutes.Login) || location.pathname.toLowerCase().includes(AuthViewRoutes.Register) || location.pathname === "/") && value) {
+    if ((location.pathname.toLowerCase().includes(Routes.Login) || location.pathname.toLowerCase().includes(Routes.Register) || location.pathname === "/") && value) {
       Manager.WriteLocalStorage("LoggedIn", "false");
-      navigate(MainViewRoutes.Chat);
+      navigate(Routes.Chat);
     }
   });
 
@@ -87,7 +87,7 @@ function LoginPage(props: LoginPageProps) {
         <TextField id="passwordField" className="LoginFormItem" type="password" error={failureStatus === LoginStatus.InvalidCredentials} required label={Localizations_LoginPage("TextField_Label-Password")} placeholder={Localizations_LoginPage("TextField_Placeholder-Password")} value={password} onChange={TextFieldChanged} />
         <Button className="LoginFormItem" variant="outlined" type="submit">{Localizations_LoginPage("Button_Text-Login")}</Button>
       </form>
-      <Typography marginTop={1.5}>{Localizations_LoginPage("Typography-DontHaveAccountQuestion")} <RouterLink to="/register" style={{ color: theme.palette.primary.main }}>{Localizations_LoginPage("Link-ToRegisterForm")}</RouterLink></Typography>
+      <Typography marginTop={1.5}>{Localizations_LoginPage("Typography-DontHaveAccountQuestion")} <RouterLink to={Routes.Register} style={{ color: theme.palette.primary.main }}>{Localizations_LoginPage("Link-ToRegisterForm")}</RouterLink></Typography>
     </div>
   );
 }

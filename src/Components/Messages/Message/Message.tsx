@@ -1,22 +1,21 @@
+import React, { createContext, useEffect, useState } from "react";
 import { Avatar, IconButton, Link, Typography, useTheme } from "@mui/material";
 import { Close as CloseIcon } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
-import React, { useEffect, useState } from "react";
 import useSettingsManager from "Hooks/useSettingsManager";
 
 import MessageMedia from "Components/Messages/MessageMedia/MessageMedia";
 import TextCombo, { TextComboChangeEvent, TextComboSubmitEvent } from "Components/Input/TextCombo/TextCombo";
 
-import type { NCComponent } from "DataTypes/Components";
-import { AttachmentProps, IAttachmentProps } from "Interfaces/IAttachmentProps";
+import type { NCComponent } from "Types/UI/Components";
+import { AttachmentProps, IAttachmentProps } from "Types/API/Interfaces/IAttachmentProps";
 import { DownloadUint8ArrayFile, WriteToClipboard } from "NSLib/ElectronAPI";
 import { GetImageDimensions, GetMimeType } from "NSLib/ContentLinkUtil";
 import { FileType } from "NSLib/MimeTypeParser";
-import { UserCache } from "Views/MainView/MainView";
-import UserData from "DataTypes/UserData";
-import IUserData from "Interfaces/IUserData";
+import { UserCache } from "App";
+import IUserData from "Types/API/Interfaces/IUserData";
 import ContextMenu from "Components/Menus/ContextMenu/ContextMenu";
-import { Coordinates } from "DataTypes/Types";
+import { Coordinates } from "Types/General";
 import Linkify from "linkify-react";
 import ContextMenuItem from "Components/Menus/ContextMenuItem/ContextMenuItem";
 
@@ -40,8 +39,8 @@ function Message(props: MessageProps) {
   const Localizations_Message = useTranslation("Message").t;
   const Localizations_ContextMenuItem = useTranslation("ContextMenuItem").t;
 
-  const isTouchCapable = props.sharedProps && props.sharedProps.isTouchCapable;
   const isOwnMessage = props.authorID === settingsManager.User.uuid;
+  const isTouchCapable = props.sharedProps && props.sharedProps.isTouchCapable;
 
   const [isHovering, setHoveringState] = useState(false);
   const [isEditing, setEditingState] = useState(false);
@@ -117,14 +116,6 @@ function Message(props: MessageProps) {
     setHoveringState(isHovering);
   }
 
-  const downloadSelectedAttachment = () => {
-    if (selectedAttachment && selectedAttachment.content) {
-      DownloadUint8ArrayFile(selectedAttachment.content, selectedAttachment.filename);
-      return;
-    }
-    console.warn("File does not contain content to download");
-  };
-
   const messageRightClickHandler = (event: React.MouseEvent<HTMLDivElement>) => {
     setSelectedAttachment(null as unknown as IAttachmentProps);
     showContextMenu({ x: event.clientX, y: event.clientY });
@@ -144,15 +135,13 @@ function Message(props: MessageProps) {
     showContextMenu({ x: event.clientX, y: event.clientY });
   }
 
-  const mediaComponents = () => {
-    if (allAttachments && allAttachments.length > 0) {
-      return allAttachments.map((attachment, index) => {
-        return (
-          <MessageMedia key={`${props.id}-${index}`} sharedProps={props.sharedProps} onLeftClick={attachmentLeftClickHandler} onRightClick={attachmentRightClickHandler} content={attachment.content} contentUrl={attachment.contentUrl} fileName={attachment.filename} fileSize={attachment.size} mimeType={attachment.mimeType} contentWidth={attachment.contentWidth} contentHeight={attachment.contentHeight} isExternal={attachment.isExternal}/>
-        )
-      });
+  const downloadSelectedAttachment = () => {
+    if (selectedAttachment && selectedAttachment.content) {
+      DownloadUint8ArrayFile(selectedAttachment.content, selectedAttachment.filename);
+      return;
     }
-  }
+    console.warn("File does not contain content to download");
+  };
 
   const processContent = () => {
     let c = props.content;
@@ -178,6 +167,16 @@ function Message(props: MessageProps) {
     UserCache.GetUserAsync(props.authorID).then((user: IUserData) => {
       setDisplayName(`${user.username}`);
     });
+  }
+
+  const mediaComponents = () => {
+    if (allAttachments && allAttachments.length > 0) {
+      return allAttachments.map((attachment, index) => {
+        return (
+          <MessageMedia key={`${props.id}-${index}`} onLeftClick={attachmentLeftClickHandler} onRightClick={attachmentRightClickHandler} content={attachment.content} contentUrl={attachment.contentUrl} fileName={attachment.filename} fileSize={attachment.size} mimeType={attachment.mimeType} contentWidth={attachment.contentWidth} contentHeight={attachment.contentHeight} isExternal={attachment.isExternal}/>
+        )
+      });
+    }
   }
 
   return (
@@ -214,7 +213,7 @@ function Message(props: MessageProps) {
         <ContextMenuItem hide={!isOwnMessage} onLeftClick={() => { if (props.onMessageDelete) props.onMessageDelete(filteredMessageProps) }}>{Localizations_ContextMenuItem("ContextMenuItem-Delete")}</ContextMenuItem>
       </ContextMenu>
     </div>
-  )
+  );
 }
 
 export default Message;

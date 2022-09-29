@@ -1,12 +1,12 @@
+import { useEffect, useState } from "react";
 import useClassNames from "Hooks/useClassNames";
-import { Button, TextField } from "@mui/material";
+import { Button } from "@mui/material";
 import { useTranslation } from "react-i18next";
 
 import PageContainer from "Components/Containers/PageContainer/PageContainer";
 import TextCombo, { TextComboChangeEvent } from "Components/Input/TextCombo/TextCombo";
 
-import type { Page } from "DataTypes/Components";
-import { useEffect, useState } from "react";
+import type { Page } from "Types/UI/Components";
 
 interface AddFriendsPageProps extends Page {
   onAddFriend?: (recipient: string) => void,
@@ -20,7 +20,7 @@ function AddFriendsPage(props: AddFriendsPageProps) {
 
   useEffect(() => {
     if (props.sharedProps && props.sharedProps.changeTitleCallback) props.sharedProps.changeTitleCallback(Localizations_AddFriendsPage("PageTitle"));
-  }, [Localizations_AddFriendsPage, props, props.sharedProps?.changeTitleCallback]);
+  });
 
   const handleRecipientFieldChanged = (event: TextComboChangeEvent) => {
     if (event.value !== undefined) setRecipientField(event.value);

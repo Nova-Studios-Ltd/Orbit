@@ -1,5 +1,5 @@
 import { GenerateBase64SHA256 } from "NSLib/NCEncryption";
-import { Base64String, ToBase64String, ToUint8Array } from "../NSLib/Base64";
+import { Base64String, ToBase64String, ToUint8Array } from "../../NSLib/Base64";
 
 export default class MessageAttachment {
     id: string;

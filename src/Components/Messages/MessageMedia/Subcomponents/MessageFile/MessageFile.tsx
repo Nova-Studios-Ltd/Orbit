@@ -4,7 +4,7 @@ import { Download as DownloadIcon, InsertDriveFile as FileIcon } from '@mui/icon
 import useClassNames from "Hooks/useClassNames";
 import { useTranslation } from "react-i18next";
 
-import type { NCComponent } from "DataTypes/Components";
+import type { NCComponent } from "Types/UI/Components";
 
 export interface MessageFileProps extends NCComponent {
   fileName?: string,

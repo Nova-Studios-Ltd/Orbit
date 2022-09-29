@@ -1,5 +1,5 @@
-import { DebugMessageType } from "DataTypes/Enums";
-import type { DebugMessage } from "DataTypes/Types";
+import { DebugMessageType } from "Types/Enums";
+import type { DebugMessage } from "Types/General";
 
 export const consoleLogOrig = console.log;
 export const consoleWarnOrig = console.warn;
@@ -89,4 +89,8 @@ export function OverrideConsoleSuccess(onNewMessage: (message: DebugMessage) => 
     onNewMessage({ type: DebugMessageType.Success, timestamp: Date.now(), message: finalString });
     consoleLogOrig(...args);
   }
+}
+
+export function DummyConsoleSuccess() {
+  console.success = consoleLogOrig;
 }

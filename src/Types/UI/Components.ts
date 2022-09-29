@@ -1,4 +1,4 @@
-import type { IRawChannelProps } from "Interfaces/IRawChannelProps";
+import type { IRawChannelProps } from "Types/API/Interfaces/IRawChannelProps";
 import type { ReactNode } from "react";
 
 export interface HelpPopupProps {
@@ -12,24 +12,20 @@ export interface HelpPopupProps {
 }
 
 export interface NCComponent {
-  sharedProps?: SharedProps,
   className?: string,
+  sharedProps?: SharedProps
 }
 
 export interface NCAPIComponent extends NCComponent {
   selectedChannel?: IRawChannelProps,
 }
 
-export interface Page {
-  sharedProps?: SharedProps,
-  className?: string,
+export interface Page extends NCComponent {
+
 }
 
-export interface View {
-  sharedProps?: SharedProps,
-  className?: string,
-  path?: unknown,
-  pageSpecificProps?: unknown
+export interface View extends NCComponent {
+
 }
 
 export interface SharedProps {
@@ -37,5 +33,6 @@ export interface SharedProps {
   widthConstrained?: boolean,
   isTouchCapable?: boolean,
   openConsole?: () => void,
+  title?: string,
   changeTitleCallback?: (title: string) => void
 }

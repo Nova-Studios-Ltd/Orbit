@@ -1,10 +1,10 @@
-import { useTheme, Modal, Typography } from "@mui/material";
+import React from "react";
+import { useTheme, Typography } from "@mui/material";
 import useClassNames from "Hooks/useClassNames";
 import { CSSTransition } from "react-transition-group";
 
-import type { NCComponent } from "DataTypes/Components";
+import type { NCComponent } from "Types/UI/Components";
 import type { ReactNode } from "react";
-import React from "react";
 
 export interface GenericDialogProps extends NCComponent {
   children?: ReactNode,
@@ -48,7 +48,7 @@ function GenericDialog(props: GenericDialogProps) {
         </CSSTransition>
       </div>
     </CSSTransition>
-  )
+  );
 }
 
 export default GenericDialog;

@@ -4,7 +4,7 @@ import { Download as DownloadIcon, InsertDriveFile as FileIcon } from '@mui/icon
 import useClassNames from "Hooks/useClassNames";
 import useContentRef from "Hooks/useContentRef";
 
-import type { NCComponent } from "DataTypes/Components";
+import type { NCComponent } from "Types/UI/Components";
 import type { MessageMediaProps } from "../../MessageMedia";
 
 export interface MessageVideoProps extends MessageMediaProps {

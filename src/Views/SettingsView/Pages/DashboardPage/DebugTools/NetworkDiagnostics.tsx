@@ -2,7 +2,7 @@ import { Button, useTheme } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import useClassNames from "Hooks/useClassNames";
 
-import type { NCComponent } from "DataTypes/Components";
+import type { NCComponent } from "Types/UI/Components";
 import StatusIndicator, { IndicatorState } from "Components/StatusIndicator/StatusIndicator";
 import { NCWebsocketState } from "NSLib/NCWebsocket";
 import { useEffect, useRef, useState } from "react";

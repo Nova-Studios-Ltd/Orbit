@@ -13,11 +13,11 @@ import ContextMenuItem from "Components/Menus/ContextMenuItem/ContextMenuItem";
 import GenericDialog from "Components/Dialogs/GenericDialog/GenericDialog";
 import TextCombo from "Components/Input/TextCombo/TextCombo";
 
-import type { NCComponent } from "DataTypes/Components";
-import type { IRawChannelProps } from "Interfaces/IRawChannelProps";
-import type { ChannelMoveData, Coordinates } from "DataTypes/Types";
-import type IUserData from "Interfaces/IUserData";
-import type { IChannelUpdateProps } from "Interfaces/IChannelUpdateProps";
+import type { NCComponent } from "Types/UI/Components";
+import type { IRawChannelProps } from "Types/API/Interfaces/IRawChannelProps";
+import type { ChannelMoveData, Coordinates } from "Types/General";
+import type IUserData from "Types/API/Interfaces/IUserData";
+import type { IChannelUpdateProps } from "Types/API/Interfaces/IChannelUpdateProps";
 
 export interface ChannelProps extends NCComponent {
   channelData: IRawChannelProps,
@@ -170,12 +170,12 @@ function Channel(props: ChannelProps) {
 
   return (
     <div className={classNames}>
-      <AvatarTextButton sharedProps={props.sharedProps} showEllipsisConditional draggable onDrag={onChannelDrag} onDrop={onOtherChannelDropped} iconSrc={props.channelData.channelIcon} selected={props.isSelected} onLeftClick={onChannelLeftClick} onRightClick={onChannelRightClick} childrenAfter={
+      <AvatarTextButton showEllipsisConditional draggable onDrag={onChannelDrag} onDrop={onOtherChannelDropped} iconSrc={props.channelData.channelIcon} selected={props.isSelected} onLeftClick={onChannelLeftClick} onRightClick={onChannelRightClick} childrenAfter={
         (props && props.channelData.isGroup) ? <Icon><GroupIcon /></Icon> : null
       }>
         {props.channelData.channelName}
       </AvatarTextButton>
-      <GenericDialog sharedProps={props.sharedProps} onClose={() => setDeleteChannelDialogVisibility(false)} open={DeleteChannelDialogVisible} title={Localizations_Channel("Typography-DeleteChannelDialogTitle", { channelName: props.channelData.channelName })} buttons={
+      <GenericDialog onClose={() => setDeleteChannelDialogVisibility(false)} open={DeleteChannelDialogVisible} title={Localizations_Channel("Typography-DeleteChannelDialogTitle", { channelName: props.channelData.channelName })} buttons={
         <>
           <Button onClick={() => setDeleteChannelDialogVisibility(false)}>{Localizations_GenericDialog("Button_Label-DialogCancel")}</Button>
           <Button color="error" onClick={() => deleteChannel()}>{Localizations_GenericDialog("Button_Label-DialogDelete")}</Button>
@@ -186,7 +186,7 @@ function Channel(props: ChannelProps) {
           <Typography variant="body1">{Localizations_Channel("Typography-DeleteChannelBlurb2")}</Typography>
         </div>
       </GenericDialog>
-      <GenericDialog sharedProps={props.sharedProps} onClose={() => closeEditChannelDialog()} open={EditChannelDialogVisible} title={Localizations_Channel("Typography-EditChannelDialogTitle", { channelName: props.channelData.channelName })} buttons={
+      <GenericDialog onClose={() => closeEditChannelDialog()} open={EditChannelDialogVisible} title={Localizations_Channel("Typography-EditChannelDialogTitle", { channelName: props.channelData.channelName })} buttons={
         <>
           <Button onClick={() => closeEditChannelDialog()}>{Localizations_GenericDialog("Button_Label-DialogCancel")}</Button>
           <Button color="success" onClick={() => editChannel()}>{Localizations_GenericDialog("Button_Label-DialogSave")}</Button>
@@ -209,7 +209,7 @@ function Channel(props: ChannelProps) {
         </div>
         <Button variant="outlined" onClick={clearChannelCache}>{Localizations_Channel("Button_Label-ClearCache")}</Button>
       </GenericDialog>
-      <GenericDialog sharedProps={props.sharedProps} onClose={() => setChannelInfoDialogVisibility(false)} open={ChannelInfoDialogVisible} title={Localizations_Channel("Typography-ChannelInfoDialogTitle", { channelName: props.channelData.channelName })} buttons={
+      <GenericDialog onClose={() => setChannelInfoDialogVisibility(false)} open={ChannelInfoDialogVisible} title={Localizations_Channel("Typography-ChannelInfoDialogTitle", { channelName: props.channelData.channelName })} buttons={
         <>
           <Button onClick={() => setChannelInfoDialogVisibility(false)}>{Localizations_GenericDialog("Button_Label-DialogOK")}</Button>
         </>

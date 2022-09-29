@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 
 import { Send as SendIcon, UploadFile as UploadIcon } from "@mui/icons-material";
 
-import type { NCAPIComponent } from "DataTypes/Components";
+import type { NCAPIComponent } from "Types/UI/Components";
 import { ChangeEvent, useEffect, useState, ReactNode, useRef } from "react";
 
 export interface TextComboSubmitEvent {

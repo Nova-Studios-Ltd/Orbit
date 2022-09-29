@@ -1,6 +1,6 @@
 import { FromBase64String, FromUint8Array } from "NSLib/Base64";
 import { SettingsManager } from "NSLib/SettingsManager";
-import { RSAMemoryKeyPair } from "../NSLib/NCEncrytUtil";
+import { RSAMemoryKeyPair } from "../../NSLib/NCEncrytUtil";
 
 export default class UserData {
   Manager: SettingsManager;

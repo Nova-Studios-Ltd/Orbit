@@ -1,7 +1,7 @@
 import { Typography, useTheme } from "@mui/material";
 import useClassNames from "Hooks/useClassNames";
 
-import type { NCComponent } from "DataTypes/Components";
+import type { NCComponent } from "Types/UI/Components";
 
 export interface ToastProps extends NCComponent {
 

@@ -1,4 +1,4 @@
-import Dimensions from "../DataTypes/Dimensions";
+import Dimensions from "../Types/Dimensions";
 import customProtocolCheck from "custom-protocol-check";
 
 export async function GetImageDimensions(buffer: Uint8Array) : Promise<Dimensions | undefined> {

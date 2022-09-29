@@ -1,4 +1,4 @@
-import Dimensions from "DataTypes/Dimensions";
+import Dimensions from "Types/Dimensions";
 import { API_DOMAIN } from "vars";
 import MimeTypeParser, { FileType } from "./MimeTypeParser";
 

@@ -1,4 +1,4 @@
-import { IAESMemoryEncryptData } from "../NSLib/NCEncrytUtil";
+import { IAESMemoryEncryptData } from "NSLib/NCEncrytUtil";
 
 export default interface IUserLoginData {
     uuid: string,

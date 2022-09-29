@@ -1,4 +1,4 @@
-import { IMessageProps } from "Interfaces/IMessageProps";
+import { IMessageProps } from "Types/API/Interfaces/IMessageProps";
 import { GETMessageEditTimestamps, GETMessages } from "NSLib/APIEvents";
 import { NCChannelCache } from "NSLib/NCChannelCache";
 

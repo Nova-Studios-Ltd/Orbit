@@ -1,7 +1,7 @@
 import { useTheme, Typography } from "@mui/material";
 import useClassNames from "Hooks/useClassNames";
 
-import type { NCComponent } from "DataTypes/Components";
+import type { NCComponent } from "Types/UI/Components";
 import { Children, CSSProperties, ReactNode } from "react";
 
 export interface SectionProps extends NCComponent {

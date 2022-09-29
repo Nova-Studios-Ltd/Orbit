@@ -1,4 +1,4 @@
-import { IMessageProps } from "Interfaces/IMessageProps";
+import { IMessageProps } from "Types/API/Interfaces/IMessageProps";
 import { getStorage } from "SiffrStorage/sifrr.storage";
 import { GETMessage, GETMessageEditTimestamps, GETMessages } from "./APIEvents";
 import { Dictionary } from "./Dictionary";
