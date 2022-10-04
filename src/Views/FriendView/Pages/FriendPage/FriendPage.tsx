@@ -133,7 +133,7 @@ function FriendPage(props: FriendPageProps) {
                 <Typography variant="caption">{friend.status}</Typography>
               </div>
             </AvatarTextButton>
-            <GenericDialog onClose={() => setRemoveFriendDialogSelector("")} open={RemoveFriendDialogVisible} title={Localizations_FriendPage("Typography-RemoveFriendDialogTitle", { user: friend.friendData.username })} buttons={
+            <GenericDialog sharedProps={props.sharedProps}onClose={() => setRemoveFriendDialogSelector("")} open={RemoveFriendDialogVisible} title={Localizations_FriendPage("Typography-RemoveFriendDialogTitle", { user: friend.friendData.username })} buttons={
               <>
                 <Button onClick={(event) => { setRemoveFriendDialogSelector(""); event.stopPropagation(); }}>{Localizations_GenericDialog("Button_Label-DialogCancel")}</Button>
                 <Button color="error" onClick={(event) => { removeFriend(friend.friendData?.uuid); event.stopPropagation() }}>{Localizations_GenericDialog("Button_Label-DialogRemove")}</Button>
@@ -143,7 +143,7 @@ function FriendPage(props: FriendPageProps) {
                 <Typography variant="body1">{Localizations_FriendPage("Typography-RemoveFriendDialogBlurb", { user: friend.friendData.username })}</Typography>
               </div>
             </GenericDialog>
-            <GenericDialog onClose={() => setBlockFriendDialogSelector("")} open={BlockUnblockFriendDialogVisible} title={Localizations_FriendPage("Typography-BlockFriendDialogTitle", { user: friend.friendData.username })} buttons={
+            <GenericDialog sharedProps={props.sharedProps}onClose={() => setBlockFriendDialogSelector("")} open={BlockUnblockFriendDialogVisible} title={Localizations_FriendPage("Typography-BlockFriendDialogTitle", { user: friend.friendData.username })} buttons={
               <>
                 <Button onClick={(event) => { setBlockFriendDialogSelector(""); event.stopPropagation() }}>{Localizations_GenericDialog("Button_Label-DialogCancel")}</Button>
                 <Button color="error" onClick={(event) => { blockFriend(friend.friendData?.uuid); event.stopPropagation() }}>{Localizations_GenericDialog("Button_Label-DialogBlock")}</Button>
