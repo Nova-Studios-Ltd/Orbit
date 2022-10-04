@@ -10,7 +10,7 @@ export enum Routes {
   Friends = "/friends", // X
   BlockedUsersList = "/friends/blacklist",
   AddFriend = "/friends/add",
-  AddFriendGroup = "/friends/list?cgc",
+  AddFriendGroup = "/friends/list?creategroup",
   FriendsList = "/friends/list",
 
   Settings = "/settings", // X

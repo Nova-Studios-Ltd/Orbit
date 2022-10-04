@@ -41,8 +41,9 @@ function FriendPage(props: FriendPageProps) {
     const params = location.search.split("&");
 
     for (let i = 0; i < params.length; i++) {
+      const desiredRoute = String(Routes.AddFriendGroup).split("?");
       const param = params[i].toLowerCase();
-      if (param.match("cgc")) {
+      if (param.match(desiredRoute[desiredRoute.length - 1])) {
         return true;
       }
     }
