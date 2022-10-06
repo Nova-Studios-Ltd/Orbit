@@ -320,7 +320,7 @@ function App() {
               return [...prevState, message];
             });
             return true;
-          }, () => {autoScroll.current = true;}, true);
+          }, () => {autoScroll.current = true; scrollCanvas();}, true);
           cache.WriteSession(session.current);
           return;
         }
@@ -334,6 +334,7 @@ function App() {
             autoScroll.current = false;
             setMessages([...messages]);
             autoScroll.current = true;
+            scrollCanvas();
           }, true);
           return;
         }
@@ -342,6 +343,7 @@ function App() {
           autoScroll.current = false;
           setMessages([...messages]);
           autoScroll.current = true;
+          scrollCanvas();
         });
       }
       else {
@@ -349,6 +351,7 @@ function App() {
           autoScroll.current = false;
           setMessages([...messages]);
           autoScroll.current = true;
+          scrollCanvas();
           const cc = await NCChannelCache.ContainsCache(channel.table_Id);
           if (cc) (cc as NCChannelCache).WriteSession(session.current);
         }, true);
