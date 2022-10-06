@@ -14,6 +14,7 @@ import { NCChannelCache } from "./NCChannelCache";
 import { HasFlag } from "./NCFlags";
 import FailedUpload, { FailReason } from "Types/API/FailedUpload";
 import { PasswordPayloadKey, UpdatePasswordPayload } from "Types/API/UpdatePasswordPayload";
+import { RemoveEXIF } from "./EXIF";
 
 // User
 export async function GETUser(user_uuid: string) : Promise<IUserData | undefined> {
@@ -294,7 +295,7 @@ export function SENDMessage(channel_uuid: string, contents: string, rawAttachmen
               const imageSize = (await GetImageDimensions(attachment.contents)) || new Dimensions(0, 0);
 
               // Encrypted Attachment
-              const encAttachment = (await EncryptUint8Array(attachmentKey, attachment.contents));
+              const encAttachment = (await EncryptUint8Array(attachmentKey, RemoveEXIF(attachment.contents)));
 
               // Encrypted Filename
               const encFilename = await EncryptBase64(attachmentKey, Base64String.CreateBase64String(attachment.filename), new Base64String(encAttachment.iv));
