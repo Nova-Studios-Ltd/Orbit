@@ -22,6 +22,8 @@ export interface MessageMediaProps extends NCComponent {
   contentWidth?: number,
   contentHeight?: number,
   isExternal?: boolean,
+  keys?: { [key: string] : string; },
+  iv?: string,
   onLeftClick?: (event: React.MouseEvent<HTMLDivElement>, attachment: IAttachmentProps) => void,
   onRightClick?: (event: React.MouseEvent<HTMLDivElement>, attachment: IAttachmentProps) => void
 }
@@ -66,14 +68,14 @@ function MessageMedia(props: MessageMediaProps) {
       switch (parsedMimeType) {
         case FileType.Image:
           isPreviewableMediaType.current = true;
-          if (props.isExternal) return (<MessageImage contentUrl={props.contentUrl} fileName={props.fileName} mimeType={props.mimeType} fileSize={props.fileSize} contentWidth={props.contentWidth} contentHeight={props.contentHeight} />);
-          return (<MessageImage content={props.content} contentUrl={props.contentUrl} fileName={props.fileName} mimeType={props.mimeType} fileSize={props.fileSize} contentWidth={props.contentWidth} contentHeight={props.contentHeight} />);
+          if (props.isExternal) return (<MessageImage contentUrl={props.contentUrl} fileName={props.fileName} mimeType={props.mimeType} fileSize={props.fileSize} contentWidth={props.contentWidth} contentHeight={props.contentHeight} keys={props.keys} iv={props.iv} />);
+          return (<MessageImage content={props.content} contentUrl={props.contentUrl} fileName={props.fileName} mimeType={props.mimeType} fileSize={props.fileSize} contentWidth={props.contentWidth} contentHeight={props.contentHeight} keys={props.keys} iv={props.iv} />);
         case FileType.Video:
           isPreviewableMediaType.current = true;
-          if (props.isExternal) return (<MessageVideo contentUrl={props.contentUrl} fileName={props.fileName} mimeType={props.mimeType} fileSize={props.fileSize} contentWidth={props.contentWidth} contentHeight={props.contentHeight} />);
-          return (<MessageVideo content={props.content} contentUrl={props.contentUrl} fileName={props.fileName} mimeType={props.mimeType} fileSize={props.fileSize} contentWidth={props.contentWidth} contentHeight={props.contentHeight} />);
+          if (props.isExternal) return (<MessageVideo contentUrl={props.contentUrl} fileName={props.fileName} mimeType={props.mimeType} fileSize={props.fileSize} contentWidth={props.contentWidth} contentHeight={props.contentHeight} keys={props.keys} iv={props.iv} />);
+          return (<MessageVideo content={props.content} contentUrl={props.contentUrl} fileName={props.fileName} mimeType={props.mimeType} fileSize={props.fileSize} contentWidth={props.contentWidth} contentHeight={props.contentHeight} keys={props.keys} iv={props.iv} />);
         case FileType.Audio:
-          return (<MessageAudio content={props.content} contentUrl={props.contentUrl} fileName={props.fileName} mimeType={props.mimeType} fileSize={props.fileSize} contentWidth={props.contentWidth} contentHeight={props.contentHeight} />);
+          return (<MessageAudio content={props.content} contentUrl={props.contentUrl} fileName={props.fileName} mimeType={props.mimeType} fileSize={props.fileSize} contentWidth={props.contentWidth} contentHeight={props.contentHeight} keys={props.keys} iv={props.iv} />);
         default:
           return (<MessageFile fileName={props.fileName} fileSize={props.fileSize} content={props.content} url={props.contentUrl} />);
       }

@@ -15,6 +15,7 @@ import { HasFlag } from "./NCFlags";
 import FailedUpload, { FailReason } from "Types/API/FailedUpload";
 import { PasswordPayloadKey, UpdatePasswordPayload } from "Types/API/UpdatePasswordPayload";
 import { RemoveEXIF } from "./EXIF";
+import { API_DOMAIN } from "vars";
 
 // User
 export async function GETUser(user_uuid: string) : Promise<IUserData | undefined> {
@@ -157,12 +158,12 @@ async function DecryptMessage(message: IMessageProps) : Promise<IMessageProps> {
   if (!HasFlag("no-attach")) {
     for (let a = 0; a < message.attachments.length; a++) {
       const attachment = message.attachments[a];
-      const content = await GETFile(attachment.contentUrl, Manager.User.token);
+      //const content = await GETFile(attachment.contentUrl, Manager.User.token);
       const filename = attachment.filename;
       const att_key = await DecryptBase64WithPriv(Manager.User.keyPair.PrivateKey, new Base64String(attachment.keys[Manager.User.uuid]));
-      const decryptedContent = await DecryptUint8Array(att_key, new AESMemoryEncryptData(attachment.iv, content.payload as Uint8Array));
+      //const decryptedContent = await DecryptUint8Array(att_key, new AESMemoryEncryptData(attachment.iv, content.payload as Uint8Array));
       const decryptedFilename = await DecryptBase64(att_key, new AESMemoryEncryptData(attachment.iv, filename));
-      message.attachments[a].content = decryptedContent;
+      //message.attachments[a].content = decryptedContent;
       message.attachments[a].filename = decryptedFilename.String;
     }
   }
@@ -447,6 +448,18 @@ export function DELETEChannel(channel_uuid: string, callback: (deleted: boolean)
 }
 
 // Media
+
+export async function GETContentKeys(content_id: string, channel_uuid: string) : Promise<Dictionary<string> | undefined> {
+  const resp = await GET(`Channel/${channel_uuid}/${content_id}/Keys`, new SettingsManager().User.token);
+  if (resp.status === HTTPStatusCodes.OK) return new Dictionary<string>(resp.payload as Indexable<string>);
+  return undefined;
+}
+
+export async function GETContentURLKeys(content_url: string) : Promise<Dictionary<string> | undefined> {
+  const resp = await GET(`${content_url.replace(API_DOMAIN, "")}/Keys`, new SettingsManager().User.token);
+  if (resp.status === HTTPStatusCodes.OK) return new Dictionary<string>(resp.payload as Indexable<string>);
+  return undefined;
+}
 
 export function SETAvatar(user_uuid: string, file: Blob, callback: (set: boolean) => void) {
   POSTFile(`/User/${user_uuid}/Avatar`, file, "Unknown", new SettingsManager().User.token).then((resp: NCAPIResponse) => {
