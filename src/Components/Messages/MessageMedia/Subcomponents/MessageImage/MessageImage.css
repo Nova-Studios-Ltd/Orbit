@@ -1,5 +1,6 @@
 .MessageMediaImageContainer {
   border-radius: var(--global-border-radius);
+  background: inherit;
 }
 
 .MessageMediaImage {

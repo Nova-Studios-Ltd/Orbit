@@ -22,6 +22,7 @@ export interface TextComboDismissEvent {
 export interface TextComboProps extends NCAPIComponent {
   childrenLeft?: ReactNode,
   childrenRight?: ReactNode,
+  disabled?: boolean,
   value?: string,
   submitButton?: boolean,
   maxLength?: number,
@@ -98,7 +99,7 @@ function TextCombo(props: TextComboProps) {
         <div className="TextComboBefore">
           {props.childrenLeft}
         </div>
-        <input type={TextFieldType} className="TextComboField" ref={TextFieldRef} maxLength={MaxTextFieldCharLength} style={{ backgroundColor: "transparent", color: theme.palette.text.primary, fontSize: theme.typography.subtitle1.fontSize }} placeholder={props.placeholder} value={props.value} onFocus={() => inputFocusHandler(true)} onBlur={() => inputFocusHandler(false)} onChange={onChangeHandler} onKeyDown={onKeyDownHandler} onPaste={(event) => {paste(event);}} />
+        <input type={TextFieldType} className="TextComboField" ref={TextFieldRef} disabled={props.disabled} maxLength={MaxTextFieldCharLength} style={{ backgroundColor: "transparent", color: theme.palette.text.primary, fontSize: theme.typography.subtitle1.fontSize }} placeholder={props.placeholder} value={props.value} onFocus={() => inputFocusHandler(true)} onBlur={() => inputFocusHandler(false)} onChange={onChangeHandler} onKeyDown={onKeyDownHandler} onPaste={(event) => {paste(event)}} />
         <div className="TextComboAfter">
           {RemainingTextFieldCharLength < TextFieldCharLengthDisplayThreshold ? <Typography variant="caption" alignSelf="center">{RemainingTextFieldCharLength}</Typography> : null}
           {props.childrenRight}

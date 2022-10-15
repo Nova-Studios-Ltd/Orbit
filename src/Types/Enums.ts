@@ -21,6 +21,12 @@ export enum DebugMessageType {
   Success = "Scs"
 }
 
+export enum ChannelTypes {
+  DMChannel,
+  GroupChannel,
+  PrivateChannel
+}
+
 export enum SelectionType {
   Single,
   MultiSelect

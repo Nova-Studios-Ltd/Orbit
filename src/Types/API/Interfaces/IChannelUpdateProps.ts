@@ -1,10 +1,6 @@
 import type { NCFile } from "NSLib/ElectronAPI";
+import type { IRawChannelProps } from "./IRawChannelProps";
 
-export interface IChannelUpdateProps {
-    table_Id: string,
-    owner_UUID?: string,
-    isGroup?: boolean,
-    channelName: string,
+export interface IChannelUpdateProps extends Omit<IRawChannelProps, "channelIcon"> {
     channelIcon?: NCFile,
-    members?: string[],
 }

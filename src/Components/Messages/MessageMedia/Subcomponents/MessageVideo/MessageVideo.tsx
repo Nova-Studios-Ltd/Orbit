@@ -12,7 +12,7 @@ function MessageVideo({ className, contentUrl, fileName, fileSize, mimeType, con
   const classNames = useClassNames("MessageMediaVideoContainer", className);
 
   return (
-    <div className={classNames} style={{ backgroundColor: theme.palette.background.paper }}>
+    <div className={classNames}>
       <video className="MessageMediaVideo" onClick={(event) => event.preventDefault()} controls src={contentUrl} />
       <div className="MessageMediaVideoOverlay">
 

@@ -12,7 +12,7 @@ function MessageImage({ className, contentUrl, fileName, fileSize, mimeType, con
   const classNames = useClassNames("MessageMediaImageContainer", className);
 
   return (
-    <div className={classNames} style={{ backgroundColor: theme.palette.background.paper }}>
+    <div className={classNames}>
       <img className="MessageMediaImage" width={contentWidth} height={contentHeight} onClick={(event) => event.preventDefault()} src={contentUrl} alt={fileName} loading="lazy"/>
       <div className="MessageMediaImageOverlay">
 

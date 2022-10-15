@@ -1,5 +1,6 @@
 .MessageMediaAudioContainer {
   border-radius: var(--global-border-radius);
+  background: inherit;
 }
 
 .MessageMediaAudio {

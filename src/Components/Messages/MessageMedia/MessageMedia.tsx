@@ -112,7 +112,7 @@ function MessageMedia(props: MessageMediaProps) {
   }
 
   return (
-    <div className={classNames} style={{ backgroundColor: theme.palette.background.paper, ...dimensions }} onClick={onMediaClick} onContextMenu={onMediaClick}>
+    <div className={classNames} style={{ ...dimensions }} onClick={onMediaClick} onContextMenu={onMediaClick}>
       {mediaElement()}
     </div>
   )
