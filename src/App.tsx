@@ -14,7 +14,7 @@ import { NCUserCache } from "NSLib/NCUserCache";
 import { CREATEChannel, DELETEChannel, DELETEMessage, EDITMessage, GETChannel, GETOwnFriends, GETMessages, GETMessagesSingle, GETUserChannels, GETUserUUID, SENDMessage, GETUser, REQUESTFriend, ACCEPTFriend, REMOVEFriend, BLOCKFriend, UNBLOCKFriend, UPDATEChannelName, UPDATEChannelIcon, REMOVEChannelIcon, CREATEGroupChannel, REMOVEChannelMember } from "NSLib/APIEvents";
 
 import { OverrideConsoleLog, OverrideConsoleWarn, OverrideConsoleError, OverrideConsoleSuccess, DummyConsoleSuccess } from "./overrides";
-import { GetUrlFlag } from "NSLib/NCFlags";
+import { GetUrlFlag, HasFlag } from "NSLib/NCFlags";
 import { ThemeSelector } from "Theme";
 import { Localizations } from "Localization/Localizations";
 
@@ -310,22 +310,25 @@ function App() {
       if (isCache !== undefined && !await (isCache as NCChannelCache).IsEmpty()) {
         const cache = isCache as NCChannelCache;
         // Fully refresh cache, ignoring anything, pulling the newest messages
-        if (await cache.RequiresRefresh()) {
+        if (await cache.RequiresRefresh() || HasFlag("force-cache-rebuild")) {
           console.log("Rebuilding cache...");
-          //cache.ClearCache();
-          GETMessagesSingle(channel.table_Id, async (message: IMessageProps) => {
+          cache.ClearCache();
+
+          GETMessages(channel.table_Id, (messages: IMessageProps[]) => {
             autoScroll.current = false;
-            await cache.SetMessage(message.author_UUID, message);
-            setMessages(prevState => {
-              return [...prevState, message];
+            setMessages([...messages]);
+            messages.forEach(async message => {
+              await cache.SetMessage(message.message_Id, message);
             });
-            return true;
-          }, () => {autoScroll.current = true; scrollCanvas();}, true);
+            autoScroll.current = true;
+            scrollCanvas();
+          }, true);
+
           cache.WriteSession(session.current);
           return;
         }
 
-        if (!await cache.IsValidSession(session.current)) {
+        if (!await cache.IsValidSession(session.current) || HasFlag("ignore-cache-session")) {
           console.log("Checking and updating cache...");
           await NCChannelCache.CleanCache(channel.table_Id);
           await NCChannelCache.UpdateCache(channel.table_Id);
