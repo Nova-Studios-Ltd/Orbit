@@ -1,4 +1,4 @@
-import React, { createContext, memo, useEffect, useRef, useState } from "react";
+import React, { memo, useEffect, useRef, useState } from "react";
 import { useTheme } from "@mui/material";
 import useClassNames from "Hooks/useClassNames";
 import { ComputeCSSDims } from "NSLib/Util";
@@ -12,9 +12,14 @@ import MessageAudio from "./Subcomponents/MessageAudio/MessageAudio";
 
 import type { NCComponent } from "Types/UI/Components";
 import type { IAttachmentProps } from "Types/API/Interfaces/IAttachmentProps";
+import { Base64String } from "NSLib/Base64";
+import { GETFile } from "NSLib/NCAPI";
+import { DecryptBase64WithPriv, DecryptUint8Array } from "NSLib/NCEncryption";
+import { AESMemoryEncryptData } from "NSLib/NCEncrytUtil";
+import { HasFlag } from "NSLib/NCFlags";
+import { SettingsManager } from "NSLib/SettingsManager";
 
 export interface MessageMediaProps extends NCComponent {
-  content?: Uint8Array,
   contentUrl?: string,
   fileName?: string,
   fileSize?: number,
@@ -34,6 +39,29 @@ function MessageMedia(props: MessageMediaProps) {
   const isPreviewableMediaType = useRef(false);
   const [dimensions, setDimensions] = useState({});
 
+  const [contentDataUrl, setContentDataUrl] = useState("");
+  const contentData = useRef(new Uint8Array());
+
+  useEffect(() => {
+    (async () => {
+      // Url control variable
+      if (HasFlag("no-load-content")) return;
+
+      // First confirm contentUrl/keys/iv is not undefined
+      if (props.contentUrl === undefined || props.keys === undefined || props.iv === undefined) return;
+
+      // Now we grab the content itself and decrypt the data
+      const manager = new SettingsManager();
+      const content = await GETFile(props.contentUrl, manager.User.token);
+      const att_key = await DecryptBase64WithPriv(manager.User.keyPair.PrivateKey, new Base64String(props.keys[manager.User.uuid]));
+      const decryptedContent = await DecryptUint8Array(att_key, new AESMemoryEncryptData(props.iv, content.payload as Uint8Array));
+      contentData.current = decryptedContent;
+      setContentDataUrl(URL.createObjectURL(new Blob([decryptedContent])));
+    })();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+
   useEffect(() => {
     let _dimensions = {};
 
@@ -51,7 +79,7 @@ function MessageMedia(props: MessageMediaProps) {
     event.stopPropagation();
     event.preventDefault();
 
-    const attachmentProps = { contentUrl: props.contentUrl || "", content: props.content || new Uint8Array(), filename: props.fileName || "", mimeType: props.mimeType || "", size: props.fileSize || 0, contentWidth: props.contentWidth || 0, contentHeight: props.contentHeight || 0, keys: {}, iv: "", isExternal: props.isExternal || false };
+    const attachmentProps = { contentUrl: props.contentUrl || "", content: contentData.current || new Uint8Array(), filename: props.fileName || "", mimeType: props.mimeType || "", size: props.fileSize || 0, contentWidth: props.contentWidth || 0, contentHeight: props.contentHeight || 0, keys: {}, iv: "", isExternal: props.isExternal || false };
 
     if (event.button === 0) { // Left Click
       if (props.onLeftClick) props.onLeftClick(event, attachmentProps);
@@ -68,19 +96,19 @@ function MessageMedia(props: MessageMediaProps) {
       switch (parsedMimeType) {
         case FileType.Image:
           isPreviewableMediaType.current = true;
-          if (props.isExternal) return (<MessageImage contentUrl={props.contentUrl} fileName={props.fileName} mimeType={props.mimeType} fileSize={props.fileSize} contentWidth={props.contentWidth} contentHeight={props.contentHeight} keys={props.keys} iv={props.iv} />);
-          return (<MessageImage content={props.content} contentUrl={props.contentUrl} fileName={props.fileName} mimeType={props.mimeType} fileSize={props.fileSize} contentWidth={props.contentWidth} contentHeight={props.contentHeight} keys={props.keys} iv={props.iv} />);
+          if (props.isExternal) return (<MessageImage contentUrl={contentDataUrl} fileName={props.fileName} mimeType={props.mimeType} fileSize={props.fileSize} contentWidth={props.contentWidth} contentHeight={props.contentHeight} keys={props.keys} iv={props.iv} />);
+          return (<MessageImage contentUrl={contentDataUrl} fileName={props.fileName} mimeType={props.mimeType} fileSize={props.fileSize} contentWidth={props.contentWidth} contentHeight={props.contentHeight} keys={props.keys} iv={props.iv} />);
         case FileType.Video:
           isPreviewableMediaType.current = true;
-          if (props.isExternal) return (<MessageVideo contentUrl={props.contentUrl} fileName={props.fileName} mimeType={props.mimeType} fileSize={props.fileSize} contentWidth={props.contentWidth} contentHeight={props.contentHeight} keys={props.keys} iv={props.iv} />);
-          return (<MessageVideo content={props.content} contentUrl={props.contentUrl} fileName={props.fileName} mimeType={props.mimeType} fileSize={props.fileSize} contentWidth={props.contentWidth} contentHeight={props.contentHeight} keys={props.keys} iv={props.iv} />);
+          if (props.isExternal) return (<MessageVideo contentUrl={contentDataUrl} fileName={props.fileName} mimeType={props.mimeType} fileSize={props.fileSize} contentWidth={props.contentWidth} contentHeight={props.contentHeight} keys={props.keys} iv={props.iv} />);
+          return (<MessageVideo contentUrl={contentDataUrl} fileName={props.fileName} mimeType={props.mimeType} fileSize={props.fileSize} contentWidth={props.contentWidth} contentHeight={props.contentHeight} keys={props.keys} iv={props.iv} />);
         case FileType.Audio:
-          return (<MessageAudio content={props.content} contentUrl={props.contentUrl} fileName={props.fileName} mimeType={props.mimeType} fileSize={props.fileSize} contentWidth={props.contentWidth} contentHeight={props.contentHeight} keys={props.keys} iv={props.iv} />);
+          return (<MessageAudio contentUrl={contentDataUrl} fileName={props.fileName} mimeType={props.mimeType} fileSize={props.fileSize} contentWidth={props.contentWidth} contentHeight={props.contentHeight} keys={props.keys} iv={props.iv} />);
         default:
-          return (<MessageFile fileName={props.fileName} fileSize={props.fileSize} content={props.content} url={props.contentUrl} />);
+          return (<MessageFile fileName={props.fileName} fileSize={props.fileSize} url={contentDataUrl} content={contentData.current} />);
       }
     }
-    return (<MessageFile fileName={props.fileName} fileSize={props.fileSize} content={props.content} url={props.contentUrl} />);
+    return (<MessageFile fileName={props.fileName} fileSize={props.fileSize} url={contentDataUrl} content={contentData.current} />);
   }
 
   return (
