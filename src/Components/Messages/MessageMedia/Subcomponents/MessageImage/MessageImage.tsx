@@ -1,15 +1,10 @@
-import { Icon, Typography, IconButton, useTheme } from "@mui/material";
-import { DownloadUint8ArrayFile } from "NSLib/ElectronAPI";
-import { Download as DownloadIcon, InsertDriveFile as FileIcon } from '@mui/icons-material';
+import { useTheme } from "@mui/material";
 import useClassNames from "Hooks/useClassNames";
-import useContentRef from "Hooks/useContentRef";
 
-import type { NCComponent } from "Types/UI/Components";
 import type { MessageMediaProps } from "../../MessageMedia";
 import { useEffect, useState } from "react";
-import { GETContentKeys, GETContentURLKeys } from "NSLib/APIEvents";
 import { GETFile } from "NSLib/NCAPI";
-import { DecryptBase64, DecryptBase64WithPriv, DecryptUint8Array } from "NSLib/NCEncryption";
+import { DecryptBase64WithPriv, DecryptUint8Array } from "NSLib/NCEncryption";
 import { AESMemoryEncryptData } from "NSLib/NCEncrytUtil";
 import { Base64String } from "NSLib/Base64";
 import { SettingsManager } from "NSLib/SettingsManager";

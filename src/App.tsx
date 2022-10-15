@@ -296,7 +296,7 @@ function App() {
   const selectChannel = async (channel: IRawChannelProps) => {
     if (selectedChannel && channel.table_Id === selectedChannel.table_Id) return;
 
-    navigate(`${Routes.Chat}/${channel.table_Id}`);
+    navigate(`${Routes.Chat}/${channel.table_Id}${location.search}`);
 
     if (channel.channelName) setTitle(channel.channelName);
     if (widthConstrained) setChannelMenuVisibility(false);
