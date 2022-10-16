@@ -2,6 +2,10 @@
 
 }
 
+.ChannelAvatarTextButtonContainer {
+  height: 4rem;
+}
+
 .ChannelMembersListContainer {
   display: flex;
   flex-direction: column;

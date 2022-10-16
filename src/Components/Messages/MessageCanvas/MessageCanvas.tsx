@@ -35,7 +35,7 @@ function MessageCanvas(props: MessageCanvasProps) {
   const messagesArray = () => {
     if (props.messages && props.messages.length > 0) {
       return props.messages.map((message, index) => {
-        return (<Message key={message.message_Id} content={message.content} attachments={message.attachments} id={message.message_Id} authorID={message.author_UUID} avatarURL={message.avatar} timestamp={message.timestamp} editedTimestamp={message.editedTimestamp} isEdited={message.edited} onMessageEdit={props.onMessageEdit} onMessageDelete={props.onMessageDelete} />)
+        return (<Message key={message.message_Id} sharedProps={props.sharedProps} content={message.content} attachments={message.attachments} id={message.message_Id} authorID={message.author_UUID} avatarURL={message.avatar} timestamp={message.timestamp} editedTimestamp={message.editedTimestamp} isEdited={message.edited} onMessageEdit={props.onMessageEdit} onMessageDelete={props.onMessageDelete} />)
       }).reverse();
     }
 

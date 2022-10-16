@@ -1,6 +1,6 @@
 import { Avatar, ButtonBase, IconButton, Typography, useTheme } from "@mui/material";
 import { MoreHoriz as EllipsisIcon } from "@mui/icons-material";
-import React, { useState, ReactNode } from "react";
+import React, { useState, ReactNode, useRef } from "react";
 
 import type { NCComponent } from "Types/UI/Components";
 import useClassNames from "Hooks/useClassNames";
@@ -33,6 +33,8 @@ function AvatarTextButton(props: AvatarTextButtonProps) {
   const [isHovering, setHoveringState] = useState(false);
   const [isDragZoneTopHovering, setDragZoneTopHoveringState] = useState(false);
   const [isDragZoneBottomHovering, setDragZoneBottomHoveringState] = useState(false);
+
+  const AvatarTextButtonVeryRightRef = useRef() as React.MutableRefObject<HTMLDivElement>;
 
   const backgroundColor = (() => {
     if (props.selected) {
@@ -74,18 +76,18 @@ function AvatarTextButton(props: AvatarTextButtonProps) {
         <div className="AvatarTextButtonLeft">
           <Avatar className="AvatarTextButtonIcon" src={!props.iconObj ? props.iconSrc : ""}>{props.iconObj}</Avatar>
         </div>
-        <div className="AvatarTextButtonRight">
-          <Typography variant="h6">{props.children}</Typography>
+        <div className="AvatarTextButtonRight" style={{ marginRight: AvatarTextButtonVeryRightRef.current !== undefined ? AvatarTextButtonVeryRightRef.current.offsetWidth : 0 }}>
+          <Typography variant="h6" noWrap textOverflow="ellipsis">{props.children}</Typography>
         </div>
       </ButtonBase>
-        <div className="AvatarTextButtonVeryRight">
-          {props.childrenAfter}
-          {props.showEllipsis || (isTouchCapable && props.showEllipsisConditional) ? (
-            <IconButton className="AvatarTextButtonEllipsis" onClick={onEllipsisClick} onMouseEnter={() => onMouseHover(true)} onMouseLeave={() => onMouseHover(false)}>
-              <EllipsisIcon />
-            </IconButton>
-          ) : null}
-        </div>
+      <div className="AvatarTextButtonVeryRight" ref={AvatarTextButtonVeryRightRef}>
+        {props.childrenAfter}
+        {props.showEllipsis || (isTouchCapable && props.showEllipsisConditional) ? (
+          <IconButton className="AvatarTextButtonEllipsis" onClick={onEllipsisClick} onMouseEnter={() => onMouseHover(true)} onMouseLeave={() => onMouseHover(false)}>
+            <EllipsisIcon />
+          </IconButton>
+        ) : null}
+      </div>
       {props.draggable ? <span className="AvatarTextButtonDragZone AvatarTextButtonDragZoneBottom" style={{ background: isDragZoneBottomHovering ? theme.palette.primary.main : "none" }} onDrop={(event) => { onDrop(event); setDragZoneBottomHoveringState(false); }} onDragOver={(event) => { setDragZoneBottomHoveringState(true); event.preventDefault(); }} onDragLeave={() => setDragZoneBottomHoveringState(false)}/> : null}
     </div>
   );

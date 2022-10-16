@@ -46,8 +46,8 @@ function ChatPage(props: ChatPageProps) {
 
   return (
     <>
-      <MessageCanvas className="MainViewContainerItem" canvasRef={props.canvasRef} messages={props.messages} onMessageEdit={props.onMessageEdit} onMessageDelete={props.onMessageDelete} onLoadPriorMessages={props.onLoadPriorMessages} />
-      <MessageInput className="MainViewContainerItem" attachments={props.attachments} onFileRemove={props.onFileRemove} onFileUpload={props.onFileUpload} onSend={props.onMessageInputSubmit} />
+      <MessageCanvas className="MainViewContainerItem" sharedProps={props.sharedProps} canvasRef={props.canvasRef} messages={props.messages} onMessageEdit={props.onMessageEdit} onMessageDelete={props.onMessageDelete} onLoadPriorMessages={props.onLoadPriorMessages} />
+      <MessageInput className="MainViewContainerItem" sharedProps={props.sharedProps} attachments={props.attachments} onFileRemove={props.onFileRemove} onFileUpload={props.onFileUpload} onSend={props.onMessageInputSubmit} />
     </>
   );
 }
