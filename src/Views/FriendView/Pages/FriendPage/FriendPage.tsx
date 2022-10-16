@@ -86,8 +86,8 @@ function FriendPage(props: FriendPageProps) {
     setBlockFriendDialogSelector("");
   }
 
-  const friendTicked = (e: React.ChangeEvent<HTMLInputElement>, friend: Friend) => {
-    if (e.target.checked) {
+  const friendTicked = (checked: boolean, friend: Friend) => {
+    if (checked) {
       if (friendIsInRecipientsList(friend)) return;
 
       setGroupChannelRecipientsList([...GroupChannelRecipientsList, friend]);
@@ -121,13 +121,22 @@ function FriendPage(props: FriendPageProps) {
           setFriendContextMenuVisibility(true);
         }
 
+        const handleLeftClick = () => {
+          if (createGroupChannelMode) {
+            friendTicked(!friendIsInRecipientsList(friend), friend);
+            return;
+          }
+
+          acceptFriendRequest(friend)
+        }
+
         // TODO: Localize friend.status
         return (
           <div key={friend.friendData.uuid} className="FriendButtonContainer">
             {createGroupChannelMode ? <div className="FriendButtonSelectorContainer">
-              <Checkbox onChange={(e) => friendTicked(e, friend)} />
+              <Checkbox checked={friendIsInRecipientsList(friend)} onChange={(e) => friendTicked(e.target.checked, friend)} />
             </div> : null}
-            <AvatarTextButton className="FriendButton" showEllipsis selected={friendIsInRecipientsList(friend)} selectionType={SelectionType.MultiSelect} iconSrc={friend.friendData.avatar} onLeftClick={() => acceptFriendRequest(friend)} onRightClick={friendRightClickHandler}>
+            <AvatarTextButton className="FriendButton" showEllipsis selected={friendIsInRecipientsList(friend)} selectionType={SelectionType.MultiSelect} iconSrc={friend.friendData.avatar} onLeftClick={() => handleLeftClick()} onRightClick={friendRightClickHandler}>
               <div className="FriendButtonContent">
                 <Typography>{friend.friendData?.username}#{friend.friendData?.discriminator}</Typography>
                 <Typography variant="caption" color="gray">{friend.friendData?.uuid}</Typography>
