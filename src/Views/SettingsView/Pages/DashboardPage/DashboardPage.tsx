@@ -4,6 +4,7 @@ import useClassNames from "Hooks/useClassNames";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { SettingsManager } from "NSLib/SettingsManager";
+import { NCChannelCache } from "NSLib/NCChannelCache";
 import { APP_VERSION, DEBUG } from "vars";
 
 import PageContainer from "Components/Containers/PageContainer/PageContainer";
@@ -151,6 +152,7 @@ function DashboardPage(props: DashboardPageProps) {
       <Section title={Localizations_DashboardPage("Section_Title-Advanced")}>
         <div className="SectionButtonContainer">
           <Button className="SectionButton" id="CopyTokenButton" variant="outlined" color="warning" onClick={() => WriteToClipboard(settings.User.token)}>{Localizations_DashboardPage("Button_Label-CopyToken")}</Button>
+          <Button className="SectionButton" id="ClearCacheButton" variant="outlined" color="warning" onClick={() => NCChannelCache.DeleteCaches()}>{Localizations_DashboardPage("Button_Label-ClearCache")}</Button>
           <Button className="SectionButton" id="DeleteAccountButton" variant="outlined" color="error" onClick={() => setDeleteAccountDialogVisibility(true)}>{Localizations_DashboardPage("Button_Label-DeleteAccount")}</Button>
           <Button className="SectionButton" id="OpenConsoleButton" variant="outlined" color="primary" disabled={!DEBUG} onClick={() => props.sharedProps && props.sharedProps.openConsole ? props.sharedProps.openConsole() : null}>{Localizations_DashboardPage("Button_Label-OpenConsole")}</Button>
         </div>

@@ -1,5 +1,6 @@
 {
   "Button_Label-CopyToken": "Copy Token to Clipboard",
+  "Button_Label-ClearCache": "Clear All Caches",
   "Button_Label-DeleteAccount": "Delete Account",
   "Button_Label-EditUsername": "Change Username",
   "Button_Label-EditPassword": "Change Password",
