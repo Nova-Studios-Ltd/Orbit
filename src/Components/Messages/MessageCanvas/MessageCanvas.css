@@ -13,6 +13,8 @@
   display: flex;
   flex-direction: column;
 
+  margin-right: var(--global-margin);
+
   height: 100%;
 }
 
