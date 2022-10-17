@@ -99,7 +99,7 @@ function TextCombo(props: TextComboProps) {
         return theme.palette.success.main;
       case TextComboStatus.Neutral:
       default:
-        return "primary";
+        return (TextFieldFocused ? theme.palette.action.active : theme.palette.divider);
     }
   }
 
@@ -108,7 +108,7 @@ function TextCombo(props: TextComboProps) {
       <div className="TextComboTop">
         {props.status !== TextComboStatus.Neutral && props.statusText ? <Typography className="TextComboFieldStatusText" color={statusColor()} variant="caption">{props.statusText}</Typography> : null}
       </div>
-      <div className="TextComboBottom" style={{ backgroundColor: theme.customPalette.TextComboBackground, borderColor: props.status !== TextComboStatus.Neutral ? statusColor() : (TextFieldFocused ? theme.palette.action.active : theme.palette.divider) }}>
+      <div className="TextComboBottom" style={{ backgroundColor: theme.customPalette.TextComboBackground, borderColor: statusColor() }}>
         <div className="TextComboBefore">
           {props.childrenLeft}
         </div>
