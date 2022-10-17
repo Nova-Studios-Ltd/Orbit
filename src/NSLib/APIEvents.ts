@@ -399,7 +399,7 @@ export function UPDATEChannelName(channel_uuid: string, newName: string, callbac
 }
 
 export function UPDATEChannelIcon(channel_uuid: string, file: Blob, callback: (updated: boolean) => void) {
-    POSTFile(`/Channel/${channel_uuid}/Icon`, file, `Icon_${channel_uuid}`, new SettingsManager().User.token).then((resp: NCAPIResponse) => {
+    POSTFile(`/Channel/${channel_uuid}/Icon`, file, `Icon_${channel_uuid}`, undefined, undefined, new SettingsManager().User.token).then((resp: NCAPIResponse) => {
         if (resp.status === HTTPStatusCodes.OK) callback(true);
         else callback(false);
     });
