@@ -25,6 +25,8 @@
   flex-direction: column;
   width: 100%;
 
+  overflow-y: auto;
+
   gap: var(--global-margin);
 }
 
