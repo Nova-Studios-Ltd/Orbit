@@ -1,6 +1,6 @@
 import { useTheme } from "@mui/material";
 import moment, { duration } from "moment";
-import { LegacyRef, useRef } from "react";
+import { useRef } from "react";
 
 export interface TimeBarProps {
   duration: number,
