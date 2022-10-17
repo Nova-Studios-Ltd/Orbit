@@ -6,6 +6,7 @@ import { Send as SendIcon, UploadFile as UploadIcon } from "@mui/icons-material"
 
 import type { NCAPIComponent } from "Types/UI/Components";
 import { ChangeEvent, useEffect, useState, ReactNode, useRef } from "react";
+import { TextComboStates as TextComboStatus } from "Types/Enums";
 
 export interface TextComboSubmitEvent {
   value?: string,
@@ -30,8 +31,8 @@ export interface TextComboProps extends NCAPIComponent {
   autoFocus?: boolean,
   fullWidth?: boolean,
   isPassword?: boolean,
-  error?: boolean,
-  errorText?: string,
+  status?: TextComboStatus,
+  statusText?: string,
   onChange?: (event: TextComboChangeEvent) => void,
   onDismiss?: (event: TextComboDismissEvent) => void,
   onSubmit?: (event: TextComboSubmitEvent) => void,
@@ -90,12 +91,24 @@ function TextCombo(props: TextComboProps) {
     setTextFieldFocusedState(isFocused);
   };
 
+  const statusColor = () => {
+    switch (props.status) {
+      case TextComboStatus.Error:
+        return theme.palette.error.main;
+      case TextComboStatus.Success:
+        return theme.palette.success.main;
+      case TextComboStatus.Neutral:
+      default:
+        return "primary";
+    }
+  }
+
   return (
     <div className={classNames}>
       <div className="TextComboTop">
-        {props.error && props.errorText ? <Typography className="TextComboFieldErrorText" color="error" variant="caption">{props.errorText}</Typography> : null}
+        {props.status !== TextComboStatus.Neutral && props.statusText ? <Typography className="TextComboFieldStatusText" color={statusColor()} variant="caption">{props.statusText}</Typography> : null}
       </div>
-      <div className="TextComboBottom" style={{ backgroundColor: theme.customPalette.TextComboBackground, borderColor: props.error ? theme.palette.error.main : (TextFieldFocused ? theme.palette.action.active : theme.palette.divider) }}>
+      <div className="TextComboBottom" style={{ backgroundColor: theme.customPalette.TextComboBackground, borderColor: props.status !== TextComboStatus.Neutral ? statusColor() : (TextFieldFocused ? theme.palette.action.active : theme.palette.divider) }}>
         <div className="TextComboBefore">
           {props.childrenLeft}
         </div>

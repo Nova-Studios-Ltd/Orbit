@@ -42,7 +42,7 @@ import ChannelList_EN_US from "./Components/Channels/ChannelList.json";
 import GenericDialog_EN_US from "./Components/Dialog/GenericDialog.json";
 
 import MessageInput_EN_US from "./Components/Input/MessageInput.json";
-import TextCombo_EN_US from "./Components/Input/TextCombo.json";
+import TextField_EN_US from "./Components/Input/TextCombo.json";
 
 import ContextMenuItem_EN_US from "./Components/Menus/ContextMenuItem.json";
 
@@ -96,7 +96,7 @@ export const Localizations_EN_US = {
   GenericDialog: GenericDialog_EN_US,
 
   MessageInput: MessageInput_EN_US,
-  TextCombo: TextCombo_EN_US,
+  TextCombo: TextField_EN_US,
 
   ContextMenuItem: ContextMenuItem_EN_US,
 

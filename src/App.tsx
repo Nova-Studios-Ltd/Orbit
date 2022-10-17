@@ -410,9 +410,11 @@ function App() {
     if (isValidUsername(recipient)) {
       const ud = recipient.split("#");
       const user = await GETUserUUID(ud[0], ud[1]);
-      if (user === undefined) return;
+      if (user === undefined) return 1;
       REQUESTFriend(user);
+      return 0;
     }
+    return 2;
   };
 
   const onBlockFriend = (uuid: string) => {

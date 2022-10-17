@@ -18,6 +18,7 @@ import React, { useState } from "react";
 import TextCombo from "Components/Input/TextCombo/TextCombo";
 import GenericDialog from "Components/Dialogs/GenericDialog/GenericDialog";
 import { Routes } from "Types/UI/Routes";
+import { TextComboStates } from "Types/Enums";
 
 interface DashboardPageProps extends Page {
   avatarNonce?: string,
@@ -184,7 +185,7 @@ function DashboardPage(props: DashboardPageProps) {
         </>
       }>
         <TextCombo fullWidth isPassword submitButton={false} placeholder={Localizations_DashboardPage("TextField_Placeholder-ChangePasswordPrompt")} value={NewPasswordValue} onChange={(event) => event.value !== undefined ? setNewPasswordValue(event.value) : null} onSubmit={() => changePassword()} />
-        <TextCombo fullWidth isPassword submitButton={false} placeholder={Localizations_DashboardPage("TextField_Placeholder-ConfirmPasswordPrompt")} error={!passwordsMatch} errorText={Localizations_DashboardPage("TextField_ErrorText-NonmatchingPassword")} value={ConfirmPasswordValue} onChange={(event) => event.value !== undefined ? setConfirmPasswordValue(event.value) : null} onSubmit={() => changePassword()} />
+        <TextCombo fullWidth isPassword submitButton={false} placeholder={Localizations_DashboardPage("TextField_Placeholder-ConfirmPasswordPrompt")} status={(!passwordsMatch) ? TextComboStates.Error : TextComboStates.Neutral} statusText={Localizations_DashboardPage("TextField_StatusText-NonmatchingPassword")} value={ConfirmPasswordValue} onChange={(event) => event.value !== undefined ? setConfirmPasswordValue(event.value) : null} onSubmit={() => changePassword()} />
       </GenericDialog>
       <GenericDialog sharedProps={props.sharedProps}onClose={() => setDeleteAccountDialogVisibility(false)} open={DeleteAccountDialogVisible} title={Localizations_DashboardPage("Typography-DeleteAccountDialogTitle")} buttons={
         <>

@@ -24,7 +24,6 @@
   margin-bottom: var(--global-margin);
   border: var(--global-border-thickness) solid;
   border-radius: var(--global-border-radius);
-  margin-top: var(--global-margin);
 
   height: 3.5rem;
 
@@ -45,7 +44,7 @@
   justify-content: center;
 }
 
-.TextComboFieldErrorText {
+.TextComboFieldStatusText {
 
 }
 

@@ -6,6 +6,7 @@
 .AddFriendContainer {
   display: flex;
   flex-direction: column;
+  margin-top: var(--global-margin);
 }
 
 .AddFriendButton {

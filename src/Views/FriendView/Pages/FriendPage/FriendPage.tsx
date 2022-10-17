@@ -136,7 +136,7 @@ function FriendPage(props: FriendPageProps) {
             {createGroupChannelMode ? <div className="FriendButtonSelectorContainer">
               <Checkbox checked={friendIsInRecipientsList(friend)} onChange={(e) => friendTicked(e.target.checked, friend)} />
             </div> : null}
-            <AvatarTextButton className="FriendButton" showEllipsis selected={friendIsInRecipientsList(friend)} selectionType={SelectionType.MultiSelect} iconSrc={friend.friendData.avatar} onLeftClick={() => handleLeftClick()} onRightClick={friendRightClickHandler}>
+            <AvatarTextButton fullWidth showEllipsis selected={friendIsInRecipientsList(friend)} selectionType={SelectionType.MultiSelect} iconSrc={friend.friendData.avatar} onLeftClick={() => handleLeftClick()} onRightClick={friendRightClickHandler}>
               <div className="FriendButtonContent">
                 <Typography>{friend.friendData?.username}#{friend.friendData?.discriminator}</Typography>
                 <Typography variant="caption" color="gray">{friend.friendData?.uuid}</Typography>

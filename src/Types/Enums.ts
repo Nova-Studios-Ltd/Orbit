@@ -31,3 +31,9 @@ export enum SelectionType {
   Single,
   MultiSelect
 }
+
+export enum TextComboStates {
+  Neutral,
+  Error,
+  Success
+}

@@ -4,10 +4,6 @@
   gap: var(--global-margin);
 }
 
-.FriendButton {
-  width: 100%;
-}
-
 .FriendButtonContainer {
   display: flex;
   flex-direction: row;
@@ -22,6 +18,14 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+}
+
+.FriendsContainer {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+
+  gap: var(--global-margin);
 }
 
 @media only screen and (max-width: 600px) {

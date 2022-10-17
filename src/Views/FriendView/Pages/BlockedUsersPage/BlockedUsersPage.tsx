@@ -62,7 +62,7 @@ function BlockedUsersPage(props: BlockedUsersPageProps) {
 
           return (
             <div key={friend.friendData.uuid} className="FriendButtonContainer">
-              <AvatarTextButton onRightClick={friendRightClickHandler} showEllipsis iconSrc={friend.friendData.avatar}>
+              <AvatarTextButton onRightClick={friendRightClickHandler} showEllipsis fullWidth iconSrc={friend.friendData.avatar}>
                 <div className="FriendButtonContent">
                   <Typography>{friend.friendData?.username}#{friend.friendData?.discriminator}</Typography>
                   <Typography variant="caption" color="gray">{friend.friendData?.uuid}</Typography>
@@ -101,7 +101,7 @@ function BlockedUsersPage(props: BlockedUsersPageProps) {
 
   return (
     <PageContainer className={classNames} adaptive={false}>
-      <Button onClick={() => { if (props.onReloadList) props.onReloadList() }}>{Localizations_BlockedUsersPage("Button_Label-ReloadBlockedUsersList")}</Button>
+      <Button variant="outlined" style={{ marginLeft: "auto" }} onClick={() => { if (props.onReloadList) props.onReloadList() }}>{Localizations_BlockedUsersPage("Button_Label-ReloadBlockedUsersList")}</Button>
       <div className="FriendsContainer">
         {blockedUserElements && blockedUserElements.length > 0 ? blockedUserElements : NoBlockedUsersHint}
       </div>
