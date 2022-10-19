@@ -33,7 +33,7 @@ import LoginPage from "Views/AuthView/Pages/LoginPage/LoginPage";
 import RegisterPage from "Views/AuthView/Pages/RegisterPage/RegisterPage";
 
 import { Routes } from "Types/UI/Routes";
-import { DebugMessageType } from "Types/Enums";
+import { ChannelTypes, DebugMessageType } from "Types/Enums";
 import type { ReactNode } from "react";
 import type { HelpPopupProps, SharedProps } from "Types/UI/Components";
 import type { DebugMessage } from "Types/General";
@@ -169,9 +169,12 @@ function App() {
 
   // MainView
 
-  const channelContainsUUID = (uuid: string) => {
+  const channelContainsUUID = (uuid: string, noGroup?: boolean) => {
     for (let i = 0; i < channels.length; i++) {
       const channel = channels[i];
+
+      if (noGroup && (channel.channelType !== ChannelTypes.DMChannel)) continue;
+
       const containsUUID = (() => {
         if (channel.members) {
           for (let j = 0; j < channel.members.length; j++) {
@@ -366,7 +369,7 @@ function App() {
     if (friend.friendData && friend.friendData.uuid) {
       switch (friend.status?.toLowerCase()) {
         case "accepted":
-          const existingChannel = channelContainsUUID(friend.friendData.uuid);
+          const existingChannel = channelContainsUUID(friend.friendData.uuid, true);
           if (existingChannel) {
             selectChannel(existingChannel);
           }
