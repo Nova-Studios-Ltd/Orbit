@@ -17,7 +17,7 @@ function MessageAudio(props: MessageAudioProps) {
 
   return (
     <div className={classNames}>
-      {!loaded ?
+      {loaded ?
         <>
           <audio className="MessageMediaAudio" controls src={props.contentUrl} />
           <TimeBar duration={10} curTime={2} onTimeUpdate={() => {}}></TimeBar>
