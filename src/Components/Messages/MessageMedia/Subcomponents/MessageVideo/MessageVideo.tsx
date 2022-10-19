@@ -1,22 +1,26 @@
 import { useTheme } from "@mui/material";
 import useClassNames from "Hooks/useClassNames";
 
+import MessageMediaSkeleton from "Components/Skeletons/MessageMediaSkeleton/MessageMediaSkeleton";
+
 import type { MessageMediaProps } from "../../MessageMedia";
 
 export interface MessageVideoProps extends MessageMediaProps {
 
 }
 
-function MessageVideo({ className, contentUrl, fileName, fileSize, mimeType, contentWidth, contentHeight, keys, iv }: MessageVideoProps) {
+function MessageVideo(props: MessageVideoProps) {
   const theme = useTheme();
-  const classNames = useClassNames("MessageMediaVideoContainer", className);
+  const classNames = useClassNames("MessageMediaVideoContainer", props.className);
+  const loaded = props.contentUrl !== undefined && props.contentUrl.length > 0;
 
   return (
     <div className={classNames}>
-      <video className="MessageMediaVideo" onClick={(event) => event.preventDefault()} controls src={contentUrl} />
-      <div className="MessageMediaVideoOverlay">
-
-      </div>
+      {!loaded ?
+        <video className="MessageMediaVideo" onClick={(event) => event.preventDefault()} controls src={props.contentUrl} />
+        :
+        <MessageMediaSkeleton iconVariant={props.mimeType} skeletonVariant="rounded" />
+      }
     </div>
   )
 }

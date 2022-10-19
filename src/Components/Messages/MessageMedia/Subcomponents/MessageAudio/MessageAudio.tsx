@@ -2,23 +2,29 @@ import { useTheme } from "@mui/material";
 import TimeBar from "Components/MediaPlayer/TimeBar/TimeBar";
 import useClassNames from "Hooks/useClassNames";
 
+import MessageMediaSkeleton from "Components/Skeletons/MessageMediaSkeleton/MessageMediaSkeleton";
+
 import type { MessageMediaProps } from "../../MessageMedia";
 
 export interface MessageAudioProps extends MessageMediaProps {
 
 }
 
-function MessageAudio({ className, contentUrl, fileName, fileSize, mimeType, contentWidth, contentHeight, keys, iv }: MessageAudioProps) {
+function MessageAudio(props: MessageAudioProps) {
   const theme = useTheme();
-  const classNames = useClassNames("MessageMediaAudioContainer", className);
+  const classNames = useClassNames("MessageMediaAudioContainer", props.className);
+  const loaded = props.contentUrl !== undefined && props.contentUrl.length > 0;
 
   return (
     <div className={classNames}>
-      <audio className="MessageMediaAudio" controls src={contentUrl} />
-      <TimeBar duration={10} curTime={2} onTimeUpdate={() => {}}></TimeBar>
-      <div className="MessageMediaAudioOverlay">
-
-      </div>
+      {!loaded ?
+        <>
+          <audio className="MessageMediaAudio" controls src={props.contentUrl} />
+          <TimeBar duration={10} curTime={2} onTimeUpdate={() => {}}></TimeBar>
+        </>
+        :
+        <MessageMediaSkeleton iconVariant={props.mimeType} skeletonVariant="rounded" />
+      }
     </div>
   )
 }

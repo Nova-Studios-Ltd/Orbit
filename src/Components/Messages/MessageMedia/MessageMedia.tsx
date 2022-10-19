@@ -23,7 +23,8 @@ export interface MessageMediaProps extends NCComponent {
   contentUrl?: string,
   fileName?: string,
   fileSize?: number,
-  mimeType?: string,
+  rawMimeType?: string,
+  mimeType?: FileType,
   contentWidth?: number,
   contentHeight?: number,
   isExternal?: boolean,
@@ -79,7 +80,7 @@ function MessageMedia(props: MessageMediaProps) {
     event.stopPropagation();
     event.preventDefault();
 
-    const attachmentProps = { contentUrl: props.contentUrl || "", content: contentData.current || new Uint8Array(), filename: props.fileName || "", mimeType: props.mimeType || "", size: props.fileSize || 0, contentWidth: props.contentWidth || 0, contentHeight: props.contentHeight || 0, keys: {}, iv: "", isExternal: props.isExternal || false };
+    const attachmentProps = { contentUrl: props.contentUrl || "", content: contentData.current || new Uint8Array(), filename: props.fileName || "", mimeType: props.rawMimeType || "", size: props.fileSize || 0, contentWidth: props.contentWidth || 0, contentHeight: props.contentHeight || 0, keys: {}, iv: "", isExternal: props.isExternal || false };
 
     if (event.button === 0) { // Left Click
       if (props.onLeftClick) props.onLeftClick(event, attachmentProps);
@@ -91,19 +92,19 @@ function MessageMedia(props: MessageMediaProps) {
   }
 
   const mediaElement = () => {
-    if (props.mimeType && props.mimeType.length > 0) {
-      const parsedMimeType = new MimeTypeParser(props.mimeType).getGeneralizedFileType();
+    if (props.rawMimeType && props.rawMimeType.length > 0) {
+      const parsedMimeType = new MimeTypeParser(props.rawMimeType).getGeneralizedFileType();
       switch (parsedMimeType) {
         case FileType.Image:
           isPreviewableMediaType.current = true;
-          if (props.isExternal) return (<MessageImage contentUrl={contentDataUrl} fileName={props.fileName} mimeType={props.mimeType} fileSize={props.fileSize} contentWidth={props.contentWidth} contentHeight={props.contentHeight} keys={props.keys} iv={props.iv} />);
-          return (<MessageImage contentUrl={contentDataUrl} fileName={props.fileName} mimeType={props.mimeType} fileSize={props.fileSize} contentWidth={props.contentWidth} contentHeight={props.contentHeight} keys={props.keys} iv={props.iv} />);
+          if (props.isExternal) return (<MessageImage contentUrl={contentDataUrl} fileName={props.fileName} rawMimeType={props.rawMimeType} mimeType={parsedMimeType} fileSize={props.fileSize} contentWidth={props.contentWidth} contentHeight={props.contentHeight} keys={props.keys} iv={props.iv} />);
+          return (<MessageImage contentUrl={contentDataUrl} fileName={props.fileName} rawMimeType={props.rawMimeType} mimeType={parsedMimeType} fileSize={props.fileSize} contentWidth={props.contentWidth} contentHeight={props.contentHeight} keys={props.keys} iv={props.iv} />);
         case FileType.Video:
           isPreviewableMediaType.current = true;
-          if (props.isExternal) return (<MessageVideo contentUrl={contentDataUrl} fileName={props.fileName} mimeType={props.mimeType} fileSize={props.fileSize} contentWidth={props.contentWidth} contentHeight={props.contentHeight} keys={props.keys} iv={props.iv} />);
-          return (<MessageVideo contentUrl={contentDataUrl} fileName={props.fileName} mimeType={props.mimeType} fileSize={props.fileSize} contentWidth={props.contentWidth} contentHeight={props.contentHeight} keys={props.keys} iv={props.iv} />);
+          if (props.isExternal) return (<MessageVideo contentUrl={contentDataUrl} fileName={props.fileName} rawMimeType={props.rawMimeType} mimeType={parsedMimeType} fileSize={props.fileSize} contentWidth={props.contentWidth} contentHeight={props.contentHeight} keys={props.keys} iv={props.iv} />);
+          return (<MessageVideo contentUrl={contentDataUrl} fileName={props.fileName} rawMimeType={props.rawMimeType} mimeType={parsedMimeType} fileSize={props.fileSize} contentWidth={props.contentWidth} contentHeight={props.contentHeight} keys={props.keys} iv={props.iv} />);
         case FileType.Audio:
-          return (<MessageAudio contentUrl={contentDataUrl} fileName={props.fileName} mimeType={props.mimeType} fileSize={props.fileSize} contentWidth={props.contentWidth} contentHeight={props.contentHeight} keys={props.keys} iv={props.iv} />);
+          return (<MessageAudio contentUrl={contentDataUrl} fileName={props.fileName} rawMimeType={props.rawMimeType} mimeType={parsedMimeType} fileSize={props.fileSize} contentWidth={props.contentWidth} contentHeight={props.contentHeight} keys={props.keys} iv={props.iv} />);
         default:
           return (<MessageFile fileName={props.fileName} fileSize={props.fileSize} url={contentDataUrl} content={contentData.current} />);
       }

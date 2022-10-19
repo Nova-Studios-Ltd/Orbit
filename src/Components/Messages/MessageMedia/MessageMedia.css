@@ -1,12 +1,13 @@
+@import "Subcomponents/MessageAudio/MessageAudio.css";
 @import "Subcomponents/MessageFile/MessageFile.css";
 @import "Subcomponents/MessageImage/MessageImage.css";
 @import "Subcomponents/MessageVideo/MessageVideo.css";
 
 .MessageMediaContainer {
   border-radius: var(--global-border-radius);
-
   margin-top: var(--global-margin);
 
+  height: inherit;
   width: 20rem;
 }
 

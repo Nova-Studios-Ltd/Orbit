@@ -8,5 +8,6 @@
 @import "MediaPlayer/MediaPlayer.css";
 @import "Menus/Menus.css";
 @import "Messages/Messages.css";
+@import "Skeletons/Skeletons.css";
 @import "StatusIndicator/StatusIndicator.css";
 @import "Toast/Toast.css";
