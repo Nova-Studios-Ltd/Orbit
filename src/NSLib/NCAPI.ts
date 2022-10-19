@@ -133,7 +133,7 @@ export async function DELETE(endpoint: string, token?: string) : Promise<NCAPIRe
     const resp = await fetch(`${API_DOMAIN}/${endpoint}`, {
         method: "DELETE",
         headers: {
-            "Authorization": token || ""
+          "Authorization": token || ""
         }
     });
     return new NCAPIResponse(resp.status, resp.statusText);
