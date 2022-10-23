@@ -176,5 +176,6 @@ export async function GETFile(endpoint: string, token?: string, isExternal?: boo
         "Authorization": token || ""
       }
   });
+
   return new NCAPIResponse(resp.status, resp.statusText, new Uint8Array(await resp.arrayBuffer()))
 }
