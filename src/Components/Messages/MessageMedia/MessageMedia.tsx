@@ -51,11 +51,20 @@ function MessageMedia(props: MessageMediaProps) {
       // First confirm contentUrl/keys/iv is not undefined
       if (props.contentUrl === undefined || props.keys === undefined || props.iv === undefined) return;
 
-      // Now we grab the content itself and decrypt the data
+      // Now we grab the content itself
       const manager = new SettingsManager();
-      const content = await GETFile(props.contentUrl, manager.User.token);
+      const content = await GETFile(props.contentUrl, manager.User.token, props.isExternal);
+
+      // don't decrypt the data if the media is external
+      if (props.isExternal) {
+        setContentDataUrl(URL.createObjectURL(new Blob([content.payload as Uint8Array])));
+        return;
+      }
+
+      // and decrypt the data
       const att_key = await DecryptBase64WithPriv(manager.User.keyPair.PrivateKey, new Base64String(props.keys[manager.User.uuid]));
       const decryptedContent = await DecryptUint8Array(att_key, new AESMemoryEncryptData(props.iv, content.payload as Uint8Array));
+
       contentData.current = decryptedContent;
       setContentDataUrl(URL.createObjectURL(new Blob([decryptedContent])));
     })();

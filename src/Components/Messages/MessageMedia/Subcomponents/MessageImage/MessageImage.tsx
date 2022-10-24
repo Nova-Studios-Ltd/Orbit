@@ -1,4 +1,5 @@
-import { Icon, Skeleton, useTheme } from "@mui/material";
+import { useState } from "react";
+import { Icon, Skeleton, Typography, useTheme } from "@mui/material";
 import { Image as ImageIcon } from "@mui/icons-material";
 import useClassNames from "Hooks/useClassNames";
 

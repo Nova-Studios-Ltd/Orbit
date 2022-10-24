@@ -65,6 +65,7 @@ function App() {
   const navigate = useNavigate();
   const location = useLocation();
 
+  const isTouchCapable = "ontouchstart" in window || navigator.maxTouchPoints > 0;
   const consoleBuffer = useRef([] as DebugMessage[]);
   const canvasRef = useRef() as React.MutableRefObject<HTMLDivElement>;
   const messageCount = useRef(0);
@@ -80,7 +81,6 @@ function App() {
   const [MessageAttachments, setMessageAttachments] = useState([] as MessageAttachment[]);
   const [avatarNonce, setAvatarNonce] = useState(Date.now().toString());
   const [widthConstrained, setWidthConstrainedState] = useState(window.matchMedia("(max-width: 600px)").matches);
-  const [isTouchCapable, setTouchCapableState] = useState("ontouchstart" in window || navigator.maxTouchPoints > 0);
   const [helpVisible, setHelpVisibility] = useState(false);
   const [helpAnchorEl, setHelpAnchor] = useState(null as unknown as Element);
   const [helpContent, setHelpContent] = useState(null as unknown as ReactNode);
