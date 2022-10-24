@@ -169,13 +169,33 @@ export async function POSTFile(endpoint: string, payload: Blob, filename: string
  */
 export async function GETFile(endpoint: string, token?: string, isExternal?: boolean) : Promise<NCAPIResponse> {
   if (endpoint.includes(API_DOMAIN)) endpoint = endpoint.replace(API_DOMAIN, "");
-  const url = (isExternal)? `https://${API_DOMAIN}/Proxy?url=${endpoint}` : `${API_DOMAIN}/${endpoint}`
+  const url = (isExternal) ? `${API_DOMAIN}/Proxy?url=${endpoint}` : `${API_DOMAIN}/${endpoint}`;
+
+  const cache = await caches.open("NCMediaCache");
+
+  if (cache !== undefined) {
+    const cachedEntry = await cache.match(url);
+
+    if (cachedEntry !== undefined) {
+      return new NCAPIResponse(cachedEntry.status, cachedEntry.statusText, new Uint8Array(await cachedEntry.arrayBuffer()))
+    }
+  } else {
+    console.warn("Media caching is not available in this environment");
+  }
+
   const resp = await fetch(url, {
       method: "GET",
       headers: {
         "Authorization": token || ""
       }
   });
+
+  // There's two of the same check because this chunk is only reached when the file isn't already cached
+  if (cache !== undefined) {
+    const respCC = resp.clone();
+
+    cache.put(url, respCC);
+  }
 
   return new NCAPIResponse(resp.status, resp.statusText, new Uint8Array(await resp.arrayBuffer()))
 }
