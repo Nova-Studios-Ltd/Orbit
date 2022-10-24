@@ -1,10 +1,11 @@
 import { useTheme } from "@mui/material";
-import TimeBar from "Components/MediaPlayer/TimeBar/TimeBar";
 import useClassNames from "Hooks/useClassNames";
 
 import MessageMediaSkeleton from "Components/Skeletons/MessageMediaSkeleton/MessageMediaSkeleton";
 
 import type { MessageMediaProps } from "../../MessageMedia";
+import { useState } from "react";
+import CustomAudio from "Components/MediaPlayer/CustomAudio/CustomAudio";
 
 export interface MessageAudioProps extends MessageMediaProps {
 
@@ -19,8 +20,7 @@ function MessageAudio(props: MessageAudioProps) {
     <div className={classNames}>
       {loaded ?
         <>
-          <audio className="MessageMediaAudio" controls src={props.contentUrl} />
-          <TimeBar duration={10} curTime={2} onTimeUpdate={() => {}}></TimeBar>
+          <CustomAudio src={props.contentUrl} filename={props.fileName}></CustomAudio>
         </>
         :
         <MessageMediaSkeleton iconVariant={props.mimeType} skeletonVariant="rounded" />
