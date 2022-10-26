@@ -184,10 +184,10 @@ export async function GETFile(endpoint: string, token?: string, isExternal?: boo
   }
 
   const resp = await fetch(url, {
-      method: "GET",
-      headers: {
-        "Authorization": token || ""
-      }
+    method: "GET",
+    headers: {
+      "Authorization": token || ""
+    }
   });
 
   // There's two of the same check because this chunk is only reached when the file isn't already cached

@@ -8,7 +8,7 @@
   margin-top: var(--global-margin);
 
   height: inherit;
-  width: 20rem;
+  width: 24rem;
 }
 
 .MessageMediaContainer:first-child {

@@ -30,13 +30,57 @@
 
 .player_button {
   display: flex;
-  margin-right: 10px;
+  margin-right: 2.5px;
   background-color: transparent;
   border: none;
   color: white;
   justify-content: center;
 }
 
+.player_volume_container {
+  position: relative;
+  display: flex;
+  margin-right: 5px;
+}
+
+.player_volume_container:hover {
+  color: orange;
+}
+
+.player_volume_slider {
+  position: absolute;
+  translate: 0 -100%;
+  display: none;
+  color: white;
+}
+
 .player_button:hover {
   color: orange;
+}
+
+.volume_bar {
+  user-select: none;
+  height: 100px;
+  display: flex;
+  align-items: center;
+}
+
+.volume_bar_progress {
+  flex: 1;
+  border-radius: 5px;
+  margin: 0 0 0 50%;
+  width: 10px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.volume_bar_progress_knob {
+  position: relative;
+  height: 16px;
+  width: 16px;
+  border: 1.5px solid white;
+  border-radius: 50%;
+  background-color: orange;
 }
