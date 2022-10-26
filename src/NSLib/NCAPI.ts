@@ -1,4 +1,5 @@
 import { API_DOMAIN } from "vars";
+import { HasFlag } from "./NCFlags";
 
 /**
  * Represents commonly used HTTP Status Codes (HTTPStatusCodes.OK, 400, 401, 403, 404, 500)
@@ -173,14 +174,18 @@ export async function GETFile(endpoint: string, token?: string, isExternal?: boo
 
   const cache = await caches.open("NCMediaCache");
 
-  if (cache !== undefined) {
-    const cachedEntry = await cache.match(url);
+  if (!HasFlag("no-cache")) {
+    if (cache !== undefined) {
+      const cachedEntry = await cache.match(url);
 
-    if (cachedEntry !== undefined) {
-      return new NCAPIResponse(cachedEntry.status, cachedEntry.statusText, new Uint8Array(await cachedEntry.arrayBuffer()))
+      if (cachedEntry !== undefined) {
+        return new NCAPIResponse(cachedEntry.status, cachedEntry.statusText, new Uint8Array(await cachedEntry.arrayBuffer()))
+      }
+    } else {
+      console.warn("Media caching is not available in this environment");
     }
   } else {
-    console.warn("Media caching is not available in this environment");
+    console.warn("Not fetching media from cache due to URL flag")
   }
 
   const resp = await fetch(url, {
@@ -191,7 +196,7 @@ export async function GETFile(endpoint: string, token?: string, isExternal?: boo
   });
 
   // There's two of the same check because this chunk is only reached when the file isn't already cached
-  if (cache !== undefined) {
+  if (!HasFlag("no-cache") && cache !== undefined) {
     const respCC = resp.clone();
 
     cache.put(url, respCC);
