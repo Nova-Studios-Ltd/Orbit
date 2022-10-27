@@ -239,7 +239,7 @@ function MainView(props: MainViewProps) {
           <div className="MainViewContainerLeft">
             <div className="NavigationButtonContainer" style={{ backgroundColor: theme.palette.background.paper, borderColor: theme.palette.divider }}>
               <AvatarTextButton className="NavigationButtonContainerItem" selected={location.pathname === Routes.Dashboard} onLeftClick={() => props.onNavigateToPage ? props.onNavigateToPage(Routes.Dashboard) : null} iconSrc={`${settings.User.avatarSrc}&nonce=${props.avatarNonce || ""}`}>{Localizations_MainView("Typography-SettingsHeader")}</AvatarTextButton>
-              <AvatarTextButton className="NavigationButtonContainerItem" iconObj={<GroupIcon />} selected={location.pathname === Routes.FriendsList} onLeftClick={() => props.onNavigateToPage ? props.onNavigateToPage(Routes.FriendsList) : null}>{Localizations_MainView("Typography-FriendsHeader")}</AvatarTextButton>
+              <AvatarTextButton className="NavigationButtonContainerItem" iconObj={<GroupIcon />} selected={location.pathname === Routes.FriendsList || location.pathname === Routes.AddFriend || location.pathname === Routes.AddFriendGroup || location.pathname === Routes.BlockedUsersList} onLeftClick={() => props.onNavigateToPage ? props.onNavigateToPage(Routes.FriendsList) : null}>{Localizations_MainView("Typography-FriendsHeader")}</AvatarTextButton>
             </div>
             <div className="MainViewChannelListContainer">
               <GenericHeader className="MainViewHeader" title={Localizations_MainView("Header_Title-ChannelList")} childrenRight={

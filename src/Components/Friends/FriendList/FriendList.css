@@ -1,0 +1,35 @@
+.FriendListContainer {
+  display: flex;
+  flex-direction: column;
+
+  gap: var(--global-margin);
+  overflow: hidden;
+}
+
+.FriendListButtonContainer {
+  display: flex;
+  flex-direction: row;
+  gap: var(--global-margin);
+}
+
+.FriendEntriesContainer {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+
+  overflow-y: auto;
+
+  gap: var(--global-margin);
+}
+
+.NoEntriesHintContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+@media only screen and (max-width: 600px) {
+  .FriendListContainer {
+
+  }
+}

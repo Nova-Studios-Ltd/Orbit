@@ -32,6 +32,13 @@ export enum SelectionType {
   MultiSelect
 }
 
+export enum FriendButtonVariant {
+  Normal,
+  Blocked,
+  Dialog,
+  All
+}
+
 export enum TextComboStates {
   Neutral,
   Error,
