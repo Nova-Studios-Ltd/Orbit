@@ -68,11 +68,9 @@ function CustomAudio(props: AudioProps) {
         className="player_volume_container">
           <VolumeUp className="player_volume"/>
           <div ref={volumeSlider} className="player_volume_slider" style={{backgroundColor: "black"}}>
-            <div className="volume_bar">
-              <div className="volume_bar_progress" style={{background: `linear-gradient(to top, orange ${10}%, white 0)`}} onMouseDown={e => {}}>
-                <span className="volume_bar_progress_knob" style={{bottom: `${0 - 2}%`}}/>
-              </div>
+            <div className="volume_bar_progress" style={{background: `linear-gradient(to top, orange ${10}%, white 0)`}} onMouseDown={e => {}}>
             </div>
+            <span className="volume_bar_progress_knob" style={{bottom: `${0 - 2}%`}}/>
           </div>
         </div>
         <TimeBar duration={duration} curTime={position} onTimeUpdate={(s: number) => { setNewPosition(s) }} />
