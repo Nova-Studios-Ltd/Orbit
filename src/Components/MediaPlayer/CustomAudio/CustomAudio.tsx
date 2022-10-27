@@ -29,7 +29,11 @@ function CustomAudio(props: AudioProps) {
 
   const setAudioTime = () => {
     if (!audio.current) return;
-    if (audio.current.currentTime >= duration) setPlaying(false);
+    if (audio.current.currentTime >= duration) {
+      setPlaying(false);
+      setPosition(0);
+      return;
+    }
     setPosition(audio.current.currentTime);
   }
 
