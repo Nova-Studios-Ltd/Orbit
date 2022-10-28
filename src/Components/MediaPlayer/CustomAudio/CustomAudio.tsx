@@ -10,18 +10,22 @@ export interface AudioProps {
   filename?: string
 }
 
-const jsmediatags = require("jsmediatags");
-
 function CustomAudio(props: AudioProps) {
   const theme = useTheme();
 
   const audio = useRef<HTMLAudioElement>(null);
   const volumeSlider = useRef<HTMLDivElement>(null);
+  const volumeSliderContainer = useRef<HTMLDivElement>(null);
 
+  // Player position/playing state
   const [position, setPosition] = useState(0);
   const [newPosition, setNewPosition] = useState<number | undefined>(undefined);
   const [duration, setDuration] = useState(0);
   const [playing, setPlaying] = useState(false);
+
+  // Player volume state
+  const [newVolume, setNewVolume] = useState<number | undefined>(undefined);
+  const [volume, setVolume] = useState(1);
 
   const setAudioData = () => {
     if (!audio.current) return;
@@ -40,8 +44,8 @@ function CustomAudio(props: AudioProps) {
   }
 
   const setVolumeSlider = (show: boolean) => {
-    if (volumeSlider.current) {
-      volumeSlider.current.style.display = (show)? "flex" : "none";
+    if (volumeSliderContainer.current) {
+      volumeSliderContainer.current.style.display = (show) ? "flex" : "none";
     }
   }
 
@@ -52,6 +56,38 @@ function CustomAudio(props: AudioProps) {
     setNewPosition(undefined);
   }
 
+  if (audio.current && newVolume !== undefined && audio.current.volume !== newVolume) {
+    audio.current.volume = newVolume;
+    console.log(newVolume);
+    setVolume(Math.random());
+    setNewVolume(undefined);
+  }
+
+  function calcClickedTime(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
+    const clickPositionInPage = e.pageY;
+    if (volumeSlider.current === null) return 0;
+    const barStart = volumeSlider.current.getBoundingClientRect().top + window.scrollY;
+    const barHeight = volumeSlider.current.offsetHeight;
+    const clickPositionInBar = (clickPositionInPage - barStart);
+    const timePerPixel = 1 / barHeight;
+    let time = timePerPixel * clickPositionInBar
+    /*if (time > 1) return 1;*/
+    /*if (time < 0) return 0;*/
+    return time;
+  }
+
+  function handleTimeDrag(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
+    setNewVolume(calcClickedTime(e));
+
+    const updateTimeOnMove = (eMove: any) => {
+      setNewVolume(calcClickedTime(eMove));
+    }
+
+    document.addEventListener("mousemove", updateTimeOnMove);
+    document.addEventListener("mouseup", () => document.removeEventListener("mousemove", updateTimeOnMove));
+  }
+
+  console.log(volume);
   return (
     <div className="player" style={{ backgroundColor: theme.palette.background.default }}>
       <audio ref={audio} onLoadedData={setAudioData} onTimeUpdate={setAudioTime}>
@@ -67,12 +103,12 @@ function CustomAudio(props: AudioProps) {
           {(!playing) ? (<PlayCircleFilled fontSize="large" />) : (<PauseCircleFilled fontSize="large" />)}
         </button>
         <div onMouseOver={() => setVolumeSlider(true)} onMouseLeave={() => setVolumeSlider(false)}
-        className="player_volume_container">
-          <VolumeUp className="player_volume"/>
-          <div ref={volumeSlider} className="player_volume_slider" style={{backgroundColor: "black"}}>
-            <div className="volume_bar_progress" style={{background: `linear-gradient(to top, orange ${10}%, white 0)`}} onMouseDown={e => {}}>
+          className="player_volume_container">
+          <VolumeUp className="player_volume" />
+          <div ref={volumeSliderContainer} className="player_volume_slider">
+            <div ref={volumeSlider} className="volume_bar_progress" style={{ background: `linear-gradient(to top, orange ${((volume / 1) * 100)}%, white 0)` }} onMouseDown={e => handleTimeDrag(e)}>
             </div>
-            <span className="volume_bar_progress_knob" style={{bottom: `${0 - 2}%`}}/>
+            <span className="volume_bar_progress_knob" style={{ bottom: `${((volume / 1) * 100) - 2}%` }} />
           </div>
         </div>
         <TimeBar duration={duration} curTime={position} onTimeUpdate={(s: number) => { setNewPosition(s) }} />
