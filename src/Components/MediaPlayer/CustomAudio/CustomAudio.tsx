@@ -10,6 +10,8 @@ export interface AudioProps {
   filename?: string
 }
 
+const jsmediatags = require("jsmediatags");
+
 function CustomAudio(props: AudioProps) {
   const theme = useTheme();
 
