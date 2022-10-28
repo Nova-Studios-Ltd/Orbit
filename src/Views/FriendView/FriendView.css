@@ -20,16 +20,6 @@
   align-items: flex-start;
 }
 
-.FriendsContainer {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-
-  overflow-y: auto;
-
-  gap: var(--global-margin);
-}
-
 @media only screen and (max-width: 600px) {
   .FriendViewContainer {
 

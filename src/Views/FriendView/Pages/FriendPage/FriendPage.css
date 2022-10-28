@@ -1,22 +1,5 @@
 .FriendPageContainer {
-  display: flex;
-  flex-direction: column;
 
-  overflow: hidden;
-
-  gap: var(--global-margin);
-}
-
-.FriendsPageButtonContainer {
-  display: flex;
-  flex-direction: row;
-  gap: var(--global-margin);
-}
-
-.NoFriendsHintContainer {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
 }
 
 @media only screen and (max-width: 600px) {

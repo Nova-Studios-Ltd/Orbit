@@ -3,7 +3,5 @@
   "Button_Label-ReloadBlockedUsersList": "Reload",
   "Typography-UserBlocked": "Blocked",
   "Typography_Heading-NoBlockedUsersHint": "No Blocked Users",
-  "Typography_Body-NoBlockedUsersHint": "If you must, then do.",
-  "Typography-UnblockFriendDialogTitle": "Unblock {{user}}?",
-  "Typography-UnblockFriendDialogBlurb": "Do you wanna unpseudocockblock this sucker?"
+  "Typography_Body-NoBlockedUsersHint": "If you must, then do."
 }
