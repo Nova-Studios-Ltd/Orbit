@@ -1,8 +1,5 @@
 import { PauseCircleFilled, PlayCircleFilled, VolumeUp } from "@mui/icons-material";
 import { Typography, useTheme } from "@mui/material";
-import { calculateNewValue } from "@testing-library/user-event/dist/utils";
-import { time } from "console";
-import moment, { duration } from "moment";
 import { useEffect, useRef, useState } from "react";
 import TimeBar from "../TimeBar/TimeBar";
 
@@ -96,14 +93,14 @@ function CustomAudio(props: AudioProps) {
         </div>
       </div>
       <div className="player_controls">
-        <button className="player_button" onClick={() => setPlaying(!playing)}>
+        <button className="player_button" onMouseOver={(e) => e.currentTarget.style.color = theme.customPalette.SystemAccentColor} onMouseLeave={(e) => e.currentTarget.style.color = "white"} onClick={() => setPlaying(!playing)}>
           {(!playing) ? (<PlayCircleFilled fontSize="large" />) : (<PauseCircleFilled fontSize="large" />)}
         </button>
         <div onMouseOver={() => setVolumeSlider(true)} onMouseLeave={() => { setVolumeSlider(false); setGrabKnob(false); }}
-          className="player_volume_container">
+          className="player_volume_container" style={{ color: volumeSlider ? theme.customPalette.SystemAccentColor : "white" }}>
           <VolumeUp className="player_volume" />
           <div ref={volumeSliderContainer} className="player_volume_slider">
-            <div ref={volumeSlider} className="volume_bar_progress" style={{ background: `linear-gradient(to top, orange ${((volume / 1) * 100)}%, white 0)` }} onMouseDown={(e) => { setGrabKnob(true); setVolume(calcClickedVolume(e)); }} onMouseUp={() => setGrabKnob(false)} onMouseMove={handleVolumeDrag}>
+            <div ref={volumeSlider} className="volume_bar_progress" style={{ background: `linear-gradient(to top, ${theme.customPalette.SystemAccentColor} ${((volume / 1) * 100)}%, white 0)` }} onMouseDown={(e) => { setGrabKnob(true); setVolume(calcClickedVolume(e)); }} onMouseUp={() => setGrabKnob(false)} onMouseMove={handleVolumeDrag}>
             </div>
             <span className="volume_bar_progress_knob" style={{ bottom: `${((volume / 1) * 100) - 2}%` }} onMouseDown={() => setGrabKnob(true)} onMouseUp={() => setGrabKnob(false)} />
           </div>
