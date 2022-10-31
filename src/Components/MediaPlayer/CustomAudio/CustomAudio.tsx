@@ -1,5 +1,6 @@
 import { PauseCircleFilled, PlayCircleFilled, VolumeUp } from "@mui/icons-material";
 import { Typography, useTheme } from "@mui/material";
+import { calculateNewValue } from "@testing-library/user-event/dist/utils";
 import { time } from "console";
 import moment, { duration } from "moment";
 import { useEffect, useRef, useState } from "react";
@@ -24,22 +25,13 @@ function CustomAudio(props: AudioProps) {
   const [playing, setPlaying] = useState(false);
 
   // Player volume state
-  const [cVolume, setVolume] = useState(0);
-  const [newVolume, setNewVolume] = useState<number | undefined>(undefined);
+  const [volume, setVolume] = useState(0);
+
+  const [hasFirmlyGrippedKnob, setGrabKnob] = useState(false);
 
   const setAudioData = () => {
     if (!audio.current) return;
     setDuration(audio.current.duration);
-    setPosition(audio.current.currentTime);
-  }
-
-  const setAudioTime = () => {
-    if (!audio.current) return;
-    if (audio.current.currentTime >= duration) {
-      setPlaying(false);
-      setPosition(0);
-      return;
-    }
     setPosition(audio.current.currentTime);
   }
 
@@ -50,48 +42,52 @@ function CustomAudio(props: AudioProps) {
   }
 
   useEffect(() => {
-    if (audio.current && newVolume !== undefined && audio.current.volume !== newVolume) {
-      audio.current.volume = newVolume;
-      setVolume(audio.current.volume);
-      setNewVolume(undefined);
-      console.log("Updating value");
+    if (!audio.current) return;
+
+    if (audio.current.currentTime >= duration) {
+      setPlaying(false);
+      setNewPosition(0);
     }
 
-    if (audio.current) playing ? audio.current.play() : audio.current.pause();
-    if (audio.current && newPosition && audio.current.currentTime !== newPosition) {
+    playing ? audio.current.play() : audio.current.pause();
+
+    if (audio.current.volume !== volume) {
+      audio.current.volume = volume;
+    }
+
+    if (newPosition !== undefined) {
       audio.current.currentTime = newPosition;
-      setPosition(audio.current.currentTime);
       setNewPosition(undefined);
     }
-  }, [newVolume, newPosition, playing]);
 
-  function calcClickedVolume(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
+    if (audio.current.currentTime !== position) {
+      setPosition(audio.current.currentTime);
+    }
+
+  }, [volume, position, playing, duration, newPosition]);
+
+  function calcClickedVolume(e: React.MouseEvent<HTMLDivElement | HTMLSpanElement, MouseEvent>) {
     const clickPositionInPage = e.pageY;
     if (volumeSlider.current === null) return 0;
     const barStart = volumeSlider.current.getBoundingClientRect().bottom + window.scrollY;
     const barHeight = volumeSlider.current.offsetHeight;
     const clickPositionInBar = (clickPositionInPage - barStart);
     const timePerPixel = 1 / barHeight;
-    let time = Math.abs(timePerPixel * clickPositionInBar)
+    let time = (timePerPixel * clickPositionInBar) * -1;
     if (time > 1) return 1;
     if (time < 0) return 0;
     return time;
   }
 
-  function handleTimeDrag(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
-    setNewVolume(calcClickedVolume(e));
-
-    const updateVolumeOnMove = (eMove: any) => {
-      setNewVolume(calcClickedVolume(eMove));
-    }
-
-    document.addEventListener("mousemove", updateVolumeOnMove);
-    document.addEventListener("mouseup", () => document.removeEventListener("mousemove", updateVolumeOnMove));
+  function handleVolumeDrag(e: React.MouseEvent<HTMLDivElement | HTMLSpanElement, MouseEvent>) {
+    if (!hasFirmlyGrippedKnob) return;
+    const newVolume = calcClickedVolume(e);
+    setVolume(newVolume);
   }
 
   return (
     <div className="player" style={{ backgroundColor: theme.palette.background.default }}>
-      <audio ref={audio} onLoadedData={setAudioData} onTimeUpdate={setAudioTime}>
+      <audio ref={audio} onLoadedData={setAudioData} onTimeUpdate={(e) => setPosition(e.currentTarget.currentTime)}>
         <source src={props.src} />
       </audio>
       <div className="player_display">
@@ -103,13 +99,13 @@ function CustomAudio(props: AudioProps) {
         <button className="player_button" onClick={() => setPlaying(!playing)}>
           {(!playing) ? (<PlayCircleFilled fontSize="large" />) : (<PauseCircleFilled fontSize="large" />)}
         </button>
-        <div onMouseOver={() => setVolumeSlider(true)} onMouseLeave={() => setVolumeSlider(false)}
+        <div onMouseOver={() => setVolumeSlider(true)} onMouseLeave={() => { setVolumeSlider(false); setGrabKnob(false); }}
           className="player_volume_container">
           <VolumeUp className="player_volume" />
           <div ref={volumeSliderContainer} className="player_volume_slider">
-            <div ref={volumeSlider} className="volume_bar_progress" style={{ background: `linear-gradient(to top, orange ${((cVolume / 1) * 100)}%, white 0)` }} onMouseDown={e => handleTimeDrag(e)}>
+            <div ref={volumeSlider} className="volume_bar_progress" style={{ background: `linear-gradient(to top, orange ${((volume / 1) * 100)}%, white 0)` }} onMouseDown={(e) => { setGrabKnob(true); setVolume(calcClickedVolume(e)); }} onMouseUp={() => setGrabKnob(false)} onMouseMove={handleVolumeDrag}>
             </div>
-            <span className="volume_bar_progress_knob" style={{ bottom: `${((cVolume / 1) * 100) - 2}%` }} />
+            <span className="volume_bar_progress_knob" style={{ bottom: `${((volume / 1) * 100) - 2}%` }} onMouseDown={() => setGrabKnob(true)} onMouseUp={() => setGrabKnob(false)} />
           </div>
         </div>
         <TimeBar duration={duration} curTime={position} onTimeUpdate={(s: number) => { setNewPosition(s) }} />
