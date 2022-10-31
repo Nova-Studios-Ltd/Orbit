@@ -121,7 +121,7 @@ export function UploadFile(multiple?: boolean): Promise<NCFile[]> {
 
 /**
  * Fetches a files from the clipboard, automaticly handles switching to native
- * @param ev Event from document.onpaste, *currently not used.
+ * @param event Event from document.onpaste, *currently not used.
  * @returns A Uint8Array of png data
  */
 export function FetchImageFromClipboard(event?: React.ClipboardEvent<HTMLInputElement>) : Promise<NCFile> {
