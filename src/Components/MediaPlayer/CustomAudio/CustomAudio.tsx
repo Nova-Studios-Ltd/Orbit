@@ -1,7 +1,5 @@
 import { PauseCircleFilled, PlayCircleFilled, VolumeUp } from "@mui/icons-material";
 import { Typography, useTheme } from "@mui/material";
-import { time } from "console";
-import moment, { duration } from "moment";
 import { useEffect, useRef, useState } from "react";
 import TimeBar from "../TimeBar/TimeBar";
 
@@ -24,7 +22,7 @@ function CustomAudio(props: AudioProps) {
   const [playing, setPlaying] = useState(false);
 
   // Player volume state
-  const [cVolume, setVolume] = useState(0);
+  const [cVolume, setVolume] = useState(1);
   const [newVolume, setNewVolume] = useState<number | undefined>(undefined);
 
   const setAudioData = () => {
@@ -78,7 +76,7 @@ function CustomAudio(props: AudioProps) {
     return time;
   }
 
-  function handleTimeDrag(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
+  function handleVolumeDrag(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
     setNewVolume(calcClickedVolume(e));
 
     const updateVolumeOnMove = (eMove: any) => {
@@ -100,14 +98,14 @@ function CustomAudio(props: AudioProps) {
         </div>
       </div>
       <div className="player_controls">
-        <button className="player_button" onClick={() => setPlaying(!playing)}>
+        <button className="player_button" onMouseOver={(e) => e.currentTarget.style.color = theme.customPalette.SystemAccentColor} onMouseLeave={(e) => e.currentTarget.style.color = "white"} onClick={() => setPlaying(!playing)}>
           {(!playing) ? (<PlayCircleFilled fontSize="large" />) : (<PauseCircleFilled fontSize="large" />)}
         </button>
-        <div onMouseOver={() => setVolumeSlider(true)} onMouseLeave={() => setVolumeSlider(false)}
+        <div onMouseOver={(e) => { setVolumeSlider(true); e.currentTarget.style.color = theme.customPalette.SystemAccentColor; }} onMouseLeave={(e) => { setVolumeSlider(false); e.currentTarget.style.color = "white"; }}
           className="player_volume_container">
           <VolumeUp className="player_volume" />
           <div ref={volumeSliderContainer} className="player_volume_slider">
-            <div ref={volumeSlider} className="volume_bar_progress" style={{ background: `linear-gradient(to top, orange ${((cVolume / 1) * 100)}%, white 0)` }} onMouseDown={e => handleTimeDrag(e)}>
+            <div ref={volumeSlider} className="volume_bar_progress" style={{ background: `linear-gradient(to top, ${theme.customPalette.SystemAccentColor} ${((cVolume / 1) * 100)}%, white 0)` }} onMouseDown={e => handleVolumeDrag(e)}>
             </div>
             <span className="volume_bar_progress_knob" style={{ bottom: `${((cVolume / 1) * 100) - 2}%` }} />
           </div>

@@ -94,7 +94,6 @@ async function OnUsernameChanged(event: IWebSocketEvent) {
 }
 
 async function FriendRequestAdded(event: IWebSocketEvent) {
-  console.log("New request");
   // Trigger notification
   if (new SettingsManager().User.uuid !== event.User)
     TriggerNotification("New Friend Request", `${(await UserCache.GetUserAsync(event.User)).username} has requested to be your friend`, NotificationType.Info, `User/${event.User}/Avatar?size=64`);
@@ -102,11 +101,9 @@ async function FriendRequestAdded(event: IWebSocketEvent) {
 }
 
 async function FriendRequestUpdated(event: IWebSocketEvent) {
-  console.log("Friend Updated")
   Events.send("FriendUpdated", event.User, await GETFriendState(event.User));
 }
 
 async function FriendRequestRemoved(event: IWebSocketEvent) {
-  console.log("Friend Removed");
   Events.send("FriendRemoved", event.User);
 }

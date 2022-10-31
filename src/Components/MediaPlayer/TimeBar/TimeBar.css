@@ -24,7 +24,7 @@
   position: relative;
   height: 16px;
   width: 16px;
-  border: 1.5px solid white;
+  border: 1.5px solid transparent;
   border-radius: 50%;
-  background-color: orange;
+  background-color: rgb(196, 196, 196);
 }

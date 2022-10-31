@@ -1,5 +1,5 @@
 import { Typography, useTheme } from "@mui/material";
-import moment, { duration } from "moment";
+import moment from "moment";
 import { useRef } from "react";
 
 export interface TimeBarProps {
@@ -47,7 +47,7 @@ function TimeBar(props: TimeBarProps) {
   return (
     <div className="bar">
       <span className="bar_time"><Typography variant="subtitle1">{formatDuration(props.curTime)}</Typography></span>
-      <div ref={bar} className="bar_progress" style={{background: `linear-gradient(to right, orange ${curPercentage}%, white 0)`}} onMouseDown={e => handleTimeDrag(e)}>
+      <div ref={bar} className="bar_progress" style={{background: `linear-gradient(to right, ${theme.customPalette.SystemAccentColor} ${curPercentage}%, white 0)`}} onMouseDown={e => handleTimeDrag(e)}>
         <span className="bar_progress_knob" style={{left: `${curPercentage - 2}%`}}/>
       </div>
       <span className="bar_time"><Typography variant="subtitle1">{formatDuration(props.duration)}</Typography></span>

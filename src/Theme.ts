@@ -1,6 +1,6 @@
 import { createTheme } from "@mui/material";
 import { Theme } from "@mui/material/styles/createTheme";
-import GenerateRandomColor, { GenerateRandomHexColor } from "NSLib/ColorGeneration";
+import GenerateRandomColor from "NSLib/ColorGeneration";
 
 // Just a temp thing
 export function ThemeSelector(themeName: string) : Theme {
@@ -30,6 +30,7 @@ export const DarkTheme_Default = createTheme({
     messageBackground: "#3C3E42",
     TextComboBackground: "#3C3E42",
     FileUploadSummaryItemBackground: "#212121",
+    SystemAccentColor: "#0073E5",
   }
 });
 
@@ -54,7 +55,8 @@ export const LightTheme_Default = createTheme({
     formBackground: "",
     messageBackground: "",
     TextComboBackground: "",
-    FileUploadSummaryItemBackground: ""
+    FileUploadSummaryItemBackground: "",
+    SystemAccentColor: "",
   }
 });
 
@@ -79,6 +81,7 @@ export const WTFTheme_Default = createTheme({
     messageBackground: GenerateRandomColor(),
     TextComboBackground: GenerateRandomColor(),
     FileUploadSummaryItemBackground: GenerateRandomColor(),
+    SystemAccentColor: GenerateRandomColor(),
   }
 });
 
@@ -97,6 +100,7 @@ declare module "@mui/material/styles" {
       messageBackground: string,
       TextComboBackground: string,
       FileUploadSummaryItemBackground: string,
+      SystemAccentColor: string,
     }
   }
 
@@ -114,6 +118,7 @@ declare module "@mui/material/styles" {
       messageBackground: string,
       TextComboBackground: string,
       FileUploadSummaryItemBackground: string,
+      SystemAccentColor: string,
     },
   }
 }
