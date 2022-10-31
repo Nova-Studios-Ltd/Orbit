@@ -22,7 +22,7 @@ function CustomAudio(props: AudioProps) {
   const [playing, setPlaying] = useState(false);
 
   // Player volume state
-  const [volume, setVolume] = useState(0);
+  const [volume, setVolume] = useState(0.5);
 
   const [hasFirmlyGrippedKnob, setGrabKnob] = useState(false);
 
