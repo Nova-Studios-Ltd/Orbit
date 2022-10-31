@@ -102,7 +102,7 @@ function CustomAudio(props: AudioProps) {
           <div ref={volumeSliderContainer} className="player_volume_slider">
             <div ref={volumeSlider} className="volume_bar_progress" style={{ background: `linear-gradient(to top, ${theme.customPalette.SystemAccentColor} ${((volume / 1) * 100)}%, white 0)` }} onMouseDown={(e) => { setGrabKnob(true); setVolume(calcClickedVolume(e)); }} onMouseUp={() => setGrabKnob(false)} onMouseMove={handleVolumeDrag}>
             </div>
-            <span className="volume_bar_progress_knob" style={{ bottom: `${((volume / 1) * 100) - 2}%` }} onMouseDown={() => setGrabKnob(true)} onMouseUp={() => setGrabKnob(false)} />
+            <span className="volume_bar_progress_knob" style={{ bottom: `${((volume / 1) * 100) - 2}%` }} onMouseDown={() => setGrabKnob(true)} onMouseMove={handleVolumeDrag} onMouseUp={() => setGrabKnob(false)} />
           </div>
         </div>
         <TimeBar duration={duration} curTime={position} onTimeUpdate={(s: number) => { setNewPosition(s) }} />
