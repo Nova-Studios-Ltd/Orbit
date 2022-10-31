@@ -24,8 +24,8 @@ function CustomAudio(props: AudioProps) {
   const [playing, setPlaying] = useState(false);
 
   // Player volume state
+  const [cVolume, setVolume] = useState(0);
   const [newVolume, setNewVolume] = useState<number | undefined>(undefined);
-  const [volume, setVolume] = useState(1);
 
   const setAudioData = () => {
     if (!audio.current) return;
@@ -49,45 +49,46 @@ function CustomAudio(props: AudioProps) {
     }
   }
 
-  if (audio.current) playing ? audio.current.play() : audio.current.pause();
-  if (audio.current && newPosition && audio.current.currentTime !== newPosition) {
-    audio.current.currentTime = newPosition;
-    setPosition(audio.current.currentTime);
-    setNewPosition(undefined);
-  }
+  useEffect(() => {
+    if (audio.current && newVolume !== undefined && audio.current.volume !== newVolume) {
+      audio.current.volume = newVolume;
+      setVolume(audio.current.volume);
+      setNewVolume(undefined);
+      console.log("Updating value");
+    }
 
-  if (audio.current && newVolume !== undefined && audio.current.volume !== newVolume) {
-    audio.current.volume = newVolume;
-    console.log(newVolume);
-    setVolume(Math.random());
-    setNewVolume(undefined);
-  }
+    if (audio.current) playing ? audio.current.play() : audio.current.pause();
+    if (audio.current && newPosition && audio.current.currentTime !== newPosition) {
+      audio.current.currentTime = newPosition;
+      setPosition(audio.current.currentTime);
+      setNewPosition(undefined);
+    }
+  }, [newVolume, newPosition, playing]);
 
-  function calcClickedTime(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
+  function calcClickedVolume(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
     const clickPositionInPage = e.pageY;
     if (volumeSlider.current === null) return 0;
-    const barStart = volumeSlider.current.getBoundingClientRect().top + window.scrollY;
+    const barStart = volumeSlider.current.getBoundingClientRect().bottom + window.scrollY;
     const barHeight = volumeSlider.current.offsetHeight;
     const clickPositionInBar = (clickPositionInPage - barStart);
     const timePerPixel = 1 / barHeight;
-    let time = timePerPixel * clickPositionInBar
-    /*if (time > 1) return 1;*/
-    /*if (time < 0) return 0;*/
+    let time = Math.abs(timePerPixel * clickPositionInBar)
+    if (time > 1) return 1;
+    if (time < 0) return 0;
     return time;
   }
 
   function handleTimeDrag(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
-    setNewVolume(calcClickedTime(e));
+    setNewVolume(calcClickedVolume(e));
 
-    const updateTimeOnMove = (eMove: any) => {
-      setNewVolume(calcClickedTime(eMove));
+    const updateVolumeOnMove = (eMove: any) => {
+      setNewVolume(calcClickedVolume(eMove));
     }
 
-    document.addEventListener("mousemove", updateTimeOnMove);
-    document.addEventListener("mouseup", () => document.removeEventListener("mousemove", updateTimeOnMove));
+    document.addEventListener("mousemove", updateVolumeOnMove);
+    document.addEventListener("mouseup", () => document.removeEventListener("mousemove", updateVolumeOnMove));
   }
 
-  console.log(volume);
   return (
     <div className="player" style={{ backgroundColor: theme.palette.background.default }}>
       <audio ref={audio} onLoadedData={setAudioData} onTimeUpdate={setAudioTime}>
@@ -106,9 +107,9 @@ function CustomAudio(props: AudioProps) {
           className="player_volume_container">
           <VolumeUp className="player_volume" />
           <div ref={volumeSliderContainer} className="player_volume_slider">
-            <div ref={volumeSlider} className="volume_bar_progress" style={{ background: `linear-gradient(to top, orange ${((volume / 1) * 100)}%, white 0)` }} onMouseDown={e => handleTimeDrag(e)}>
+            <div ref={volumeSlider} className="volume_bar_progress" style={{ background: `linear-gradient(to top, orange ${((cVolume / 1) * 100)}%, white 0)` }} onMouseDown={e => handleTimeDrag(e)}>
             </div>
-            <span className="volume_bar_progress_knob" style={{ bottom: `${((volume / 1) * 100) - 2}%` }} />
+            <span className="volume_bar_progress_knob" style={{ bottom: `${((cVolume / 1) * 100) - 2}%` }} />
           </div>
         </div>
         <TimeBar duration={duration} curTime={position} onTimeUpdate={(s: number) => { setNewPosition(s) }} />
