@@ -98,12 +98,10 @@
     align-items: center;
 
     border-radius: 0;
-
-    padding: var(--dialog-padding-top-constrained) var(--dialog-padding-right-constrained) var(--dialog-padding-bottom-constrained) var(--dialog-padding-left-constrained);    ;
   }
 
   .GenericDialogContentContainer {
-    height: 100%;
+    padding: var(--dialog-padding-top-constrained) var(--dialog-padding-right-constrained) var(--dialog-padding-bottom-constrained) var(--dialog-padding-left-constrained);    ;
   }
 
   .GenericDialogButtonContainer {
