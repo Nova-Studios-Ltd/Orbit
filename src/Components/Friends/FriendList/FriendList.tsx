@@ -15,6 +15,7 @@ export interface FriendListProps extends NCComponent {
   hideButtons?: boolean,
   hideUUIDs?: boolean,
   variant?: FriendButtonVariant,
+  fullWidth?: boolean,
   emptyPlaceholderHeader?: string,
   emptyPlaceholderBody?: string,
   onReloadList?: () => void,
@@ -28,7 +29,7 @@ export interface FriendListProps extends NCComponent {
 
 function FriendList(props: FriendListProps) {
   const theme = useTheme();
-  const classNames = useClassNames("FriendListContainer", props.className);
+  const classNames = useClassNames(useClassNames("FriendListContainer", props.className), props.fullWidth ? "FullWidth" : "");
   const Localizations_Button = useTranslation("Button").t;
   const Localizations_FriendList = useTranslation("FriendList").t;
 

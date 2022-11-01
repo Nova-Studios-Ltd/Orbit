@@ -194,7 +194,7 @@ function Channel(props: ChannelProps) {
       }>
         <div className="ChannelMembersListContainer">
           <Typography variant="h6">{Localizations_Channel("Typography-ChannelMembersListTitle")}</Typography>
-          <FriendList variant={FriendButtonVariant.Dialog} friends={ChannelMembersUserData} onKickRecipient={onKickRecipient} />
+          <FriendList fullWidth variant={FriendButtonVariant.Dialog} friends={ChannelMembersUserData} onKickRecipient={onKickRecipient} />
           <GenericButton fullWidth><Icon style={{ margin: "auto" }}><AddFilledIcon /></Icon></GenericButton>
         </div>
         <div className="GenericDialogTextContainer">
@@ -220,7 +220,7 @@ function Channel(props: ChannelProps) {
       }>
         <div className="ChannelMembersListContainer">
           <Typography variant="h6">{Localizations_Channel("Typography-ChannelMembersListTitle")}</Typography>
-          <FriendList variant={FriendButtonVariant.Dialog} friends={ChannelMembersUserData} onKickRecipient={onKickRecipient} />
+          <FriendList fullWidth variant={FriendButtonVariant.Dialog} friends={ChannelMembersUserData} onKickRecipient={onKickRecipient} />
         </div>
         <Button variant="outlined" onClick={clearChannelCache}>{Localizations_Channel("Button_Label-ClearCache")}</Button>
       </GenericDialog>

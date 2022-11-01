@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useTheme, Typography } from "@mui/material";
 import useClassNames from "Hooks/useClassNames";
 import { CSSTransition } from "react-transition-group";
@@ -19,6 +19,21 @@ function GenericDialog(props: GenericDialogProps) {
   const theme = useTheme();
   const classNames = useClassNames("GenericDialogContainer", props.className);
 
+  const [scrollbarMargin, setScrollbarMargin] = useState(0);
+
+  const ContentScrollContainerRef = useRef() as React.MutableRefObject<HTMLDivElement>;
+
+  useEffect(() => {
+    if (!ContentScrollContainerRef.current) return;
+
+    if (ContentScrollContainerRef.current.scrollHeight > ContentScrollContainerRef.current.clientHeight) {
+      setScrollbarMargin(5); // TODO: Perhaps come up with a way to use theme variables for margin instead of hardcoding it here
+      return;
+    }
+
+    setScrollbarMargin(0);
+  }, [ContentScrollContainerRef.current?.scrollHeight, ContentScrollContainerRef.current?.clientHeight]);
+
   const onKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
     if (event.key.toLowerCase() === "escape") {
       if (props.onClose) props.onClose();
@@ -38,8 +53,8 @@ function GenericDialog(props: GenericDialogProps) {
         <CSSTransition classNames="GenericDialogInnerContainer" in={props.open} timeout={10}>
           <div className="GenericDialogInnerContainer" style={{ backgroundColor: theme.palette.background.paper }} onKeyDown={onKeyDown}>
             <Typography className="GenericDialogTitle" variant="h5">{props.title}</Typography>
-            <div className="GenericDialogContentScrollContainer">
-              <div className="GenericDialogContentContainer">
+            <div className="GenericDialogContentScrollContainer" ref={ContentScrollContainerRef}>
+              <div className="GenericDialogContentContainer" style={{ marginRight: scrollbarMargin }}>
                 {props.children}
               </div>
             </div>
