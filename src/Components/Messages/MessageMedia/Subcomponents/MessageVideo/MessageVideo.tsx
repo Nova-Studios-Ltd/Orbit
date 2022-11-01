@@ -17,7 +17,9 @@ function MessageVideo(props: MessageVideoProps) {
   return (
     <div className={classNames}>
       {loaded ?
-        <video className="MessageMediaVideo" onClick={(event) => event.preventDefault()} controls src={props.contentUrl} />
+        <video className="MessageMediaVideo" onClick={(event) => event.preventDefault()} controls>
+          <source src={props.contentUrl} type={props.rawMimeType}/>
+        </video>
         :
         <MessageMediaSkeleton iconVariant={props.mimeType} skeletonVariant="rounded" />
       }

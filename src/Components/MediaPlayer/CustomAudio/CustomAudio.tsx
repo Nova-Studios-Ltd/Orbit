@@ -5,7 +5,8 @@ import TimeBar from "../TimeBar/TimeBar";
 
 export interface AudioProps {
   src?: string,
-  filename?: string
+  filename?: string,
+  type?: string
 }
 
 function CustomAudio(props: AudioProps) {
@@ -85,7 +86,7 @@ function CustomAudio(props: AudioProps) {
   return (
     <div className="player" style={{ backgroundColor: theme.palette.background.default }}>
       <audio ref={audio} onLoadedData={setAudioData} onTimeUpdate={(e) => setPosition(e.currentTarget.currentTime)}>
-        <source src={props.src} />
+        <source src={props.src} type={props.type} />
       </audio>
       <div className="player_display">
         <div className="player_display_title">
