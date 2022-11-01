@@ -41,7 +41,7 @@ function CustomAudio(props: AudioProps) {
   useEffect(() => {
     if (!audio.current) return;
 
-    if (audio.current.currentTime >= duration) {
+    if (audio.current.currentTime >= duration && playing) {
       setPlaying(false);
       setNewPosition(0);
     }

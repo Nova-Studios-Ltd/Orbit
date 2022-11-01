@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { Button, Checkbox, Typography, useTheme } from "@mui/material";
+import { Button, Checkbox, IconButton, Typography, useTheme } from "@mui/material";
+import { Security as OwnerIcon } from "@mui/icons-material";
 import useClassNames from "Hooks/useClassNames";
 import { useTranslation } from "react-i18next";
 import { WriteToClipboard } from "NSLib/ElectronAPI";
@@ -8,6 +9,7 @@ import AvatarTextButton from "Components/Buttons/AvatarTextButton/AvatarTextButt
 import ContextMenu from "Components/Menus/ContextMenu/ContextMenu";
 import ContextMenuItem from "Components/Menus/ContextMenuItem/ContextMenuItem";
 import GenericDialog from "Components/Dialogs/GenericDialog/GenericDialog";
+import Separator from "Components/Menus/Separator/Separator";
 
 import type { NCComponent } from "Types/UI/Components";
 import type Friend from "Types/UI/Friend";
@@ -24,6 +26,7 @@ export interface FriendButtonProps extends NCComponent {
   onBlockFriend?: (uuid: string) => void,
   onUnblockFriend?: (uuid: string) => void,
   onRemoveFriend?: (uuid: string) => void,
+  onKickRecipient?: (recipient: Friend) => void
 }
 
 function FriendButton(props: FriendButtonProps) {
@@ -45,14 +48,7 @@ function FriendButton(props: FriendButtonProps) {
   }
 
   const onRightClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    if (props.variant === FriendButtonVariant.Dialog) {
-      const target = event.currentTarget;
-      const rect = event.currentTarget.getBoundingClientRect();
-      setFriendContextMenuAnchorPos({ x: event.clientX - rect.left, y: event.clientY - rect.top });
-    }
-    else {
-      setFriendContextMenuAnchorPos({ x: event.clientX, y: event.clientY });
-    }
+    setFriendContextMenuAnchorPos({ x: event.clientX, y: event.clientY });
     setFriendContextMenuVisibility(true);
   }
 
@@ -80,7 +76,11 @@ function FriendButton(props: FriendButtonProps) {
       {props.inSelectionMode ? <div className="FriendButtonSelectorContainer">
         <Checkbox checked={props.selected} onChange={onLeftClick} />
       </div> : null}
-      <AvatarTextButton fullWidth showEllipsis selected={props.selected} selectionType={SelectionType.MultiSelect} iconSrc={props.friend?.friendData?.avatar} onLeftClick={onLeftClick} onRightClick={onRightClick}>
+      <AvatarTextButton fullWidth showEllipsis selected={props.selected} selectionType={SelectionType.MultiSelect} iconSrc={props.friend?.friendData?.avatar} onLeftClick={onLeftClick} onRightClick={onRightClick} childrenAfter={
+        <>
+          {props.friend?.uiStates?.isOwner ? <IconButton disabled><OwnerIcon /></IconButton> : null}
+        </>
+      }>
         <div className="FriendButtonContent">
           <Typography>{props.friend?.friendData?.username}#{props.friend?.friendData?.discriminator}</Typography>
           {!props.hideUUID ? <Typography variant="caption" color="gray">{props.friend?.friendData?.uuid}</Typography> : null}
@@ -108,11 +108,15 @@ function FriendButton(props: FriendButtonProps) {
         </div>
       </GenericDialog>
       <ContextMenu open={FriendContextMenuVisible} anchorPos={FriendContextMenuAnchorPos} onDismiss={() => setFriendContextMenuVisibility(false)}>
+        {props.variant === FriendButtonVariant.Dialog ? <>
+          <ContextMenuItem disabled={!props.friend?.uiStates?.removable} onLeftClick={() => props.onKickRecipient && props.friend ? props.onKickRecipient(props.friend) : null}>{Localizations_ContextMenuItem("ContextMenuItem-Remove")}</ContextMenuItem>
+          <Separator />
+        </> : null}
         <ContextMenuItem onLeftClick={() => props.friend && props.friend.friendData && props.friend.friendData.username && props.friend.friendData.discriminator ? WriteToClipboard(`${props.friend.friendData.username}#${props.friend.friendData.discriminator}`) : null}>{Localizations_ContextMenuItem("ContextMenuItem-CopyUser")}</ContextMenuItem>
         {!props.hideUUID ? <ContextMenuItem onLeftClick={() => props.friend && props.friend.friendData && props.friend.friendData.uuid ? WriteToClipboard(props.friend.friendData.uuid) : null}>{Localizations_ContextMenuItem("ContextMenuItem-CopyUUID")}</ContextMenuItem> : null}
-        {props.friend && props.friend.status?.toLowerCase() === "request" ? <ContextMenuItem onLeftClick={onLeftClick}>{Localizations_ContextMenuItem("ContextMenuItem-Accept")}</ContextMenuItem> : null}
-        {props.variant !== FriendButtonVariant.Blocked ? <ContextMenuItem onLeftClick={() => setRemoveFriendDialogVisible(true)}>{Localizations_ContextMenuItem("ContextMenuItem-Remove")}</ContextMenuItem> : null}
-        <ContextMenuItem onLeftClick={() => setBlockUnblockFriendDialogVisible(true)}>{props.friend?.status?.toLowerCase() === "blocked" ? Localizations_ContextMenuItem("ContextMenuItem-Unblock") : Localizations_ContextMenuItem("ContextMenuItem-Block")}</ContextMenuItem>
+        {props.friend && props.friend.status?.toLowerCase() === "request" ? <ContextMenuItem disabled={!props.onLeftClick} onLeftClick={onLeftClick}>{Localizations_ContextMenuItem("ContextMenuItem-Accept")}</ContextMenuItem> : null}
+        {props.variant !== FriendButtonVariant.Blocked ? <ContextMenuItem disabled={!props.onRemoveFriend} onLeftClick={() => setRemoveFriendDialogVisible(true)}>{Localizations_ContextMenuItem("ContextMenuItem-Unfriend")}</ContextMenuItem> : null}
+        <ContextMenuItem disabled={!props.onBlockFriend || !props.onUnblockFriend} onLeftClick={() => setBlockUnblockFriendDialogVisible(true)}>{props.friend?.status?.toLowerCase() === "blocked" ? Localizations_ContextMenuItem("ContextMenuItem-Unblock") : Localizations_ContextMenuItem("ContextMenuItem-Block")}</ContextMenuItem>
       </ContextMenu>
     </div>
   );

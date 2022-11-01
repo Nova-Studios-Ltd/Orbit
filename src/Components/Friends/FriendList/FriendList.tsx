@@ -22,7 +22,8 @@ export interface FriendListProps extends NCComponent {
   onCreateGroup?: (recipients: Friend[]) => void,
   onRemoveFriend?: (uuid: string) => void,
   onBlockFriend?: (uuid: string) => void,
-  onUnblockFriend?: (uuid: string) => void
+  onUnblockFriend?: (uuid: string) => void,
+  onKickRecipient?: (recipient: Friend) => void
 }
 
 function FriendList(props: FriendListProps) {
@@ -75,8 +76,8 @@ function FriendList(props: FriendListProps) {
 
   const friendElements = (() => {
     if (props.friends) {
-      const elements = props.friends.map((friend) => {
-        if (!friend.friendData || !friend.status) return null;
+      const elements = props.friends.map((friend, index) => {
+        if (!friend.friendData) return null;
 
         const isBlocked = friend.status?.toLowerCase() === "blocked";
 
@@ -94,7 +95,7 @@ function FriendList(props: FriendListProps) {
           onFriendClicked(_friend)
         }
 
-        return (<FriendButton sharedProps={props.sharedProps} friend={friend} inSelectionMode={props.inSelectionMode} selected={ticked} variant={props.variant} hideUUID={props.hideUUIDs} onLeftClick={onLeftClick} onBlockFriend={props.onBlockFriend} onUnblockFriend={props.onUnblockFriend} onRemoveFriend={props.onRemoveFriend} />)
+        return (<FriendButton key={friend.friendData && friend.friendData.uuid ? friend.friendData.uuid : index} sharedProps={props.sharedProps} friend={friend} inSelectionMode={props.inSelectionMode} selected={ticked} variant={props.variant} hideUUID={props.hideUUIDs} onLeftClick={onLeftClick} onBlockFriend={props.onBlockFriend} onUnblockFriend={props.onUnblockFriend} onRemoveFriend={props.onRemoveFriend} onKickRecipient={props.onKickRecipient} />)
       });
 
       const reducedElements = [];

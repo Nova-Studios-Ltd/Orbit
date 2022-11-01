@@ -38,11 +38,15 @@ function GenericDialog(props: GenericDialogProps) {
         <CSSTransition classNames="GenericDialogInnerContainer" in={props.open} timeout={10}>
           <div className="GenericDialogInnerContainer" style={{ backgroundColor: theme.palette.background.paper }} onKeyDown={onKeyDown}>
             <Typography className="GenericDialogTitle" variant="h5">{props.title}</Typography>
-            <div className="GenericDialogContentContainer">
-              {props.children}
+            <div className="GenericDialogContentScrollContainer">
+              <div className="GenericDialogContentContainer">
+                {props.children}
+              </div>
             </div>
-            <div className="GenericDialogButtonContainer">
-              {props.buttons}
+            <div className="GenericDialogButtonOuterContainer" style={{ background: theme.palette.background.paper }}>
+              <div className="GenericDialogButtonContainer">
+                {props.buttons}
+              </div>
             </div>
           </div>
         </CSSTransition>

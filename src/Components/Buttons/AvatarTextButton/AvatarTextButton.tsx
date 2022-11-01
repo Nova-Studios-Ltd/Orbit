@@ -2,6 +2,8 @@ import { Avatar, ButtonBase, IconButton, Typography, useTheme } from "@mui/mater
 import { MoreHoriz as EllipsisIcon } from "@mui/icons-material";
 import React, { useState, ReactNode, useRef } from "react";
 
+import GenericButton from "Components/Buttons/GenericButton/GenericButton";
+
 import type { NCComponent } from "Types/UI/Components";
 import useClassNames from "Hooks/useClassNames";
 import { SelectionType } from "Types/Enums";
@@ -28,11 +30,7 @@ function AvatarTextButton(props: AvatarTextButtonProps) {
   const classNames = useClassNames(useClassNames("AvatarTextButtonContainer", props.className), props.fullWidth ? "FullWidth" : "");
   const isTouchCapable = props.sharedProps && props.sharedProps.isTouchCapable;
 
-  const selectionType = props.selectionType !== undefined ? props.selectionType : SelectionType.Single;
-
   const [isHovering, setHoveringState] = useState(false);
-  const [isDragZoneTopHovering, setDragZoneTopHoveringState] = useState(false);
-  const [isDragZoneBottomHovering, setDragZoneBottomHoveringState] = useState(false);
 
   const AvatarTextButtonVeryRightRef = useRef() as React.MutableRefObject<HTMLDivElement>;
 
@@ -61,25 +59,16 @@ function AvatarTextButton(props: AvatarTextButtonProps) {
     if (props.onRightClick) props.onRightClick(event);
   };
 
-  const onDrag = (event: React.DragEvent<HTMLDivElement>) => {
-    if (props.draggable && props.onDrag) props.onDrag(event);
-  }
-
-  const onDrop = (event: React.DragEvent<HTMLSpanElement>) => {
-    if (props.draggable && props.onDrop) props.onDrop(event);
-  }
-
   return (
-    <div className={classNames} style={{ backgroundColor: backgroundColor, boxShadow: props.selected ? `4px 4px ${theme.palette.background.default}` : "none" }} draggable={props.draggable} onDragStart={onDrag}>
-      {props.draggable ? <span className="AvatarTextButtonDragZone AvatarTextButtonDragZoneTop" style={{ background: isDragZoneTopHovering ? theme.palette.primary.main : "none" }} onDrop={(event) => { onDrop(event); setDragZoneTopHoveringState(false); }} onDragOver={(event) => { setDragZoneTopHoveringState(true); event.preventDefault(); }} onDragLeave={() => setDragZoneTopHoveringState(false)}/> : null}
-      <ButtonBase className="AvatarTextButtonBase" onClick={props.onLeftClick} onContextMenu={props.onRightClick} onMouseEnter={() => onMouseHover(true)} onMouseLeave={() => onMouseHover(false)}>
+    <div className={classNames} style={{ background: backgroundColor, boxShadow: props.selected ? `4px 4px ${theme.palette.background.default}` : "none" }}>
+      <GenericButton onLeftClick={props.onLeftClick} draggable={props.draggable} fullWidth defaultHoverAction={false} onRightClick={props.onRightClick} onMouseEnter={() => setHoveringState(true)} onMouseLeave={() => setHoveringState(false)} onDrag={props.onDrag} onDrop={props.onDrop}>
         <div className="AvatarTextButtonLeft">
           <Avatar className="AvatarTextButtonIcon" src={!props.iconObj ? props.iconSrc : ""}>{props.iconObj}</Avatar>
         </div>
         <div className="AvatarTextButtonRight" style={{ marginRight: AvatarTextButtonVeryRightRef.current !== undefined ? AvatarTextButtonVeryRightRef.current.offsetWidth : 0 }}>
           <Typography variant="h6" noWrap textOverflow="ellipsis">{props.children}</Typography>
         </div>
-      </ButtonBase>
+      </GenericButton>
       <div className="AvatarTextButtonVeryRight" ref={AvatarTextButtonVeryRightRef}>
         {props.childrenAfter}
         {props.showEllipsis || (isTouchCapable && props.showEllipsisConditional) ? (
@@ -88,7 +77,6 @@ function AvatarTextButton(props: AvatarTextButtonProps) {
           </IconButton>
         ) : null}
       </div>
-      {props.draggable ? <span className="AvatarTextButtonDragZone AvatarTextButtonDragZoneBottom" style={{ background: isDragZoneBottomHovering ? theme.palette.primary.main : "none" }} onDrop={(event) => { onDrop(event); setDragZoneBottomHoveringState(false); }} onDragOver={(event) => { setDragZoneBottomHoveringState(true); event.preventDefault(); }} onDragLeave={() => setDragZoneBottomHoveringState(false)}/> : null}
     </div>
   );
 }

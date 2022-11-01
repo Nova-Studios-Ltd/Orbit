@@ -1,0 +1,44 @@
+.GenericButtonContainer {
+  border-radius: var(--global-border-radius);
+}
+
+.GenericButtonBase {
+  display: flex !important;
+  flex-direction: row;
+  justify-content: flex-start !important;
+
+  padding: var(--global-padding) !important;
+  border-radius: var(--global-border-radius) !important;
+
+  width: 100%;
+  height: 100%;
+
+  cursor: pointer;
+
+  transition: background-color 100ms linear;
+}
+
+.GenericButtonRipple {
+
+}
+
+.GenericButtonDragZone {
+  position: absolute;
+  width: 100%;
+  height: 10px;
+  border-radius: var(--global-border-radius);
+}
+
+.GenericButtonDragZoneTop {
+  top: -5px;
+}
+
+.GenericButtonDragZoneBottom {
+
+}
+
+@media only screen and (max-width: 600px) {
+  .GenericButtonContainer {
+
+  }
+}

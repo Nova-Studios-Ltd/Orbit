@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Avatar, Button, Icon, IconButton, useTheme, Typography, CircularProgress } from "@mui/material";
-import { Add as AddIcon, Delete as DeleteIcon, Group as GroupIcon, Security as OwnerIcon } from "@mui/icons-material";
+import { Avatar, Button, Icon, IconButton, useTheme, Typography, CircularProgress, ButtonBase } from "@mui/material";
+import { Add as AddIcon, AddCircle as AddFilledIcon, Delete as DeleteIcon, Group as GroupIcon, Security as OwnerIcon } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
 import { SettingsManager } from "NSLib/SettingsManager";
 import useClassNames from "Hooks/useClassNames";
@@ -10,6 +10,8 @@ import { NCFile, UploadFile } from "NSLib/ElectronAPI";
 import AvatarTextButton from "Components/Buttons/AvatarTextButton/AvatarTextButton";
 import ContextMenu from "Components/Menus/ContextMenu/ContextMenu";
 import ContextMenuItem from "Components/Menus/ContextMenuItem/ContextMenuItem";
+import FriendList from "Components/Friends/FriendList/FriendList";
+import GenericButton from "Components/Buttons/GenericButton/GenericButton";
 import GenericDialog from "Components/Dialogs/GenericDialog/GenericDialog";
 import TextCombo from "Components/Input/TextCombo/TextCombo";
 
@@ -18,7 +20,8 @@ import type { IRawChannelProps } from "Types/API/Interfaces/IRawChannelProps";
 import type { ChannelMoveData, Coordinates } from "Types/General";
 import type IUserData from "Types/API/Interfaces/IUserData";
 import type { IChannelUpdateProps } from "Types/API/Interfaces/IChannelUpdateProps";
-import { ChannelTypes } from "Types/Enums";
+import { ChannelTypes, FriendButtonVariant } from "Types/Enums";
+import type Friend from "Types/UI/Friend";
 
 export interface ChannelProps extends NCComponent {
   channelData: IRawChannelProps,
@@ -30,7 +33,13 @@ export interface ChannelProps extends NCComponent {
   onChannelEdit?: (channel: IChannelUpdateProps) => void,
   onChannelMove?: (currentChannel: IRawChannelProps, otherChannel: IRawChannelProps, index: number) => void,
   onChannelRemoveRecipient?: (channel: IRawChannelProps, recipient: IUserData) => void,
-  onChannelResetIcon?: (channel: IRawChannelProps) => void
+  onChannelResetIcon?: (channel: IRawChannelProps) => void,
+  onReloadList?: () => void,
+  onFriendClicked?: (friend: Friend) => void,
+  onCreateGroup?: (recipients: Friend[]) => void,
+  onRemoveFriend?: (uuid: string) => void,
+  onBlockFriend?: (uuid: string) => void,
+  onUnblockFriend?: (uuid: string) => void
 }
 
 function Channel(props: ChannelProps) {
@@ -52,17 +61,19 @@ function Channel(props: ChannelProps) {
   const [ChannelInfoDialogVisible, setChannelInfoDialogVisibility] = useState(false);
   const [EditChannelDialogVisible, setEditChannelDialogVisibility] = useState(false);
   const [DeleteChannelDialogVisible, setDeleteChannelDialogVisibility] = useState(false);
-  const [ChannelMembersUserData, setChannelMembersUserData] = useState([] as IUserData[]);
+  const [ChannelMembersUserData, setChannelMembersUserData] = useState([] as Friend[]);
 
   useEffect(() => {
-    const channelMembers: IUserData[] = [];
+    const channelMembers: Friend[] = [];
 
     if (props.channelData && props.channelData.members) {
       for (let i = 0; i < props.channelData.members.length; i++) {
         const uuid = props.channelData.members[i];
           GETUser(uuid).then((user) => {
             if (user) {
-              channelMembers.push(user);
+              const selectedIsOwner = props.channelData.owner_UUID === user.uuid;
+              const friend: Friend = { friendData: user, uiStates: { isOwner: isGroup && selectedIsOwner, removable: isOwner && isGroup && !selectedIsOwner } };
+              channelMembers.push(friend);
               return;
             }
             console.error(`Failed to get user data with UUID ${uuid}`);
@@ -70,7 +81,11 @@ function Channel(props: ChannelProps) {
       }
       setChannelMembersUserData(channelMembers);
     }
-  }, [props.channelData, settings.User.uuid]);
+  }, [isGroup, isOwner, props.channelData, settings.User.uuid]);
+
+  const onKickRecipient = (recipient: Friend) => {
+    if (props.onChannelRemoveRecipient && recipient.friendData) props.onChannelRemoveRecipient(props.channelData, recipient.friendData);
+  }
 
   const onChannelLeftClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     if (props.onChannelClick) props.onChannelClick(props.channelData);
@@ -113,10 +128,6 @@ function Channel(props: ChannelProps) {
     setDeleteChannelDialogVisibility(false);
   }
 
-  const removeRecipient = (recipient: IUserData) => {
-    if (props.onChannelRemoveRecipient) props.onChannelRemoveRecipient(props.channelData, recipient);
-  }
-
   const pickChannelIcon = async () => {
     if (isOwner) {
       UploadFile(false).then((files: NCFile[]) => {
@@ -152,39 +163,6 @@ function Channel(props: ChannelProps) {
     }
   }
 
-  const channelMembersList = (() => {
-    const channelMembersEl: JSX.Element[] = [];
-
-    for (let i = 0; i < ChannelMembersUserData.length; i++) {
-      const user = ChannelMembersUserData[i];
-      const selectedIsOwner = props.channelData.owner_UUID === user.uuid;
-
-      channelMembersEl.push(
-        <AvatarTextButton key={user.uuid} fullWidth iconSrc={user.avatar} childrenAfter={
-          (() => {
-            if (isGroup) {
-              if (selectedIsOwner) {
-                return (<IconButton disabled><OwnerIcon /></IconButton>);
-              }
-              else if (isOwner) {
-                return (<IconButton onClick={() => removeRecipient(user)}><DeleteIcon /></IconButton>);
-              }
-            }
-          }
-          )()
-        }>{user.username}</AvatarTextButton>
-      );
-    }
-
-    return (
-      <div className="ChannelMembersListContainer">
-        <Typography variant="h6">{Localizations_Channel("Typography-ChannelMembersListTitle")}</Typography>
-        {channelMembersEl.length < 1 ? <CircularProgress /> : null}
-        {channelMembersEl}
-      </div>
-    )
-  })()
-
   return (
     <div className={classNames}>
       <AvatarTextButton className="ChannelAvatarTextButtonContainer" sharedProps={props.sharedProps} showEllipsisConditional draggable onDrag={onChannelDrag} onDrop={onOtherChannelDropped} iconSrc={props.channelData.channelIcon} selected={props.isSelected} onLeftClick={onChannelLeftClick} onRightClick={onChannelRightClick} childrenAfter={
@@ -214,7 +192,11 @@ function Channel(props: ChannelProps) {
           </>
         )
       }>
-        {channelMembersList}
+        <div className="ChannelMembersListContainer">
+          <Typography variant="h6">{Localizations_Channel("Typography-ChannelMembersListTitle")}</Typography>
+          <FriendList variant={FriendButtonVariant.Dialog} friends={ChannelMembersUserData} onKickRecipient={onKickRecipient} />
+          <GenericButton fullWidth><Icon style={{ margin: "auto" }}><AddFilledIcon /></Icon></GenericButton>
+        </div>
         <div className="GenericDialogTextContainer">
           <Typography variant="h6">{Localizations_Channel("Typography-ChangeChannelIcon")}</Typography>
           <div style={{ alignSelf: "center" }}>
@@ -236,7 +218,10 @@ function Channel(props: ChannelProps) {
           <Button onClick={() => setChannelInfoDialogVisibility(false)}>{Localizations_GenericDialog("Button_Label-DialogOK")}</Button>
         </>
       }>
-        {channelMembersList}
+        <div className="ChannelMembersListContainer">
+          <Typography variant="h6">{Localizations_Channel("Typography-ChannelMembersListTitle")}</Typography>
+          <FriendList variant={FriendButtonVariant.Dialog} friends={ChannelMembersUserData} onKickRecipient={onKickRecipient} />
+        </div>
         <Button variant="outlined" onClick={clearChannelCache}>{Localizations_Channel("Button_Label-ClearCache")}</Button>
       </GenericDialog>
       <ContextMenu open={ChannelContextMenuVisible} onDismiss={() => setChannelContextMenuVisibility(false)} anchorPos={ChannelContextMenuAnchorPos}>

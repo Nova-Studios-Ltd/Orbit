@@ -5,6 +5,11 @@
   width: 100%;
   height: 100%;
 
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
   visibility: hidden;
   z-index: 10;
 
@@ -15,21 +20,14 @@
   display: flex;
   flex-direction: column;
   padding: var(--dialog-padding-top) var(--dialog-padding-right) var(--dialog-padding-bottom) var(--dialog-padding-left);
+  gap: var(--dialog-margin);
   border-radius: var(--global-border-radius);
 
   box-sizing: border-box;
   -webkit-box-sizing: border-box;
 
-  overflow-y: auto;
-  overflow-x: hidden;
-
-  position: absolute;
   min-width: 25rem;
-  top: 50%;
-  left: 50%;
-
-  transform: translate(-50%, -50%);
-  -ms-transform: translate(-50%, -50%);
+  max-height: 50%;
 
   transition: opacity 200ms ease-in-out;
 }
@@ -38,15 +36,32 @@
   overflow-wrap: break-word;
 }
 
+.GenericDialogContentScrollContainer {
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
 .GenericDialogContentContainer {
   display: flex;
   flex-direction: column;
+  overflow-y: hidden;
+  overflow-x: hidden;
 
-  margin: var(--dialog-margin) 0;
+  padding: var(--dialog-padding);
+  margin-right: var(--dialog-margin);
   gap: var(--global-margin);
 }
 
+.GenericDialogButtonOuterContainer {
+  width: 100%;
+
+  right: 0;
+  bottom: 0;
+}
+
 .GenericDialogButtonContainer {
+  width: 100%;
+
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
@@ -75,17 +90,19 @@
 @media only screen and (max-width: 600px) {
   .GenericDialogInnerContainer {
     position: static;
+    max-height: 100%;
     height: 100%;
+    width: 100%;
+
+    align-items: center;
 
     border-radius: 0;
 
     padding: var(--dialog-padding-top-constrained) var(--dialog-padding-right-constrained) var(--dialog-padding-bottom-constrained) var(--dialog-padding-left-constrained);    ;
-
-    transform: none;
-    -ms-transform: none;
   }
 
   .GenericDialogContentContainer {
+    height: 100%;
     margin: var(--dialog-margin-constrained) 0;
   }
 
