@@ -103,7 +103,7 @@
 
   .GenericDialogContentContainer {
     height: 100%;
-    margin: var(--dialog-margin-constrained) 0;
+    margin: var(--dialog-margin-constrained);
   }
 
   .GenericDialogButtonContainer {
