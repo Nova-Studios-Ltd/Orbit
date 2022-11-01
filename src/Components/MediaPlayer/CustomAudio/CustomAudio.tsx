@@ -1,6 +1,6 @@
 import { PauseCircleFilled, PlayCircleFilled, VolumeUp } from "@mui/icons-material";
 import { Typography, useTheme } from "@mui/material";
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import TimeBar from "../TimeBar/TimeBar";
 
 export interface AudioProps {
@@ -25,6 +25,7 @@ function CustomAudio(props: AudioProps) {
   // Player volume state
   const [volume, setVolume] = useState(0.5);
 
+  const [safariInit, setSafariInit] = useState(false);
   const [hasFirmlyGrippedKnob, setGrabKnob] = useState(false);
 
   const setAudioData = () => {
@@ -83,6 +84,17 @@ function CustomAudio(props: AudioProps) {
     setVolume(newVolume);
   }
 
+  const onPlayPauseButtonClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    if (!safariInit && audio.current) {
+      audio.current.muted = false;
+      audio.current.play();
+      setPlaying(true);
+      setSafariInit(true);
+      return;
+    }
+    setPlaying(!playing);
+  }
+
   return (
     <div className="player" style={{ backgroundColor: theme.palette.background.default }}>
       <audio ref={audio} onLoadedData={setAudioData} onTimeUpdate={(e) => setPosition(e.currentTarget.currentTime)}>
@@ -94,7 +106,7 @@ function CustomAudio(props: AudioProps) {
         </div>
       </div>
       <div className="player_controls">
-        <button className="player_button" onMouseOver={(e) => e.currentTarget.style.color = theme.customPalette.SystemAccentColor} onMouseLeave={(e) => e.currentTarget.style.color = "white"} onClick={() => setPlaying(!playing)}>
+        <button className="player_button" onMouseOver={(e) => e.currentTarget.style.color = theme.customPalette.SystemAccentColor} onMouseLeave={(e) => e.currentTarget.style.color = "white"} onClick={onPlayPauseButtonClick}>
           {(!playing) ? (<PlayCircleFilled fontSize="large" />) : (<PauseCircleFilled fontSize="large" />)}
         </button>
         <div onMouseOver={() => setVolumeSlider(true)} onMouseLeave={() => { setVolumeSlider(false); setGrabKnob(false); }}
