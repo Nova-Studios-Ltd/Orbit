@@ -108,7 +108,7 @@ function FriendButton(props: FriendButtonProps) {
         </div>
       </GenericDialog>
       <ContextMenu open={FriendContextMenuVisible} anchorPos={FriendContextMenuAnchorPos} onDismiss={() => setFriendContextMenuVisibility(false)}>
-        {props.variant === FriendButtonVariant.Dialog ? <>
+        {props.variant === FriendButtonVariant.DialogGroup ? <>
           <ContextMenuItem disabled={!props.friend?.uiStates?.removable} onLeftClick={() => props.onKickRecipient && props.friend ? props.onKickRecipient(props.friend) : null}>{Localizations_ContextMenuItem("ContextMenuItem-Remove")}</ContextMenuItem>
           <Separator />
         </> : null}

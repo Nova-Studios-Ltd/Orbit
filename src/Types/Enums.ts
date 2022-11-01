@@ -35,7 +35,8 @@ export enum SelectionType {
 export enum FriendButtonVariant {
   Normal,
   Blocked,
-  Dialog,
+  DialogSingle,
+  DialogGroup,
   All
 }
 
