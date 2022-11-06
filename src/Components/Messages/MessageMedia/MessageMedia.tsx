@@ -1,5 +1,5 @@
 import React, { memo, useEffect, useRef, useState } from "react";
-import { useTheme } from "@mui/material";
+//import { useTheme } from "@mui/material";
 import useClassNames from "Hooks/useClassNames";
 import { ComputeCSSDims } from "NSLib/Util";
 import Dimensions from "Types/Dimensions";
@@ -16,7 +16,7 @@ import { Base64String } from "NSLib/Base64";
 import { GETFile } from "NSLib/NCAPI";
 import { DecryptBase64WithPriv, DecryptUint8Array } from "NSLib/NCEncryption";
 import { AESMemoryEncryptData } from "NSLib/NCEncrytUtil";
-import { HasFlag } from "NSLib/NCFlags";
+import { NCFlags, HasUrlFlag } from "NSLib/NCFlags";
 import { SettingsManager } from "NSLib/SettingsManager";
 
 export interface MessageMediaProps extends NCComponent {
@@ -35,7 +35,7 @@ export interface MessageMediaProps extends NCComponent {
 }
 
 function MessageMedia(props: MessageMediaProps) {
-  const theme = useTheme();
+  //const theme = useTheme();
   const classNames = useClassNames("MessageMediaContainer", props.className);
   const isPreviewableMediaType = useRef(false);
   const [dimensions, setDimensions] = useState({});
@@ -46,7 +46,7 @@ function MessageMedia(props: MessageMediaProps) {
   useEffect(() => {
     (async () => {
       // Url control variable
-      if (HasFlag("no-load-content")) return;
+      if (HasUrlFlag(NCFlags.NoLoadContent)) return;
 
       // First confirm contentUrl/keys/iv is not undefined
       if (props.contentUrl === undefined || props.keys === undefined || props.iv === undefined) return;

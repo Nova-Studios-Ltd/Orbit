@@ -34,9 +34,10 @@ function CustomAudio(props: AudioProps) {
     setPosition(audio.current.currentTime);
   }
 
-  const setVolumeSlider = (show: boolean) => {
+  const setVolumeSlider = (event: React.MouseEvent<HTMLDivElement, MouseEvent>, show: boolean) => {
     if (volumeSliderContainer.current) {
       volumeSliderContainer.current.style.display = (show) ? "flex" : "none";
+      event.currentTarget.style.color = (show)? theme.customPalette.SystemAccentColor : "white";
     }
   }
 
@@ -97,7 +98,7 @@ function CustomAudio(props: AudioProps) {
 
   return (
     <div className="player" style={{ backgroundColor: theme.palette.background.default }}>
-      <audio ref={audio} onLoadedData={setAudioData} onTimeUpdate={(e) => setPosition(e.currentTarget.currentTime)}>
+      <audio ref={audio} style={{display: "none"}} onLoadedData={setAudioData} onTimeUpdate={(e) => setPosition(e.currentTarget.currentTime)}>
         <source src={props.src} type={props.type} />
       </audio>
       <div className="player_display">
@@ -109,8 +110,8 @@ function CustomAudio(props: AudioProps) {
         <button className="player_button" onMouseOver={(e) => e.currentTarget.style.color = theme.customPalette.SystemAccentColor} onMouseLeave={(e) => e.currentTarget.style.color = "white"} onClick={onPlayPauseButtonClick}>
           {(!playing) ? (<PlayCircleFilled fontSize="large" />) : (<PauseCircleFilled fontSize="large" />)}
         </button>
-        <div onMouseOver={() => setVolumeSlider(true)} onMouseLeave={() => { setVolumeSlider(false); setGrabKnob(false); }}
-          className="player_volume_container" style={{ color: volumeSlider ? theme.customPalette.SystemAccentColor : "white" }}>
+        <div onMouseOver={(e) => setVolumeSlider(e, true)} onMouseLeave={(e) => { setVolumeSlider(e, false); setGrabKnob(false); }}
+          className="player_volume_container" style={{ color: "white" }}>
           <VolumeUp className="player_volume" />
           <div ref={volumeSliderContainer} className="player_volume_slider">
             <div ref={volumeSlider} className="volume_bar_progress" style={{ background: `linear-gradient(to top, ${theme.customPalette.SystemAccentColor} ${((volume / 1) * 100)}%, white 0)` }} onMouseDown={(e) => { setGrabKnob(true); setVolume(calcClickedVolume(e)); }} onMouseUp={() => setGrabKnob(false)} onMouseMove={handleVolumeDrag}>

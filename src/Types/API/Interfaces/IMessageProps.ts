@@ -12,6 +12,7 @@ export interface IMessageProps {
     edited: boolean,
     avatar: string,
     attachments: IAttachmentProps[],
+    encrypted: boolean,
     onUpdate: () => void;
     onImageClick?: (src: string, dimensions: Dimensions) => void;
   }

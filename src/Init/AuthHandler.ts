@@ -8,7 +8,7 @@ import WebsocketInit from "./WebsocketEventInit";
 import { ToBase64String, ToUint8Array } from "../NSLib/Base64";
 import { LoginStatus } from "Types/Enums";
 import { DecryptBase64, GenerateBase64SHA256 } from "NSLib/NCEncryption";
-import { HasFlag } from "NSLib/NCFlags";
+import { NCFlags, HasUrlFlag } from "NSLib/NCFlags";
 import { NCChannelCache } from "NSLib/NCChannelCache";
 import { WEBSOCKET_DOMAIN } from "vars";
 
@@ -53,7 +53,7 @@ export async function AutoLogin() : Promise<boolean> {
   Manager.User.username = userResp.username;
   Manager.User.email = userResp.email;
 
-  if (!HasFlag("no-websocket")) {
+  if (!HasUrlFlag(NCFlags.NoWebsocket)) {
     // Setup websocket
     Websocket = new NCWebsocket(`${WEBSOCKET_DOMAIN}/Events/Listen?user_uuid=${Manager.User.uuid}`, Manager.User.token);
     Websocket.OnConnected = () => console.log("Connected!");

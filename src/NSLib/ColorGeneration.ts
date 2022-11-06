@@ -35,7 +35,7 @@ function RgbToHex(r: number, g: number, b: number) {
  * @returns A HEX string containing a color
  */
 export default function GenerateRandomColor(lightness: number = 75) : string {
-  return HslToHex(GetRandomInt(0, 360), GetRandomInt(80, 100), lightness);
+  return HslToHex(GetRandomInt(0, 360), GetRandomInt(0, 100), lightness);
 }
 
 /**

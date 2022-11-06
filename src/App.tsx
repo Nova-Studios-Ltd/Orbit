@@ -14,7 +14,7 @@ import { NCUserCache } from "NSLib/NCUserCache";
 import { CREATEChannel, DELETEChannel, DELETEMessage, EDITMessage, GETChannel, GETOwnFriends, GETMessages, GETUserChannels, GETUserUUID, SENDMessage, GETUser, REQUESTFriend, ACCEPTFriend, REMOVEFriend, BLOCKFriend, UNBLOCKFriend, UPDATEChannelName, UPDATEChannelIcon, REMOVEChannelIcon, CREATEGroupChannel, REMOVEChannelMember } from "NSLib/APIEvents";
 
 import { OverrideConsoleLog, OverrideConsoleWarn, OverrideConsoleError, OverrideConsoleSuccess, DummyConsoleSuccess } from "./overrides";
-import { GetUrlFlag, HasFlag } from "NSLib/NCFlags";
+import { NCFlags, GetUrlFlag, HasUrlFlag } from "NSLib/NCFlags";
 import { ThemeSelector } from "Theme";
 import { Localizations } from "Localization/Localizations";
 
@@ -61,7 +61,7 @@ export const UserCache = new NCUserCache();
 
 function App() {
   const Localizations_Common = useTranslation().t;
-  const theme = ThemeSelector(GetUrlFlag("theme") || "DarkTheme_Default");
+  const theme = ThemeSelector(GetUrlFlag(NCFlags.Theme) || "DarkTheme_Default");
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -84,7 +84,7 @@ function App() {
   const [helpVisible, setHelpVisibility] = useState(false);
   const [helpAnchorEl, setHelpAnchor] = useState(null as unknown as Element);
   const [helpContent, setHelpContent] = useState(null as unknown as ReactNode);
-  const [debugConsoleVisible, setDebugConsoleVisibility] = useState(GetUrlFlag("console") ? true : false);
+  const [debugConsoleVisible, setDebugConsoleVisibility] = useState(HasUrlFlag(NCFlags.EnableConsole));
   const [debugConsoleBuffer, setDebugConsoleBuffer] = useState([] as DebugMessage[]);
 
   const openConsole = () => setDebugConsoleVisibility(true);
@@ -293,7 +293,7 @@ function App() {
   const onMainViewNavigateToPage = (path: Routes) => {
     setSelectedChannel(null as unknown as IRawChannelProps);
     if (widthConstrained) setChannelMenuVisibility(false);
-    navigate(path);
+    navigate(`${path}${location.search}`);
   }
 
   const selectChannel = async (channel: IRawChannelProps) => {
@@ -313,7 +313,7 @@ function App() {
       if (isCache !== undefined && !await (isCache as NCChannelCache).IsEmpty()) {
         const cache = isCache as NCChannelCache;
         // Fully refresh cache, ignoring anything, pulling the newest messages
-        if (await cache.RequiresRefresh() || HasFlag("force-cache-rebuild")) {
+        if (await cache.RequiresRefresh() || HasUrlFlag(NCFlags.ForceCacheRebuild)) {
           console.log("Rebuilding cache...");
           cache.ClearCache();
 
@@ -331,7 +331,7 @@ function App() {
           return;
         }
 
-        if (!await cache.IsValidSession(session.current) || HasFlag("ignore-cache-session")) {
+        if (!await cache.IsValidSession(session.current) || HasUrlFlag(NCFlags.IgnoreCacheSession)) {
           console.log("Checking and updating cache...");
           await NCChannelCache.CleanCache(channel.table_Id);
           await NCChannelCache.UpdateCache(channel.table_Id);
@@ -385,7 +385,7 @@ function App() {
   }
 
   const onCreateGroup = (friends: Friend[]) => {
-    navigate(Routes.FriendsList);
+    navigate(`${Routes.FriendsList}${location.search}`);
 
     console.log(`Requested to create group with recipients ${friends}`);
     if (friends.length > 0) {

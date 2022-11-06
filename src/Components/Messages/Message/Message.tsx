@@ -1,6 +1,6 @@
-import React, { createContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Avatar, IconButton, Link, Typography, useTheme } from "@mui/material";
-import { AttachmentSharp, Close as CloseIcon } from "@mui/icons-material";
+import { Close as CloseIcon } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
 import useSettingsManager from "Hooks/useSettingsManager";
 
@@ -19,6 +19,13 @@ import { Coordinates } from "Types/General";
 import Linkify from "linkify-react";
 import ContextMenuItem from "Components/Menus/ContextMenuItem/ContextMenuItem";
 
+import JSZip from "jszip";
+import { GETFile, HTTPStatusCodes } from "NSLib/NCAPI";
+import { SettingsManager } from "NSLib/SettingsManager";
+import { DecryptBase64WithPriv, DecryptUint8Array } from "NSLib/NCEncryption";
+import { Base64String } from "NSLib/Base64";
+import { AESMemoryEncryptData } from "NSLib/NCEncrytUtil";
+
 export interface MessageProps extends NCComponent {
   content?: string,
   attachments?: IAttachmentProps[],
@@ -28,6 +35,7 @@ export interface MessageProps extends NCComponent {
   timestamp?: string,
   editedTimestamp?: string,
   isEdited?: boolean,
+  encrypted?: boolean,
   onMessageEdit?: (message: MessageProps) => void,
   onMessageDelete?: (message: MessageProps) => void
 }
@@ -143,25 +151,25 @@ function Message(props: MessageProps) {
     console.warn("File does not contain content to download");
   };
 
-  const processContent = () => {
-    let c = props.content;
-    if (c === undefined) return "";
-    const words = c.split(" ");
-    const x = [] as JSX.Element[];
-    let hasLink = false;
-    for (let w = 0; w < words.length; w++) {
-      const word = words[w];
-      if (word.match(/((https|http):\/\/[\S]*)/g) === null) {
-        x.push((<>{word} </>));
-        continue;
-      }
-      hasLink = true;
-      // eslint-disable-next-line jsx-a11y/anchor-is-valid
-      x.push((<a href="#" onClick={() => window.open(word)}>{word}</a>))
+  const downloadAllAttachments = async () => {
+    if (props.attachments === undefined) return;
+    // Create zip file with all attachments in it
+    const zip = new JSZip();
+    const manager = new SettingsManager();
+    for (var i = 0; i < props.attachments.length; i++) {
+      // Download (Or pull from cache) all attachments, decrypt and compress them
+      const att = props.attachments[i];
+      const file = await GETFile(att.contentUrl, manager.User.token);
+      const att_key = await DecryptBase64WithPriv(manager.User.keyPair.PrivateKey, new Base64String(att.keys[manager.User.uuid]));
+      const decryptedContent = await DecryptUint8Array(att_key, new AESMemoryEncryptData(att.iv, file.payload as Uint8Array));
+      if (file.status !== HTTPStatusCodes.OK) continue;
+      zip.file(att.filename, decryptedContent);
     }
-    if (hasLink && x.length === 1) return "";
-    return x;
-  }
+    // Generate Zip
+    const compressedZip = await zip.generateAsync({type: "uint8array"});
+    // Trigger download
+    DownloadUint8ArrayFile(compressedZip, `message-${props.id}-attachments.zip`);
+  };
 
   if (props.authorID !== undefined && displayName === "") {
     UserCache.GetUserAsync(props.authorID).then((user: IUserData) => {
@@ -189,6 +197,7 @@ function Message(props: MessageProps) {
           <Typography className="MessageName" fontWeight="bold">{displayName}</Typography>
           <Typography className="MessageTimestamp" variant="subtitle2">{props.timestamp?.replace("T", " ")}</Typography>
           {props.isEdited ? <Typography className="MessageTimestampEdited" variant="subtitle2">({Localizations_Message("Typography-TimestampEdited")} {props.editedTimestamp?.replace("T", " ")})</Typography> : null}
+          {!props.encrypted ? <Typography className="MessageTimestampEdited" fontWeight="bold" variant="subtitle2" color="red">WARNING: Message content not encrypted!</Typography> : null}
         </div>
         <Typography variant="body1">
           <Linkify options={{ tagName: "span", formatHref: null, format: (value: string) => <Link href={value} onClick={(event) => { handleURLClick(value); event.preventDefault(); }}>{value}</Link> }}>
@@ -211,6 +220,7 @@ function Message(props: MessageProps) {
         <ContextMenuItem disabled={(props.content !== undefined && props.content.length < 1)} onLeftClick={() => copyMessage()}>{Localizations_ContextMenuItem("ContextMenuItem-Copy")}</ContextMenuItem>
         <ContextMenuItem hide={!isOwnMessage} onLeftClick={() => startEditMessage()}>{Localizations_ContextMenuItem("ContextMenuItem-Edit")}</ContextMenuItem>
         <ContextMenuItem hide={!isOwnMessage} onLeftClick={() => { if (props.onMessageDelete) props.onMessageDelete(filteredMessageProps) }}>{Localizations_ContextMenuItem("ContextMenuItem-Delete")}</ContextMenuItem>
+        <ContextMenuItem hide={props.attachments && props.attachments?.length < 2} onLeftClick={() => downloadAllAttachments()}>{Localizations_ContextMenuItem("ContextMenuItem-DownloadAll")}</ContextMenuItem>
       </ContextMenu>
     </div>
   );

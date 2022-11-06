@@ -5,14 +5,13 @@ import CustomAudio from "Components/MediaPlayer/CustomAudio/CustomAudio";
 import MessageMediaSkeleton from "Components/Skeletons/MessageMediaSkeleton/MessageMediaSkeleton";
 
 import type { MessageMediaProps } from "../../MessageMedia";
-import { useState } from "react";
 
 export interface MessageAudioProps extends MessageMediaProps {
 
 }
 
 function MessageAudio(props: MessageAudioProps) {
-  const theme = useTheme();
+  //const theme = useTheme();
   const classNames = useClassNames("MessageMediaAudioContainer", props.className);
   const loaded = props.contentUrl !== undefined && props.contentUrl.length > 0;
 

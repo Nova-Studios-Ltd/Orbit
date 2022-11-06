@@ -22,6 +22,7 @@
     "exif-stripper": "^0.0.5",
     "i18next": "^21.6.14",
     "i18next-resources-to-backend": "^1.0.0",
+    "jszip": "^3.10.1",
     "linkify-react": "^3.0.4",
     "linkifyjs": "^3.0.5",
     "moment": "^2.29.4",
@@ -32,6 +33,7 @@
     "react-router-dom": "^6.2.2",
     "react-scripts": "^5.0.1",
     "react-transition-group": "^4.4.2",
+    "react-visibility-sensor": "^5.1.1",
     "typescript": "^4.5.5",
     "web-vitals": "^2.1.4"
   },

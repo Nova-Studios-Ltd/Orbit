@@ -1,5 +1,5 @@
 import { API_DOMAIN } from "vars";
-import { HasFlag } from "./NCFlags";
+import { NCFlags, HasUrlFlag } from "./NCFlags";
 
 /**
  * Represents commonly used HTTP Status Codes (HTTPStatusCodes.OK, 400, 401, 403, 404, 500)
@@ -174,7 +174,7 @@ export async function GETFile(endpoint: string, token?: string, isExternal?: boo
 
   const cache = await caches.open("NCMediaCache");
 
-  if (!HasFlag("no-cache")) {
+  if (!HasUrlFlag(NCFlags.NoCache)) {
     if (cache !== undefined) {
       const cachedEntry = await cache.match(url);
 
@@ -196,7 +196,7 @@ export async function GETFile(endpoint: string, token?: string, isExternal?: boo
   });
 
   // There's two of the same check because this chunk is only reached when the file isn't already cached
-  if (!HasFlag("no-cache") && cache !== undefined) {
+  if (!HasUrlFlag(NCFlags.NoCache) && cache !== undefined) {
     const respCC = resp.clone();
 
     cache.put(url, respCC);

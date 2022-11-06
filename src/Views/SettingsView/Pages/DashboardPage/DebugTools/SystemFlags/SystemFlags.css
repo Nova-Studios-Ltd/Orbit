@@ -1,0 +1,13 @@
+.FlagContainer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.FlagName {
+  margin-right: 5px !important;
+}
+
+.FlagText {
+  margin-right: 10px;
+}

@@ -11,7 +11,7 @@ import { SettingsManager } from "./SettingsManager";
 import { Base64String } from "./Base64";
 import { DecryptBase64, DecryptBase64WithPriv, EncryptBase64, EncryptBase64WithPub, EncryptUint8Array, GenerateBase64Key, GenerateBase64SHA256 } from "./NCEncryption";
 import { NCChannelCache } from "./NCChannelCache";
-import { HasFlag } from "./NCFlags";
+import { NCFlags, HasUrlFlag } from "./NCFlags";
 import FailedUpload, { FailReason } from "Types/API/FailedUpload";
 import { PasswordPayloadKey, UpdatePasswordPayload } from "Types/API/UpdatePasswordPayload";
 import { RemoveEXIF } from "./EXIF";
@@ -149,21 +149,22 @@ export async function UNBLOCKFriend(request_uuid: string) : Promise<boolean> {
 async function DecryptMessage(message: IMessageProps) : Promise<IMessageProps> {
   const Manager = new SettingsManager();
   const keyData = message.encryptedKeys[Manager.User.uuid];
-  if (keyData === undefined) return {message_Id: message.message_Id, content: "Failed to read message"} as IMessageProps;
+  if (keyData === undefined) {
+    message.encrypted = false;
+    return message;
+  }
+  message.encrypted = (HasUrlFlag(NCFlags.TreatAsUnencrypted))? false : true;
   const key = await DecryptBase64WithPriv(Manager.User.keyPair.PrivateKey, new Base64String(keyData));
   if (message.content.length !== 0) {
     const decryptedMessage = await DecryptBase64(key, new AESMemoryEncryptData(message.iv, message.content));
     message.content = decryptedMessage.String;
   }
-  if (!HasFlag("no-attach")) {
+  if (!HasUrlFlag(NCFlags.NoAttachments)) {
     for (let a = 0; a < message.attachments.length; a++) {
       const attachment = message.attachments[a];
-      //const content = await GETFile(attachment.contentUrl, Manager.User.token);
       const filename = attachment.filename;
       const att_key = await DecryptBase64WithPriv(Manager.User.keyPair.PrivateKey, new Base64String(attachment.keys[Manager.User.uuid]));
-      //const decryptedContent = await DecryptUint8Array(att_key, new AESMemoryEncryptData(attachment.iv, content.payload as Uint8Array));
       const decryptedFilename = await DecryptBase64(att_key, new AESMemoryEncryptData(attachment.iv, filename));
-      //message.attachments[a].content = decryptedContent;
       message.attachments[a].filename = decryptedFilename.String;
     }
   }
@@ -171,7 +172,7 @@ async function DecryptMessage(message: IMessageProps) : Promise<IMessageProps> {
 }
 
 export async function GETMessage(channel_uuid: string, message_id: string, bypass_cache = false) : Promise<undefined | IMessageProps> {
-  if (HasFlag("no-cache")) bypass_cache = true;
+  if (HasUrlFlag(NCFlags.NoCache)) bypass_cache = true;
   const cache = new NCChannelCache(channel_uuid);
   if (!bypass_cache) {
     const message = cache.GetMessage(message_id);
@@ -187,7 +188,7 @@ export async function GETMessage(channel_uuid: string, message_id: string, bypas
 }
 
 export async function GETMessages(channel_uuid: string, callback: (messages: IMessageProps[]) => void, bypass_cache = false, limit = 30, after = -1, before = 2147483647) : Promise<IMessageProps[]> {
-  if (HasFlag("no-cache")) bypass_cache = true;
+  if (HasUrlFlag(NCFlags.NoCache)) bypass_cache = true;
   // Hit cache
   const cache = new NCChannelCache(channel_uuid);
   const messages = await cache.GetMessages(limit, before);
@@ -225,7 +226,7 @@ export async function GETMessages(channel_uuid: string, callback: (messages: IMe
 }
 
 export async function GETMessagesSingle(channel_uuid: string, callback: (message: IMessageProps) => Promise<boolean>, finished: () => void, bypass_cache = false, limit = 30, after = -1, before = 2147483647) {
-  if (HasFlag("no-cache")) bypass_cache = true;
+  if (HasUrlFlag(NCFlags.NoCache)) bypass_cache = true;
   // Hit cache
   const cache = new NCChannelCache(channel_uuid);
   const messages = await cache.GetMessages(limit, before);

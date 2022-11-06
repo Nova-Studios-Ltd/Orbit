@@ -19,6 +19,8 @@ import TextCombo from "Components/Input/TextCombo/TextCombo";
 import GenericDialog from "Components/Dialogs/GenericDialog/GenericDialog";
 import { Routes } from "Types/UI/Routes";
 import { TextComboStates } from "Types/Enums";
+import { NCFlags, HasUrlFlag } from "NSLib/NCFlags";
+import SystemFlags from "./DebugTools/SystemFlags/SystemFlags";
 
 interface DashboardPageProps extends Page {
   avatarNonce?: string,
@@ -154,8 +156,11 @@ function DashboardPage(props: DashboardPageProps) {
         </Card>
       </Section>
       <Section title={Localizations_DashboardPage("Section_Title-Diagnostics")}>
-        <NetworkDiag showAdvanced={true}/>
+        <NetworkDiag showAdvanced={HasUrlFlag(NCFlags.EnableSocketControls)}/>
       </Section>
+      {DEBUG? (<Section title="System Flags">
+        <SystemFlags/>
+      </Section>) : (null)}
       <Section title={Localizations_DashboardPage("Section_Title-Advanced")}>
         <div className="SectionButtonContainer">
           <Button className="SectionButton" id="CopyTokenButton" variant="outlined" color="warning" onClick={() => WriteToClipboard(settings.User.token)}>{Localizations_DashboardPage("Button_Label-CopyToken")}</Button>
