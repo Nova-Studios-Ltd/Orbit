@@ -10,6 +10,10 @@ class Event {
   }
 }
 
+/**
+ * Event system for application wide events.
+ * A channel can only be used once, but can have multiple function calls
+ */
 export default class NCEvents {
   private Events: Dictionary<Event[]>;
 
@@ -17,6 +21,12 @@ export default class NCEvents {
     this.Events = new Dictionary<Event[]>();
   }
 
+  /**
+   * Registers a event that will only trigger once before being destroyed
+   * @param channel Event channel, can only be used once per event
+   * @param func A function to call when NCEvents.send() is invoked
+   * @returns True on event creation otherwise false
+   */
   once(channel: string, func: (...args: any[]) => void) : boolean {
     if (!this.Events.containsKey(channel)) {
       this.Events.setValue(channel, [] as Event[]);
