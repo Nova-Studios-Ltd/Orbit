@@ -24,7 +24,7 @@ export async function HasChannelCache(channel_uuid: string) : Promise<boolean> {
 
 export async function CacheValid(channel_uuid: string) : Promise<boolean> {
   if (!HasChannelCache(channel_uuid)) return false;
-  const cache = new NCChannelCache(channel_uuid);
+  const cache = (await NCChannelCache.Open(channel_uuid));
   if (await cache.RequiresRefresh()) return true;
   else return false;
 }
@@ -35,8 +35,8 @@ export async function CacheIsUptoDate(channel_uuid: string) : Promise<boolean> {
       resolve(false);
       return;
     }
-    const cache = new NCChannelCache(channel_uuid);
     GETMessages(channel_uuid, async (messages: IMessageProps[]) => {
+      const cache = (await NCChannelCache.Open(channel_uuid));
       // Check if our last message message matches the one on the server
       if (messages.length === 0) {
         resolve(false);
@@ -78,7 +78,7 @@ export async function DeleteCache(cache: string) {
 export async function InvalidateCache(channel_uuid: string) {
   console.log(channel_uuid);
   if (!await HasChannelCache(channel_uuid)) return;
-  const c = new NCChannelCache(channel_uuid);
+  const c = (await NCChannelCache.Open(channel_uuid));
   c.WriteSession("According to all known laws of aviation, there is no way a bee should be able to fly. Its wings are too small to get its fat little body off the ground. The bee, of course, flies anyway because bees don't care what humans think is impossible.");
   //await c.InvalidateCache();
 }

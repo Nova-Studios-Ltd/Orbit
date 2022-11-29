@@ -1,7 +1,8 @@
 import { IMessageProps } from "Types/API/Interfaces/IMessageProps";
-import { getStorage } from "SiffrStorage/sifrr.storage";
 import { GETMessage, GETMessageEditTimestamps, GETMessages } from "./APIEvents";
 import { Dictionary } from "./Dictionary";
+import { IndexedDB } from "StorageLib/IndexedDB";
+import { IndexedDBStore } from "StorageLib/IndexedDBStore";
 
 
 export class NCChannelCacheResult {
@@ -20,8 +21,9 @@ export class NCChannelCacheResult {
 
 
 export class NCChannelCache {
-  private CurrentCache: any;
-  constructor(channel_uuid: string) {
+  private CurrentCache: IndexedDBStore;
+
+  /*constructor(channel_uuid: string) {
     const cache = {
       priority: ["indexeddb"],
       name: `Cache_${channel_uuid}_`,
@@ -30,43 +32,57 @@ export class NCChannelCache {
       size: 10 * 1024 * 1024,
       ttl: 0
     }
+
     this.CurrentCache = getStorage(cache);
+  }*/
+
+  private constructor(store: IndexedDBStore) {
+    this.CurrentCache = store;
+  }
+
+  static async Open(channel_uuid: string) : Promise<NCChannelCache> {
+    const database = await IndexedDB.Open("Caches");
+    if (!database.GetAllStores().includes(channel_uuid)) {
+      return new NCChannelCache(await database.CreateStore(channel_uuid) as IndexedDBStore);
+    }
+    return new NCChannelCache(database.GetStore(channel_uuid) as IndexedDBStore);
   }
 
   async RequiresRefresh() : Promise<boolean> {
     if (!await this.ContainsMessage("LastAccess")) return false;
-    const d = new Date((await this.CurrentCache.get("LastAccess"))["LastAccess"]);
+    const d = new Date((await this.CurrentCache.Get<string>("LastAccess")))
     return (((Date.now() - d.getTime()) / (1000 * 3600 * 24)) > 1);
   }
 
   async IsValidSession(session: string) : Promise<boolean> {
-    return (await this.CurrentCache.get("Session"))["Session"] === session;
+    return (await this.CurrentCache.Get("Session")) === session;
   }
 
   async ReadSession() : Promise<string> {
-    return (await this.CurrentCache.get("Session"))["Session"];
+    return this.CurrentCache.Get("Session");
   }
 
-  WriteSession(session: string) {
-    this.CurrentCache.setSync("Session", session);
+  async WriteSession(session: string) {
+    this.CurrentCache.Add("Session", session);
   }
 
   async ContainsMessage(id: string) : Promise<boolean> {
-    return (await this.CurrentCache.get(id))[id] !== undefined;
+    return this.CurrentCache.Contains(id);
   }
 
   async IsEmpty() : Promise<boolean> {
-    return (await this.CurrentCache.keys() as string[]).length === 0;
+    return (await this.CurrentCache.GetAllKeys()).length === 0;
   }
 
   async GetMessage(id: string) : Promise<NCChannelCacheResult> {
     if (!await this.ContainsMessage(id)) return new NCChannelCacheResult([], 0, 0, false);
-    const message = (await this.CurrentCache.get(id))[id] as IMessageProps
+    const message = (await this.CurrentCache.Get<IMessageProps>(id));
     return new NCChannelCacheResult([message], 1, parseInt(message.message_Id), true);
   }
 
   async GetMessages(limit: number, before: number = 2147483647) : Promise<NCChannelCacheResult> {
-    const keys = (await this.CurrentCache.keys() as string[]).reverse();
+    const keys = (await this.CurrentCache.GetAllKeys()).reverse();
+    const values = (await this.CurrentCache.GetAll<IMessageProps[]>()).reverse();
     const messages = [] as IMessageProps[];
     let curLim = 0;
     let lastID = "";
@@ -76,20 +92,21 @@ export class NCChannelCache {
       if (parseInt(key) < before + 1) {
         curLim++;
         lastID = key;
-        messages.push((await this.GetMessage(key)).Messages[0]);
+        //messages.push((await this.GetMessage(key)).Messages[0]);
+        messages.push(values[i]);
       }
     }
     return new NCChannelCacheResult(messages, messages.length, parseInt(lastID), curLim === limit)
   }
 
   async GetOldestMessage() : Promise<NCChannelCacheResult> {
-    const keys = (await this.CurrentCache.keys() as string[]).reverse();
+    const keys = (await this.CurrentCache.GetAllKeys()).reverse();
     const id = keys[keys.length - 1];
     return new NCChannelCacheResult([(await this.GetMessage(id)).Messages[0]], 1, parseInt(id), true);
   }
 
   async GetMessageEditTimestamps() : Promise<Dictionary<string>> {
-    const keys = (await this.CurrentCache.keys() as string[]).reverse();
+    const keys = (await this.CurrentCache.GetAllKeys()).reverse();
     keys.splice(keys.indexOf("LastAccess"), 1);
     keys.splice(keys.indexOf("Session"), 1);
     const timestamps = new Dictionary<string>();
@@ -101,23 +118,23 @@ export class NCChannelCache {
   }
 
   RemoveMessage(id: string) {
-    this.CurrentCache.del(id);
+    this.CurrentCache.Remove(id);
   }
 
   ClearCache() {
-    this.CurrentCache.clear();
+    this.CurrentCache.Clear();
   }
 
   async SetMessage(id: string, message: IMessageProps) {
-    this.CurrentCache.setSync(id, message);
-    this.CurrentCache.setSync("LastAccess", Date.now())
+    await this.CurrentCache.Add(id, message);
+    await this.CurrentCache.Add("LastAccess", Date.now())
 
     // Check cache size and remove oldest message
-    const keys = (await this.CurrentCache.keys() as string[]).reverse();
+    const keys = (await this.CurrentCache.GetAllKeys()).reverse();
     keys.splice(keys.indexOf("LastAccess"), 1);
     keys.splice(keys.indexOf("Session", 1));
     if (keys.length > 100)
-      this.CurrentCache.del(keys[0]);
+      await this.CurrentCache.Remove(keys[0]);
   }
 
   // Static Methods
@@ -126,11 +143,8 @@ export class NCChannelCache {
    * @returns A string array containing all current caches
    */
   static async GetCaches() : Promise<string[]> {
-    const caches = (await indexedDB.databases()).flatMap((c) => {
-      if (c.name !== undefined && c.name.includes("Cache")) return c.name;
-      return "";
-    });
-    return caches;
+    const database = await IndexedDB.Open("Caches");
+    return await database.GetAllStoresAsync();
   }
 
   /**
@@ -140,7 +154,7 @@ export class NCChannelCache {
    */
   static async ContainsCache(channel_uuid: string) : Promise<NCChannelCache | undefined> {
     const caches = await this.GetCaches();
-    if (caches.indexOf(`Cache_${channel_uuid}_1`) !== -1) return new NCChannelCache(channel_uuid);
+    if (caches.indexOf(channel_uuid) !== -1) return await NCChannelCache.Open(channel_uuid);
     else return undefined;
   }
 

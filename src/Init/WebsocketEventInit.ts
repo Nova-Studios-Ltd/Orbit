@@ -42,13 +42,13 @@ async function OnNewMessage(event: IWebSocketEvent) {
   if (new SettingsManager().User.uuid !== message.author_UUID)
     TriggerNotification(`New Message from ${(await UserCache.GetUserAsync(message.author_UUID)).username}`, message.content, NotificationType.Info, `User/${message.author_UUID}/Avatar?size=64`);
   // Add message to cache
-  new NCChannelCache(event.Channel).SetMessage(event.Message, message);
+  (await NCChannelCache.Open(event.Channel)).SetMessage(event.Message, message);
 }
 
 async function OnDeleteMessage(event: IWebSocketEvent) {
   Events.send("DeleteMessage", event.Message);
   // Clear message from cache
-  new NCChannelCache(event.Channel).RemoveMessage(event.Message);
+  (await NCChannelCache.Open(event.Channel)).RemoveMessage(event.Message);
 }
 
 async function OnMessageEdit(event: IWebSocketEvent) {
@@ -56,7 +56,7 @@ async function OnMessageEdit(event: IWebSocketEvent) {
   if (message === undefined) return;
   Events.send("EditMessage", message);
   // Update message in cache
-  new NCChannelCache(event.Channel).SetMessage(event.Message, message);
+  (await NCChannelCache.Open(event.Channel)).SetMessage(event.Message, message);
 }
 
 async function OnCreateChannel(event: IWebSocketEvent) {

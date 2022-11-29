@@ -173,7 +173,7 @@ async function DecryptMessage(message: IMessageProps) : Promise<IMessageProps> {
 
 export async function GETMessage(channel_uuid: string, message_id: string, bypass_cache = false) : Promise<undefined | IMessageProps> {
   if (HasUrlFlag(NCFlags.NoCache)) bypass_cache = true;
-  const cache = new NCChannelCache(channel_uuid);
+  const cache = (await NCChannelCache.Open(channel_uuid));
   if (!bypass_cache) {
     const message = cache.GetMessage(message_id);
     if ((await message).Satisfied) return (await message).Messages[0];
@@ -190,9 +190,9 @@ export async function GETMessage(channel_uuid: string, message_id: string, bypas
 export async function GETMessages(channel_uuid: string, callback: (messages: IMessageProps[]) => void, bypass_cache = false, limit = 30, after = -1, before = 2147483647) : Promise<IMessageProps[]> {
   if (HasUrlFlag(NCFlags.NoCache)) bypass_cache = true;
   // Hit cache
-  const cache = new NCChannelCache(channel_uuid);
+  const cache = (await NCChannelCache.Open(channel_uuid));
   const messages = await cache.GetMessages(limit, before);
-  if (messages.Satisfied && !bypass_cache) {
+  if (messages.Satisfied === true && !bypass_cache) {
     callback(messages.Messages);
     return messages.Messages;
   }
@@ -217,6 +217,7 @@ export async function GETMessages(channel_uuid: string, callback: (messages: IMe
         decryptedMessages.push(message);
         if (!bypass_cache) cache.SetMessage(message.message_Id, message);
       }
+
       callback([...messages.Messages, ...decryptedMessages]);
       return [...messages.Messages, ...decryptedMessages];
     }
@@ -228,7 +229,7 @@ export async function GETMessages(channel_uuid: string, callback: (messages: IMe
 export async function GETMessagesSingle(channel_uuid: string, callback: (message: IMessageProps) => Promise<boolean>, finished: () => void, bypass_cache = false, limit = 30, after = -1, before = 2147483647) {
   if (HasUrlFlag(NCFlags.NoCache)) bypass_cache = true;
   // Hit cache
-  const cache = new NCChannelCache(channel_uuid);
+  const cache = (await NCChannelCache.Open(channel_uuid));
   const messages = await cache.GetMessages(limit, before);
   if (messages.Satisfied && !bypass_cache) {
     messages.Messages.forEach((message) => callback(message));
