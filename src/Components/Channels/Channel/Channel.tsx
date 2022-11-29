@@ -138,6 +138,10 @@ function Channel(props: ChannelProps) {
     }
   }
 
+  const onAddNewRecipient = (event: React.MouseEvent<HTMLButtonElement>) => {
+
+  }
+
   const clearChannelCache = () => {
     if (props.onChannelClearCache) props.onChannelClearCache(props.channelData);
   }
@@ -192,11 +196,6 @@ function Channel(props: ChannelProps) {
           </>
         )
       }>
-        <div className="ChannelMembersListContainer">
-          <Typography variant="h6">{Localizations_Channel("Typography-ChannelMembersListTitle")}</Typography>
-          <FriendList fullWidth variant={FriendButtonVariant.DialogGroup} friends={ChannelMembersUserData} onKickRecipient={onKickRecipient} />
-          <GenericButton fullWidth><Icon style={{ margin: "auto" }}><AddFilledIcon /></Icon></GenericButton>
-        </div>
         <div className="GenericDialogTextContainer">
           <Typography variant="h6">{Localizations_Channel("Typography-ChangeChannelIcon")}</Typography>
           <div style={{ alignSelf: "center" }}>
@@ -210,6 +209,11 @@ function Channel(props: ChannelProps) {
         <div className="GenericDialogTextContainer">
           <Typography variant="h6">{Localizations_Channel("Typography-ChangeChannelName")}</Typography>
           <TextCombo submitButton={false} disabled={!isOwner} placeholder={props.channelData.channelName} onChange={(e) => (e.value !== undefined) ? setChannelContextMenuChangeTitleTextField(e.value) : null} value={ChannelContextMenuChangeTitleTextField}></TextCombo>
+        </div>
+        <div className="ChannelMembersListContainer">
+          <Typography variant="h6">{Localizations_Channel("Typography-ChannelMembersListTitle")}</Typography>
+          <FriendList fullWidth variant={FriendButtonVariant.DialogGroup} friends={ChannelMembersUserData} onKickRecipient={onKickRecipient} />
+          <GenericButton fullWidth onLeftClick={onAddNewRecipient}><Icon style={{ margin: "auto" }}><AddFilledIcon /></Icon></GenericButton>
         </div>
         <Button variant="outlined" onClick={clearChannelCache}>{Localizations_Channel("Button_Label-ClearCache")}</Button>
       </GenericDialog>
