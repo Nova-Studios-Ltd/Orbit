@@ -23,19 +23,6 @@ export class NCChannelCacheResult {
 export class NCChannelCache {
   private CurrentCache: IndexedDBStore;
 
-  /*constructor(channel_uuid: string) {
-    const cache = {
-      priority: ["indexeddb"],
-      name: `Cache_${channel_uuid}_`,
-      version: 1,
-      description: "Channel Cache",
-      size: 10 * 1024 * 1024,
-      ttl: 0
-    }
-
-    this.CurrentCache = getStorage(cache);
-  }*/
-
   private constructor(store: IndexedDBStore) {
     this.CurrentCache = store;
   }

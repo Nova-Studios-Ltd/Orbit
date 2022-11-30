@@ -8,7 +8,7 @@ export default class KeyStore {
   private static KeyStore() : Promise<IndexedDBStore | undefined> {
     return new Promise((resolve) => {
       new IndexedDB("Keystore", (database: IndexedDB) => {
-        resolve(database.GetStore("Keystore"));
+        resolve(database.CreateStore("Keystore"));
     })});
   }
 
