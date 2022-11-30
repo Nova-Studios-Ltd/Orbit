@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { Avatar, IconButton, Link, Typography, useTheme } from "@mui/material";
 import { Close as CloseIcon } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
-import useSettingsManager from "Hooks/useSettingsManager";
 
 import MessageMedia from "Components/Messages/MessageMedia/MessageMedia";
 import TextCombo, { TextComboChangeEvent, TextComboSubmitEvent } from "Components/Input/TextCombo/TextCombo";
@@ -21,10 +20,10 @@ import ContextMenuItem from "Components/Menus/ContextMenuItem/ContextMenuItem";
 
 import JSZip from "jszip";
 import { GETFile, HTTPStatusCodes } from "NSLib/NCAPI";
-import { SettingsManager } from "NSLib/SettingsManager";
 import { DecryptBase64WithPriv, DecryptUint8Array } from "NSLib/NCEncryption";
 import { Base64String } from "NSLib/Base64";
 import { AESMemoryEncryptData } from "NSLib/NCEncrytUtil";
+import UserData from "DataManagement/UserData";
 
 export interface MessageProps extends NCComponent {
   content?: string,
@@ -42,12 +41,11 @@ export interface MessageProps extends NCComponent {
 
 function Message(props: MessageProps) {
   const theme = useTheme();
-  const settingsManager = useSettingsManager();
   const filteredMessageProps: MessageProps = { content: props.content, id: props.id, avatarURL: props.avatarURL, timestamp: props.timestamp };
   const Localizations_Message = useTranslation("Message").t;
   const Localizations_ContextMenuItem = useTranslation("ContextMenuItem").t;
 
-  const isOwnMessage = props.authorID === settingsManager.User.uuid;
+  const isOwnMessage = props.authorID === UserData.Uuid;
   const isTouchCapable = props.sharedProps && props.sharedProps.isTouchCapable;
 
   const [isHovering, setHoveringState] = useState(false);
@@ -155,12 +153,11 @@ function Message(props: MessageProps) {
     if (props.attachments === undefined) return;
     // Create zip file with all attachments in it
     const zip = new JSZip();
-    const manager = new SettingsManager();
     for (var i = 0; i < props.attachments.length; i++) {
       // Download (Or pull from cache) all attachments, decrypt and compress them
       const att = props.attachments[i];
-      const file = await GETFile(att.contentUrl, manager.User.token);
-      const att_key = await DecryptBase64WithPriv(manager.User.keyPair.PrivateKey, new Base64String(att.keys[manager.User.uuid]));
+      const file = await GETFile(att.contentUrl, UserData.Token);
+      const att_key = await DecryptBase64WithPriv(UserData.KeyPair.PrivateKey, new Base64String(att.keys[UserData.Uuid]));
       const decryptedContent = await DecryptUint8Array(att_key, new AESMemoryEncryptData(att.iv, file.payload as Uint8Array));
       if (file.status !== HTTPStatusCodes.OK) continue;
       zip.file(att.filename, decryptedContent);

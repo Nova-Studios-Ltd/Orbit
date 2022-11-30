@@ -1,8 +1,7 @@
-import { Button, FormControlLabel, Switch, useTheme } from "@mui/material";
+import { Button, useTheme } from "@mui/material";
 import useClassNames from "Hooks/useClassNames";
 
 import type { NCComponent } from "Types/UI/Components";
-import { SettingsManager } from "NSLib/SettingsManager";
 import { useState } from "react";
 import Cache, { CacheStatus } from "./Cache";
 import { GetCaches, CacheIsUptoDate, CacheValid, DeleteCache, InvalidateCache, RefreshCache } from "./CacheLib";

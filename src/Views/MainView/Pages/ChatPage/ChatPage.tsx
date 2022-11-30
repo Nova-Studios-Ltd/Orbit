@@ -11,8 +11,6 @@ import type { IMessageProps } from "Types/API/Interfaces/IMessageProps";
 import type { MessageProps } from "Components/Messages/Message/Message";
 import type MessageAttachment from "Types/API/MessageAttachment";
 import type { IRawChannelProps } from "Types/API/Interfaces/IRawChannelProps";
-import DebugButton from "Components/Buttons/DebugButtom/DebugButton";
-import { IndexedDB } from "StorageLib/IndexedDB";
 
 export interface ChatPageProps extends NCComponent {
   attachments?: MessageAttachment[],

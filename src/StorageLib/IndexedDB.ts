@@ -69,6 +69,9 @@ export class IndexedDB {
     const name = this.database.name;
     const version = this.database.version;
 
+    const stores = await this.GetAllStoresAsync();
+    if (stores.includes(storeName)) return await this.GetStore(storeName);
+
     this.database.close();
 
     return new Promise((resolve) => {

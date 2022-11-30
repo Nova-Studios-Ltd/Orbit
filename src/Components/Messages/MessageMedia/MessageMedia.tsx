@@ -17,7 +17,7 @@ import { GETFile } from "NSLib/NCAPI";
 import { DecryptBase64WithPriv, DecryptUint8Array } from "NSLib/NCEncryption";
 import { AESMemoryEncryptData } from "NSLib/NCEncrytUtil";
 import { NCFlags, HasUrlFlag } from "NSLib/NCFlags";
-import { SettingsManager } from "NSLib/SettingsManager";
+import UserData from "DataManagement/UserData";
 
 export interface MessageMediaProps extends NCComponent {
   contentUrl?: string,
@@ -52,8 +52,7 @@ function MessageMedia(props: MessageMediaProps) {
       if (props.contentUrl === undefined || props.keys === undefined || props.iv === undefined) return;
 
       // Now we grab the content itself
-      const manager = new SettingsManager();
-      const content = await GETFile(props.contentUrl, manager.User.token, props.isExternal);
+      const content = await GETFile(props.contentUrl, UserData.Token, props.isExternal);
 
       // don't decrypt the data if the media is external
       if (props.isExternal) {
@@ -62,7 +61,7 @@ function MessageMedia(props: MessageMediaProps) {
       }
 
       // and decrypt the data
-      const att_key = await DecryptBase64WithPriv(manager.User.keyPair.PrivateKey, new Base64String(props.keys[manager.User.uuid]));
+      const att_key = await DecryptBase64WithPriv(UserData.KeyPair.PrivateKey, new Base64String(props.keys[UserData.Uuid]));
       const decryptedContent = await DecryptUint8Array(att_key, new AESMemoryEncryptData(props.iv, content.payload as Uint8Array));
 
       contentData.current = decryptedContent;

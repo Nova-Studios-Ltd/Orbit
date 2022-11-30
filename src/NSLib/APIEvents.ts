@@ -7,7 +7,6 @@ import { AESMemoryEncryptData } from "./NCEncrytUtil";
 import { GetExtension, GetImageDimensions } from "./Util";
 import Dimensions from "Types/Dimensions";
 import IUserData from "Types/API/Interfaces/IUserData";
-import { SettingsManager } from "./SettingsManager";
 import { Base64String } from "./Base64";
 import { DecryptBase64, DecryptBase64WithPriv, EncryptBase64, EncryptBase64WithPub, EncryptUint8Array, GenerateBase64Key, GenerateBase64SHA256 } from "./NCEncryption";
 import { NCChannelCache } from "./NCChannelCache";
@@ -16,16 +15,18 @@ import FailedUpload, { FailReason } from "Types/API/FailedUpload";
 import { PasswordPayloadKey, UpdatePasswordPayload } from "Types/API/UpdatePasswordPayload";
 import { RemoveEXIF } from "./EXIF";
 import { API_DOMAIN } from "vars";
+import UserData from "DataManagement/UserData";
+import KeyStore from "DataManagement/KeyStore";
 
 // User
 export async function GETUser(user_uuid: string) : Promise<IUserData | undefined> {
-  const resp = await GET(`User/${user_uuid}`, new SettingsManager().User.token);
+  const resp = await GET(`User/${user_uuid}`, UserData.Token);
   if (resp.status === HTTPStatusCodes.OK) return resp.payload as IUserData;
   return undefined;
 }
 
 export function GETUserChannels(callback: (channels: string[]) => void) {
-  GET("/User/@me/Channels", new SettingsManager().User.token).then((resp: NCAPIResponse) => {
+  GET("/User/@me/Channels", UserData.Token).then((resp: NCAPIResponse) => {
     if (resp.status === HTTPStatusCodes.OK) callback(resp.payload as string[]);
   });
 }
@@ -37,32 +38,31 @@ export async function GETUserUUID(username: string, discriminator: string) : Pro
 }
 
 export function UPDATEUsername(newUsername: string, callback: (status: boolean, newUsername: string) => void) {
-  PATCH(`/User/@me/Username`, ContentType.JSON, JSON.stringify(newUsername), new SettingsManager().User.token).then((resp: NCAPIResponse) => {
+  PATCH(`/User/@me/Username`, ContentType.JSON, JSON.stringify(newUsername), UserData.Token).then((resp: NCAPIResponse) => {
     if (resp.status === HTTPStatusCodes.OK) callback(true, newUsername);
     else callback(false, "");
   });
 }
 
 export async function UPDATEPassword(newPassword: string, callback: (status: boolean, newPassword: string) => void) {
-  const manager = new SettingsManager();
   const hashedPassword = await GenerateBase64SHA256(newPassword);
-  const privkey = await EncryptBase64(hashedPassword, Base64String.CreateBase64String(manager.User.keyPair.PrivateKey));
+  const privkey = await EncryptBase64(hashedPassword, Base64String.CreateBase64String(UserData.KeyPair.PrivateKey));
   const payload = new UpdatePasswordPayload(hashedPassword.Base64, new PasswordPayloadKey(privkey.content as string, privkey.iv));
-  PATCH(`/User/@me/Password`, ContentType.JSON, JSON.stringify(payload), new SettingsManager().User.token).then((resp: NCAPIResponse) => {
+  PATCH(`/User/@me/Password`, ContentType.JSON, JSON.stringify(payload), UserData.Token).then((resp: NCAPIResponse) => {
     if (resp.status === HTTPStatusCodes.OK) callback(true, newPassword);
     else callback(false, "");
   });
 }
 
 export function UPDATEEmail(newEmail: string, callback: (status: boolean, newEmail: string) => void) {
-  PATCH(`/User/@me/Email`, ContentType.JSON, JSON.stringify(newEmail), new SettingsManager().User.token).then((resp: NCAPIResponse) => {
+  PATCH(`/User/@me/Email`, ContentType.JSON, JSON.stringify(newEmail), UserData.Token).then((resp: NCAPIResponse) => {
     if (resp.status === HTTPStatusCodes.OK) callback(true, newEmail);
     else callback(false, "");
   });
 }
 
 export function DELETEUser(callback: (status: boolean) => void) {
-  DELETE(`/User/@me`, new SettingsManager().User.token).then((resp: NCAPIResponse) => {
+  DELETE(`/User/@me`, UserData.Token).then((resp: NCAPIResponse) => {
     if (resp.status === HTTPStatusCodes.OK) callback(true);
     else callback(false);
   });
@@ -70,13 +70,13 @@ export function DELETEUser(callback: (status: boolean) => void) {
 
 // User Keystore
 export async function GETKey(key_user_uuid: string) : Promise<string | undefined> {
-  const resp = await GET(`/User/@me/Keystore/${key_user_uuid}`, new SettingsManager().User.token, false);
+  const resp = await GET(`/User/@me/Keystore/${key_user_uuid}`, UserData.Token, false);
   if (resp.status === HTTPStatusCodes.OK) return resp.payload as string;
   return undefined;
 }
 
 export async function GETKeystore() : Promise<Dictionary<string> | undefined> {
-  const resp = await GET(`/User/@me/Keystore`, new SettingsManager().User.token);
+  const resp = await GET(`/User/@me/Keystore`, UserData.Token);
   if (resp.status === HTTPStatusCodes.OK) {
     const d = new Dictionary<string>();
     d._dict = resp.payload as Indexable<string>
@@ -86,14 +86,14 @@ export async function GETKeystore() : Promise<Dictionary<string> | undefined> {
 }
 
 export async function SETKey(key_user_uuid: string, key: string) : Promise<boolean> {
-  const resp = await POST(`/User/@me/Keystore/${key_user_uuid}`, ContentType.JSON, key, new SettingsManager().User.token);
+  const resp = await POST(`/User/@me/Keystore/${key_user_uuid}`, ContentType.JSON, key, UserData.Token);
   if (resp.status === HTTPStatusCodes.OK) return true;
   return false;
 }
 
 // Friend
 export async function GETFriendState(friend_uuid: string) : Promise<string> {
-  const resp = await GET(`/Friend/${new SettingsManager().User.uuid}/Friends/${friend_uuid}`, new SettingsManager().User.token);
+  const resp = await GET(`/Friend/${UserData.Uuid}/Friends/${friend_uuid}`, UserData.Token);
   if (resp.status === HTTPStatusCodes.OK) {
     return resp.payload.state;
   }
@@ -101,7 +101,7 @@ export async function GETFriendState(friend_uuid: string) : Promise<string> {
 }
 
 export async function GETFriends(user_uuid: string) : Promise<Dictionary<string>> {
-  const resp = await GET(`/Friend/${user_uuid}/Friends`, new SettingsManager().User.token);
+  const resp = await GET(`/Friend/${user_uuid}/Friends`, UserData.Token);
   if (resp.status === HTTPStatusCodes.OK) {
     const d = new Dictionary<string>();
     d._dict = resp.payload as Indexable<string>;
@@ -111,50 +111,49 @@ export async function GETFriends(user_uuid: string) : Promise<Dictionary<string>
 }
 
 export async function GETOwnFriends() : Promise<Dictionary<string>> {
-  return await GETFriends(new SettingsManager().User.uuid);
+  return await GETFriends(UserData.Uuid);
 }
 
 export async function REQUESTFriend(request_uuid: string) : Promise<boolean> {
-  const resp = await POST(`/Friend/${new SettingsManager().User.uuid}/Send/${request_uuid}`, ContentType.EMPTY, "", new SettingsManager().User.token, false);
+  const resp = await POST(`/Friend/${UserData.Uuid}/Send/${request_uuid}`, ContentType.EMPTY, "", UserData.Token, false);
   return resp.status === HTTPStatusCodes.OK;
 }
 
 export async function ACCEPTFriend(request_uuid: string) : Promise<boolean> {
-  const resp = await PATCH(`/Friend/${new SettingsManager().User.uuid}/Accept/${request_uuid}`, ContentType.EMPTY, "", new SettingsManager().User.token);
+  const resp = await PATCH(`/Friend/${UserData.Uuid}/Accept/${request_uuid}`, ContentType.EMPTY, "", UserData.Token);
   return resp.status === HTTPStatusCodes.OK;
 }
 
 export async function DECLINEFriend(request_uuid: string) : Promise<boolean> {
-  const resp = await PATCH(`/Friend/${new SettingsManager().User.uuid}/Decline/${request_uuid}`, ContentType.EMPTY, "", new SettingsManager().User.token);
+  const resp = await PATCH(`/Friend/${UserData.Uuid}/Decline/${request_uuid}`, ContentType.EMPTY, "", UserData.Token);
   return resp.status === HTTPStatusCodes.OK;
 }
 
 export async function REMOVEFriend(request_uuid: string) : Promise<boolean> {
-  const resp = await DELETE(`/Friend/${new SettingsManager().User.uuid}/Remove/${request_uuid}`, new SettingsManager().User.token)
+  const resp = await DELETE(`/Friend/${UserData.Uuid}/Remove/${request_uuid}`, UserData.Token)
   return resp.status === HTTPStatusCodes.OK;
 }
 
 export async function BLOCKFriend(request_uuid: string) : Promise<boolean> {
-  const resp = await PATCH(`/Friend/${new SettingsManager().User.uuid}/Block/${request_uuid}`, ContentType.EMPTY, "", new SettingsManager().User.token);
+  const resp = await PATCH(`/Friend/${UserData.Uuid}/Block/${request_uuid}`, ContentType.EMPTY, "", UserData.Token);
   return resp.status === HTTPStatusCodes.OK;
 }
 
 export async function UNBLOCKFriend(request_uuid: string) : Promise<boolean> {
-  const resp = await PATCH(`/Friend/${new SettingsManager().User.uuid}/Unblock/${request_uuid}`, ContentType.EMPTY, "", new SettingsManager().User.token);
+  const resp = await PATCH(`/Friend/${UserData.Uuid}/Unblock/${request_uuid}`, ContentType.EMPTY, "", UserData.Token);
   return resp.status === HTTPStatusCodes.OK;
 }
 
 
 // Messages
 async function DecryptMessage(message: IMessageProps) : Promise<IMessageProps> {
-  const Manager = new SettingsManager();
-  const keyData = message.encryptedKeys[Manager.User.uuid];
+  const keyData = message.encryptedKeys[UserData.Uuid];
   if (keyData === undefined) {
     message.encrypted = false;
     return message;
   }
   message.encrypted = (HasUrlFlag(NCFlags.TreatAsUnencrypted))? false : true;
-  const key = await DecryptBase64WithPriv(Manager.User.keyPair.PrivateKey, new Base64String(keyData));
+  const key = await DecryptBase64WithPriv(UserData.KeyPair.PrivateKey, new Base64String(keyData));
   if (message.content.length !== 0) {
     const decryptedMessage = await DecryptBase64(key, new AESMemoryEncryptData(message.iv, message.content));
     message.content = decryptedMessage.String;
@@ -163,7 +162,7 @@ async function DecryptMessage(message: IMessageProps) : Promise<IMessageProps> {
     for (let a = 0; a < message.attachments.length; a++) {
       const attachment = message.attachments[a];
       const filename = attachment.filename;
-      const att_key = await DecryptBase64WithPriv(Manager.User.keyPair.PrivateKey, new Base64String(attachment.keys[Manager.User.uuid]));
+      const att_key = await DecryptBase64WithPriv(UserData.KeyPair.PrivateKey, new Base64String(attachment.keys[UserData.Uuid]));
       const decryptedFilename = await DecryptBase64(att_key, new AESMemoryEncryptData(attachment.iv, filename));
       message.attachments[a].filename = decryptedFilename.String;
     }
@@ -178,7 +177,7 @@ export async function GETMessage(channel_uuid: string, message_id: string, bypas
     const message = cache.GetMessage(message_id);
     if ((await message).Satisfied) return (await message).Messages[0];
   }
-  const resp = await GET(`Channel/${channel_uuid}/Messages/${message_id}`, new SettingsManager().User.token);
+  const resp = await GET(`Channel/${channel_uuid}/Messages/${message_id}`, UserData.Token);
   if (resp.status === HTTPStatusCodes.OK) {
     const m = await DecryptMessage(resp.payload as IMessageProps);;
     cache.SetMessage(message_id, m)
@@ -208,7 +207,7 @@ export async function GETMessages(channel_uuid: string, callback: (messages: IMe
       newLimit = limit;
       newBefore = before;
     }
-    const resp = await GET(`Channel/${channel_uuid}/Messages?limit=${newLimit}&after=${after}&before=${newBefore}`, new SettingsManager().User.token);
+    const resp = await GET(`Channel/${channel_uuid}/Messages?limit=${newLimit}&after=${after}&before=${newBefore}`, UserData.Token);
     if (resp.status === HTTPStatusCodes.OK) {
       const rawMessages = resp.payload as IMessageProps[];
       const decryptedMessages = [] as IMessageProps[];
@@ -247,7 +246,7 @@ export async function GETMessagesSingle(channel_uuid: string, callback: (message
       newBefore = before;
     }
     messages.Messages.forEach((message) => callback(message));
-    GET(`Channel/${channel_uuid}/Messages?limit=${newLimit}&after=${after}&before=${newBefore}`, new SettingsManager().User.token).then(async (resp: NCAPIResponse) => {
+    GET(`Channel/${channel_uuid}/Messages?limit=${newLimit}&after=${after}&before=${newBefore}`, UserData.Token).then(async (resp: NCAPIResponse) => {
       if (resp.status === HTTPStatusCodes.OK) {
         const rawMessages = resp.payload as IMessageProps[];
         for (let m = 0; m < rawMessages.length; m++) {
@@ -262,13 +261,12 @@ export async function GETMessagesSingle(channel_uuid: string, callback: (message
 }
 
 export async function GETMessageEditTimestamps(channel_uuid: string, limit = 30, after = -1, before = 2147483647) : Promise<Dictionary<string>> {
-  const resp = await GET(`/Channel/${channel_uuid}/Messages/EditTimestamps?limit=${limit}&after=${after}&before=${before}`, new SettingsManager().User.token);
+  const resp = await GET(`/Channel/${channel_uuid}/Messages/EditTimestamps?limit=${limit}&after=${after}&before=${before}`, UserData.Token);
   return new Dictionary(resp.payload as Indexable<string>);
 }
 
 export function SENDMessage(channel_uuid: string, contents: string, rawAttachments: MessageAttachment[], callback: (sent: boolean, failedUploads: FailedUpload[]) => void) {
-  const Manager = new SettingsManager();
-  GET(`/Channel/${channel_uuid}`, Manager.User.token).then(async (resp: NCAPIResponse) => {
+  GET(`/Channel/${channel_uuid}`, UserData.Token).then(async (resp: NCAPIResponse) => {
       if (resp.status === HTTPStatusCodes.OK) {
           const channel = resp.payload as IRawChannelProps;
           if (channel.members === undefined) {
@@ -284,7 +282,7 @@ export function SENDMessage(channel_uuid: string, contents: string, rawAttachmen
           const attachments = [] as string[];
           let token = "empty";
           if (rawAttachments.length > 0) {
-            const postToken = await GET(`/Channel/${channel_uuid}/RequestContentToken?uploads=${rawAttachments.length}`, Manager.User.token, false);
+            const postToken = await GET(`/Channel/${channel_uuid}/RequestContentToken?uploads=${rawAttachments.length}`, UserData.Token, false);
             token = postToken.payload;
             if (postToken.status !== HTTPStatusCodes.OK) return;
             for (let a = 0; a < rawAttachments.length; a++) {
@@ -308,16 +306,16 @@ export function SENDMessage(channel_uuid: string, contents: string, rawAttachmen
               const encKeys = {} as {[uuid: string]: string};
               for (let m = 0; m < channel.members.length; m++) {
                 const member = channel.members[m];
-                const pubKey = await Manager.ReadKey(member);
+                const pubKey = await KeyStore.GetKey(member);
                 if (pubKey !== undefined) {
                   const encryptedKey = await EncryptBase64WithPub(pubKey, attachmentKey);
                   encKeys[member] = encryptedKey.Base64;
                 }
               }
 
-              encKeys[Manager.User.uuid] = (await EncryptBase64WithPub(Manager.User.keyPair.PublicKey, attachmentKey)).Base64;
+              encKeys[UserData.Uuid] = (await EncryptBase64WithPub(UserData.KeyPair.PublicKey, attachmentKey)).Base64;
 
-              const re = await POSTFile(`/Channel/${channel_uuid}?width=${imageSize.width}&height=${imageSize.height}&contentToken=${token}&fileType=${GetExtension(attachment.filename)}`, new Blob([encAttachment.content]), encFilename.content as string, JSON.stringify(encKeys), encAttachment.iv, Manager.User.token)
+              const re = await POSTFile(`/Channel/${channel_uuid}?width=${imageSize.width}&height=${imageSize.height}&contentToken=${token}&fileType=${GetExtension(attachment.filename)}`, new Blob([encAttachment.content]), encFilename.content as string, JSON.stringify(encKeys), encAttachment.iv, UserData.Token)
               if (re.status === HTTPStatusCodes.OK) attachments.push(re.payload as string);
               else failedUploads.push(new FailedUpload(re.status as FailReason, attachment.filename, attachment.id));
             }
@@ -325,16 +323,16 @@ export function SENDMessage(channel_uuid: string, contents: string, rawAttachmen
           const encKeys = {} as {[uuid: string]: string};
           for (let m = 0; m < channel.members.length; m++) {
               const member = channel.members[m];
-              if (member !== Manager.User.uuid) {
-                  const pubKey = await Manager.ReadKey(member);
+              if (member !== UserData.Uuid) {
+                  const pubKey = await KeyStore.GetKey(member);
                   if (pubKey !== undefined) {
                     const encryptedKey = await EncryptBase64WithPub(pubKey, messageKey);
                     encKeys[member] = encryptedKey.Base64;
                   }
               }
           }
-          encKeys[Manager.User.uuid] = (await EncryptBase64WithPub(Manager.User.keyPair.PublicKey, messageKey)).Base64;
-          const mPost = await POST(`/Channel/${channel_uuid}/Messages?contentToken=${token}`, ContentType.JSON, JSON.stringify({Content: encryptedMessage.content as string, IV: encryptedMessage.iv, EncryptedKeys: encKeys, Attachments: attachments}), Manager.User.token)
+          encKeys[UserData.Uuid] = (await EncryptBase64WithPub(UserData.KeyPair.PublicKey, messageKey)).Base64;
+          const mPost = await POST(`/Channel/${channel_uuid}/Messages?contentToken=${token}`, ContentType.JSON, JSON.stringify({Content: encryptedMessage.content as string, IV: encryptedMessage.iv, EncryptedKeys: encKeys, Attachments: attachments}), UserData.Token)
           if (mPost.status === HTTPStatusCodes.OK || failedUploads.length === 0) callback(true, [] as FailedUpload[]);
           else callback(false, failedUploads);
           return;
@@ -343,107 +341,106 @@ export function SENDMessage(channel_uuid: string, contents: string, rawAttachmen
 }
 
 export async function EDITMessage(channel_uuid: string, message_id: string, message: string) : Promise<boolean> {
-  const Manager = new SettingsManager();
   const oldMessage = await GETMessage(channel_uuid, message_id);
   if (oldMessage === undefined) return false;
-  const key = await DecryptBase64WithPriv(Manager.User.keyPair.PrivateKey, new Base64String(oldMessage.encryptedKeys[Manager.User.uuid]));
+  const key = await DecryptBase64WithPriv(UserData.KeyPair.PrivateKey, new Base64String(oldMessage.encryptedKeys[UserData.Uuid]));
   const c = await EncryptBase64(key, Base64String.CreateBase64String(message), new Base64String(oldMessage.iv));
-  const resp = await PUT(`Channel/${channel_uuid}/Messages/${message_id}`, ContentType.JSON, JSON.stringify({content: c.content}), Manager.User.token);
+  const resp = await PUT(`Channel/${channel_uuid}/Messages/${message_id}`, ContentType.JSON, JSON.stringify({content: c.content}), UserData.Token);
   if (resp.status === HTTPStatusCodes.OK) return true;
   return false;
 }
 
 export async function DELETEMessage(channel_uuid: string, message_id: string) : Promise<boolean> {
-  const resp = await DELETE(`Channel/${channel_uuid}/Messages/${message_id}`, new SettingsManager().User.token);
+  const resp = await DELETE(`Channel/${channel_uuid}/Messages/${message_id}`, UserData.Token);
   if (resp.status === HTTPStatusCodes.OK) return true;
   return false;
 }
 
 export async function DELETEAttachment(channel_uuid: string, message_id: string, attachment_uuid: string) : Promise<boolean> {
-  const resp = await DELETE(`Channel/${channel_uuid}/Messages/${message_id}/Attachments/${attachment_uuid}`, new SettingsManager().User.token);
+  const resp = await DELETE(`Channel/${channel_uuid}/Messages/${message_id}/Attachments/${attachment_uuid}`, UserData.Token);
   if (resp.status === HTTPStatusCodes.OK) return true;
   return false;
 }
 
 // Channels
 export async function GETChannel(channel_uuid: string) : Promise<IRawChannelProps | undefined> {
-  const resp = await GET(`/Channel/${channel_uuid}`, new SettingsManager().User.token);
+  const resp = await GET(`/Channel/${channel_uuid}`, UserData.Token);
   if (resp.status === HTTPStatusCodes.OK) return resp.payload as IRawChannelProps;
   return undefined;
 }
 
 export function CREATEChannel(recipient_uuid: string, callback: (created: boolean) => void) {
-  POST(`Channel/CreateChannel?recipient_uuid=${recipient_uuid}`, ContentType.EMPTY, "", new SettingsManager().User.token, false).then((resp: NCAPIResponse) => {
+  POST(`Channel/CreateChannel?recipient_uuid=${recipient_uuid}`, ContentType.EMPTY, "", UserData.Token, false).then((resp: NCAPIResponse) => {
     if (resp.status === HTTPStatusCodes.OK) callback(true);
     else callback(false);
   });
 }
 
 export function CREATEPrivate(callback: (created: boolean, uuid: string) => void) {
-  POST("Channel/CreatePrivate", ContentType.EMPTY, "", new SettingsManager().User.token, false).then((resp: NCAPIResponse) => {
+  POST("Channel/CreatePrivate", ContentType.EMPTY, "", UserData.Token, false).then((resp: NCAPIResponse) => {
     if (resp.status === HTTPStatusCodes.OK) callback(true, resp.payload as string);
     else callback(false, "");
   });
 }
 
 export function CREATEGroupChannel(group_name: string, recipients: string[], callback: (created: boolean) => void) {
-    POST(`Channel/CreateGroupChannel?group_name=${group_name}`, ContentType.JSON, JSON.stringify(recipients), new SettingsManager().User.token).then((resp: NCAPIResponse) => {
+    POST(`Channel/CreateGroupChannel?group_name=${group_name}`, ContentType.JSON, JSON.stringify(recipients), UserData.Token).then((resp: NCAPIResponse) => {
         if (resp.status === HTTPStatusCodes.OK) callback(true);
         else callback(false);
     });
 }
 
 export function UPDATEChannelName(channel_uuid: string, newName: string, callback: (updated: boolean) => void)  {
-    PATCH(`/Channel/${channel_uuid}/Name?new_name=${newName}`, ContentType.EMPTY, "", new SettingsManager().User.token).then((resp: NCAPIResponse) => {
+    PATCH(`/Channel/${channel_uuid}/Name?new_name=${newName}`, ContentType.EMPTY, "", UserData.Token).then((resp: NCAPIResponse) => {
         if (resp.status === HTTPStatusCodes.OK) callback(true);
         else callback(false);
     });
 }
 
 export function UPDATEChannelIcon(channel_uuid: string, file: Blob, callback: (updated: boolean) => void) {
-    POSTFile(`/Channel/${channel_uuid}/Icon`, file, `Icon_${channel_uuid}`, undefined, undefined, new SettingsManager().User.token).then((resp: NCAPIResponse) => {
+    POSTFile(`/Channel/${channel_uuid}/Icon`, file, `Icon_${channel_uuid}`, undefined, undefined, UserData.Token).then((resp: NCAPIResponse) => {
         if (resp.status === HTTPStatusCodes.OK) callback(true);
         else callback(false);
     });
 }
 
 export function REMOVEChannelIcon(channel_uuid: string, callback: (removed: boolean) => void) {
-    POST(`/Channel/${channel_uuid}/Icon`, ContentType.EMPTY, "", new SettingsManager().User.token).then((resp: NCAPIResponse) => {
+    POST(`/Channel/${channel_uuid}/Icon`, ContentType.EMPTY, "", UserData.Token).then((resp: NCAPIResponse) => {
         if (resp.status === HTTPStatusCodes.OK) callback(true);
         else callback(false);
     });
 }
 
 export function ADDChannelMember(channel_uuid: string, recipients: string[], callback: (added: boolean) => void) {
-  PATCH(`Channel/${channel_uuid}/Members`, ContentType.JSON, JSON.stringify(recipients), new SettingsManager().User.token).then((resp: NCAPIResponse) => {
+  PATCH(`Channel/${channel_uuid}/Members`, ContentType.JSON, JSON.stringify(recipients), UserData.Token).then((resp: NCAPIResponse) => {
     if (resp.status === HTTPStatusCodes.OK) callback(true);
     else callback(false);
   });
 }
 
 export function REMOVEChannelMember(channel_uuid: string, recipient: string, callback: (removed: boolean) => void) {
-    DELETE(`/Channel/${channel_uuid}/Members?recipient=${recipient}`, new SettingsManager().User.token).then((resp: NCAPIResponse) => {
+    DELETE(`/Channel/${channel_uuid}/Members?recipient=${recipient}`, UserData.Token).then((resp: NCAPIResponse) => {
         if (resp.status === HTTPStatusCodes.OK) callback(true);
         else callback(false);
     });
 }
 
 export function ARCHIVEChannel(channel_uuid: string, callback: (archived: boolean) => void) {
-    PATCH(`/Channel/${channel_uuid}/Achrive`, ContentType.EMPTY, "", new SettingsManager().User.token).then((resp: NCAPIResponse) => {
+    PATCH(`/Channel/${channel_uuid}/Achrive`, ContentType.EMPTY, "", UserData.Token).then((resp: NCAPIResponse) => {
         if (resp.status === HTTPStatusCodes.OK) callback(true);
         else callback(false);
     });
 }
 
 export function UNARCHIVEChannel(channel_uuid: string, callback: (archived: boolean) => void) {
-    PATCH(`/Channel/${channel_uuid}/Unachrive`, ContentType.EMPTY, "", new SettingsManager().User.token).then((resp: NCAPIResponse) => {
+    PATCH(`/Channel/${channel_uuid}/Unachrive`, ContentType.EMPTY, "", UserData.Token).then((resp: NCAPIResponse) => {
         if (resp.status === HTTPStatusCodes.OK) callback(true);
         else callback(false);
     });
 }
 
 export function DELETEChannel(channel_uuid: string, callback: (deleted: boolean) => void) {
-  DELETE(`/Channel/${channel_uuid}`, new SettingsManager().User.token).then((resp: NCAPIResponse) => {
+  DELETE(`/Channel/${channel_uuid}`, UserData.Token).then((resp: NCAPIResponse) => {
     if (resp.status === HTTPStatusCodes.OK) callback(true);
     else callback(false);
   });
@@ -452,33 +449,33 @@ export function DELETEChannel(channel_uuid: string, callback: (deleted: boolean)
 // Media
 
 export async function GETContentKeys(content_id: string, channel_uuid: string) : Promise<Dictionary<string> | undefined> {
-  const resp = await GET(`Channel/${channel_uuid}/${content_id}/Keys`, new SettingsManager().User.token);
+  const resp = await GET(`Channel/${channel_uuid}/${content_id}/Keys`, UserData.Token);
   if (resp.status === HTTPStatusCodes.OK) return new Dictionary<string>(resp.payload as Indexable<string>);
   return undefined;
 }
 
 export async function GETContentURLKeys(content_url: string) : Promise<Dictionary<string> | undefined> {
-  const resp = await GET(`${content_url.replace(API_DOMAIN, "")}/Keys`, new SettingsManager().User.token);
+  const resp = await GET(`${content_url.replace(API_DOMAIN, "")}/Keys`, UserData.Token);
   if (resp.status === HTTPStatusCodes.OK) return new Dictionary<string>(resp.payload as Indexable<string>);
   return undefined;
 }
 
 export function SETAvatar(user_uuid: string, file: Blob, callback: (set: boolean) => void) {
-  POSTFile(`/User/${user_uuid}/Avatar`, file, "Unknown", new SettingsManager().User.token).then((resp: NCAPIResponse) => {
+  POSTFile(`/User/${user_uuid}/Avatar`, file, "Unknown", UserData.Token).then((resp: NCAPIResponse) => {
     if (resp.status === HTTPStatusCodes.OK) callback(true);
     else callback(false);
   });
 }
 
 export function SETChannelIcon(channel_uuid: string, file: Blob, callback: (set: boolean) => void) {
-  POSTFile(`/Media/Channel/${channel_uuid}`, file, "Unknown", new SettingsManager().User.token).then((resp: NCAPIResponse) => {
+  POSTFile(`/Media/Channel/${channel_uuid}`, file, "Unknown", UserData.Token).then((resp: NCAPIResponse) => {
     if (resp.status === HTTPStatusCodes.OK) callback(true);
     else callback(false);
   });
 }
 
 export async function GETChannelName(channel_uuid: string) : Promise<string | undefined> {
-  const resp = await GET(`/Channel/${channel_uuid}`, new SettingsManager().User.token);
+  const resp = await GET(`/Channel/${channel_uuid}`, UserData.Token);
   if (resp.status === HTTPStatusCodes.OK) return (resp.payload as IRawChannelProps).channelName;
   return undefined;
 }

@@ -1,10 +1,8 @@
 import React, { useEffect } from "react";
-import { CSSTransition } from "react-transition-group";
 import { useNavigate, useLocation, Outlet, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { IconButton, useTheme } from "@mui/material";
 import { Add as AddIcon, Group as GroupIcon, Menu as MenuIcon } from "@mui/icons-material";
-import { SettingsManager } from "NSLib/SettingsManager";
 import { UserCache } from "App";
 import { AutoLogin } from "Init/AuthHandler";
 import { Events } from "Init/WebsocketEventInit";
@@ -22,6 +20,7 @@ import type { IChannelUpdateProps } from "Types/API/Interfaces/IChannelUpdatePro
 import type IUserData from "Types/API/Interfaces/IUserData";
 import { IMessageProps } from "Types/API/Interfaces/IMessageProps";
 import Friend from "Types/UI/Friend";
+import UserData from "DataManagement/UserData";
 
 interface MainViewProps extends View {
   channels?: IRawChannelProps[],
@@ -53,7 +52,6 @@ function MainView(props: MainViewProps) {
   const location = useLocation();
   const { uuid } = useParams();
   const theme = useTheme();
-  const settings = new SettingsManager();
 
   const autoNavigate = () => {
     if ((!uuid || uuid.length < 1) && ((location.pathname === Routes.Chat) || (location.pathname === Routes.Root)) && props.channels && props.channels[0]) {
@@ -238,7 +236,7 @@ function MainView(props: MainViewProps) {
           props.channelMenuVisible ?
           <div className="MainViewContainerLeft">
             <div className="NavigationButtonContainer" style={{ backgroundColor: theme.palette.background.paper, borderColor: theme.palette.divider }}>
-              <AvatarTextButton className="NavigationButtonContainerItem" selected={location.pathname === Routes.Dashboard} onLeftClick={() => props.onNavigateToPage ? props.onNavigateToPage(Routes.Dashboard) : null} iconSrc={`${settings.User.avatarSrc}&nonce=${props.avatarNonce || ""}`}>{Localizations_MainView("Typography-SettingsHeader")}</AvatarTextButton>
+              <AvatarTextButton className="NavigationButtonContainerItem" selected={location.pathname === Routes.Dashboard} onLeftClick={() => props.onNavigateToPage ? props.onNavigateToPage(Routes.Dashboard) : null} iconSrc={`${UserData.AvatarSrc}&nonce=${props.avatarNonce || ""}`}>{Localizations_MainView("Typography-SettingsHeader")}</AvatarTextButton>
               <AvatarTextButton className="NavigationButtonContainerItem" iconObj={<GroupIcon />} selected={location.pathname === Routes.FriendsList || location.pathname === Routes.AddFriend || location.pathname === Routes.AddFriendGroup || location.pathname === Routes.BlockedUsersList} onLeftClick={() => props.onNavigateToPage ? props.onNavigateToPage(Routes.FriendsList) : null}>{Localizations_MainView("Typography-FriendsHeader")}</AvatarTextButton>
             </div>
             <div className="MainViewChannelListContainer">

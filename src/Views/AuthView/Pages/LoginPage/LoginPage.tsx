@@ -7,7 +7,7 @@ import { LoginNewUser } from "Init/AuthHandler";
 import type { Page } from "Types/UI/Components";
 import { LoginStatus } from "Types/Enums";
 import { Routes } from "Types/UI/Routes";
-import { SettingsManager } from "NSLib/SettingsManager";
+import { LocalStorage } from "StorageLib/LocalStorage";
 
 interface LoginPageProps extends Page {
 
@@ -39,10 +39,9 @@ function LoginPage(props: LoginPageProps) {
     });
   }
 
-  const Manager = new SettingsManager();
-  Manager.ContainsLocalStorage("LoggedIn").then(async (value: boolean) => {
+  LocalStorage.ContainsAsync("LoggedIn").then(async (value: boolean) => {
     if ((location.pathname.toLowerCase().includes(Routes.Login) || location.pathname.toLowerCase().includes(Routes.Register) || location.pathname === "/") && value) {
-      Manager.WriteLocalStorage("LoggedIn", "false");
+      LocalStorage.SetItem("LoggedIn", "false");
       navigate(Routes.Chat);
     }
   });

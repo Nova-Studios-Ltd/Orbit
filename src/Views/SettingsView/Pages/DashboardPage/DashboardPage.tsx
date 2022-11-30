@@ -3,7 +3,6 @@ import { Add as AddIcon } from "@mui/icons-material";
 import useClassNames from "Hooks/useClassNames";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
-import { SettingsManager } from "NSLib/SettingsManager";
 import { NCChannelCache } from "NSLib/NCChannelCache";
 import { APP_VERSION, DEBUG } from "vars";
 
@@ -21,6 +20,7 @@ import { Routes } from "Types/UI/Routes";
 import { TextComboStates } from "Types/Enums";
 import { NCFlags, HasUrlFlag } from "NSLib/NCFlags";
 import SystemFlags from "./DebugTools/SystemFlags/SystemFlags";
+import UserData from "DataManagement/UserData";
 
 interface DashboardPageProps extends Page {
   avatarNonce?: string,
@@ -36,9 +36,8 @@ function DashboardPage(props: DashboardPageProps) {
   const theme = useTheme();
   const navigate = useNavigate();
 
-  const settings = new SettingsManager();
-  const usernameText = `${settings.ReadCookieSync("Username")}#${settings.ReadCookieSync("Discriminator")}`;
-  const avatarSrc = settings && settings.User && settings.User.avatarSrc ? `${settings.User.avatarSrc}&nonce=${props.avatarNonce}` : "";
+  const usernameText = `${UserData.Username}#${UserData.Discriminator}`;
+  const avatarSrc = UserData.AvatarSrc ? `${UserData.AvatarSrc}&nonce=${props.avatarNonce}` : "";
 
   const [NewUsernameValue, setNewUsernameValue] = useState("");
   const [ChangeUsernameDialogVisible, setChangeUsernameDialogVisibility] = useState(false);
@@ -60,8 +59,8 @@ function DashboardPage(props: DashboardPageProps) {
   const pickProfile = async () => {
     UploadFile(false).then((files: NCFile[]) => {
       if (files.length === 0) return;
-      SETAvatar(settings.User.uuid, new Blob([files[0].FileContents]), (set: boolean) => {
-        if (set) console.log("Avatar Set", settings.User.uuid);
+      SETAvatar(UserData.Uuid, new Blob([files[0].FileContents]), (set: boolean) => {
+        if (set) console.log("Avatar Set", UserData.Uuid);
         updateAvatar();
       });
     });
@@ -143,8 +142,8 @@ function DashboardPage(props: DashboardPageProps) {
               <AddIcon fontSize="large" className="Overlay" color="inherit" />
             </IconButton>
             <div className="UserInfoButtonContainer">
-              <Button color="inherit" style={{ textTransform: "none" }} onClick={() => WriteToClipboard(usernameText)} onContextMenu={() => WriteToClipboard(settings.User.uuid)}><Typography variant="h5">{usernameText}</Typography></Button>
-              <Typography>{settings.User.email}</Typography>
+              <Button color="inherit" style={{ textTransform: "none" }} onClick={() => WriteToClipboard(usernameText)} onContextMenu={() => WriteToClipboard(UserData.Uuid)}><Typography variant="h5">{usernameText}</Typography></Button>
+              <Typography>{UserData.Email}</Typography>
             </div>
           </div>
           <div className="UserSectionButtonContainer">
@@ -163,7 +162,7 @@ function DashboardPage(props: DashboardPageProps) {
       </Section>) : (null)}
       <Section title={Localizations_DashboardPage("Section_Title-Advanced")}>
         <div className="SectionButtonContainer">
-          <Button className="SectionButton" id="CopyTokenButton" variant="outlined" color="warning" onClick={() => WriteToClipboard(settings.User.token)}>{Localizations_DashboardPage("Button_Label-CopyToken")}</Button>
+          <Button className="SectionButton" id="CopyTokenButton" variant="outlined" color="warning" onClick={() => WriteToClipboard(UserData.Token)}>{Localizations_DashboardPage("Button_Label-CopyToken")}</Button>
           <Button className="SectionButton" id="ClearCacheButton" variant="outlined" color="warning" onClick={clearCaches}>{Localizations_DashboardPage("Button_Label-ClearCache")}</Button>
           <Button className="SectionButton" id="DeleteAccountButton" variant="outlined" color="error" onClick={() => setDeleteAccountDialogVisibility(true)}>{Localizations_DashboardPage("Button_Label-DeleteAccount")}</Button>
           <Button className="SectionButton" id="OpenConsoleButton" variant="outlined" color="primary" disabled={!DEBUG} onClick={() => props.sharedProps && props.sharedProps.openConsole ? props.sharedProps.openConsole() : null}>{Localizations_DashboardPage("Button_Label-OpenConsole")}</Button>

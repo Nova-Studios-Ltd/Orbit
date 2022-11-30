@@ -49,8 +49,6 @@ import type IUserData from "Types/API/Interfaces/IUserData";
 
 import "./App.css";
 import { DEBUG } from "vars";
-import DebugButton from "Components/Buttons/DebugButtom/DebugButton";
-import { IndexedDB } from "StorageLib/IndexedDB";
 
 i18n.use(initReactI18next)
 .init({

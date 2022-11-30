@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { Avatar, Button, Icon, IconButton, useTheme, Typography, CircularProgress, ButtonBase } from "@mui/material";
-import { Add as AddIcon, AddCircle as AddFilledIcon, Delete as DeleteIcon, Group as GroupIcon, Security as OwnerIcon } from "@mui/icons-material";
+import { Avatar, Button, Icon, IconButton, useTheme, Typography } from "@mui/material";
+import { Add as AddIcon, AddCircle as AddFilledIcon, Group as GroupIcon } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
-import { SettingsManager } from "NSLib/SettingsManager";
 import useClassNames from "Hooks/useClassNames";
-import { GETUser, SETAvatar } from "NSLib/APIEvents";
+import { GETUser } from "NSLib/APIEvents";
 import { NCFile, UploadFile } from "NSLib/ElectronAPI";
 
 import AvatarTextButton from "Components/Buttons/AvatarTextButton/AvatarTextButton";
@@ -22,6 +21,7 @@ import type IUserData from "Types/API/Interfaces/IUserData";
 import type { IChannelUpdateProps } from "Types/API/Interfaces/IChannelUpdateProps";
 import { ChannelTypes, FriendButtonVariant } from "Types/Enums";
 import type Friend from "Types/UI/Friend";
+import UserData from "DataManagement/UserData";
 
 export interface ChannelProps extends NCComponent {
   channelData: IRawChannelProps,
@@ -44,13 +44,12 @@ export interface ChannelProps extends NCComponent {
 
 function Channel(props: ChannelProps) {
   const theme = useTheme();
-  const settings = new SettingsManager();
   const classNames = useClassNames("ChannelContainer", props.className);
   const Localizations_GenericDialog = useTranslation("GenericDialog").t;
   const Localizations_Channel = useTranslation("Channel").t;
   const Localizations_ContextMenuItem = useTranslation("ContextMenuItem").t;
 
-  const isOwner = props.channelData.owner_UUID === settings.User.uuid;
+  const isOwner = props.channelData.owner_UUID === UserData.Uuid;
   const isGroup = props && props.channelData.channelType === ChannelTypes.GroupChannel;
 
   const [ChannelContextMenuChangeTitleTextField, setChannelContextMenuChangeTitleTextField] = useState("");
@@ -81,7 +80,7 @@ function Channel(props: ChannelProps) {
       }
       setChannelMembersUserData(channelMembers);
     }
-  }, [isGroup, isOwner, props.channelData, settings.User.uuid]);
+  }, [isGroup, isOwner, props.channelData]);
 
   const onKickRecipient = (recipient: Friend) => {
     if (props.onChannelRemoveRecipient && recipient.friendData) props.onChannelRemoveRecipient(props.channelData, recipient.friendData);

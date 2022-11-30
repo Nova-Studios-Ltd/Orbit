@@ -1,21 +1,27 @@
+/**
+ * Wrapper around window.localStorage, includes async variants
+ */
 export class LocalStorage {
 
   /**
    * Get a item by it's key from LocalStorage
    * @param key Key to retreive value of
+   * @param decodeJson This entry is stored as json?
    * @returns Value of type T
    */
-  static GetItem(key: string) : string {
-    return window.localStorage.getItem(key) as string;
+  static GetItem<T>(key: string, decodeJson: boolean = false) : T {
+    if (decodeJson) return JSON.parse(window.localStorage.getItem(key) as string) as T;
+    return window.localStorage.getItem(key) as T;
   }
 
   /**
    * Get a item by it's key from LocalStorage asynchronously
    * @param key Key to retreive value of
+   * @param decodeJson This entry is stored as json?
    * @returns Value of type T
    */
-  static async GetItemAsync(key: string) : Promise<string> {
-    return this.GetItem(key);
+  static async GetItemAsync<T>(key: string, decodeJson: boolean = false) : Promise<T> {
+    return this.GetItem<T>(key, decodeJson);
   }
 
   /**
@@ -23,8 +29,9 @@ export class LocalStorage {
    * @param key Key to set store alongside value
    * @param value The keys value
    */
-  static SetItem(key: string, value: string) {
-    window.localStorage.setItem(key, value);
+  static SetItem(key: string, value: string | object) {
+    if (typeof value === "object") window.localStorage.setItem(key, JSON.stringify(value));
+    else window.localStorage.setItem(key, value);
   }
 
   /**
@@ -32,7 +39,7 @@ export class LocalStorage {
    * @param key Key to set store alongside value
    * @param value The keys value
    */
-  static async SetItemAsync(key: string, value: string) {
+  static async SetItemAsync(key: string, value: string | object) {
     this.SetItem(key, value);
   }
 
@@ -82,5 +89,23 @@ export class LocalStorage {
    */
   static async ClearAsync() {
     this.Clear();
+  }
+
+  /**
+   * Checks if localStorage contains the provided key
+   * @param key The key to check for
+   * @returns True if found otherwise False
+   */
+  static Contains(key: string) : boolean {
+    return window.localStorage.getItem(key) !== null;
+  }
+
+  /**
+   * Checks if localStorage contains the provided key asynchronously
+   * @param key The key to check for
+   * @returns True if found otherwise False
+   */
+  static async ContainsAsync(key: string) : Promise<boolean> {
+    return this.Contains(key);
   }
 }
