@@ -1,0 +1,44 @@
+.FileUploadSummaryItemContainer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  border-radius: var(--global-border-radius);
+
+  margin-right: var(--global-margin);
+
+  height: 2rem;
+}
+
+.FileUploadSummaryItemLeft {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  box-sizing: border-box;
+  height: 100%;
+}
+
+.FileUploadSummaryItemRight {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  margin-left: var(--global-margin);
+}
+
+.FileUploadSummaryItemImagePreview {
+  min-width: 0;
+  max-height: 100%;
+  border-radius: var(--global-border-radius);
+}
+
+.FileUploadSummaryItemImagePreviewFallback {
+  padding: var(--global-padding) 0 var(--global-padding) var(--global-padding);
+}
+
+@media only screen and (max-width: 600px) {
+  .FileUploadSummaryItemContainer {
+
+  }
+}

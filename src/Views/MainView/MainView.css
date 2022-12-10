@@ -1,0 +1,130 @@
+@import "Pages/Pages.css";
+
+.MainViewContainer {
+  display: flex;
+  flex-direction: row;
+
+  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  padding-right: var(--global-padding);
+
+  width: 100%;
+  height: 100%;
+}
+
+.MainViewContainerLeft {
+  display: flex;
+  flex-direction: column;
+
+  padding: var(--global-padding);
+  overflow-x: hidden;
+
+  box-sizing: border-box;
+
+  width: 18rem;
+  height: 100%;
+
+  transition: width 200ms ease-in-out;
+}
+
+.MainViewContainerRight {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+
+  overflow: hidden;
+
+  height: 100%;
+  width: 100%;
+}
+
+.MainViewChannelListContainer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--global-margin);
+  height: 100%;
+
+  border-radius: var(--global-border-radius);
+  margin-top: var(--global-margin);
+}
+
+.MainViewChannelList {
+  border-radius: var(--global-border-radius);
+}
+
+.MainViewHeader {
+  margin: var(--global-margin) 0 0 0;
+  border-radius: var(--global-border-radius);
+}
+
+.MainViewContainerItem {
+
+}
+
+.NavigationButtonContainer {
+  padding: var(--global-padding);
+  border-radius: var(--global-border-radius);
+}
+
+.NavigationButtonContainerItem {
+  margin-top: var(--global-margin) !important;
+}
+
+.NavigationButtonContainerItem:first-child {
+  margin-top: 0 !important;
+}
+
+@media only screen and (max-width: 600px) {
+  .MainViewContainer {
+    padding: 0;
+  }
+
+  .MainViewContainerLeft {
+    padding: 0;
+  }
+
+  .MainViewContainerItem {
+    margin: 0;
+    width: auto;
+  }
+
+  .MainViewChannelListContainer {
+    gap: 0;
+    margin-top: 0;
+  }
+
+  .MainViewChannelList {
+    border-radius: 0;
+    margin-top: 0;
+  }
+
+  .NavigationButtonContainer {
+    border-bottom-width: 1px;
+    border-bottom-style: dashed;
+    border-radius: 0;
+    margin-top: 0;
+  }
+
+  .MainViewHeader {
+    margin: 0;
+    border-radius: 0;
+  }
+}
+
+.MainViewContainerLeft-enter {
+  width: 0;
+  padding: 0;
+}
+
+.MainViewContainerLeft-enter-done {
+  width: 18rem;
+}
+
+.MainViewContainerLeft-exit {
+  width: 18rem;
+}
+
+.MainViewContainerLeft-exit-done {
+  width: 0;
+  padding: 0;
+}

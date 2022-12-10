@@ -1,0 +1,27 @@
+.MessageInputContainer {
+  display: flex;
+  flex-direction: column;
+
+  box-sizing: border-box;
+  border-radius: var(--global-border-radius);
+  margin-top: var(--global-margin);
+}
+
+.FileUploadSummaryContainer {
+  display: flex;
+  flex-direction: row;
+  overflow-x: auto;
+  overflow-y: hidden;
+
+  margin-bottom: var(--global-margin);
+}
+
+.MessageInputField {
+  width: 100%;
+}
+
+@media only screen and (max-width: 600px) {
+  .MessageInputContainer {
+    margin: 0 var(--global-margin) !important;
+  }
+}

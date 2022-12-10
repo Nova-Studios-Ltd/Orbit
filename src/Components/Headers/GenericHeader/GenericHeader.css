@@ -1,0 +1,23 @@
+.GenericHeaderContainer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  height: 2rem;
+
+  padding: var(--global-padding);
+}
+
+.GenericHeaderLeft {
+  margin-right: var(--global-margin);
+}
+
+.GenericHeaderRight {
+  margin-left: auto;
+}
+
+@media only screen and (max-width: 600px) {
+  .GenericHeaderContainer {
+
+  }
+}

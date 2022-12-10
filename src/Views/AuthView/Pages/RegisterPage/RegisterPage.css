@@ -1,0 +1,18 @@
+.RegisterPageContainer {
+  position: relative;
+  z-index: 1;
+}
+
+.RegisterForm {
+
+}
+
+.RegisterFormItem {
+  margin-top: var(--global-margin) !important;
+}
+
+.E2EHelpContainer {
+  position: relative;
+  width: 20rem;
+  padding: var(--card-padding);
+}

@@ -1,0 +1,46 @@
+.AvatarTextButtonContainer {
+  display: block;
+  position: relative;
+
+  border-radius: var(--global-border-radius);
+}
+
+.AvatarTextButtonLeft {
+
+}
+
+.AvatarTextButtonRight {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow: hidden;
+
+  margin-left: var(--global-margin);
+}
+
+.AvatarTextButtonVeryRight {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  position: absolute !important;
+
+  height: 100%;
+
+  top: 0;
+  right: var(--global-margin);
+}
+
+.AvatarTextButtonIcon {
+
+}
+
+.AvatarTextButtonEllipsis {
+
+}
+
+@media only screen and (max-width: 600px) {
+  .AvatarTextButtonContainer {
+
+  }
+}

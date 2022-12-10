@@ -1,0 +1,51 @@
+.MessageContainer {
+  display: flex;
+  flex-direction: row;
+
+  -webkit-flex-shrink: 0;
+  flex-shrink: 0;
+
+  margin-top: var(--global-padding);
+
+  transition: background-color 200ms ease;
+}
+
+.MessageMediaParentContainer {
+  display: flex;
+  flex-direction: column;
+}
+
+.MessageLeft {
+  margin: var(--global-margin);
+}
+
+.MessageRight {
+  margin-left: 0.5rem;
+  align-self: center;
+  overflow-wrap: anywhere;
+  width: 100%;
+
+  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  padding: var(--global-padding);
+  border-radius: var(--global-border-radius);
+
+  transition: background-color 200ms linear;
+}
+
+.MessageRightHeader {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.MessageTimestamp, .MessageTimestampEdited {
+  margin-left: 5px !important;
+  font-size: 12px !important;
+}
+
+@media only screen and (max-width: 600px) {
+  .MessageContainer {
+
+  }
+}

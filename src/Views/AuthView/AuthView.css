@@ -1,0 +1,87 @@
+@import "Pages/Pages.css";
+
+.AuthViewContainer {
+  height: 100%;
+}
+
+.AuthViewCenterContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+  flex: 1;
+
+  animation: gradient 15s ease infinite;
+  background-size: 200% 200%;
+
+  width: 100%;
+}
+
+.AuthViewFormContainer {
+  padding: var(--card-padding);
+  border-radius: var(--global-border-radius);
+  box-sizing: border-box;
+  background: transparent;
+
+  position: relative;
+
+  width: 30rem;
+  margin: var(--global-margin) 0;
+}
+
+.AuthViewFormContainerBackground {
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  border-radius: var(--global-border-radius);
+  opacity: 0.93;
+
+  width: 100%;
+  height: 100%;
+}
+
+.AuthViewBrandingContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  margin-bottom: var(--global-margin);
+
+  position: relative;
+  z-index: 1;
+}
+
+.AuthForm {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: center;
+}
+
+@media only screen and (max-width: 600px) {
+  .AuthViewFormContainer {
+    border-radius: 0;
+    margin: 0;
+
+    width: 100%;
+    height: 100%;
+  }
+
+  .AuthViewFormContainerBackground {
+    border-radius: 0;
+    opacity: 0.5;
+  }
+}
+
+@keyframes gradient {
+	0% {
+		background-position: 0% 50%;
+	}
+	50% {
+		background-position: 100% 50%;
+	}
+	100% {
+		background-position: 0% 50%;
+	}
+}

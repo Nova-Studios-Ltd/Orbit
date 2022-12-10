@@ -1,0 +1,21 @@
+.StatusIndicatorContainer {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+}
+
+.StatusIndicatorItemContainer {
+  display: flex;
+  flex-direction: column;
+}
+
+.ColoredCircle {
+  display: inline-block;
+
+  margin-right: var(--global-margin);
+  margin-bottom: -2px;
+  border-radius: 50%;
+
+  height: 15px;
+  width: 15px;
+}

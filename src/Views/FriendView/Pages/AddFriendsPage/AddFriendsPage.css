@@ -1,0 +1,20 @@
+.AddFriendsPageContainer {
+  display: flex;
+  flex-direction: column;
+}
+
+.AddFriendContainer {
+  display: flex;
+  flex-direction: column;
+  margin-top: var(--global-margin);
+}
+
+.AddFriendButton {
+  height: 100%;
+}
+
+@media only screen and (max-width: 600px) {
+  .AddFriendsPageContainer {
+
+  }
+}

@@ -1,0 +1,45 @@
+.AvatarDropdownButtonContainer {
+  display: flex;
+  flex-direction: row;
+
+  border-radius: var(--global-border-radius);
+}
+
+.AvatarDropdownButtonBase {
+  display: flex !important;
+  flex-direction: row;
+  justify-content: flex-start !important;
+
+  padding: var(--global-padding) !important;
+  border-radius: var(--global-border-radius) !important;
+
+  width: 100%;
+
+  transition: background-color 100ms linear;
+}
+
+.AvatarDropdownButtonLeft {
+
+}
+
+.AvatarDropdownButtonRight {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  margin-left: var(--global-margin);
+}
+
+.AvatarDropdownButtonIcon {
+
+}
+
+.AvatarDropdownButtonEllipsis {
+  margin-left: auto !important;
+}
+
+@media only screen and (max-width: 600px) {
+  .AvatarDropdownButtonContainer {
+
+  }
+}

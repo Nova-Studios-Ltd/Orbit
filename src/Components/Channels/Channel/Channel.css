@@ -1,0 +1,21 @@
+.ChannelContainer {
+
+}
+
+.ChannelAvatarTextButtonContainer {
+  height: 4rem;
+}
+
+.ChannelMembersListContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+
+  gap: var(--global-margin);
+
+  width: 100%;
+}
+
+@media only screen and (max-width: 600px) {
+
+}

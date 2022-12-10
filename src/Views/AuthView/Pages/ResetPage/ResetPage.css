@@ -1,0 +1,9 @@
+.ReturnHomeButton {
+  text-align: center;
+}
+
+.ResetPageContainer {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+}

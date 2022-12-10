@@ -1,0 +1,53 @@
+.ContextMenuContainer {
+  position: absolute;
+
+  opacity: 0;
+  visibility: hidden;
+  transition: visibility 200ms linear, opacity 200ms ease-in-out;
+
+  z-index: 1;
+}
+
+.ContextMenuItemParentContainer {
+  display: flex;
+  flex-direction: column;
+
+  border-radius: var(--global-border-radius);
+  padding: var(--global-padding);
+  box-shadow: var(--generic-box-shadow);
+}
+
+.ContextMenuBackdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+
+  opacity: 0.4;
+
+  width: 100%;
+  height: 100%;
+}
+
+@media only screen and (max-width: 600px) {
+  .ContextMenuContainer {
+
+  }
+}
+
+.ContextMenuContainer-enter {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.ContextMenuContainer-enter-done {
+  opacity: 1;
+  visibility: visible;
+}
+
+.ContextMenuContainer-exit {
+  opacity: 1;
+}
+
+.ContextMenuContainer-exit-done {
+  opacity: 0;
+}

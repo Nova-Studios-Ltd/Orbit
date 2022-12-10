@@ -1,0 +1,22 @@
+{
+  "PageTitle": "Register",
+  "Typography-FormCaption": "Create an Orbit Account",
+  "Typography-HaveAccountQuestion": "Already have an account?",
+  "Button_Text-Register": "Register",
+  "TextField_Label-Email": "Email",
+  "TextField_Label-Username": "Username",
+  "TextField_Label-Password": "Password",
+  "TextField_Placeholder-Email": "Valid Email Address",
+  "TextField_Placeholder-Username": "New Username",
+  "TextField_Placeholder-Password": "New Password",
+  "TextField_HelperText-EmailHint": "This will be used when signing in, and for account-related operations.",
+  "TextField_HelperText-ForgottenPasswordWarning": "Warning: Remember this password. This can be reset but you will suffer loss of access to old messages/content",
+  "TextField_HelperText-ForgottenPasswordWarningExplanationCaption": "Why?",
+  "TextField_HelperText-ForgottenPasswordWarningExplanation": "Due to the nature of our service, your password is used to encrypt everything you send to another user. If this is lost we cannot reverse the encryption.",
+  "Link-ToLoginForm": "Login",
+  "Link-LearnMore": "Learn More",
+  "FormStatus-Success": "Account Created Successfully.",
+  "FormStatus-EmailError": "This email is already registered to an account.",
+  "FormStatus-RSAKeygenError": "Unable to generate keypair (this is BAD).",
+  "FormStatus-ServerError": "Unable to create account, server died."
+}

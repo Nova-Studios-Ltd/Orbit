@@ -1,0 +1,9 @@
+{
+  "PageTitle": "Add a Friend",
+  "Button_Label-AddFriend": "Add Friend",
+  "TextField_StatusText__RecipientField-FriendNotFound": "We couldn't find that user. Perhaps check if the username and discriminator are correct and try again?",
+  "TextField_StatusText__RecipientField-InvalidFormat": "The name you typed does not seem to be in the correct format.",
+  "TextField_StatusText__RecipientField-Success": "Request sent! (you will need to wait for them to accept your request)",
+  "TextField_Placeholder-FriendFormat": "e.g. MyFriend#0000",
+  "Typography-AddFriendBlurb": "Ask your friend for their username and discriminator (hashtag and numbers) and enter them below!"
+}

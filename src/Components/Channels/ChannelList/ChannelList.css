@@ -1,0 +1,24 @@
+.ChannelListContainer {
+  display: flex;
+  flex-direction: column;
+
+  overflow-y: auto;
+
+  padding: var(--global-padding);
+  box-sizing: border-box;
+  gap: var(--global-margin);
+
+  height: 100%;
+}
+
+.NoChannelsHintContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+@media only screen and (max-width: 600px) {
+  .ChannelListContainer {
+
+  }
+}

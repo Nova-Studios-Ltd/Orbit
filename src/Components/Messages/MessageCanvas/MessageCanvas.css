@@ -1,0 +1,31 @@
+.MessageCanvasContainer {
+  display: flex;
+  flex-direction: column;
+
+  margin-top: auto;
+
+  overflow-x: hidden;
+  overflow-y: auto;
+  height: 100%;
+}
+
+.TheActualMessageCanvas {
+  display: flex;
+  flex-direction: column;
+
+  margin-right: var(--global-margin);
+
+  height: 100%;
+}
+
+.NoMessagesHintContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+@media only screen and (max-width: 600px) {
+  .TheActualMessageCanvas {
+
+  }
+}

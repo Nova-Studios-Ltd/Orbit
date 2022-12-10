@@ -1,0 +1,12 @@
+{
+  "Button_Label-ClearCache": "Clear Message Cache",
+  "Button_Label-ResetIcon": "Reset Channel Icon",
+  "Typography-ChangeChannelIcon": "Channel Icon",
+  "Typography-ChangeChannelName": "Channel Name",
+  "Typography-ChannelMembersListTitle": "Members",
+  "Typography-ChannelInfoDialogTitle": "About \"{{channelName}}\"",
+  "Typography-DeleteChannelDialogTitle": "Delete Channel \"{{channelName}}\"?",
+  "Typography-EditChannelDialogTitle": "Edit \"{{channelName}}\"",
+  "Typography-DeleteChannelBlurb1": "Messages sent in this channel will be kept until all members have deleted this channel.",
+  "Typography-DeleteChannelBlurb2": "Reopening this channel while at least one member has a copy of it will restore your copy."
+}

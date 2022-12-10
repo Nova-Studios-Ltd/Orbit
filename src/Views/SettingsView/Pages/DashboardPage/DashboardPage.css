@@ -1,0 +1,94 @@
+@import "DebugTools/SystemFlags/SystemFlags.css";
+
+.DashboardPageContainer {
+
+}
+
+.UserSection {
+
+}
+
+.UserSectionCard {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+
+  padding: 10px !important;
+  border-radius: var(--global-border-radius) !important;
+}
+
+.UserSectionButtonContainer, .UserInfoContainer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+.UserInfoButtonContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.SectionButtonContainer {
+  display: flex;
+  flex-direction: row;
+}
+
+.SectionButton {
+  margin-left: var(--global-margin) !important;
+}
+
+.SectionButton:first-child {
+  margin-left: 0 !important;
+}
+
+.Overlay {
+  text-align: center;
+  font-size: 100px;
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 128px;
+  height: 128px;
+
+  transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+}
+
+.OverlayContainer:hover .Overlay {
+  color: #eee;
+}
+
+.OverlayContainer:not(.OverlayContainer:hover) .Overlay {
+  color: transparent;
+}
+
+@media only screen and (max-width: 600px) {
+  .DashboardPageContainer {
+
+  }
+
+  .UserSectionCard {
+    flex-direction: column;
+  }
+
+  .UserSectionButtonContainer, .UserInfoContainer {
+    flex-direction: column;
+  }
+
+  .SectionButtonContainer {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .SectionButton {
+    margin-top: var(--global-margin) !important;
+    margin-left: 0 !important;
+    width: 100%;
+  }
+}

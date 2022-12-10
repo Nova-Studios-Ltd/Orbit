@@ -1,0 +1,7 @@
+@import "E404/E404.css";
+
+.ErrorPage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}

@@ -1,0 +1,14 @@
+.ContextMenuItemContainer {
+  display: flex;
+  flex-direction: row;
+
+  border-radius: var(--global-border-radius) !important;
+
+  transition: background-color 150ms linear;
+}
+
+@media only screen and (max-width: 600px) {
+  .ContextMenuItemContainer {
+
+  }
+}
