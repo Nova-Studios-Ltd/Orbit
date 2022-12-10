@@ -3,7 +3,7 @@ import { IMessageProps } from "Types/API/Interfaces/IMessageProps";
 import MessageAttachment from "Types/API/MessageAttachment";
 import { Dictionary, Indexable } from "./Dictionary";
 import { ContentType, DELETE, GET, HTTPStatusCodes, NCAPIResponse, PATCH, POST, POSTFile, PUT } from "./NCAPI";
-import { AESMemoryEncryptData } from "./NCEncrytUtil";
+import { AESMemoryEncryptData, RSAMemoryKeyPair } from "./NCEncrytUtil";
 import { GetExtension, GetImageDimensions } from "./Util";
 import Dimensions from "Types/Dimensions";
 import IUserData from "Types/API/Interfaces/IUserData";
@@ -17,6 +17,7 @@ import { RemoveEXIF } from "./EXIF";
 import { API_DOMAIN } from "vars";
 import UserData from "DataManagement/UserData";
 import KeyStore from "DataManagement/KeyStore";
+import { ResetPasswordPayload, ResetPasswordPayloadKey } from "Types/API/ResetPasswordPayload";
 
 // User
 export async function GETUser(user_uuid: string) : Promise<IUserData | undefined> {
@@ -49,6 +50,16 @@ export async function UPDATEPassword(newPassword: string, callback: (status: boo
   const privkey = await EncryptBase64(hashedPassword, Base64String.CreateBase64String(UserData.KeyPair.PrivateKey));
   const payload = new UpdatePasswordPayload(hashedPassword.Base64, new PasswordPayloadKey(privkey.content as string, privkey.iv));
   PATCH(`/User/@me/Password`, ContentType.JSON, JSON.stringify(payload), UserData.Token).then((resp: NCAPIResponse) => {
+    if (resp.status === HTTPStatusCodes.OK) callback(true, newPassword);
+    else callback(false, "");
+  });
+}
+
+export async function RESETPassword(newPassword: string, token: string, keypair: RSAMemoryKeyPair, callback: (status: boolean, newPassword: string) => void) {
+  const hashedPassword = await GenerateBase64SHA256(newPassword);
+  const privkey = await EncryptBase64(hashedPassword, Base64String.CreateBase64String(keypair.PrivateKey));
+  const payload = new ResetPasswordPayload(hashedPassword.Base64, new ResetPasswordPayloadKey(privkey.content as string, privkey.iv, keypair.PublicKey));
+  PUT(`/User/@me/Reset?tokem=${token}`, ContentType.JSON, JSON.stringify(payload)).then((resp: NCAPIResponse) => {
     if (resp.status === HTTPStatusCodes.OK) callback(true, newPassword);
     else callback(false, "");
   });

@@ -5,6 +5,7 @@ import AuthView_EN_US from "./Views/AuthView/AuthView.json";
 
 import LoginPage_EN_US from "./Views/AuthView/Pages/LoginPage.json";
 import RegisterPage_EN_US from "./Views/AuthView/Pages/RegisterPage.json";
+import ResetPage_EN_US from "./Views/AuthView/Pages/ResetPage.json";
 
 // Error
 
@@ -62,6 +63,7 @@ export const Localizations_EN_US = {
 
   LoginPage: LoginPage_EN_US,
   RegisterPage: RegisterPage_EN_US,
+  ResetPage: ResetPage_EN_US,
 
   // Error
 

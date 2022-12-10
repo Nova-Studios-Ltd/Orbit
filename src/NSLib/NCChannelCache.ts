@@ -50,7 +50,8 @@ export class NCChannelCache {
   }
 
   async WriteSession(session: string) {
-    this.CurrentCache.Add("Session", session);
+    if (await this.CurrentCache.Contains("Session")) this.CurrentCache.Update("Session", session);
+    else this.CurrentCache.Add("Session", session);
   }
 
   async ContainsMessage(id: string) : Promise<boolean> {
