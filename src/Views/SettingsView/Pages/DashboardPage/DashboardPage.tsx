@@ -143,7 +143,6 @@ function DashboardPage(props: DashboardPageProps) {
             </IconButton>
             <div className="UserInfoButtonContainer">
               <Button color="inherit" style={{ textTransform: "none" }} onClick={() => WriteToClipboard(usernameText)} onContextMenu={() => WriteToClipboard(UserData.Uuid)}><Typography variant="h5">{usernameText}</Typography></Button>
-              <Typography>{UserData.Email}</Typography>
             </div>
           </div>
           <div className="UserSectionButtonContainer">
