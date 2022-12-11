@@ -472,14 +472,14 @@ export async function GETContentURLKeys(content_url: string) : Promise<Dictionar
 }
 
 export function SETAvatar(user_uuid: string, file: Blob, callback: (set: boolean) => void) {
-  POSTFile(`/User/${user_uuid}/Avatar`, file, "Unknown", UserData.Token).then((resp: NCAPIResponse) => {
+  POSTFile(`/User/${user_uuid}/Avatar`, file, "Unknown", undefined, undefined, UserData.Token).then((resp: NCAPIResponse) => {
     if (resp.status === HTTPStatusCodes.OK) callback(true);
     else callback(false);
   });
 }
 
 export function SETChannelIcon(channel_uuid: string, file: Blob, callback: (set: boolean) => void) {
-  POSTFile(`/Media/Channel/${channel_uuid}`, file, "Unknown", UserData.Token).then((resp: NCAPIResponse) => {
+  POSTFile(`/Media/Channel/${channel_uuid}`, file, "Unknown", undefined, undefined, UserData.Token).then((resp: NCAPIResponse) => {
     if (resp.status === HTTPStatusCodes.OK) callback(true);
     else callback(false);
   });
