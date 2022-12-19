@@ -3,14 +3,14 @@
     "TextField_Label-Password": "New Password",
     "TextField_Label-PasswordConf": "Confirm New Password",
     "TextField_Label-Email": "Email",
-    "TextField_HelperText-ForgottenPasswordWarning": "Warning: Password reset will cause loss of access to any messages/content prior to your password change.",
+    "TextField_HelperText-ForgottenPasswordWarning": "If you reset your password, you will lose access to all previous messages and media. If you would like to change your password instead, please login first, and then change it through account settings.",
     "TextField_HelperText-ForgottenPasswordWarningExplanationCaption": "Explanation",
-    "TextField_HelperText-ForgottenPasswordWarningExplanation": "Due to the nature of our service, your password is used to encrypt everything you send to another user. We recommend you try again to remeber your current password.",
+    "TextField_HelperText-ForgottenPasswordWarningExplanation": "Due to the nature of our service, your password is used to encrypt everything you send to another user. We recommend you to try and remember this new password, or use a password manager.",
     "Link-LearnMore": "Learn More",
     "Button_Text-Reset": "Reset Password",
     "Button_Text-ReturnHome": "Return To Login",
     "TextField_HelperText-ProvidedEmailWarning": "This will share your email with us. Required for security.",
     "TextField_HelperText-ProvidedEmailCaption": "Why?",
-    "TextField_HelperText-ProvidedEmailWarningExplanation": "The email we have on record is unreadable and cannot be used, in order to ensure your account is yours we require you provide your email in order to reset your password",
+    "TextField_HelperText-ProvidedEmailWarningExplanation": "The email we have on record is unreadable and cannot be used, in order to ensure your account is yours we require you provide your email in order to reset your password.",
     "TextField_HelperText-UserNotFound": "No user found with that email."
 }
