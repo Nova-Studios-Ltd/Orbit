@@ -1,5 +1,5 @@
 /**
- *
+ * Creates a Base64 encoded string from a Uint8Array
  * @param buffer Array of bytes to convert to base64 encoded string
  * @returns Base64 encoded string
  */
@@ -8,7 +8,7 @@ export function ToBase64String(buffer: Uint8Array) : string {
 }
 
 /**
- *
+ * Creates a Uint8Array from a Base64 encoded string
  * @param base64 Base64 encoded string
  * @returns Uint8Array of data represented by the base64 encoded string
  */
@@ -17,8 +17,8 @@ export function FromBase64String(base64: string) : Uint8Array {
 }
 
 /**
- *
- * @param text String to convert to Uint8Array of utf-8 bytes
+ * Creates a Uint8Array from a string
+ * @param text String to convert to Uint8Array of UTF-8 bytes
  * @returns Uint8Array of utf-8 bytes
  */
 export function ToUint8Array(text: string) : Uint8Array {
@@ -26,8 +26,8 @@ export function ToUint8Array(text: string) : Uint8Array {
 }
 
 /**
- *
- * @param buffer Uint8Array to convert into a utf-8 string
+ * Creates a string form a Uint8Array
+ * @param buffer Uint8Array to convert into a UTF-8 string
  * @returns Utf-8 string from buffer
  */
 export function FromUint8Array(buffer: Uint8Array) : string {
@@ -35,7 +35,7 @@ export function FromUint8Array(buffer: Uint8Array) : string {
 }
 
 /**
- *
+ * Check if a provided string is a valid Base64 string
  * @param text Text to check if its is a valid base64 string
  * @returns True if text is a valid base64 string otherwise false
  */
@@ -46,7 +46,7 @@ export function IsBase64(text: string) : boolean {
 
 
 /**
- * Strongly Typed String Class For Base64 Encoded Binary and wrapper for handling base64 encoded data
+ * Strongly Typed String Class For Base64 Encoded binary and wrapper for handling base64 encoded data
  */
 export class Base64String {
   private base64: string;
