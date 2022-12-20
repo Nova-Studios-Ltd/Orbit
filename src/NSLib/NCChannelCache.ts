@@ -3,6 +3,7 @@ import { GETMessage, GETMessageEditTimestamps, GETMessages } from "./APIEvents";
 import { Dictionary } from "./Dictionary";
 import { IndexedDB } from "StorageLib/IndexedDB";
 import { IndexedDBStore } from "StorageLib/IndexedDBStore";
+import { NSPerformace } from "./NSPerformace";
 
 
 export class NCChannelCacheResult {
@@ -69,6 +70,7 @@ export class NCChannelCache {
   }
 
   async GetMessages(limit: number, before: number = 2147483647) : Promise<NCChannelCacheResult> {
+    const perf = new NSPerformace("GetMessagesCache");
     const keys = (await this.CurrentCache.GetAllKeys()).reverse();
     const values = (await this.CurrentCache.GetAll<IMessageProps[]>()).reverse();
     const messages = [] as IMessageProps[];
@@ -84,6 +86,7 @@ export class NCChannelCache {
         messages.push(values[i]);
       }
     }
+    perf.Stop();
     return new NCChannelCacheResult(messages, messages.length, parseInt(lastID), curLim === limit)
   }
 
@@ -114,8 +117,12 @@ export class NCChannelCache {
   }
 
   async SetMessage(id: string, message: IMessageProps) {
-    await this.CurrentCache.Add(id, message);
-    await this.CurrentCache.Add("LastAccess", Date.now())
+    const perf = new NSPerformace("SetMessagesCache");
+    if (await this.ContainsMessage(id)) await this.CurrentCache.Update(id, message);
+    else await this.CurrentCache.Add(id, message);
+
+    if (await this.ContainsMessage("LastAccess")) await this.CurrentCache.Update("LastAccess", Date.now());
+    else await this.CurrentCache.Add("LastAccess", Date.now());
 
     // Check cache size and remove oldest message
     const keys = (await this.CurrentCache.GetAllKeys()).reverse();
@@ -123,6 +130,7 @@ export class NCChannelCache {
     keys.splice(keys.indexOf("Session", 1));
     if (keys.length > 100)
       await this.CurrentCache.Remove(keys[0]);
+    perf.Stop();
   }
 
   // Static Methods

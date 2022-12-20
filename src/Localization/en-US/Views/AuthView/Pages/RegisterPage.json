@@ -10,7 +10,7 @@
   "TextField_Placeholder-Username": "New Username",
   "TextField_Placeholder-Password": "New Password",
   "TextField_HelperText-EmailHint": "This will be used when signing in, and for account-related operations.",
-  "TextField_HelperText-ForgottenPasswordWarning": "Warning: Remember this password. This can be reset but you will suffer loss of access to old messages/content",
+  "TextField_HelperText-ForgottenPasswordWarning": "Remember this password. This can be reset but you will lose access to all saved messages and media.",
   "TextField_HelperText-ForgottenPasswordWarningExplanationCaption": "Why?",
   "TextField_HelperText-ForgottenPasswordWarningExplanation": "Due to the nature of our service, your password is used to encrypt everything you send to another user. If this is lost we cannot reverse the encryption.",
   "Link-ToLoginForm": "Login",
