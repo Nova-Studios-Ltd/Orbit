@@ -51,6 +51,7 @@ import "./App.css";
 import { DEBUG } from "vars";
 import ResetPage from "Views/AuthView/Pages/ResetPage/ResetPage";
 import RequestResetPage from "Views/AuthView/Pages/ResetPage/RequestResetPage";
+import { NSPerformace } from "NSLib/NSPerformace";
 
 i18n.use(initReactI18next)
 .init({
@@ -310,60 +311,42 @@ function App() {
 
     if (channel !== undefined && channel.table_Id) {
       setMessages([]);
-      // Check if channel has cache
+      const perf = new NSPerformace("ChannelLoad");
+
+
+      // Check for channel cache
       const isCache = await NCChannelCache.ContainsCache(channel.table_Id);
       if (isCache !== undefined && !await (isCache as NCChannelCache).IsEmpty()) {
         const cache = isCache as NCChannelCache;
-        // Fully refresh cache, ignoring anything, pulling the newest messages
-        if (await cache.RequiresRefresh() || HasUrlFlag(NCFlags.ForceCacheRebuild)) {
-          console.log("Rebuilding cache...");
-          //cache.ClearCache();
 
+        // Load current messages while we wait for the API request to finish
+        setMessages((await cache.GetMessages(30)).Messages);
+        scrollCanvas();
+
+        // Check cache
+        if (await cache.ReadSession() !== session.current) {
           GETMessages(channel.table_Id, async (messages: IMessageProps[]) => {
             autoScroll.current = false;
+            const perf = new NSPerformace("SetMessagesState");
             setMessages([...messages]);
+            perf.Stop();
             autoScroll.current = true;
             scrollCanvas();
+            cache.WriteSession(session.current);
           }, true);
-
-          await cache.WriteSession(session.current);
-          return;
         }
-
-        if (!await cache.IsValidSession(session.current) || HasUrlFlag(NCFlags.IgnoreCacheSession)) {
-          console.log("Checking and updating cache...");
-          //await NCChannelCache.CleanCache(channel.table_Id);
-          //await NCChannelCache.UpdateCache(channel.table_Id);
-
-          const c = await NCChannelCache.Open(channel.table_Id)
-          await c.WriteSession(session.current);
-
-          GETMessages(channel.table_Id, (messages: IMessageProps[]) => {
-            autoScroll.current = false;
-            setMessages([...messages]);
-            autoScroll.current = true;
-            scrollCanvas();
-          }, true);
-          return;
-        }
-
-        GETMessages(channel.table_Id, (messages: IMessageProps[]) => {
-          autoScroll.current = false;
-          setMessages([...messages]);
-          autoScroll.current = true;
-          scrollCanvas();
-        });
       }
       else {
+        const cache = isCache as NCChannelCache;
         GETMessages(channel.table_Id, async (messages: IMessageProps[]) => {
           autoScroll.current = false;
           setMessages([...messages]);
           autoScroll.current = true;
           scrollCanvas();
-          const cc = await NCChannelCache.ContainsCache(channel.table_Id);
-          if (cc) await (cc as NCChannelCache).WriteSession(session.current);
+          cache.WriteSession(session.current);
         }, true);
       }
+      perf.Stop();
     }
   }
 

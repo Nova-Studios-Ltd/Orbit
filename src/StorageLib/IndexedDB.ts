@@ -1,5 +1,6 @@
-import { getStorage, Storage } from "SiffrStorage/sifrr.storage";
+import { NSPerformace } from "NSLib/NSPerformace";
 import { IndexedDBStore } from "./IndexedDBStore";
+import { LocalStorageList } from "./LocalStorage";
 
 /**
  * Custom wrapper class for indexeddb, including a workaround for firefoxes missing 'indexeddb.databases()' function
@@ -8,7 +9,7 @@ export class IndexedDB {
   private database: IDBDatabase | undefined;
 
   // For now rely on Siffr localStorage wrapper for storing the databases (Will rebuild this myself later, ~sigh~)
-  private databases: Storage | undefined;
+  private databases: LocalStorageList<string> | undefined;
 
   /**
    * Opens or creates a new database with the given name and version
@@ -18,7 +19,7 @@ export class IndexedDB {
    */
   constructor(databaseName: string, ready?: (indexeddb: IndexedDB) => void, version?: number) {
     if (!IndexedDB.HasDatabasesFunc()) {
-      this.databases = getStorage({ priority: ["localstorage"], name: "Databases" });
+      this.databases = new LocalStorageList<string>("Databases");
     }
 
     if (IndexedDB.HasIndexedDB()) {
@@ -26,7 +27,7 @@ export class IndexedDB {
       request.onupgradeneeded = (ev: IDBVersionChangeEvent) => {
         if (!IndexedDB.HasDatabasesFunc() && this.databases !== undefined) {
           // Track databases in localStorage, only for firefox or other browsers not supporting 'indexeddb.databases()'
-          this.databases.set(databaseName, version || 1);
+          this.databases.SetItem(databaseName);
         }
       };
       request.onsuccess = () => {
@@ -36,7 +37,7 @@ export class IndexedDB {
       request.onerror = () => {
         if (!IndexedDB.HasDatabasesFunc() && this.databases !== undefined) {
           // Track databases in localStorage, only for firefox or other browsers not supporting 'indexeddb.databases()'
-          this.databases.del(databaseName);
+          this.databases.DelItem(databaseName);
         }
         throw new Error("Database error");
       };
@@ -51,7 +52,9 @@ export class IndexedDB {
    */
   static async Open(databaseName: string, version?: number) : Promise<IndexedDB> {
     return new Promise((resolve) => {
+      const perf = new NSPerformace("OpenDatabase");
       new IndexedDB(databaseName, (db: IndexedDB) => {
+        perf.Stop();
         resolve(db);
       });
     });
@@ -162,7 +165,7 @@ export class IndexedDB {
    */
   static DeleteDatabase(databaseName: string) {
     if (!this.HasDatabasesFunc()) {
-      getStorage({ priority: ["localstorage"], name: "Databases" }).del(databaseName);
+      new LocalStorageList<string>("Databases").DelItem(databaseName);
     }
     window.indexedDB.deleteDatabase(databaseName);
   }
@@ -187,8 +190,7 @@ export class IndexedDB {
       });
     }
     else {
-      const storage = getStorage({ priority: ["localstorage"], name: "Databases" });
-      return (await storage.keys() as string[]);
+      return new LocalStorageList<string>("Databases").GetAll();
     }
   }
 

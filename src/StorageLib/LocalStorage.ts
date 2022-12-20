@@ -1,4 +1,65 @@
 /**
+ * Simple class for maintaining a List in LocalStorage. Keeps LocalStorage upto date. Including async calls
+ */
+export class LocalStorageList<T> {
+  private key: string;
+  private item: T[];
+
+  constructor(key: string) {
+    this.key = key;
+    if (LocalStorage.Contains(key)) {
+      this.item = LocalStorage.GetItem<T[]>(key, true);
+    }
+    else {
+      LocalStorage.SetItem(key, [] as T[]);
+      this.item = [] as T[];
+    }
+  }
+
+  /**
+   * Gets a item from the LocalStorageList
+   * @param index Index within the list
+   * @returns A item with type of T
+   */
+  GetItem(index: number) : T {
+    return this.item[index];
+  }
+
+  /**
+   * Sets a item in the LocalStorageList
+   * @param value The item to add to the list
+   */
+  SetItem(value: T) {
+    this.item.push(value);
+    LocalStorage.SetItem(this.key, this.item);
+  }
+
+  /**
+   * Deletes a item in the LocalStorageList
+   * @param value Value within the list to be removed
+   */
+  DelItem(value: T) {
+    const index = this.item.indexOf(value);
+    if (index === -1) return;
+    this.item.splice(index, 1);
+  }
+
+  /**
+   * Checks for a item of type T in the LocalStorageList
+   * @param value Item to check for in the LocalStorageList
+   * @returns True if found, otherwise False
+   */
+  Contains(value: T) : boolean {
+    return this.item.includes(value);
+  }
+
+  GetAll() : T[] {
+    return this.item;
+  }
+}
+
+
+/**
  * Wrapper around window.localStorage, includes async variants
  */
 export class LocalStorage {

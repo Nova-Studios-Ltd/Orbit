@@ -18,6 +18,7 @@ import { API_DOMAIN } from "vars";
 import UserData from "DataManagement/UserData";
 import KeyStore from "DataManagement/KeyStore";
 import { ResetPasswordPayload, ResetPasswordPayloadKey } from "Types/API/ResetPasswordPayload";
+import { NSPerformace } from "./NSPerformace";
 
 // User
 export async function GETUser(user_uuid: string) : Promise<IUserData | undefined> {
@@ -158,9 +159,11 @@ export async function UNBLOCKFriend(request_uuid: string) : Promise<boolean> {
 
 // Messages
 async function DecryptMessage(message: IMessageProps) : Promise<IMessageProps> {
+  const perf = new NSPerformace("DecryptMessage");
   const keyData = message.encryptedKeys[UserData.Uuid];
   if (keyData === undefined) {
     message.encrypted = false;
+    perf.Stop();
     return message;
   }
   message.encrypted = (HasUrlFlag(NCFlags.TreatAsUnencrypted))? false : true;
@@ -178,6 +181,7 @@ async function DecryptMessage(message: IMessageProps) : Promise<IMessageProps> {
       message.attachments[a].filename = decryptedFilename.String;
     }
   }
+  perf.Stop();
   return message;
 }
 
@@ -190,8 +194,8 @@ export async function GETMessage(channel_uuid: string, message_id: string, bypas
   }
   const resp = await GET(`Channel/${channel_uuid}/Messages/${message_id}`, UserData.Token);
   if (resp.status === HTTPStatusCodes.OK) {
-    const m = await DecryptMessage(resp.payload as IMessageProps);;
-    cache.SetMessage(message_id, m)
+    const m = await DecryptMessage(resp.payload as IMessageProps);
+    cache.SetMessage(message_id, m);
     return m;
   }
   return undefined;
@@ -200,10 +204,12 @@ export async function GETMessage(channel_uuid: string, message_id: string, bypas
 export async function GETMessages(channel_uuid: string, callback: (messages: IMessageProps[]) => void, bypass_cache = false, limit = 30, after = -1, before = 2147483647) : Promise<IMessageProps[]> {
   if (HasUrlFlag(NCFlags.NoCache)) bypass_cache = true;
   // Hit cache
+  const perf = new NSPerformace("GETMessagesAPI");
   const cache = (await NCChannelCache.Open(channel_uuid));
   const messages = await cache.GetMessages(limit, before);
-  if (messages.Satisfied === true && !bypass_cache) {
+  if (!bypass_cache) {
     callback(messages.Messages);
+    perf.Stop();
     return messages.Messages;
   }
   else {
@@ -225,13 +231,16 @@ export async function GETMessages(channel_uuid: string, callback: (messages: IMe
       for (let m = 0; m < rawMessages.length; m++) {
         const message = await DecryptMessage(rawMessages[m]);
         decryptedMessages.push(message);
-        if (!bypass_cache) cache.SetMessage(message.message_Id, message);
+        await cache.SetMessage(message.message_Id, message);
       }
-
+      const callPerf = new NSPerformace("GETMessageCallback");
       callback([...messages.Messages, ...decryptedMessages]);
+      callPerf.Stop();
+      perf.Stop();
       return [...messages.Messages, ...decryptedMessages];
     }
     callback([])
+    perf.Stop();
     return [];
   }
 }
