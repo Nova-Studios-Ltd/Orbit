@@ -1,29 +1,35 @@
+// Globals
 import React, { useEffect, useState } from "react";
 import { Avatar, IconButton, Link, Typography, useTheme } from "@mui/material";
 import { Close as CloseIcon } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
+import JSZip from "jszip";
 
+// Components
 import MessageMedia from "Components/Messages/MessageMedia/MessageMedia";
 import TextCombo, { TextComboChangeEvent, TextComboSubmitEvent } from "Components/Input/TextCombo/TextCombo";
 
+// Types
 import type { NCComponent } from "Types/UI/Components";
 import { AttachmentProps, IAttachmentProps } from "Types/API/Interfaces/IAttachmentProps";
-import { DownloadUint8ArrayFile, WriteToClipboard } from "NSLib/ElectronAPI";
-import { GetImageDimensions, GetMimeType } from "NSLib/ContentLinkUtil";
-import { FileType } from "NSLib/MimeTypeParser";
-import { UserCache } from "App";
+import { FileType } from "Lib/Utility/MimeTypeParser";
+import { uCache } from "App";
 import IUserData from "Types/API/Interfaces/IUserData";
 import ContextMenu from "Components/Menus/ContextMenu/ContextMenu";
 import { Coordinates } from "Types/General";
 import Linkify from "linkify-react";
 import ContextMenuItem from "Components/Menus/ContextMenuItem/ContextMenuItem";
 
-import JSZip from "jszip";
-import { GETFile, HTTPStatusCodes } from "NSLib/NCAPI";
-import { DecryptBase64WithPriv, DecryptUint8Array } from "NSLib/NCEncryption";
-import { Base64String } from "NSLib/Base64";
-import { AESMemoryEncryptData } from "NSLib/NCEncrytUtil";
-import UserData from "DataManagement/UserData";
+// Srouce
+import { GETFile, HTTPStatusCodes } from "Lib/API/NCAPI";
+import UserData from "Lib/Storage/Objects/UserData";
+import { GetImageSize, GetMimeType } from "Lib/Utility/ContentUtility";
+import { DownloadUint8ArrayFile, WriteToClipboard } from "Lib/ElectronAPI";
+import { RSADecrypt } from "Lib/Encryption/RSA";
+import Base64Uint8Array from "Lib/Objects/Base64Uint8Array";
+import { AESDecrypt } from "Lib/Encryption/AES";
+import { AESMemoryEncryptData } from "Lib/Encryption/Types/AESMemoryEncryptData";
+
 
 export interface MessageProps extends NCComponent {
   content?: string,
@@ -52,7 +58,7 @@ function Message(props: MessageProps) {
   const [isEditing, setEditingState] = useState(false);
   const [editFieldValue, setEditFieldValue] = useState("" as string | undefined);
   const [allAttachments, setAttachments] = useState([] as IAttachmentProps[]);
-  const [displayName, setDisplayName] = useState(UserCache.GetUser(props.authorID || "")?.username || "");
+  const [displayName, setDisplayName] = useState(uCache.GetUser(props.authorID || "")?.username || "");
   const [selectedAttachment, setSelectedAttachment] = useState(null as unknown as IAttachmentProps);
   const [ContextMenuVisible, setContextMenuVisibility] = useState(false);
   const [ContextMenuAnchorPos, setContextMenuAnchorPos] = useState(null as unknown as Coordinates);
@@ -69,7 +75,7 @@ function Message(props: MessageProps) {
         if (link.match(/((https|http):\/\/[\S]*)/g) === null) continue;
         const type = await GetMimeType(link);
         if (type === FileType.Image) {
-          const size = await GetImageDimensions(link);
+          const size = await GetImageSize(link);
           if (size.height === -1) continue;
           att.push(new AttachmentProps(link, new Uint8Array(), "Unknown", "image/png", 0, size.width, size.height, {}, "", true));
         }
@@ -157,8 +163,8 @@ function Message(props: MessageProps) {
       // Download (Or pull from cache) all attachments, decrypt and compress them
       const att = props.attachments[i];
       const file = await GETFile(att.contentUrl, UserData.Token);
-      const att_key = await DecryptBase64WithPriv(UserData.KeyPair.PrivateKey, new Base64String(att.keys[UserData.Uuid]));
-      const decryptedContent = await DecryptUint8Array(att_key, new AESMemoryEncryptData(att.iv, file.payload as Uint8Array));
+      const att_key = await RSADecrypt(UserData.KeyPair.PrivateKey, new Base64Uint8Array(att.keys[UserData.Uuid]));
+      const decryptedContent = await AESDecrypt(att_key, new AESMemoryEncryptData(new Base64Uint8Array(att.iv), file.payload as Base64Uint8Array));
       if (file.status !== HTTPStatusCodes.OK) continue;
       zip.file(att.filename, decryptedContent);
     }
@@ -169,7 +175,7 @@ function Message(props: MessageProps) {
   };
 
   if (props.authorID !== undefined && displayName === "") {
-    UserCache.GetUserAsync(props.authorID).then((user: IUserData) => {
+    uCache.GetUserAsync(props.authorID).then((user: IUserData) => {
       setDisplayName(`${user.username}`);
     });
   }

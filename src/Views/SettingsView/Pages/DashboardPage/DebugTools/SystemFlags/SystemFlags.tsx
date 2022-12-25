@@ -1,14 +1,14 @@
 import { Typography } from "@mui/material";
-import { NCFlags, HasUrlFlag, SetUrlFlag, NCFlag, ClearUrlFlag, GetUrlFlag } from "NSLib/NCFlags";
+import { ClearUrlFlag, SetUrlFlag, HasUrlFlag, GetUrlFlag, Flags, Flag} from "Lib/Debug/Flags";
 import { ChangeEvent, useState } from "react";
 
 interface FlagProps {
-  flag: NCFlag,
+  flag: Flag,
   value: string,
   active: boolean
 }
 
-function Flag(props: FlagProps) {
+function SysFlag(props: FlagProps) {
 
   const [liveValue, setLiveValue] = useState(props.value);
   const [active, setActive] = useState(props.active);
@@ -46,9 +46,9 @@ function Flag(props: FlagProps) {
 export default function SystemFlags() {
 
   const flags = [] as JSX.Element[];
-  for (let f = 0; f < Object.values(NCFlags).length; f++) {
-    const flag = Object.values(NCFlags)[f] as NCFlag;
-    flags.push(<Flag key={f} flag={flag} value={(HasUrlFlag(flag))? GetUrlFlag<string>(flag) || "" : flag.defaultValue as string} active={HasUrlFlag(flag)}/>);
+  for (let f = 0; f < Object.values(Flags).length; f++) {
+    const flag = Object.values(Flags)[f] as Flag;
+    flags.push(<SysFlag key={f} flag={flag} value={(HasUrlFlag(flag))? GetUrlFlag<string>(flag) || "" : flag.defaultValue as string} active={HasUrlFlag(flag)}/>);
   }
 
   return (

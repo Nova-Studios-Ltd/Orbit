@@ -1,12 +1,17 @@
-import React, { useEffect, useState } from "react";
+// Globals
+import React, { useState } from "react";
 import { Button, Card, Link, TextField, Typography, useTheme } from "@mui/material";
 import { useTranslation } from "react-i18next";
-import { Link as RouterLink, useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
+
+// Source
+import { RequestResetPassword } from "Lib/API/Endpoints/User";
+import { GetRSAKeyPair } from "Lib/Encryption/RSA";
+import { RSAMemoryKeypair } from "Lib/Encryption/Types/RSAMemoryKeypair";
+
+// Types
 import type { Page } from "Types/UI/Components";
-import { Routes } from "Types/UI/Routes";
-import { RESETPassword, UPDATEPassword } from "NSLib/APIEvents";
-import { GenerateRSAKeyPair } from "NSLib/NCEncryption";
-import { RSAMemoryKeyPair } from "NSLib/NCEncrytUtil";
+
 
 interface ResetPageProps extends Page {
 
@@ -42,7 +47,7 @@ export default function ResetPage(props: ResetPageProps) {
 
     const token = location.search.split("=")[1];
     if (token === undefined || token === "") return;
-    RESETPassword(password, token, await GenerateRSAKeyPair() as RSAMemoryKeyPair, () => {});
+    RequestResetPassword(password, token, await GetRSAKeyPair() as RSAMemoryKeypair, () => {});
   }
 
   const E2ELearnMore = (

@@ -1,6 +1,6 @@
+import { RequestMessages, RequestMessageTimestamps } from "Lib/API/Endpoints/Messages";
+import { ChannelCache } from "Lib/Storage/Objects/ChannelCache";
 import { IMessageProps } from "Types/API/Interfaces/IMessageProps";
-import { GETMessageEditTimestamps, GETMessages } from "NSLib/APIEvents";
-import { NCChannelCache } from "NSLib/NCChannelCache";
 
 export async function GetCaches() : Promise<string[]> {
   const databases = (await indexedDB.databases());
@@ -24,7 +24,7 @@ export async function HasChannelCache(channel_uuid: string) : Promise<boolean> {
 
 export async function CacheValid(channel_uuid: string) : Promise<boolean> {
   if (!HasChannelCache(channel_uuid)) return false;
-  const cache = (await NCChannelCache.Open(channel_uuid));
+  const cache = (await ChannelCache.Open(channel_uuid));
   if (await cache.RequiresRefresh()) return true;
   else return false;
 }
@@ -35,8 +35,8 @@ export async function CacheIsUptoDate(channel_uuid: string) : Promise<boolean> {
       resolve(false);
       return;
     }
-    GETMessages(channel_uuid, async (messages: IMessageProps[]) => {
-      const cache = (await NCChannelCache.Open(channel_uuid));
+    RequestMessages(channel_uuid, async (messages: IMessageProps[]) => {
+      const cache = (await ChannelCache.Open(channel_uuid));
       // Check if our last message message matches the one on the server
       if (messages.length === 0) {
         resolve(false);
@@ -53,7 +53,7 @@ export async function CacheIsUptoDate(channel_uuid: string) : Promise<boolean> {
       // Check if nothings been edited
       const oldest = (await cache.GetOldestMessage()).Last_Id;
       const limit = parseInt(messages[0].message_Id) - oldest;
-      const remoteTimestamps = await GETMessageEditTimestamps(channel_uuid, limit, oldest - 1, parseInt(messages[0].message_Id) + 1);
+      const remoteTimestamps = await RequestMessageTimestamps(channel_uuid, limit, oldest - 1, parseInt(messages[0].message_Id) + 1);
       const localTimestamps = await cache.GetMessageEditTimestamps();
 
       const keys = remoteTimestamps.keys();
@@ -78,7 +78,7 @@ export async function DeleteCache(cache: string) {
 export async function InvalidateCache(channel_uuid: string) {
   console.log(channel_uuid);
   if (!await HasChannelCache(channel_uuid)) return;
-  const c = (await NCChannelCache.Open(channel_uuid));
+  const c = (await ChannelCache.Open(channel_uuid));
   c.WriteSession("According to all known laws of aviation, there is no way a bee should be able to fly. Its wings are too small to get its fat little body off the ground. The bee, of course, flies anyway because bees don't care what humans think is impossible.");
   //await c.InvalidateCache();
 }
@@ -89,5 +89,5 @@ export async function InvalidateCache(channel_uuid: string) {
  */
 export async function RefreshCache(cache: string) {
   await DeleteCache(cache);
-  await GETMessages(cache, () => {}, false, 30);
+  await RequestMessages(cache, () => {}, false, 30);
 }

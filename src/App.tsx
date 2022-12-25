@@ -1,3 +1,4 @@
+// Global
 import React, { useEffect, useRef, useState } from "react";
 import { IconButton, Popover, ThemeProvider, Typography } from "@mui/material";
 import { Close as CloseIcon } from "@mui/icons-material";
@@ -6,18 +7,25 @@ import i18n from "i18next";
 import { initReactI18next, useTranslation } from "react-i18next";
 import { Helmet } from "react-helmet";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Logout } from "Init/AuthHandler";
-import { isValidUsername } from "NSLib/Util";
-import { NCChannelCache } from "NSLib/NCChannelCache";
-import { FetchImageFromClipboard, NCFile, NotificationType, TriggerNotification, UploadFile } from "NSLib/ElectronAPI";
-import { NCUserCache } from "NSLib/NCUserCache";
-import { CREATEChannel, DELETEChannel, DELETEMessage, EDITMessage, GETChannel, GETOwnFriends, GETMessages, GETUserChannels, GETUserUUID, SENDMessage, GETUser, REQUESTFriend, ACCEPTFriend, REMOVEFriend, BLOCKFriend, UNBLOCKFriend, UPDATEChannelName, UPDATEChannelIcon, REMOVEChannelIcon, CREATEGroupChannel, REMOVEChannelMember } from "NSLib/APIEvents";
+import type { ReactNode } from "react";
 
+// Source
+import { Logout } from "Init/AuthHandler";
 import { OverrideConsoleLog, OverrideConsoleWarn, OverrideConsoleError, OverrideConsoleSuccess, DummyConsoleSuccess } from "./overrides";
-import { NCFlags, GetUrlFlag, HasUrlFlag } from "NSLib/NCFlags";
 import { ThemeSelector } from "Theme";
 import { Localizations } from "Localization/Localizations";
+import { UserCache } from "Lib/Storage/Objects/UserCache";
+import { Flags, GetUrlFlag, HasUrlFlag } from "Lib/Debug/Flags";
+import { RequestUser, RequestUserChannels, RequestUserUUID } from "Lib/API/Endpoints/User";
+import { RequestChannel, RequestCreateChannel, RequestCreateGroup, RequestDeleteChannel, RequestRemoveMember, RequestResetChannelIcon, RequestUpdateChannelIcon, RequestUpdateChannelName } from "Lib/API/Endpoints/Channels";
+import { RequestDeleteMessage, RequestEditMessage, RequestMessages, SendMessage } from "Lib/API/Endpoints/Messages";
+import { FetchImageFromClipboard, NCFile, NotificationType, TriggerNotification, UploadFile } from "Lib/ElectronAPI";
+import NSPerformace from "Lib/Debug/NSPerformace";
+import { ChannelCache } from "Lib/Storage/Objects/ChannelCache";
+import { IsValidUsername } from "Lib/Utility/Utility";
+import { RequestBlockFriend, RequestRemoveFriend, RequestUnblockFriend, RequestUserFriends, SendAcceptFriend, SendFriendRequest } from "Lib/API/Endpoints/Friends";
 
+// Components
 import AuthView from "Views/AuthView/AuthView";
 import ErrorView from "Views/ErrorView/ErrorView";
 import FriendView from "Views/FriendView/FriendView";
@@ -31,27 +39,29 @@ import DashboardPage from "Views/SettingsView/Pages/DashboardPage/DashboardPage"
 import FriendPage from "Views/FriendView/Pages/FriendPage/FriendPage";
 import LoginPage from "Views/AuthView/Pages/LoginPage/LoginPage";
 import RegisterPage from "Views/AuthView/Pages/RegisterPage/RegisterPage";
+import ResetPage from "Views/AuthView/Pages/ResetPage/ResetPage";
+import RequestResetPage from "Views/AuthView/Pages/ResetPage/RequestResetPage";
 
+// Types
 import { Routes } from "Types/UI/Routes";
 import { ChannelTypes, DebugMessageType } from "Types/Enums";
-import type { ReactNode } from "react";
 import type { HelpPopupProps, SharedProps } from "Types/UI/Components";
 import type { DebugMessage } from "Types/General";
 import type { IRawChannelProps } from "Types/API/Interfaces/IRawChannelProps";
 import type { IMessageProps } from "Types/API/Interfaces/IMessageProps";
 import type { MessageProps } from "Components/Messages/Message/Message";
 import type { MessageInputSendEvent } from "Components/Input/MessageInput/MessageInput";
-import { Dictionary } from "NSLib/Dictionary";
+import { Dictionary } from "Lib/Objects/Dictionary";
 import type Friend from "Types/UI/Friend";
 import type { IChannelUpdateProps } from "Types/API/Interfaces/IChannelUpdateProps";
 import MessageAttachment from "Types/API/MessageAttachment";
 import type IUserData from "Types/API/Interfaces/IUserData";
 
 import "./App.css";
+
+// Debug
 import { DEBUG } from "vars";
-import ResetPage from "Views/AuthView/Pages/ResetPage/ResetPage";
-import RequestResetPage from "Views/AuthView/Pages/ResetPage/RequestResetPage";
-import { NSPerformace } from "NSLib/NSPerformace";
+
 
 i18n.use(initReactI18next)
 .init({
@@ -60,11 +70,11 @@ i18n.use(initReactI18next)
   fallbackLng: "en"
 });
 
-export const UserCache = new NCUserCache();
+export const uCache = new UserCache();
 
 function App() {
   const Localizations_Common = useTranslation().t;
-  const theme = ThemeSelector(GetUrlFlag(NCFlags.Theme) || "DarkTheme_Default");
+  const theme = ThemeSelector(GetUrlFlag(Flags.Theme) || "DarkTheme_Default");
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -87,7 +97,7 @@ function App() {
   const [helpVisible, setHelpVisibility] = useState(false);
   const [helpAnchorEl, setHelpAnchor] = useState(null as unknown as Element);
   const [helpContent, setHelpContent] = useState(null as unknown as ReactNode);
-  const [debugConsoleVisible, setDebugConsoleVisibility] = useState(HasUrlFlag(NCFlags.EnableConsole));
+  const [debugConsoleVisible, setDebugConsoleVisibility] = useState(HasUrlFlag(Flags.EnableConsole));
   const [debugConsoleBuffer, setDebugConsoleBuffer] = useState([] as DebugMessage[]);
 
   const openConsole = () => setDebugConsoleVisibility(true);
@@ -195,11 +205,11 @@ function App() {
   }
 
   const loadChannels = async () => {
-    GETUserChannels(async (channels: string[]) => {
+    RequestUserChannels(async (channels: string[]) => {
       const loadedChannels = [] as IRawChannelProps[];
 
       for (var i = 0; i < channels.length; i++) {
-        const channel = await GETChannel(channels[i]);
+        const channel = await RequestChannel(channels[i]);
         if (channel === undefined) continue;
         channel.channelIcon = `${channel.channelIcon}&nonce=${avatarNonce}`;
         loadedChannels.push(channel);
@@ -235,7 +245,7 @@ function App() {
 
   const onMessageInputSubmit = (event: MessageInputSendEvent) => {
     if (selectedChannel === undefined || event.value === undefined || (event.value === "" && MessageAttachments.length === 0)) return;
-    SENDMessage(selectedChannel.table_Id, event.value, MessageAttachments, (sent: boolean) => {
+    SendMessage(selectedChannel.table_Id, event.value, MessageAttachments, (sent: boolean) => {
       if (sent) {
         setMessageAttachments([] as MessageAttachment[]);
       }
@@ -249,7 +259,7 @@ function App() {
   const onLoadPriorMessages = () => {
     if (messages.length === 0) return;
     const oldestID = parseInt(messages[messages.length - 1].message_Id);
-    GETMessages(selectedChannel.table_Id, (messages: IMessageProps[]) => {
+    RequestMessages(selectedChannel.table_Id, (messages: IMessageProps[]) => {
       autoScroll.current = false;
       setMessages(prevState => {
         return [...prevState, ...messages];
@@ -315,9 +325,9 @@ function App() {
 
 
       // Check for channel cache
-      const isCache = await NCChannelCache.ContainsCache(channel.table_Id);
-      if (isCache !== undefined && !await (isCache as NCChannelCache).IsEmpty()) {
-        const cache = isCache as NCChannelCache;
+      const isCache = await ChannelCache.ContainsCache(channel.table_Id);
+      if (isCache !== undefined && !await (isCache as ChannelCache).IsEmpty()) {
+        const cache = isCache as ChannelCache;
 
         // Load current messages while we wait for the API request to finish
         setMessages((await cache.GetMessages(30)).Messages);
@@ -325,7 +335,7 @@ function App() {
 
         // Check cache
         if (await cache.ReadSession() !== session.current) {
-          GETMessages(channel.table_Id, async (messages: IMessageProps[]) => {
+          RequestMessages(channel.table_Id, async (messages: IMessageProps[]) => {
             autoScroll.current = false;
             const perf = new NSPerformace("SetMessagesState");
             setMessages([...messages]);
@@ -337,8 +347,8 @@ function App() {
         }
       }
       else {
-        const cache = isCache as NCChannelCache;
-        GETMessages(channel.table_Id, async (messages: IMessageProps[]) => {
+        const cache = isCache as ChannelCache;
+        RequestMessages(channel.table_Id, async (messages: IMessageProps[]) => {
           autoScroll.current = false;
           setMessages([...messages]);
           autoScroll.current = true;
@@ -359,11 +369,11 @@ function App() {
             selectChannel(existingChannel);
           }
           else {
-            CREATEChannel(friend.friendData.uuid, (status) => { console.log(`Channel creation from onFriendClicked status: ${status}`) });
+            RequestCreateChannel(friend.friendData.uuid, (status) => { console.log(`Channel creation from onFriendClicked status: ${status}`) });
           }
           break;
         case "request":
-          ACCEPTFriend(friend.friendData.uuid);
+          SendAcceptFriend(friend.friendData.uuid);
           break;
       }
     }
@@ -384,7 +394,7 @@ function App() {
         }
       }
 
-      CREATEGroupChannel(groupChannelName, groupChannelRecipients, (created) => {
+      RequestCreateGroup(groupChannelName, groupChannelRecipients, (created) => {
         if (created) console.success(`Group channel successfully created`)
         else console.error(`Unable to create group channel`);
       });
@@ -395,34 +405,34 @@ function App() {
   }
 
   const onAddFriend = async (recipient: string) => {
-    if (isValidUsername(recipient)) {
+    if (IsValidUsername(recipient)) {
       const ud = recipient.split("#");
-      const user = await GETUserUUID(ud[0], ud[1]);
+      const user = await RequestUserUUID(ud[0], ud[1]);
       if (user === undefined) return 1;
-      REQUESTFriend(user);
+      SendFriendRequest(user);
       return 0;
     }
     return 2;
   };
 
   const onBlockFriend = (uuid: string) => {
-    BLOCKFriend(uuid);
+    RequestBlockFriend(uuid);
     console.log(`Pseudocockblocked user ${uuid}`);
   }
 
   const onUnblockFriend = (uuid: string) => {
-    UNBLOCKFriend(uuid);
+    RequestUnblockFriend(uuid);
     console.log(`Pseudouncockblocked user ${uuid}`);
   }
 
   const onRemoveFriend = (uuid: string) => {
-    REMOVEFriend(uuid);
+    RequestRemoveFriend(uuid);
   }
 
   const onChannelClearCache = (channel: IRawChannelProps) => {
     console.log(`Request to clear channel ${channel.channelName}'s cache`);
     if (channel.table_Id === undefined) return;
-    NCChannelCache.DeleteSpecificCache(channel.table_Id).then((success: boolean) => {
+    ChannelCache.DeleteSpecificCache(channel.table_Id).then((success: boolean) => {
       if (!success) console.error(`Failed to clear channel ${channel.table_Id}'s cache`)
       console.success(`Cleared channel ${channel.channelName}'s cache successfully`);
       selectChannel(channel);
@@ -431,8 +441,8 @@ function App() {
 
   const onChannelEdit = (channel: IChannelUpdateProps) => {
     console.log(`Request to edit channel ${channel.table_Id}`);
-    UPDATEChannelName(channel.table_Id, channel.channelName, (result) => { if (result) console.success(`Successfully changed channel ${channel.table_Id}'s name to ${channel.channelName}`); else console.error(`Failed to change channel ${channel.table_Id}'s channel name`) });
-    if (channel.channelIcon && channel.channelIcon.FileContents) UPDATEChannelIcon(channel.table_Id, new Blob([channel.channelIcon.FileContents]), (result) => { if (result) console.success(`Successfully changed channel ${channel.table_Id}'s icon`); else console.error(`Failed to change channel ${channel.table_Id}'s channel icon`) });
+    RequestUpdateChannelName(channel.table_Id, channel.channelName, (result) => { if (result) console.success(`Successfully changed channel ${channel.table_Id}'s name to ${channel.channelName}`); else console.error(`Failed to change channel ${channel.table_Id}'s channel name`) });
+    if (channel.channelIcon && channel.channelIcon.FileContents) RequestUpdateChannelIcon(channel.table_Id, new Blob([channel.channelIcon.FileContents]), (result) => { if (result) console.success(`Successfully changed channel ${channel.table_Id}'s icon`); else console.error(`Failed to change channel ${channel.table_Id}'s channel icon`) });
     loadChannels();
     onAvatarChanged();
   };
@@ -440,7 +450,7 @@ function App() {
   const onChannelDelete = (channel: IRawChannelProps) => {
     console.log(`Request to delete channel ${channel.channelName}`);
     if (channel.table_Id === undefined) return;
-    DELETEChannel(channel.table_Id, (deleted: boolean) => {
+    RequestDeleteChannel(channel.table_Id, (deleted: boolean) => {
       console.success(`Request to delete channel ${channel.channelName} successful`);
     });
   };
@@ -452,27 +462,27 @@ function App() {
   };
 
   const onChannelRemoveRecipient = (channel: IRawChannelProps, recipient: IUserData) => {
-    REMOVEChannelMember(channel.table_Id, recipient.uuid, (removed) => {
+    RequestRemoveMember(channel.table_Id, recipient.uuid, (removed) => {
       if (removed) console.success(`Successfully removed user ${recipient.username} from the channel ${channel.channelName}`)
       else console.error(`Unable to remove user ${recipient.username} from the channel ${channel.channelName}`);
     });
   }
 
   const onChannelResetIcon = (channel: IRawChannelProps) => {
-    REMOVEChannelIcon(channel.table_Id, (result) => { if (result) console.success(`Successfully reset channel ${channel.table_Id}'s icon`); else console.error(`Failed to reset channel ${channel.table_Id}'s channel icon`) });
+    RequestResetChannelIcon(channel.table_Id, (result) => { if (result) console.success(`Successfully reset channel ${channel.table_Id}'s icon`); else console.error(`Failed to reset channel ${channel.table_Id}'s channel icon`) });
   }
 
   const onMessageEdit = async (message: MessageProps) => {
     console.log(`Request to edit message ${message.id}`);
     if (message.id === undefined) return;
-    if (await EDITMessage(selectedChannel.table_Id, message.id, message.content || "")) {
+    if (await RequestEditMessage(selectedChannel.table_Id, message.id, message.content || "")) {
       console.success(`Request to edit message ${message.id} successful`);
     }
   };
 
   const onMessageDelete = async (message: MessageProps) => {
     if (message.id === undefined) return;
-    if (await DELETEMessage(selectedChannel.table_Id, message.id as string)) {
+    if (await RequestDeleteMessage(selectedChannel.table_Id, message.id as string)) {
       console.success(`Request to delete message ${message.id} successful`);
     }
   };
@@ -483,14 +493,14 @@ function App() {
   }
 
   const populateFriendsList = async () => {
-    const rawFriends: Dictionary<string> = await GETOwnFriends();
+    const rawFriends: Dictionary<string> = await RequestUserFriends();
     const newFriendsArray: Friend[] = [];
 
     for (let i = 0; i < rawFriends.keys().length; i++) {
       const friendUUID = rawFriends.keys()[i];
       const friendStatus = rawFriends.getValue(friendUUID);
 
-      const friendData = await GETUser(friendUUID);
+      const friendData = await RequestUser(friendUUID);
       newFriendsArray.push({ friendData, status: friendStatus });
     }
 

@@ -1,11 +1,16 @@
+// Global
 import React, { useEffect, useState } from "react";
 import { Avatar, Button, Icon, IconButton, useTheme, Typography } from "@mui/material";
 import { Add as AddIcon, AddCircle as AddFilledIcon, Group as GroupIcon } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
-import useClassNames from "Hooks/useClassNames";
-import { GETUser } from "NSLib/APIEvents";
-import { NCFile, UploadFile } from "NSLib/ElectronAPI";
 
+// Source
+import { NCFile, UploadFile } from "Lib/ElectronAPI";
+import useClassNames from "Hooks/useClassNames";
+import UserData from "Lib/Storage/Objects/UserData";
+import { RequestUser } from "Lib/API/Endpoints/User";
+
+// Components
 import AvatarTextButton from "Components/Buttons/AvatarTextButton/AvatarTextButton";
 import ContextMenu from "Components/Menus/ContextMenu/ContextMenu";
 import ContextMenuItem from "Components/Menus/ContextMenuItem/ContextMenuItem";
@@ -14,6 +19,7 @@ import GenericButton from "Components/Buttons/GenericButton/GenericButton";
 import GenericDialog from "Components/Dialogs/GenericDialog/GenericDialog";
 import TextCombo from "Components/Input/TextCombo/TextCombo";
 
+// Types
 import type { NCComponent } from "Types/UI/Components";
 import type { IRawChannelProps } from "Types/API/Interfaces/IRawChannelProps";
 import type { ChannelMoveData, Coordinates } from "Types/General";
@@ -21,7 +27,7 @@ import type IUserData from "Types/API/Interfaces/IUserData";
 import type { IChannelUpdateProps } from "Types/API/Interfaces/IChannelUpdateProps";
 import { ChannelTypes, FriendButtonVariant } from "Types/Enums";
 import type Friend from "Types/UI/Friend";
-import UserData from "DataManagement/UserData";
+
 
 export interface ChannelProps extends NCComponent {
   channelData: IRawChannelProps,
@@ -68,7 +74,7 @@ function Channel(props: ChannelProps) {
     if (props.channelData && props.channelData.members) {
       for (let i = 0; i < props.channelData.members.length; i++) {
         const uuid = props.channelData.members[i];
-          GETUser(uuid).then((user) => {
+          RequestUser(uuid).then((user) => {
             if (user) {
               const selectedIsOwner = props.channelData.owner_UUID === user.uuid;
               const friend: Friend = { friendData: user, uiStates: { isOwner: isGroup && selectedIsOwner, removable: isOwner && isGroup && !selectedIsOwner } };

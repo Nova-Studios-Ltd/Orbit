@@ -1,5 +1,6 @@
 import { IndicatorState } from "Components/StatusIndicator/StatusIndicator";
-import { NCWebsocketState } from "NSLib/NCWebsocket";
+import { NCWebsocketState } from "Lib/API/NCWebsocket";
+
 
 export function SocketStateVisual(state: NCWebsocketState) : [string, IndicatorState, NCWebsocketState] {
   switch (state) {

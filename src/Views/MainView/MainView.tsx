@@ -1,18 +1,24 @@
+// Global
 import React, { useEffect } from "react";
 import { useNavigate, useLocation, Outlet, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { IconButton, useTheme } from "@mui/material";
 import { Add as AddIcon, Group as GroupIcon, Menu as MenuIcon } from "@mui/icons-material";
-import { UserCache } from "App";
-import { AutoLogin } from "Init/AuthHandler";
-import { Events } from "Init/WebsocketEventInit";
-import { GenerateBase64SHA256 } from "NSLib/NCEncryption";
 
+// Source
+import { uCache } from "App";
+import { AutoLogin } from "Init/AuthHandler";
+import { events } from "Init/WebsocketEventInit";
+import { SHA256 } from "Lib/Encryption/Util";
+import UserData from "Lib/Storage/Objects/UserData";
+
+// Components
 import ViewContainer from "Components/Containers/ViewContainer/ViewContainer";
 import ChannelList from "Components/Channels/ChannelList/ChannelList";
 import AvatarTextButton from "Components/Buttons/AvatarTextButton/AvatarTextButton";
 import GenericHeader from "Components/Headers/GenericHeader/GenericHeader";
 
+// Types
 import type { View } from "Types/UI/Components";
 import { Routes } from "Types/UI/Routes";
 import type { IRawChannelProps } from "Types/API/Interfaces/IRawChannelProps";
@@ -20,7 +26,7 @@ import type { IChannelUpdateProps } from "Types/API/Interfaces/IChannelUpdatePro
 import type IUserData from "Types/API/Interfaces/IUserData";
 import { IMessageProps } from "Types/API/Interfaces/IMessageProps";
 import Friend from "Types/UI/Friend";
-import UserData from "DataManagement/UserData";
+
 
 interface MainViewProps extends View {
   channels?: IRawChannelProps[],
@@ -73,7 +79,7 @@ function MainView(props: MainViewProps) {
   }
 
   useEffect(() => {
-    Events.on("NewMessage", (message: IMessageProps, channel_uuid: string) => {
+    events.on("NewMessage", (message: IMessageProps, channel_uuid: string) => {
       if (props.selectedChannel && props.selectedChannel.table_Id !== channel_uuid) return;
       if (props.setMessages) {
         props.setMessages(prevState => {
@@ -85,7 +91,7 @@ function MainView(props: MainViewProps) {
       }
     });
 
-    Events.on("DeleteMessage", (message: string) => {
+    events.on("DeleteMessage", (message: string) => {
       if (props.setMessages) {
         props.setMessages(prevState => {
           const index = prevState.findIndex(e => e.message_Id === message);
@@ -100,7 +106,7 @@ function MainView(props: MainViewProps) {
       }
     });
 
-    Events.on("EditMessage", (message: IMessageProps) => {
+    events.on("EditMessage", (message: IMessageProps) => {
       if (props.setMessages) {
         props.setMessages(prevState => {
           const index = prevState.findIndex(e => e.message_Id === message.message_Id);
@@ -115,7 +121,7 @@ function MainView(props: MainViewProps) {
       }
     });
 
-    Events.on("NewChannel", (channel: IRawChannelProps) => {
+    events.on("NewChannel", (channel: IRawChannelProps) => {
       if (props.setChannels) {
         props.setChannels(prevState => {
           const index = prevState.findIndex(c => c.table_Id === channel.table_Id);
@@ -128,7 +134,7 @@ function MainView(props: MainViewProps) {
       }
     });
 
-    Events.on("DeleteChannel", (channel: string) => {
+    events.on("DeleteChannel", (channel: string) => {
       if (props.setChannels) {
         props.setChannels(prevState => {
           const index = prevState.findIndex(e => e.table_Id === channel);
@@ -149,9 +155,9 @@ function MainView(props: MainViewProps) {
       }
     });
 
-    Events.on("FriendAdded", async (request_uuid: string, status: string) => {
+    events.on("FriendAdded", async (request_uuid: string, status: string) => {
       if (props.setFriends) {
-        const friendData = UserCache.GetUser(request_uuid);
+        const friendData = uCache.GetUser(request_uuid);
         props.setFriends(prevState => {
           return [...prevState, {friendData, status} as Friend ];
         });
@@ -161,9 +167,9 @@ function MainView(props: MainViewProps) {
       }
     });
 
-    Events.on("FriendUpdated", async (request_uuid: string, status: string) => {
+    events.on("FriendUpdated", async (request_uuid: string, status: string) => {
       if (props.setFriends) {
-        const friendData = await UserCache.GetUserAsync(request_uuid);
+        const friendData = await uCache.GetUserAsync(request_uuid);
         props.setFriends(prevState => {
           const index = prevState.findIndex(c => c.friendData?.uuid === request_uuid);
           if (index > -1) {
@@ -177,7 +183,7 @@ function MainView(props: MainViewProps) {
       }
     });
 
-    Events.on("FriendRemoved", async (request_uuid: string) => {
+    events.on("FriendRemoved", async (request_uuid: string) => {
       if (props.setFriends) {
         props.setFriends(prevState => {
           const index = prevState.findIndex(c => c.friendData?.uuid === request_uuid);
@@ -193,14 +199,14 @@ function MainView(props: MainViewProps) {
     });
 
     return (() => {
-      Events.remove("NewMessage");
-      Events.remove("DeleteMessage");
-      Events.remove("EditMessage");
-      Events.remove("NewChannel");
-      Events.remove("DeleteChannel");
-      Events.remove("FriendUpdated")
-      Events.remove("FriendAdded");
-      Events.remove("FriendRemoved");
+      events.remove("NewMessage");
+      events.remove("DeleteMessage");
+      events.remove("EditMessage");
+      events.remove("NewChannel");
+      events.remove("DeleteChannel");
+      events.remove("FriendUpdated")
+      events.remove("FriendAdded");
+      events.remove("FriendRemoved");
     });
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props, props.channels, props.messages]);
@@ -208,7 +214,7 @@ function MainView(props: MainViewProps) {
   useEffect(() => {
     (async () => {
       if (props.sessionRef) {
-        props.sessionRef.current = (await GenerateBase64SHA256(Date.now().toString())).Base64;
+        props.sessionRef.current = (await SHA256(Date.now().toString())).Base64;
       }
       else {
         console.error("sessionRef was undefined (MainView)")

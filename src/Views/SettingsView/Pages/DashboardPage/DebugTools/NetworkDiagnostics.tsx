@@ -1,15 +1,21 @@
+// Globals
+import { useEffect, useRef, useState } from "react";
 import { Button, useTheme } from "@mui/material";
 import { useTranslation } from "react-i18next";
-import useClassNames from "Hooks/useClassNames";
 
+// Types
 import type { NCComponent } from "Types/UI/Components";
-import StatusIndicator, { IndicatorState } from "Components/StatusIndicator/StatusIndicator";
-import { NCWebsocketState } from "NSLib/NCWebsocket";
-import { useEffect, useRef, useState } from "react";
 
+// Components
+import StatusIndicator, { IndicatorState } from "Components/StatusIndicator/StatusIndicator";
+import { SocketStateVisual, LatencyVisual } from "Views/SettingsView/Pages/DashboardPage/DebugTools/NetLib";
+
+// Source
+import useClassNames from "Hooks/useClassNames";
 import { Websocket as Socket } from "Init/AuthHandler";
-import { LatencyVisual, SocketStateVisual } from "./NetLib";
-import { GETLatency } from "NSLib/APIEvents";
+import { NCWebsocketState } from "Lib/API/NCWebsocket";
+import { SendPing } from "Lib/API/Endpoints/Debug";
+
 
 export interface ComponentProps extends NCComponent {
   showAdvanced?: boolean
@@ -31,7 +37,7 @@ function NetworkDiag(props: ComponentProps) {
   }
 
   const testLatency = async () => {
-    setApiLatency(LatencyVisual(await GETLatency(), [80, 120, 180]));
+    setApiLatency(LatencyVisual(await SendPing(), [80, 120, 180]));
   }
 
   useEffect(() => {

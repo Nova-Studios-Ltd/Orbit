@@ -1,22 +1,31 @@
-import { ContentType, POST } from "../NSLib/NCAPI";
-import NCWebsocket from "../NSLib/NCWebsocket";
+// Source
+import WebsocketInit from "Init/WebsocketEventInit";
+import { RequestUserKeystore } from "Lib/API/Endpoints/Keystore";
+import { RequestUser } from "Lib/API/Endpoints/User";
+import { ContentType, POST } from "Lib/API/NCAPI";
+import NCWebsocket from "Lib/API/NCWebsocket";
+import { Flags, HasUrlFlag } from "Lib/Debug/Flags";
+import { AESDecrypt } from "Lib/Encryption/AES";
+import { AESMemoryEncryptData } from "Lib/Encryption/Types/AESMemoryEncryptData";
+import { RSAMemoryKeypair } from "Lib/Encryption/Types/RSAMemoryKeypair";
+import { SHA256 } from "Lib/Encryption/Util";
+import Base64Uint8Array from "Lib/Objects/Base64Uint8Array";
+import { LocalStorage } from "Lib/Storage/LocalStorage";
+import { ChannelCache } from "Lib/Storage/Objects/ChannelCache";
+import KeyStore from "Lib/Storage/Objects/KeyStore";
+import UserData from "Lib/Storage/Objects/UserData";
+
+// Types
 import IUserLoginData from "Types/API/Interfaces/IUserLoginData";
-import { RSAMemoryKeyPair } from "../NSLib/NCEncrytUtil";
-import { GETKeystore, GETUser } from "../NSLib/APIEvents";
-import WebsocketInit from "./WebsocketEventInit";
 import { LoginStatus } from "Types/Enums";
-import { DecryptBase64, GenerateBase64SHA256 } from "NSLib/NCEncryption";
-import { NCFlags, HasUrlFlag } from "NSLib/NCFlags";
-import { NCChannelCache } from "NSLib/NCChannelCache";
+
 import { WEBSOCKET_DOMAIN } from "vars";
-import UserData from "DataManagement/UserData";
-import KeyStore from "DataManagement/KeyStore";
-import { LocalStorage } from "StorageLib/LocalStorage";
+
 
 export let Websocket: NCWebsocket;
 
 export async function LoginNewUser(email: string, password: string) : Promise<LoginStatus> {
-  const shaPass = await GenerateBase64SHA256(password);
+  const shaPass = await SHA256(password);
 
   // Attempt to log user in
   const loginResp = await POST("Auth/Login", ContentType.JSON, JSON.stringify({password: shaPass.Base64, email: email}));
@@ -29,7 +38,7 @@ export async function LoginNewUser(email: string, password: string) : Promise<Lo
   UserData.Token = ud.token;
   UserData.Uuid = ud.uuid;
   UserData.Email = ud.email;
-  UserData.KeyPair = new RSAMemoryKeyPair((await DecryptBase64(shaPass, ud.key)).String, ud.publicKey);
+  UserData.KeyPair = new RSAMemoryKeypair((await AESDecrypt(shaPass, new AESMemoryEncryptData(new Base64Uint8Array(ud.key.iv as string), new Base64Uint8Array(ud.key.content)))).String, ud.publicKey);
 
   return LoginStatus.Success;
 }
@@ -38,7 +47,7 @@ export async function AutoLogin() : Promise<boolean> {
   if (!await LocalStorage.ContainsAsync("UUID") || !await LocalStorage.ContainsAsync("Token")) return false;
 
   // Attempt to retreive user data
-  const userResp = await GETUser("@me");
+  const userResp = await RequestUser("@me");
   if (userResp === undefined) {
     await Logout();
     return false;
@@ -50,7 +59,7 @@ export async function AutoLogin() : Promise<boolean> {
   UserData.Username = userResp.username;
   UserData.Email = userResp.email;
 
-  if (!HasUrlFlag(NCFlags.NoWebsocket)) {
+  if (!HasUrlFlag(Flags.NoWebsocket)) {
     // Setup websocket
     Websocket = new NCWebsocket(`${WEBSOCKET_DOMAIN}/Events/Listen?user_uuid=${UserData.Uuid}`, UserData.Token);
     Websocket.OnConnected = () => console.log("Connected!");
@@ -61,7 +70,7 @@ export async function AutoLogin() : Promise<boolean> {
   }
 
   // Fetch users keystore
-  const keyResp = await GETKeystore();
+  const keyResp = await RequestUserKeystore();
   if (keyResp === undefined) {
     await Logout();
     return false;
@@ -75,6 +84,6 @@ export async function AutoLogin() : Promise<boolean> {
 }
 
 export async function Logout() {
-  await NCChannelCache.DeleteCaches();
+  await ChannelCache.DeleteCaches();
   await LocalStorage.ClearAsync();
 }

@@ -1,9 +1,13 @@
+// Global
 import { Icon, Typography, IconButton, useTheme } from "@mui/material";
-import { DownloadUint8ArrayFile } from "NSLib/ElectronAPI";
 import { Download as DownloadIcon, InsertDriveFile as FileIcon } from '@mui/icons-material';
 import useClassNames from "Hooks/useClassNames";
 import { useTranslation } from "react-i18next";
 
+// Source
+import { DownloadUint8ArrayFile } from "Lib/ElectronAPI";
+
+// Types
 import type { NCComponent } from "Types/UI/Components";
 
 export interface MessageFileProps extends NCComponent {

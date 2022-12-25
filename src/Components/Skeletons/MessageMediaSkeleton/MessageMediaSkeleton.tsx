@@ -2,7 +2,7 @@ import { Icon, Skeleton, useTheme } from "@mui/material";
 import { AttachFile as GenericFile, AudioFile as AudioFileIcon, InsertDriveFile as DocumentFileIcon, Image as ImageFileIcon, VideoFile as VideoFileIcon } from "@mui/icons-material";
 import useClassNames from "Hooks/useClassNames";
 
-import { FileType } from "NSLib/MimeTypeParser";
+import { FileType } from "Lib/Utility/MimeTypeParser";
 import { NCComponent } from "Types/UI/Components";
 
 export interface MessageMediaSkeletonProps extends NCComponent {

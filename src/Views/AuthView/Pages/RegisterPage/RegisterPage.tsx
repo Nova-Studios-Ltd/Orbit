@@ -1,15 +1,22 @@
+// Global
 import React, { useEffect, useState } from "react";
 import { Button, Card, Link, TextField, Typography, useTheme } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
-import { ContentType, NCAPIResponse, POST } from "NSLib/NCAPI";
-import { RegisterPayload, RegPayloadKey } from "Types/API/RegisterPayload";
 
+// Source
+import { GetRSAKeyPair } from "Lib/Encryption/RSA";
+import { SHA256 } from "Lib/Encryption/Util";
+import { AESEncrypt } from "Lib/Encryption/AES";
+import Base64Uint8Array from "Lib/Objects/Base64Uint8Array";
+import { ContentType, NCAPIResponse, POST } from "Lib/API/NCAPI";
+
+// Types
+import { RegisterPayload, RegPayloadKey } from "Types/API/RegisterPayload";
 import type { Page } from "Types/UI/Components";
 import { RegisterStatus } from "Types/Enums";
-import { EncryptBase64, GenerateBase64SHA256, GenerateRSAKeyPair } from "NSLib/NCEncryption";
-import { Base64String } from "NSLib/Base64";
 import { Routes } from "Types/UI/Routes";
+
 
 interface RegisterPageProps extends Page {
 
@@ -33,15 +40,15 @@ function RegisterPage(props: RegisterPageProps) {
   const register = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    const keypair = await GenerateRSAKeyPair();
+    const keypair = await GetRSAKeyPair();
     if (keypair === undefined) {
       setFailStatus(RegisterStatus.RSAFailed);
       return;
     }
-    const hashPassword = await GenerateBase64SHA256(password);
-    const encPriv = await EncryptBase64(hashPassword, Base64String.CreateBase64String(keypair.PrivateKey));
+    const hashPassword = await SHA256(password);
+    const encPriv = await AESEncrypt(hashPassword, new Base64Uint8Array(keypair.PrivateKey));
 
-    POST("Auth/Register", ContentType.JSON, JSON.stringify(new RegisterPayload(username, hashPassword.Base64, email, new RegPayloadKey(encPriv.content as string, encPriv.iv, keypair.PublicKey))), undefined, false).then((response: NCAPIResponse) => {
+    POST("Auth/Register", ContentType.JSON, JSON.stringify(new RegisterPayload(username, hashPassword.Base64, email, new RegPayloadKey(encPriv.content.Base64, encPriv.iv.Base64, keypair.PublicKey))), undefined, false).then((response: NCAPIResponse) => {
       if (response.status === 200) {
         navigate(Routes.Login);
         setFailStatus(RegisterStatus.Success);

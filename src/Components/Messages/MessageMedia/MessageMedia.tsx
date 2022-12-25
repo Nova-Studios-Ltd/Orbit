@@ -1,23 +1,30 @@
+// Globals
 import React, { memo, useEffect, useRef, useState } from "react";
 //import { useTheme } from "@mui/material";
+
+// Source
 import useClassNames from "Hooks/useClassNames";
-import { ComputeCSSDims } from "NSLib/Util";
 import Dimensions from "Types/Dimensions";
-import MimeTypeParser, { FileType } from "NSLib/MimeTypeParser";
+import MimeTypeParser, { FileType } from "Lib/Utility/MimeTypeParser";
+import { Flags, HasUrlFlag } from "Lib/Debug/Flags";
+import { GETFile } from "Lib/API/NCAPI";
+import UserData from "Lib/Storage/Objects/UserData";
+import { RSADecrypt } from "Lib/Encryption/RSA";
+import Base64Uint8Array from "Lib/Objects/Base64Uint8Array";
+import { AESDecrypt } from "Lib/Encryption/AES";
+import { AESMemoryEncryptData } from "Lib/Encryption/Types/AESMemoryEncryptData";
+import { ComputeCSSDims } from "Lib/Utility/ContentUtility";
 
-import MessageFile from "./Subcomponents/MessageFile/MessageFile";
-import MessageImage from "./Subcomponents/MessageImage/MessageImage";
-import MessageVideo from "./Subcomponents/MessageVideo/MessageVideo";
-import MessageAudio from "./Subcomponents/MessageAudio/MessageAudio";
+// Components
+import MessageImage from "Components/Messages/MessageMedia/Subcomponents/MessageImage/MessageImage";
+import MessageVideo from "Components/Messages/MessageMedia/Subcomponents/MessageVideo/MessageVideo";
+import MessageAudio from "Components/Messages/MessageMedia/Subcomponents/MessageAudio/MessageAudio";
+import MessageFile from "Components/Messages/MessageMedia/Subcomponents/MessageFile/MessageFile";
 
+// Types
 import type { NCComponent } from "Types/UI/Components";
 import type { IAttachmentProps } from "Types/API/Interfaces/IAttachmentProps";
-import { Base64String } from "NSLib/Base64";
-import { GETFile } from "NSLib/NCAPI";
-import { DecryptBase64WithPriv, DecryptUint8Array } from "NSLib/NCEncryption";
-import { AESMemoryEncryptData } from "NSLib/NCEncrytUtil";
-import { NCFlags, HasUrlFlag } from "NSLib/NCFlags";
-import UserData from "DataManagement/UserData";
+
 
 export interface MessageMediaProps extends NCComponent {
   contentUrl?: string,
@@ -46,7 +53,7 @@ function MessageMedia(props: MessageMediaProps) {
   useEffect(() => {
     (async () => {
       // Url control variable
-      if (HasUrlFlag(NCFlags.NoLoadContent)) return;
+      if (HasUrlFlag(Flags.NoLoadContent)) return;
 
       // First confirm contentUrl/keys/iv is not undefined
       if (props.contentUrl === undefined || props.keys === undefined || props.iv === undefined) return;
@@ -61,8 +68,8 @@ function MessageMedia(props: MessageMediaProps) {
       }
 
       // and decrypt the data
-      const att_key = await DecryptBase64WithPriv(UserData.KeyPair.PrivateKey, new Base64String(props.keys[UserData.Uuid]));
-      const decryptedContent = await DecryptUint8Array(att_key, new AESMemoryEncryptData(props.iv, content.payload as Uint8Array));
+      const att_key = await RSADecrypt(UserData.KeyPair.PrivateKey, new Base64Uint8Array(props.keys[UserData.Uuid]));
+      const decryptedContent = await AESDecrypt(att_key, new AESMemoryEncryptData(new Base64Uint8Array(props.iv), content.payload as Base64Uint8Array));
 
       contentData.current = decryptedContent;
       setContentDataUrl(URL.createObjectURL(new Blob([decryptedContent])));

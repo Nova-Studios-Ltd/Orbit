@@ -1,14 +1,21 @@
-import { NotificationType, TriggerNotification } from "NSLib/ElectronAPI";
-import { NCChannelCache } from "NSLib/NCChannelCache";
-import NCEvents from "NSLib/NCEvents";
-import { UserCache } from "App";
-import IWebSocketEvent from "Types/API/Interfaces/IWebsocketEvent";
-import { GETChannel, GETFriendState, GETKey, GETKeystore, GETMessage, GETUser } from "../NSLib/APIEvents";
-import NCWebsocket from "../NSLib/NCWebsocket";
-import UserData from "DataManagement/UserData";
-import KeyStore from "DataManagement/KeyStore";
+// Source
+import { uCache } from "App";
+import { RequestChannel } from "Lib/API/Endpoints/Channels";
+import { RequestFriendState } from "Lib/API/Endpoints/Friends";
+import { RequestKey, RequestUserKeystore } from "Lib/API/Endpoints/Keystore";
+import { RequestMessage } from "Lib/API/Endpoints/Messages";
+import { RequestUser } from "Lib/API/Endpoints/User";
+import Events from "Lib/API/Events";
+import NCWebsocket from "Lib/API/NCWebsocket";
+import { NotificationType, TriggerNotification } from "Lib/ElectronAPI";
+import { ChannelCache } from "Lib/Storage/Objects/ChannelCache";
+import KeyStore from "Lib/Storage/Objects/KeyStore";
+import UserData from "Lib/Storage/Objects/UserData";
 
-export const Events = new NCEvents();
+// Types
+import IWebSocketEvent from "Types/API/Interfaces/IWebsocketEvent";
+
+export const events = new Events();
 export default function WebsocketInit(Websocket: NCWebsocket) {
   Websocket.CreateEvent(-1, () => console.log("<Beat>"));
 
@@ -36,42 +43,42 @@ export default function WebsocketInit(Websocket: NCWebsocket) {
 }
 
 async function OnNewMessage(event: IWebSocketEvent) {
-  const message = await GETMessage(event.Channel, event.Message, true);
+  const message = await RequestMessage(event.Channel, event.Message, true);
   if (message === undefined) return;
-  Events.send("NewMessage", message, event.Channel);
+  events.send("NewMessage", message, event.Channel);
   // Trigger notification
   if (UserData.Uuid !== message.author_UUID)
-    TriggerNotification(`New Message from ${(await UserCache.GetUserAsync(message.author_UUID)).username}`, message.content, NotificationType.Info, `User/${message.author_UUID}/Avatar?size=64`);
+    TriggerNotification(`New Message from ${(await uCache.GetUserAsync(message.author_UUID)).username}`, message.content, NotificationType.Info, `User/${message.author_UUID}/Avatar?size=64`);
   // Add message to cache
-  (await NCChannelCache.Open(event.Channel)).SetMessage(event.Message, message);
+  (await ChannelCache.Open(event.Channel)).SetMessage(event.Message, message);
 }
 
 async function OnDeleteMessage(event: IWebSocketEvent) {
-  Events.send("DeleteMessage", event.Message);
+  events.send("DeleteMessage", event.Message);
   // Clear message from cache
-  (await NCChannelCache.Open(event.Channel)).RemoveMessage(event.Message);
+  (await ChannelCache.Open(event.Channel)).RemoveMessage(event.Message);
 }
 
 async function OnMessageEdit(event: IWebSocketEvent) {
-  const message = await GETMessage(event.Channel, event.Message, true);
+  const message = await RequestMessage(event.Channel, event.Message, true);
   if (message === undefined) return;
-  Events.send("EditMessage", message);
+  events.send("EditMessage", message);
   // Update message in cache
-  (await NCChannelCache.Open(event.Channel)).SetMessage(event.Message, message);
+  (await ChannelCache.Open(event.Channel)).SetMessage(event.Message, message);
 }
 
 async function OnCreateChannel(event: IWebSocketEvent) {
-  const channel = await GETChannel(event.Channel);
+  const channel = await RequestChannel(event.Channel);
   if (channel === undefined) return;
-  Events.send("NewChannel", channel);
+  events.send("NewChannel", channel);
 }
 
 async function OnDeleteChannel(event: IWebSocketEvent) {
-  Events.send("DeleteChannel", event.Channel);
+  events.send("DeleteChannel", event.Channel);
 }
 
 async function OnAddNewKey(event: IWebSocketEvent) {
-  const key = await GETKey(event.keyUserUUID);
+  const key = await RequestKey(event.keyUserUUID);
   if (key === undefined) return;
   KeyStore.SetKey(event.keyUserUUID, key);
 }
@@ -81,29 +88,29 @@ async function OnRemoveKey(event: IWebSocketEvent) {
 }
 
 async function OnKeystoreReload(event: IWebSocketEvent) {
-  const keystore = await GETKeystore();
+  const keystore = await RequestUserKeystore();
   if (keystore === undefined) return;
   KeyStore.ClearKeys();
   KeyStore.LoadKeys(keystore);
 }
 
 async function OnUsernameChanged(event: IWebSocketEvent) {
-  const user = await GETUser(event.User);
+  const user = await RequestUser(event.User);
   if (user === undefined) return;
-  UserCache.AddUser(user);
+  uCache.AddUser(user);
 }
 
 async function FriendRequestAdded(event: IWebSocketEvent) {
   // Trigger notification
   if (UserData.Uuid !== event.User)
-    TriggerNotification("New Friend Request", `${(await UserCache.GetUserAsync(event.User)).username} has requested to be your friend`, NotificationType.Info, `User/${event.User}/Avatar?size=64`);
-  Events.send("FriendAdded", event.User, await GETFriendState(event.User));
+    TriggerNotification("New Friend Request", `${(await uCache.GetUserAsync(event.User)).username} has requested to be your friend`, NotificationType.Info, `User/${event.User}/Avatar?size=64`);
+  events.send("FriendAdded", event.User, await RequestFriendState(event.User));
 }
 
 async function FriendRequestUpdated(event: IWebSocketEvent) {
-  Events.send("FriendUpdated", event.User, await GETFriendState(event.User));
+  events.send("FriendUpdated", event.User, await RequestFriendState(event.User));
 }
 
 async function FriendRequestRemoved(event: IWebSocketEvent) {
-  Events.send("FriendRemoved", event.User);
+  events.send("FriendRemoved", event.User);
 }

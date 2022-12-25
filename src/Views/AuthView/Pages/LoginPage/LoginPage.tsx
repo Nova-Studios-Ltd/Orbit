@@ -1,13 +1,17 @@
+// Global
 import React, { useEffect, useState } from "react";
 import { Button, Link, TextField, Typography, useTheme } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { Link as RouterLink, useLocation, useNavigate } from "react-router-dom";
-import { LoginNewUser } from "Init/AuthHandler";
 
+// Source
+import { LoginNewUser } from "Init/AuthHandler";
+import { LocalStorage } from "Lib/Storage/LocalStorage";
+
+// Types
 import type { Page } from "Types/UI/Components";
 import { LoginStatus } from "Types/Enums";
 import { Routes } from "Types/UI/Routes";
-import { LocalStorage } from "StorageLib/LocalStorage";
 
 interface LoginPageProps extends Page {
 

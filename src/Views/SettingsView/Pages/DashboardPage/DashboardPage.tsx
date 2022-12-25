@@ -1,26 +1,32 @@
+// Global
+import React, { useState } from "react";
 import { Avatar, Button, Card, IconButton, Typography, useTheme } from "@mui/material";
 import { Add as AddIcon } from "@mui/icons-material";
 import useClassNames from "Hooks/useClassNames";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
-import { NCChannelCache } from "NSLib/NCChannelCache";
 import { APP_VERSION, DEBUG } from "vars";
 
+// Source
+import UserData from "Lib/Storage/Objects/UserData";
+import { NCFile, UploadFile, WriteToClipboard } from "Lib/ElectronAPI";
+import { RequestChangeEmail, RequestChangePassword, RequestChangeUsername, RequestDeleteUser, RequestSetAvatar } from "Lib/API/Endpoints/User";
+import { ChannelCache } from "Lib/Storage/Objects/ChannelCache";
+import { Flags, HasUrlFlag } from "Lib/Debug/Flags";
+
+// Components
 import PageContainer from "Components/Containers/PageContainer/PageContainer";
 import Section from "Components/Containers/Section/Section";
-
-import type { Page } from "Types/UI/Components";
-import { NCFile, UploadFile, WriteToClipboard } from "NSLib/ElectronAPI";
-import { DELETEUser, SETAvatar, UPDATEEmail, UPDATEPassword, UPDATEUsername } from "NSLib/APIEvents";
-import NetworkDiag from "./DebugTools/NetworkDiagnostics";
-import React, { useState } from "react";
+import SystemFlags from "Views/SettingsView/Pages/DashboardPage/DebugTools/SystemFlags/SystemFlags";
 import TextCombo from "Components/Input/TextCombo/TextCombo";
 import GenericDialog from "Components/Dialogs/GenericDialog/GenericDialog";
+import NetworkDiag from "Views/SettingsView/Pages/DashboardPage/DebugTools/NetworkDiagnostics";
+
+// Types
+import type { Page } from "Types/UI/Components";
 import { Routes } from "Types/UI/Routes";
 import { TextComboStates } from "Types/Enums";
-import { NCFlags, HasUrlFlag } from "NSLib/NCFlags";
-import SystemFlags from "./DebugTools/SystemFlags/SystemFlags";
-import UserData from "DataManagement/UserData";
+
 
 interface DashboardPageProps extends Page {
   avatarNonce?: string,
@@ -59,7 +65,7 @@ function DashboardPage(props: DashboardPageProps) {
   const pickProfile = async () => {
     UploadFile(false).then((files: NCFile[]) => {
       if (files.length === 0) return;
-      SETAvatar(UserData.Uuid, new Blob([files[0].FileContents]), (set: boolean) => {
+      RequestSetAvatar(new Blob([files[0].FileContents]), (set: boolean) => {
         if (set) console.log("Avatar Set", UserData.Uuid);
         updateAvatar();
       });
@@ -68,7 +74,7 @@ function DashboardPage(props: DashboardPageProps) {
 
   const changePassword = async () => {
     if (passwordsAndLengthMatch) {
-      UPDATEPassword(NewPasswordValue, (status: boolean, newPassword: string) => {
+      RequestChangePassword(NewPasswordValue, (status: boolean, newPassword: string) => {
       console.log(`Change Password Status: ${status}`);
     });
       setChangePasswordDialogVisibility(false);
@@ -77,7 +83,7 @@ function DashboardPage(props: DashboardPageProps) {
 
   const changeUsername = async () => {
     if (NewUsernameValue.length > 0) {
-        UPDATEUsername(NewUsernameValue, (status: boolean, newUsername: string) => {
+        RequestChangeUsername(NewUsernameValue, (status: boolean, newUsername: string) => {
         console.log(`Change Username Status: ${status}; New Username: ${newUsername}`);
       });
       setChangeUsernameDialogVisibility(false);
@@ -86,7 +92,7 @@ function DashboardPage(props: DashboardPageProps) {
 
   const changeEmail = async () => {
     if (NewEmailValue.length > 0) {
-      UPDATEEmail(NewEmailValue, (status: boolean, newEmail: string) => {
+      RequestChangeEmail(NewEmailValue, (status: boolean, newEmail: string) => {
         console.log(`Change Email Status: ${status}; New Email: ${newEmail}`);
       });
       setChangeEmailDialogVisibility(false);
@@ -94,7 +100,7 @@ function DashboardPage(props: DashboardPageProps) {
   }
 
   const deleteAccount = () => {
-    DELETEUser((status) => {
+    RequestDeleteUser((status) => {
       if (status) {
         navigate(Routes.Login);
         console.success("Account Deletion Successful")
@@ -127,7 +133,7 @@ function DashboardPage(props: DashboardPageProps) {
   }
 
   const clearCaches = () => {
-    NCChannelCache.DeleteCaches();
+    ChannelCache.DeleteCaches();
     caches.delete("NCMediaCache");
     console.success("Caches cleared");
   }
@@ -154,7 +160,7 @@ function DashboardPage(props: DashboardPageProps) {
         </Card>
       </Section>
       <Section title={Localizations_DashboardPage("Section_Title-Diagnostics")}>
-        <NetworkDiag showAdvanced={HasUrlFlag(NCFlags.EnableSocketControls)}/>
+        <NetworkDiag showAdvanced={HasUrlFlag(Flags.EnableSocketControls)}/>
       </Section>
       {DEBUG? (<Section title="System Flags">
         <SystemFlags/>

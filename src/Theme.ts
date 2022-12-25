@@ -1,6 +1,6 @@
 import { createTheme } from "@mui/material";
 import { Theme } from "@mui/material/styles/createTheme";
-import GenerateRandomColor from "NSLib/ColorGeneration";
+import GenerateRandomColor from "Lib/Utility/ColorGeneration";
 
 // Just a temp thing
 export function ThemeSelector(themeName: string) : Theme {

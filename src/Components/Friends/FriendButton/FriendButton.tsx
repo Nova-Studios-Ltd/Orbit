@@ -1,16 +1,21 @@
+// Global
 import React, { useState } from "react";
 import { Button, Checkbox, IconButton, Typography, useTheme } from "@mui/material";
 import { Security as OwnerIcon } from "@mui/icons-material";
 import useClassNames from "Hooks/useClassNames";
 import { useTranslation } from "react-i18next";
-import { WriteToClipboard } from "NSLib/ElectronAPI";
 
+// Source
+import { WriteToClipboard } from "Lib/ElectronAPI";
+
+// Components
 import AvatarTextButton from "Components/Buttons/AvatarTextButton/AvatarTextButton";
 import ContextMenu from "Components/Menus/ContextMenu/ContextMenu";
 import ContextMenuItem from "Components/Menus/ContextMenuItem/ContextMenuItem";
 import GenericDialog from "Components/Dialogs/GenericDialog/GenericDialog";
 import Separator from "Components/Menus/Separator/Separator";
 
+// Types
 import type { NCComponent } from "Types/UI/Components";
 import type Friend from "Types/UI/Friend";
 import type { Coordinates } from "Types/General";

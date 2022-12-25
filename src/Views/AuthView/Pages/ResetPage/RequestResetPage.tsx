@@ -1,10 +1,16 @@
+// Global
 import React, { useState } from "react";
 import { Button, Card, Link, TextField, Typography, useTheme } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { useLocation } from "react-router-dom";
+
+// Source
+import { POST, ContentType, HTTPStatusCodes } from "Lib/API/NCAPI";
+
+// Types
 import type { Page } from "Types/UI/Components";
-import { ContentType, HTTPStatusCodes, POST } from "NSLib/NCAPI";
 import { Routes } from "Types/UI/Routes";
+
 
 interface RequestResetPageProps extends Page {
 

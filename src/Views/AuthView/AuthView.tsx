@@ -1,12 +1,17 @@
+// Global
 import { useTheme } from "@mui/material";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
+// Source
+import GenerateRandomColor from "Lib/Utility/ColorGeneration";
+
+// Components
 import ViewContainer from "Components/Containers/ViewContainer/ViewContainer";
 
+// Types
 import type { View } from "Types/UI/Components";
 import { Routes } from "Types/UI/Routes";
-import GenerateRandomColor from "NSLib/ColorGeneration";
 
 interface AuthViewProps extends View {
 

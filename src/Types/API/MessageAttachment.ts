@@ -1,5 +1,6 @@
-import { GenerateBase64SHA256 } from "NSLib/NCEncryption";
-import { Base64String, ToBase64String, ToUint8Array } from "../../NSLib/Base64";
+import { SHA256 } from "Lib/Encryption/Util";
+import Base64Uint8Array from "Lib/Objects/Base64Uint8Array";
+
 
 export default class MessageAttachment {
     id: string;
@@ -9,7 +10,7 @@ export default class MessageAttachment {
     constructor(contents: Uint8Array, filename: string) {
         this.contents = contents;
         this.id = "";
-        GenerateBase64SHA256(filename).then((id: Base64String) => {
+        SHA256(filename).then((id: Base64Uint8Array) => {
             this.id = id.Base64;
         });
         this.filename = filename;
