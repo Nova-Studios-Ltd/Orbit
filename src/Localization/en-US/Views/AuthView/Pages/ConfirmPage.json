@@ -1,0 +1,8 @@
+{
+  "Typography-ConfirmationSucess": "Succesfully confirmed your email!",
+  "Typography-Welcome": "Welcome to orbit!",
+  "Typography-WaitForConfirmation": "Please wait while we confirm your email...",
+  "Typography-ConfirmationFailed": "We were unable to confirm your email. Ensure the link is correct and try again.",
+  "Button_Text-Login": "Go to login",
+  "Button_Text-TryAgain": "Retry"
+}

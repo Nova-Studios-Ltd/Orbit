@@ -2,7 +2,7 @@
 import WebsocketInit from "Init/WebsocketEventInit";
 import { RequestUserKeystore } from "Lib/API/Endpoints/Keystore";
 import { RequestUser } from "Lib/API/Endpoints/User";
-import { ContentType, POST } from "Lib/API/NCAPI";
+import { ContentType, HTTPStatusCodes, POST } from "Lib/API/NCAPI";
 import NCWebsocket from "Lib/API/NCWebsocket";
 import { Flags, HasUrlFlag } from "Lib/Debug/Flags";
 import { AESDecrypt } from "Lib/Encryption/AES";
@@ -29,12 +29,13 @@ export async function LoginNewUser(email: string, password: string) : Promise<Lo
 
   // Attempt to log user in
   const loginResp = await POST("Auth/Login", ContentType.JSON, JSON.stringify({password: shaPass.Base64, email: email}));
-  if (loginResp.status === 403) return LoginStatus.InvalidCredentials;
-  else if (loginResp.status === 404) return LoginStatus.UnknownUser;
-  else if (loginResp.status === 500) return LoginStatus.ServerError;
+  if (loginResp.status === HTTPStatusCodes.Forbidden) return LoginStatus.InvalidCredentials;
+  else if (loginResp.status === HTTPStatusCodes.NotFound) return LoginStatus.UnknownUser;
+  else if (loginResp.status === HTTPStatusCodes.ServerError) return LoginStatus.ServerError;
+  else if (loginResp.status === HTTPStatusCodes.MethodNotAllowed) return LoginStatus.UnconfirmedEmail;
   const ud = loginResp.payload as IUserLoginData;
 
-  // Stored user secruity information (Keypair, token, uuid)
+  // Store user secruity information (Keypair, token, uuid)
   UserData.Token = ud.token;
   UserData.Uuid = ud.uuid;
   UserData.Email = ud.email;

@@ -75,6 +75,8 @@ function LoginPage(props: LoginPageProps) {
         return <Typography color="error">{Localizations_LoginPage("FormStatus-UnknownUser")}</Typography>;
       case LoginStatus.ServerError:
         return <Typography color="error">{Localizations_LoginPage("FormStatus-ServerError")}</Typography>;
+      case LoginStatus.UnconfirmedEmail:
+        return <Typography color="error">{Localizations_LoginPage("FormStatus-UnconfirmedEmail")}</Typography>;
       case LoginStatus.PendingStatus:
       default:
         return null;

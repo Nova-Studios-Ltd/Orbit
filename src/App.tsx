@@ -41,6 +41,7 @@ import LoginPage from "Views/AuthView/Pages/LoginPage/LoginPage";
 import RegisterPage from "Views/AuthView/Pages/RegisterPage/RegisterPage";
 import ResetPage from "Views/AuthView/Pages/ResetPage/ResetPage";
 import RequestResetPage from "Views/AuthView/Pages/ResetPage/RequestResetPage";
+import ConfirmPage from "Views/AuthView/Pages/ConfirmPage/ConfirmPage";
 
 // Types
 import { Routes } from "Types/UI/Routes";
@@ -61,6 +62,7 @@ import "./App.css";
 
 // Debug
 import { DEBUG } from "vars";
+
 
 
 i18n.use(initReactI18next)
@@ -526,6 +528,7 @@ function App() {
             <Route path={Routes.Register} element={<RegisterPage sharedProps={SharedProps} />} />
             <Route path={Routes.Reset} element={<ResetPage sharedProps={SharedProps} />} />
             <Route path={Routes.RequestReset} element={<RequestResetPage sharedProps={SharedProps} />} />
+            <Route path={Routes.Confirm} element={<ConfirmPage sharedProps={SharedProps} />} />
           </Route>
           <Route path={Routes.Root} element={<MainView sharedProps={SharedProps} sessionRef={session} channels={channels} messages={messages} setChannels={setChannels} setFriends={setFriends} setMessages={setMessages} avatarNonce={avatarNonce} selectedChannel={selectedChannel} channelMenuVisible={channelMenuVisible} onNavigateToPage={onMainViewNavigateToPage} setChannelMenuVisibility={setChannelMenuVisibility} loadChannels={loadChannels} populateFriendsList={populateFriendsList} onChannelClearCache={onChannelClearCache} onChannelClick={selectChannel} onChannelDelete={onChannelDelete} onChannelEdit={onChannelEdit} onChannelMenuToggle={onChannelMenuToggle} onChannelMove={onChannelMove} onChannelRemoveRecipient={onChannelRemoveRecipient} onChannelResetIcon={onChannelResetIcon} />}>
             <Route path={Routes.Friends} element={<FriendView sharedProps={SharedProps} />}>

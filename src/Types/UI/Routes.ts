@@ -4,6 +4,7 @@ export enum Routes {
   Auth = "/auth", // X
   Login = "/auth/login",
   Register = "/auth/register",
+  Confirm = "/auth/confirm",
   Reset = "/auth/reset",
   RequestReset = "/auth/req-reset",
 

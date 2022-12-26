@@ -1,0 +1,9 @@
+.ReturnHomeButton {
+  text-align: center;
+}
+
+.ConfirmPageContainer {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+}

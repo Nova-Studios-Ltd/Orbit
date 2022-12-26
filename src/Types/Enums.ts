@@ -3,7 +3,8 @@ export enum LoginStatus {
   ServerError = 1,
   Success = 2,
   PendingStatus = 3,
-  UnknownUser = 4
+  UnknownUser = 4,
+  UnconfirmedEmail = 5
 }
 
 export enum RegisterStatus {

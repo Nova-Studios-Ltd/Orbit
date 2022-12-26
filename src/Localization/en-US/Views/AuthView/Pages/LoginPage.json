@@ -11,5 +11,6 @@
   "FormStatus-Success": "Logged In Successfully.",
   "FormStatus-InvalidCredentials": "Password was incorrect.",
   "FormStatus-UnknownUser": "No account with that email was found.",
-  "FormStatus-ServerError": "Unable to log in, server died."
+  "FormStatus-ServerError": "Unable to log in, server died.",
+  "FormStatus-UnconfirmedEmail": "Please confirm your email first."
 }

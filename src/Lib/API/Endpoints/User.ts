@@ -119,3 +119,14 @@ export function RequestSetAvatar(file: Blob, callback: (set: boolean) => void) {
     else callback(false);
   });
 }
+
+/**
+ * Confirms the current users email
+ * @param token User token
+ * @returns True if succesful, otherwise false
+ */
+export async function SendConfirmEmail(token: string) : Promise<boolean> {
+  const resp = await PUT(`/User/@me/ConfirmEmail?token=${token}`, ContentType.EMPTY, "");
+  if (resp.status === HTTPStatusCodes.OK) return true;
+  return false;
+}

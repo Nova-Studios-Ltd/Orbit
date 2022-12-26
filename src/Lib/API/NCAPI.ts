@@ -10,7 +10,8 @@ export enum HTTPStatusCodes {
   ServerError = 500,
   BadRequest = 400,
   Unauthorized = 401,
-  Forbidden = 403
+  Forbidden = 403,
+  MethodNotAllowed = 405
 }
 
 /**
