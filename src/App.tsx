@@ -61,7 +61,7 @@ import type IUserData from "Types/API/Interfaces/IUserData";
 import "./App.css";
 
 // Debug
-import { DEBUG } from "vars";
+import { API_DOMAIN, DEBUG, IsDevelopment, WEBSOCKET_DOMAIN } from "vars";
 
 
 
@@ -145,6 +145,11 @@ function App() {
     else {
       console.warn("Not overriding console logging because debug mode is disabled. Change this in vars.ts.");
       DummyConsoleSuccess();
+    }
+
+    // Show message in console indicating we are using a development branch
+    if (IsDevelopment) {
+      console.warn(`Client is in development mode; API: ${API_DOMAIN}; WEBSOCKET: ${WEBSOCKET_DOMAIN}`);
     }
 
   // eslint-disable-next-line react-hooks/exhaustive-deps

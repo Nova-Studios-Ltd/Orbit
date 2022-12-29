@@ -50,7 +50,7 @@ function RegisterPage(props: RegisterPageProps) {
 
     POST("Auth/Register", ContentType.JSON, JSON.stringify(new RegisterPayload(username, hashPassword.Base64, email, new RegPayloadKey(encPriv.content.Base64, encPriv.iv.Base64, keypair.PublicKey))), undefined, false).then((response: NCAPIResponse) => {
       if (response.status === 200) {
-        navigate(Routes.Login);
+        //navigate(Routes.Login);
         setFailStatus(RegisterStatus.Success);
       }
       else if (response.status === 409) {
@@ -108,28 +108,37 @@ function RegisterPage(props: RegisterPageProps) {
 
   return (
     <div className="RegisterPageContainer">
-      <Typography variant="h6" align="center">{Localizations_RegisterPage("Typography-FormCaption")}</Typography>
-      <FormStatus />
-      <form className="AuthForm RegisterForm" onSubmit={register}>
-        <TextField id="emailField" className="RegisterFormItem" autoFocus required error={failureStatus === RegisterStatus.EmailUsed} label={Localizations_RegisterPage("TextField_Label-Email")} placeholder={Localizations_RegisterPage("TextField_Placeholder-Email")} value={email} onChange={TextFieldChanged} helperText={
-          <Typography variant="caption">{Localizations_RegisterPage("TextField_HelperText-EmailHint")}</Typography>
-        }/>
-        <TextField id="usernameField" className="RegisterFormItem" required label={Localizations_RegisterPage("TextField_Label-Username")} placeholder={Localizations_RegisterPage("TextField_Placeholder-Username")} value={username} onChange={TextFieldChanged} />
-        <TextField id="passwordField" className="RegisterFormItem" type="password" required label={Localizations_RegisterPage("TextField_Label-Password")} placeholder={Localizations_RegisterPage("TextField_Placeholder-Password")} value={password} onChange={TextFieldChanged} helperText={
-          <>
-            <Typography variant="caption" color="red">{Localizations_RegisterPage("TextField_HelperText-ForgottenPasswordWarning").toUpperCase()}</Typography>
-            <Link underline="none" style={{ cursor: "pointer", marginLeft: 8 }} onClick={(event) => {
-              if (props.sharedProps && props.sharedProps.HelpPopup) {
-                props.sharedProps.HelpPopup.setAnchor(event.currentTarget);
-                props.sharedProps.HelpPopup.setContent(E2ELearnMore);
-                props.sharedProps.HelpPopup.setVisibility(true);
-              }
-            }}>{Localizations_RegisterPage("Link-LearnMore")}</Link>
-          </>
-        }/>
-        <Button className="RegisterFormItem" variant="outlined" type="submit">{Localizations_RegisterPage("Button_Text-Register")}</Button>
-      </form>
-      <Typography marginTop={1.5}>{Localizations_RegisterPage("Typography-HaveAccountQuestion")} <RouterLink to={Routes.Login} style={{ color: theme.palette.primary.main }}>{Localizations_RegisterPage("Link-ToLoginForm")}</RouterLink></Typography>
+      {(failureStatus !== RegisterStatus.Success)? (
+        <>
+          <Typography variant="h6" align="center">{Localizations_RegisterPage("Typography-FormCaption")}</Typography>
+          <FormStatus />
+            <form className="AuthForm RegisterForm" onSubmit={register}>
+              <TextField id="emailField" className="RegisterFormItem" autoFocus required error={failureStatus === RegisterStatus.EmailUsed} label={Localizations_RegisterPage("TextField_Label-Email")} placeholder={Localizations_RegisterPage("TextField_Placeholder-Email")} value={email} onChange={TextFieldChanged} helperText={
+                <Typography variant="caption">{Localizations_RegisterPage("TextField_HelperText-EmailHint")}</Typography>
+              }/>
+              <TextField id="usernameField" className="RegisterFormItem" required label={Localizations_RegisterPage("TextField_Label-Username")} placeholder={Localizations_RegisterPage("TextField_Placeholder-Username")} value={username} onChange={TextFieldChanged} />
+              <TextField id="passwordField" className="RegisterFormItem" type="password" required label={Localizations_RegisterPage("TextField_Label-Password")} placeholder={Localizations_RegisterPage("TextField_Placeholder-Password")} value={password} onChange={TextFieldChanged} helperText={
+                <>
+                  <Typography variant="caption" color="red">{Localizations_RegisterPage("TextField_HelperText-ForgottenPasswordWarning").toUpperCase()}</Typography>
+                  <Link underline="none" style={{ cursor: "pointer", marginLeft: 8 }} onClick={(event) => {
+                    if (props.sharedProps && props.sharedProps.HelpPopup) {
+                      props.sharedProps.HelpPopup.setAnchor(event.currentTarget);
+                      props.sharedProps.HelpPopup.setContent(E2ELearnMore);
+                      props.sharedProps.HelpPopup.setVisibility(true);
+                    }
+                  }}>{Localizations_RegisterPage("Link-LearnMore")}</Link>
+                </>
+              }/>
+              <Button className="RegisterFormItem" variant="outlined" type="submit">{Localizations_RegisterPage("Button_Text-Register")}</Button>
+            </form>
+          <Typography marginTop={1.5}>{Localizations_RegisterPage("Typography-HaveAccountQuestion")} <RouterLink to={Routes.Login} style={{ color: theme.palette.primary.main }}>{Localizations_RegisterPage("Link-ToLoginForm")}</RouterLink></Typography>
+        </>
+      ) : (
+        <>
+          <FormStatus />
+          <Button className="RegisterFormItem" variant="outlined" fullWidth onClick={() => navigate(Routes.Login)}>{Localizations_RegisterPage("Link-ToLoginForm")}</Button>
+        </>
+      )}
     </div>
   );
 }

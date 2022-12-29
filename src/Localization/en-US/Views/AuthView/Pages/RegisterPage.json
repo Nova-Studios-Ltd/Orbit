@@ -15,7 +15,7 @@
   "TextField_HelperText-ForgottenPasswordWarningExplanation": "Due to the nature of our service, your password is used to encrypt everything you send to another user. If this is lost we cannot reverse the encryption.",
   "Link-ToLoginForm": "Login",
   "Link-LearnMore": "Learn More",
-  "FormStatus-Success": "Account Created Successfully.",
+  "FormStatus-Success": "Account Created Successfully. Please Check Your Email.",
   "FormStatus-EmailError": "This email is already registered to an account.",
   "FormStatus-RSAKeygenError": "Unable to generate keypair (this is BAD).",
   "FormStatus-ServerError": "Unable to create account, server died."
