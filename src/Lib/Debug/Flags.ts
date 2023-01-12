@@ -26,6 +26,8 @@ export class Flags {
   static NoCache = new Flag("no-cache", false, false);
   static IgnoreCacheSession = new Flag("ignore-cache-session", false, false);
   static EnableSocketControls = new Flag("enable-socket-controls", false, false);
+  static ForceMainAPI = new Flag("force-main-api", false, false);
+  static NoLocalKeystore = new Flag("no-local-keystore", false, false);
 }
 
 

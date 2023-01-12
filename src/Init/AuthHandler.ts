@@ -71,13 +71,15 @@ export async function AutoLogin() : Promise<boolean> {
   }
 
   // Fetch users keystore
-  const keyResp = await RequestUserKeystore();
-  if (keyResp === undefined) {
-    await Logout();
-    return false;
-  }
   KeyStore.ClearKeys();
-  KeyStore.LoadKeys(keyResp);
+  if (!HasUrlFlag(Flags.NoLocalKeystore)) {
+    const keyResp = await RequestUserKeystore();
+    if (keyResp === undefined) {
+      await Logout();
+      return false;
+    }
+    KeyStore.LoadKeys(keyResp);
+  }
 
   LocalStorage.SetItem("LoggedIn", "false");
 

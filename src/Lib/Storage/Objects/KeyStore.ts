@@ -45,6 +45,6 @@ export default class KeyStore {
   }
 
   static async ContainsKey(user_uuid: string) : Promise<boolean> {
-    return (await this.KeyStore())?.Get<string>(user_uuid) === undefined? false : true;
+    return await (await this.KeyStore())?.Get<string>(user_uuid) === undefined? false : true;
   }
 }

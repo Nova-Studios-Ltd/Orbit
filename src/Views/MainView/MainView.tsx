@@ -26,6 +26,8 @@ import type { IChannelUpdateProps } from "Types/API/Interfaces/IChannelUpdatePro
 import type IUserData from "Types/API/Interfaces/IUserData";
 import { IMessageProps } from "Types/API/Interfaces/IMessageProps";
 import Friend from "Types/UI/Friend";
+import DebugButton from "Components/Buttons/DebugButtom/DebugButton";
+import KeyStore from "Lib/Storage/Objects/KeyStore";
 
 
 interface MainViewProps extends View {
