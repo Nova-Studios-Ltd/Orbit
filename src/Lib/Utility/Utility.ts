@@ -29,3 +29,23 @@ export function GetFileExtension(filename: string) : string {
 export function IsValidUsername(username: string) : boolean {
   return new RegExp(/^([\S]{1,})#([0-9]{4}$)/g).test(username);
 }
+
+/**
+ * Wait untill the predicate becomes true
+ * @param value Value to test against
+ * @param interval Interval between tests in milliseconds
+ * @param predicate Test function
+ * @returns A void Promise
+ */
+export async function WaitTill<T>(value: T, interval: number, predicate: (value: T) => boolean) : Promise<void> {
+  return new Promise((resolve) => {
+    let id = 0;
+    const time = () => {
+      if (predicate(value)) {
+        clearInterval(id);
+        resolve();
+      }
+    }
+    id = setInterval(time, interval, []);
+  });
+}

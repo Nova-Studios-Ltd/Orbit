@@ -8,7 +8,7 @@ import { useTranslation } from "react-i18next";
 import { NCFile, UploadFile } from "Lib/ElectronAPI";
 import useClassNames from "Hooks/useClassNames";
 import UserData from "Lib/Storage/Objects/UserData";
-import { RequestUser } from "Lib/API/Endpoints/User";
+import { uCache } from "App";
 
 // Components
 import AvatarTextButton from "Components/Buttons/AvatarTextButton/AvatarTextButton";
@@ -74,7 +74,7 @@ function Channel(props: ChannelProps) {
     if (props.channelData && props.channelData.members) {
       for (let i = 0; i < props.channelData.members.length; i++) {
         const uuid = props.channelData.members[i];
-          RequestUser(uuid).then((user) => {
+          uCache.GetUserAsync(uuid).then((user) => {
             if (user) {
               const selectedIsOwner = props.channelData.owner_UUID === user.uuid;
               const friend: Friend = { friendData: user, uiStates: { isOwner: isGroup && selectedIsOwner, removable: isOwner && isGroup && !selectedIsOwner } };
