@@ -26,4 +26,4 @@ jobs:
   deploy:  
     runs-on: self-hosted
     steps:
-      - run: scp -r ./build/ ${{ secrets.SSH_HOST }}:/var/www/html/orbit.novastudios.uk
+      - run: scp -r ./build/ ${{ secrets.SSH_DEPLOY_HOST }}:/var/www/html/orbit.novastudios.uk
