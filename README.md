@@ -1,5 +1,5 @@
 # Orbit Web Client
-[![Node.js CI](https://github.com/Nova-Studios-Ltd/Orbit-Web/actions/workflows/BuildAndDeploy.yml/badge.svg?event=status)](https://github.com/Nova-Studios-Ltd/Orbit-Web/actions/workflows/BuildAndDeploy.yml)
+[![Node.js CI](https://github.com/Nova-Studios-Ltd/Orbit-Web/actions/workflows/BuildAndDeploy.yml/badge.svg?branch=master)](https://github.com/Nova-Studios-Ltd/Orbit-Web/actions/workflows/BuildAndDeploy.yml)
 
 ## Description
 Orbit, a self-hosted communication platform designed with anonymity and privacy in mind. This repository contains the official client.
