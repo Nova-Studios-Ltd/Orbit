@@ -23,7 +23,8 @@ jobs:
       - run: echo $CI
       - run: npm install
       - run: npm run build
-  deploy:  
+  deploy:
+    needs: [build]
     runs-on: self-hosted
     steps:
       - run: scp -r ./build/ ${{ secrets.SSH_DEPLOY_HOST }}:/var/www/html/orbit.novastudios.uk
