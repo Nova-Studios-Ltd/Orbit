@@ -18,6 +18,6 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-      - run: cd Orbit-Web/Orbit-Web
+      - run: cd $RUNNER_DIR/Orbit-Web/Orbit-Web
       - run: npm run install
       - run: npm run build
