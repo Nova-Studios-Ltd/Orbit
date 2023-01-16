@@ -7,6 +7,8 @@ on:
 jobs:
   build:
     runs-on: self-hosted
+    env:
+      CI: ''
     
     strategy:
       matrix:
@@ -18,5 +20,11 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
+      - run: echo $CI
       - run: npm install
       - run: npm run build
+  deploy:
+    needs: [build]
+    runs-on: self-hosted
+    steps:
+      - run: scp -r ./build/ ${{ secrets.SSH_DEPLOY_HOST }}:/var/www/html/orbit.novastudios.uk
