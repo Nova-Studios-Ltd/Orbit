@@ -2,7 +2,7 @@
 
 ## Description
 Orbit, a self-hosted communication platform designed with anonymity and privacy in mind. This repository contains the official client.
-
+Use the offical client: [Orbit Web Client](https://orbit.novastudios.uk)
 
 ## Requirments
 - [NodeJS](https://nodejs.org/en/download/)
