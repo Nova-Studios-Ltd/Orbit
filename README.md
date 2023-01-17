@@ -40,7 +40,7 @@ Q: Will there be a Docker image?
 A: I plan to package the API, SQL Database, and Client into a easy to setup docker image
 
 ## Roadmap
-TODO: Add trello board
+[Trello board](https://trello.com/b/txTutVEp/web-nova-chat-3-orbit)
 
 ## Contributing
 We are open to people contributing, we will have better defined guidelines later on!
