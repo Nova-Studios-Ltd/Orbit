@@ -1,11 +1,11 @@
 import { IconButton, Typography, useTheme } from "@mui/material";
 import useClassNames from "Hooks/useClassNames";
 import { useTranslation } from "react-i18next";
-import MessageAttachment from "Types/API/MessageAttachment";
+import MessageAttachment from "OldTypes/API/MessageAttachment";
 
 import { Delete as DeleteIcon, Send as SendIcon, UploadFile as UploadIcon } from "@mui/icons-material";
 
-import type { NCAPIComponent } from "Types/UI/Components";
+import type { NCAPIComponent } from "OldTypes/UI/Components";
 import { ChangeEvent, useEffect, useState } from "react";
 import TextCombo, { TextComboChangeEvent, TextComboSubmitEvent } from "../TextCombo/TextCombo";
 import FileUploadSummaryItem from "../FileUploadSummaryItem/FileUploadSummaryItem";

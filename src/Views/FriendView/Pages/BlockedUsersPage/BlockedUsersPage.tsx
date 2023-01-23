@@ -5,9 +5,9 @@ import { useTranslation } from "react-i18next";
 import PageContainer from "Components/Containers/PageContainer/PageContainer";
 import FriendList from "Components/Friends/FriendList/FriendList";
 
-import type Friend from "Types/UI/Friend";
-import type { Page } from "Types/UI/Components";
-import { FriendButtonVariant } from "Types/Enums";
+import type Friend from "OldTypes/UI/Friend";
+import type { Page } from "OldTypes/UI/Components";
+import { FriendButtonVariant } from "OldTypes/Enums";
 
 interface BlockedUsersPageProps extends Page {
   friends?: Friend[],

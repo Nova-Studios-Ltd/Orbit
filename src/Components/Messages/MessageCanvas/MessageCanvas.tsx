@@ -6,8 +6,8 @@ import useClassNames from "Hooks/useClassNames";
 import Message, { MessageProps } from "Components/Messages/Message/Message";
 import PageContainer from "Components/Containers/PageContainer/PageContainer";
 
-import type { NCAPIComponent } from "Types/UI/Components";
-import type { IMessageProps } from "Types/API/Interfaces/IMessageProps";
+import type { NCAPIComponent } from "OldTypes/UI/Components";
+import type { IMessageProps } from "OldTypes/API/Interfaces/IMessageProps";
 
 export interface MessageCanvasProps extends NCAPIComponent {
   innerClassName?: string,

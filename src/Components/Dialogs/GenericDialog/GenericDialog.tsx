@@ -3,7 +3,7 @@ import { useTheme, Typography } from "@mui/material";
 import useClassNames from "Hooks/useClassNames";
 import { CSSTransition } from "react-transition-group";
 
-import type { NCComponent } from "Types/UI/Components";
+import type { NCComponent } from "OldTypes/UI/Components";
 import type { ReactNode } from "react";
 
 export interface GenericDialogProps extends NCComponent {

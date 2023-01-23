@@ -1,11 +1,11 @@
-import IUserData from "Types/API/Interfaces/IUserData";
+import IUserData from "OldTypes/API/Interfaces/IUserData";
 import UserData from "Lib/Storage/Objects/UserData";
 import { ContentType, DELETE, GET, HTTPStatusCodes, NCAPIResponse, PATCH, POSTFile, PUT } from "Lib/API/NCAPI";
 import { SHA256 } from "Lib/Encryption/Util";
 import { AESEncrypt } from "Lib/Encryption/AES";
 import Base64Uint8Array from "Lib/Objects/Base64Uint8Array";
-import { PasswordPayloadKey, UpdatePasswordPayload } from "Types/API/UpdatePasswordPayload";
-import { ResetPasswordPayload, ResetPasswordPayloadKey } from "Types/API/ResetPasswordPayload";
+import { PasswordPayloadKey, UpdatePasswordPayload } from "OldTypes/API/UpdatePasswordPayload";
+import { ResetPasswordPayload, ResetPasswordPayloadKey } from "OldTypes/API/ResetPasswordPayload";
 import { RSAMemoryKeypair } from "Lib/Encryption/Types/RSAMemoryKeypair";
 
 /**

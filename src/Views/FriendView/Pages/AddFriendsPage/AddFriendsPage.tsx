@@ -6,8 +6,8 @@ import { useTranslation } from "react-i18next";
 import PageContainer from "Components/Containers/PageContainer/PageContainer";
 import TextCombo, { TextComboChangeEvent } from "Components/Input/TextCombo/TextCombo";
 
-import type { Page } from "Types/UI/Components";
-import { TextComboStates } from "Types/Enums";
+import type { Page } from "OldTypes/UI/Components";
+import { TextComboStates } from "OldTypes/Enums";
 
 interface AddFriendsPageProps extends Page {
   onAddFriend?: (recipient: string) => Promise<0 | 1 | 2>

@@ -8,7 +8,7 @@ import { useTranslation } from "react-i18next";
 import { DownloadUint8ArrayFile } from "Lib/ElectronAPI";
 
 // Types
-import type { NCComponent } from "Types/UI/Components";
+import type { NCComponent } from "OldTypes/UI/Components";
 
 export interface MessageFileProps extends NCComponent {
   fileName?: string,

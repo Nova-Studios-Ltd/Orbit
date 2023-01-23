@@ -1,4 +1,4 @@
-import type IUserData from "Types/API/Interfaces/IUserData";
+import type IUserData from "OldTypes/API/Interfaces/IUserData";
 
 export default interface Friend {
   friendData?: IUserData,

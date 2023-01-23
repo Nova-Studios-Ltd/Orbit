@@ -2,9 +2,9 @@ import { Menu, useTheme } from "@mui/material";
 import useClassNames from "Hooks/useClassNames";
 import { CSSTransition } from "react-transition-group";
 
-import type { NCComponent } from "Types/UI/Components";
+import type { NCComponent } from "OldTypes/UI/Components";
 import ContextMenuItem, { ContextMenuItemProps } from "../ContextMenuItem/ContextMenuItem";
-import { Coordinates } from "Types/General";
+import { Coordinates } from "OldTypes/General";
 import React, { createRef, ReactNode, useEffect, useRef, useState } from "react";
 
 export interface ContextMenuProps extends NCComponent {

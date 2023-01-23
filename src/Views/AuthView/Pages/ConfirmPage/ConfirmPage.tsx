@@ -6,8 +6,8 @@ import { useTranslation } from "react-i18next";
 import { useLocation, useNavigate } from "react-router-dom";
 
 // Types
-import type { Page } from "Types/UI/Components";
-import { Routes } from "Types/UI/Routes";
+import type { Page } from "OldTypes/UI/Components";
+import { Routes } from "OldTypes/UI/Routes";
 
 
 interface ConfirmPageProps extends Page {

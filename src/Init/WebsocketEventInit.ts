@@ -13,7 +13,7 @@ import KeyStore from "Lib/Storage/Objects/KeyStore";
 import UserData from "Lib/Storage/Objects/UserData";
 
 // Types
-import IWebSocketEvent from "Types/API/Interfaces/IWebsocketEvent";
+import IWebSocketEvent from "OldTypes/API/Interfaces/IWebsocketEvent";
 
 export const events = new Events();
 export default function WebsocketInit(Websocket: NCWebsocket) {

@@ -19,13 +19,13 @@ import AvatarTextButton from "Components/Buttons/AvatarTextButton/AvatarTextButt
 import GenericHeader from "Components/Headers/GenericHeader/GenericHeader";
 
 // Types
-import type { View } from "Types/UI/Components";
-import { Routes } from "Types/UI/Routes";
-import type { IRawChannelProps } from "Types/API/Interfaces/IRawChannelProps";
-import type { IChannelUpdateProps } from "Types/API/Interfaces/IChannelUpdateProps";
-import type IUserData from "Types/API/Interfaces/IUserData";
-import { IMessageProps } from "Types/API/Interfaces/IMessageProps";
-import Friend from "Types/UI/Friend";
+import type { View } from "OldTypes/UI/Components";
+import { Routes } from "OldTypes/UI/Routes";
+import type { IRawChannelProps } from "OldTypes/API/Interfaces/IRawChannelProps";
+import type { IChannelUpdateProps } from "OldTypes/API/Interfaces/IChannelUpdateProps";
+import type IUserData from "OldTypes/API/Interfaces/IUserData";
+import { IMessageProps } from "OldTypes/API/Interfaces/IMessageProps";
+import Friend from "OldTypes/UI/Friend";
 import DebugButton from "Components/Buttons/DebugButtom/DebugButton";
 import KeyStore from "Lib/Storage/Objects/KeyStore";
 

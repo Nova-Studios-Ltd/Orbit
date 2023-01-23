@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 
 import ViewContainer from "Components/Containers/ViewContainer/ViewContainer";
 
-import type { View } from "Types/UI/Components";
+import type { View } from "OldTypes/UI/Components";
 
 interface SettingsViewProps extends View {
   avatarNonce?: string,

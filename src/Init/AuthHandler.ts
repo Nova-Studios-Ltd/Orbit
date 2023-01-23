@@ -16,8 +16,8 @@ import KeyStore from "Lib/Storage/Objects/KeyStore";
 import UserData from "Lib/Storage/Objects/UserData";
 
 // Types
-import IUserLoginData from "Types/API/Interfaces/IUserLoginData";
-import { LoginStatus } from "Types/Enums";
+import IUserLoginData from "OldTypes/API/Interfaces/IUserLoginData";
+import { LoginStatus } from "OldTypes/Enums";
 
 import { WEBSOCKET_DOMAIN } from "vars";
 

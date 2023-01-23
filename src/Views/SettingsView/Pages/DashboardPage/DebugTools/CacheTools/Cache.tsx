@@ -1,7 +1,7 @@
 import { Button, useTheme } from "@mui/material";
 import useClassNames from "Hooks/useClassNames";
 
-import type { NCComponent } from "Types/UI/Components";
+import type { NCComponent } from "OldTypes/UI/Components";
 import StatusIndicator, { IndicatorState } from "Components/StatusIndicator/StatusIndicator";
 import { indigo } from "@mui/material/colors";
 

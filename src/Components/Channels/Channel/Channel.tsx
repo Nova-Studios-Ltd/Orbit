@@ -20,13 +20,13 @@ import GenericDialog from "Components/Dialogs/GenericDialog/GenericDialog";
 import TextCombo from "Components/Input/TextCombo/TextCombo";
 
 // Types
-import type { NCComponent } from "Types/UI/Components";
-import type { IRawChannelProps } from "Types/API/Interfaces/IRawChannelProps";
-import type { ChannelMoveData, Coordinates } from "Types/General";
-import type IUserData from "Types/API/Interfaces/IUserData";
-import type { IChannelUpdateProps } from "Types/API/Interfaces/IChannelUpdateProps";
-import { ChannelTypes, FriendButtonVariant } from "Types/Enums";
-import type Friend from "Types/UI/Friend";
+import type { NCComponent } from "OldTypes/UI/Components";
+import type { IRawChannelProps } from "OldTypes/API/Interfaces/IRawChannelProps";
+import type { ChannelMoveData, Coordinates } from "OldTypes/General";
+import type IUserData from "OldTypes/API/Interfaces/IUserData";
+import type { IChannelUpdateProps } from "OldTypes/API/Interfaces/IChannelUpdateProps";
+import { ChannelTypes, FriendButtonVariant } from "OldTypes/Enums";
+import type Friend from "OldTypes/UI/Friend";
 
 
 export interface ChannelProps extends NCComponent {

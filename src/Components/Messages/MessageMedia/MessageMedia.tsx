@@ -4,7 +4,7 @@ import React, { memo, useEffect, useRef, useState } from "react";
 
 // Source
 import useClassNames from "Hooks/useClassNames";
-import Dimensions from "Types/Dimensions";
+import Dimensions from "OldTypes/Dimensions";
 import MimeTypeParser, { FileType } from "Lib/Utility/MimeTypeParser";
 import { Flags, HasUrlFlag } from "Lib/Debug/Flags";
 import { GETFile } from "Lib/API/NCAPI";
@@ -22,8 +22,8 @@ import MessageAudio from "Components/Messages/MessageMedia/Subcomponents/Message
 import MessageFile from "Components/Messages/MessageMedia/Subcomponents/MessageFile/MessageFile";
 
 // Types
-import type { NCComponent } from "Types/UI/Components";
-import type { IAttachmentProps } from "Types/API/Interfaces/IAttachmentProps";
+import type { NCComponent } from "OldTypes/UI/Components";
+import type { IAttachmentProps } from "OldTypes/API/Interfaces/IAttachmentProps";
 
 
 export interface MessageMediaProps extends NCComponent {

@@ -1,6 +1,6 @@
 import { GET, HTTPStatusCodes, POST, ContentType, NCAPIResponse, PATCH, POSTFile, DELETE } from "Lib/API/NCAPI";
 import UserData from "Lib/Storage/Objects/UserData";
-import { IRawChannelProps } from "Types/API/Interfaces/IRawChannelProps";
+import { IRawChannelProps } from "OldTypes/API/Interfaces/IRawChannelProps";
 
 /**
  * Request a channel

@@ -5,9 +5,9 @@ import { Outlet, useLocation, useNavigate } from "react-router-dom";
 
 import ViewContainer from "Components/Containers/ViewContainer/ViewContainer";
 
-import type { View } from "Types/UI/Components";
+import type { View } from "OldTypes/UI/Components";
 import type { SyntheticEvent } from "react";
-import { Routes } from "Types/UI/Routes";
+import { Routes } from "OldTypes/UI/Routes";
 
 interface FriendViewProps extends View {
 

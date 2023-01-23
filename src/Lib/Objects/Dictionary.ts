@@ -1,3 +1,4 @@
+//export type Indexable<K, V> = {[K in symbol]: V};
 export type Indexable<V> = {[key in string]: V};
 
 export interface IDictionary<V> {

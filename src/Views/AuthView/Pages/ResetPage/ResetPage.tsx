@@ -10,7 +10,7 @@ import { GetRSAKeyPair } from "Lib/Encryption/RSA";
 import { RSAMemoryKeypair } from "Lib/Encryption/Types/RSAMemoryKeypair";
 
 // Types
-import type { Page } from "Types/UI/Components";
+import type { Page } from "OldTypes/UI/Components";
 
 
 interface ResetPageProps extends Page {

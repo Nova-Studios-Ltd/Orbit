@@ -16,10 +16,10 @@ import GenericDialog from "Components/Dialogs/GenericDialog/GenericDialog";
 import Separator from "Components/Menus/Separator/Separator";
 
 // Types
-import type { NCComponent } from "Types/UI/Components";
-import type Friend from "Types/UI/Friend";
-import type { Coordinates } from "Types/General";
-import { FriendButtonVariant, SelectionType } from "Types/Enums";
+import type { NCComponent } from "OldTypes/UI/Components";
+import type Friend from "OldTypes/UI/Friend";
+import type { Coordinates } from "OldTypes/General";
+import { FriendButtonVariant, SelectionType } from "OldTypes/Enums";
 
 export interface FriendButtonProps extends NCComponent {
   friend?: Friend,

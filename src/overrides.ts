@@ -1,5 +1,5 @@
-import { DebugMessageType } from "Types/Enums";
-import type { DebugMessage } from "Types/General";
+import { DebugMessageType } from "OldTypes/Enums";
+import type { DebugMessage } from "OldTypes/General";
 
 export const consoleLogOrig = console.log;
 export const consoleWarnOrig = console.warn;

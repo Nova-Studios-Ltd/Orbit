@@ -8,8 +8,8 @@ import { useLocation } from "react-router-dom";
 import { POST, ContentType, HTTPStatusCodes } from "Lib/API/NCAPI";
 
 // Types
-import type { Page } from "Types/UI/Components";
-import { Routes } from "Types/UI/Routes";
+import type { Page } from "OldTypes/UI/Components";
+import { Routes } from "OldTypes/UI/Routes";
 
 
 interface RequestResetPageProps extends Page {

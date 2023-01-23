@@ -4,7 +4,7 @@ import { Button, useTheme } from "@mui/material";
 import { useTranslation } from "react-i18next";
 
 // Types
-import type { NCComponent } from "Types/UI/Components";
+import type { NCComponent } from "OldTypes/UI/Components";
 
 // Components
 import StatusIndicator, { IndicatorState } from "Components/StatusIndicator/StatusIndicator";

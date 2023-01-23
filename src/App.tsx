@@ -33,7 +33,7 @@ import MainView from "Views/MainView/MainView";
 import SettingsView from "Views/SettingsView/SettingsView";
 
 import AddFriendsPage from "Views/FriendView/Pages/AddFriendsPage/AddFriendsPage";
-import BlockedUsersPage from "Views/FriendView/Pages/BlockedUsersPage/BlockedUsersPage";
+import BlockedUsersPage OldTypes/UI/RoutesendView/Pages/BlockedUsersPage/BlockedUsersPage";
 import ChatPage from "Views/MainView/Pages/ChatPage/ChatPage";
 import DashboardPage from "Views/SettingsView/Pages/DashboardPage/DashboardPage";
 import FriendPage from "Views/FriendView/Pages/FriendPage/FriendPage";

@@ -1,7 +1,7 @@
 import { Typography, useTheme } from "@mui/material";
 import useClassNames from "Hooks/useClassNames";
 
-import type { NCComponent } from "Types/UI/Components";
+import type { NCComponent } from "OldTypes/UI/Components";
 import type { ReactNode } from "react";
 
 export interface GenericHeaderProps extends NCComponent {

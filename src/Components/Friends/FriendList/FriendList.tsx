@@ -5,9 +5,9 @@ import { useTranslation } from "react-i18next";
 
 import FriendButton from "Components/Friends/FriendButton/FriendButton";
 
-import type { NCComponent } from "Types/UI/Components";
-import type Friend from "Types/UI/Friend";
-import { FriendButtonVariant } from "Types/Enums";
+import type { NCComponent } from "OldTypes/UI/Components";
+import type Friend from "OldTypes/UI/Friend";
+import { FriendButtonVariant } from "OldTypes/Enums";
 
 export interface FriendListProps extends NCComponent {
   friends?: Friend[],

@@ -1,4 +1,4 @@
-import { IMessageProps } from "Types/API/Interfaces/IMessageProps";
+import { IMessageProps } from "OldTypes/API/Interfaces/IMessageProps";
 import { Dictionary } from "Lib/Objects/Dictionary";
 import IndexedDB from "Lib/Storage/IndexedDB";
 import IndexedDBStore from "Lib/Storage/IndexedDBStore";

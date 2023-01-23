@@ -1,4 +1,4 @@
-import IWebSocketEvent from "Types/API/Interfaces/IWebsocketEvent";
+import IWebSocketEvent from "OldTypes/API/Interfaces/IWebsocketEvent";
 import { Dictionary } from "Lib/Objects/Dictionary";
 
 /**

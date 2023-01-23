@@ -1,7 +1,7 @@
 import { Button, useTheme } from "@mui/material";
 import useClassNames from "Hooks/useClassNames";
 
-import type { NCComponent } from "Types/UI/Components";
+import type { NCComponent } from "OldTypes/UI/Components";
 import { useState } from "react";
 import Cache, { CacheStatus } from "./Cache";
 import { GetCaches, CacheIsUptoDate, CacheValid, DeleteCache, InvalidateCache, RefreshCache } from "./CacheLib";

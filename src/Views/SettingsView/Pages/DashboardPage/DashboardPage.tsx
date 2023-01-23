@@ -23,9 +23,9 @@ import GenericDialog from "Components/Dialogs/GenericDialog/GenericDialog";
 import NetworkDiag from "Views/SettingsView/Pages/DashboardPage/DebugTools/NetworkDiagnostics";
 
 // Types
-import type { Page } from "Types/UI/Components";
-import { Routes } from "Types/UI/Routes";
-import { TextComboStates } from "Types/Enums";
+import type { Page } from "OldTypes/UI/Components";
+import { Routes } from "OldTypes/UI/Routes";
+import { TextComboStates } from "OldTypes/Enums";
 
 
 interface DashboardPageProps extends Page {

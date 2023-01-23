@@ -6,11 +6,11 @@ import { useTranslation } from "react-i18next";
 import MessageCanvas from "Components/Messages/MessageCanvas/MessageCanvas";
 import MessageInput, { MessageInputSendEvent } from "Components/Input/MessageInput/MessageInput";
 
-import type { NCComponent } from "Types/UI/Components";
-import type { IMessageProps } from "Types/API/Interfaces/IMessageProps";
+import type { NCComponent } from "OldTypes/UI/Components";
+import type { IMessageProps } from "OldTypes/API/Interfaces/IMessageProps";
 import type { MessageProps } from "Components/Messages/Message/Message";
-import type MessageAttachment from "Types/API/MessageAttachment";
-import type { IRawChannelProps } from "Types/API/Interfaces/IRawChannelProps";
+import type MessageAttachment from "OldTypes/API/MessageAttachment";
+import type { IRawChannelProps } from "OldTypes/API/Interfaces/IRawChannelProps";
 
 export interface ChatPageProps extends NCComponent {
   attachments?: MessageAttachment[],

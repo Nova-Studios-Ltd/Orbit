@@ -1,5 +1,5 @@
 import { HTTPStatusCodes } from "Lib/API/NCAPI";
-import Dimensions from "Types/Dimensions";
+import Dimensions from "OldTypes/Dimensions";
 import { API_DOMAIN } from "vars";
 import MimeTypeParser, { FileType } from "./MimeTypeParser";
 

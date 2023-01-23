@@ -12,10 +12,10 @@ import Base64Uint8Array from "Lib/Objects/Base64Uint8Array";
 import { ContentType, NCAPIResponse, POST } from "Lib/API/NCAPI";
 
 // Types
-import { RegisterPayload, RegPayloadKey } from "Types/API/RegisterPayload";
-import type { Page } from "Types/UI/Components";
-import { RegisterStatus } from "Types/Enums";
-import { Routes } from "Types/UI/Routes";
+import { RegisterPayload, RegPayloadKey } from "OldTypes/API/RegisterPayload";
+import type { Page } from "OldTypes/UI/Components";
+import { RegisterStatus } from "OldTypes/Enums";
+import { Routes } from "OldTypes/UI/Routes";
 
 
 interface RegisterPageProps extends Page {

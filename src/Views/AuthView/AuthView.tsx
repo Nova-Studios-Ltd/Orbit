@@ -10,8 +10,8 @@ import GenerateRandomColor from "Lib/Utility/ColorGeneration";
 import ViewContainer from "Components/Containers/ViewContainer/ViewContainer";
 
 // Types
-import type { View } from "Types/UI/Components";
-import { Routes } from "Types/UI/Routes";
+import type { View } from "OldTypes/UI/Components";
+import { Routes } from "OldTypes/UI/Routes";
 
 interface AuthViewProps extends View {
 

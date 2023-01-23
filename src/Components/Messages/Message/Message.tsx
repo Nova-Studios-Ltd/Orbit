@@ -10,12 +10,12 @@ import MessageMedia from "Components/Messages/MessageMedia/MessageMedia";
 import TextCombo, { TextComboChangeEvent, TextComboSubmitEvent } from "Components/Input/TextCombo/TextCombo";
 
 // Types
-import type { NCComponent } from "Types/UI/Components";
-import { AttachmentProps, IAttachmentProps } from "Types/API/Interfaces/IAttachmentProps";
+import type { NCComponent } from "OldTypes/UI/Components";
+import { AttachmentProps, IAttachmentProps } from "OldTypes/API/Interfaces/IAttachmentProps";
 import { FileType } from "Lib/Utility/MimeTypeParser";
-import IUserData from "Types/API/Interfaces/IUserData";
+import IUserData from "OldTypes/API/Interfaces/IUserData";
 import ContextMenu from "Components/Menus/ContextMenu/ContextMenu";
-import { Coordinates } from "Types/General";
+import { Coordinates } from "OldTypes/General";
 import Linkify from "linkify-react";
 import ContextMenuItem from "Components/Menus/ContextMenuItem/ContextMenuItem";
 

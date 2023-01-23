@@ -6,9 +6,9 @@ import useClassNames from "Hooks/useClassNames";
 import PageContainer from "Components/Containers/PageContainer/PageContainer";
 import FriendList from "Components/Friends/FriendList/FriendList";
 
-import type { Page } from "Types/UI/Components";
-import type Friend from "Types/UI/Friend";
-import { Routes } from "Types/UI/Routes";
+import type { Page } from "OldTypes/UI/Components";
+import type Friend from "OldTypes/UI/Friend";
+import { Routes } from "OldTypes/UI/Routes";
 
 interface FriendPageProps extends Page {
   friends?: Friend[],

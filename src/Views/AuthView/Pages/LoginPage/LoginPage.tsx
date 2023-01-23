@@ -9,9 +9,9 @@ import { LoginNewUser } from "Init/AuthHandler";
 import { LocalStorage } from "Lib/Storage/LocalStorage";
 
 // Types
-import type { Page } from "Types/UI/Components";
-import { LoginStatus } from "Types/Enums";
-import { Routes } from "Types/UI/Routes";
+import type { Page } from "OldTypes/UI/Components";
+import { LoginStatus } from "OldTypes/Enums";
+import { Routes } from "OldTypes/UI/Routes";
 
 interface LoginPageProps extends Page {
 

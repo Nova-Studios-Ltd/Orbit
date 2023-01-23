@@ -4,7 +4,7 @@ import { Dictionary } from "Lib/Objects/Dictionary";
 import { WaitTill } from "Lib/Utility/Utility";
 
 // Types
-import IUserData from "Types/API/Interfaces/IUserData";
+import IUserData from "OldTypes/API/Interfaces/IUserData";
 
 /**
  * A self managed object for storing userdata in memory to prevent re-requesting it

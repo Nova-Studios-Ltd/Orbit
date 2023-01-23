@@ -1,4 +1,4 @@
-import type { IRawChannelProps } from "Types/API/Interfaces/IRawChannelProps"
+import type { IRawChannelProps } from "OldTypes/API/Interfaces/IRawChannelProps"
 import type { DebugMessageType } from "./Enums"
 
 export interface IOpenFileDialogResults {

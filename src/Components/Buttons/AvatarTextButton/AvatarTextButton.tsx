@@ -4,9 +4,9 @@ import React, { useState, ReactNode, useRef } from "react";
 
 import GenericButton from "Components/Buttons/GenericButton/GenericButton";
 
-import type { NCComponent } from "Types/UI/Components";
+import type { NCComponent } from "OldTypes/UI/Components";
 import useClassNames from "Hooks/useClassNames";
-import { SelectionType } from "Types/Enums";
+import { SelectionType } from "OldTypes/Enums";
 
 export interface AvatarTextButtonProps extends NCComponent {
   children?: ReactNode,

@@ -1,6 +1,6 @@
 import { RequestMessages, RequestMessageTimestamps } from "Lib/API/Endpoints/Messages";
 import { ChannelCache } from "Lib/Storage/Objects/ChannelCache";
-import { IMessageProps } from "Types/API/Interfaces/IMessageProps";
+import { IMessageProps } from "OldTypes/API/Interfaces/IMessageProps";
 
 export async function GetCaches() : Promise<string[]> {
   const databases = (await indexedDB.databases());

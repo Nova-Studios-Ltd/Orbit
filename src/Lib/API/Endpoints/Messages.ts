@@ -6,13 +6,13 @@ import { AESMemoryEncryptData } from "Lib/Encryption/Types/AESMemoryEncryptData"
 import Base64Uint8Array from "Lib/Objects/Base64Uint8Array";
 import { ChannelCache } from "Lib/Storage/Objects/ChannelCache";
 import UserData from "Lib/Storage/Objects/UserData";
-import { IMessageProps } from "Types/API/Interfaces/IMessageProps";
+import { IMessageProps } from "OldTypes/API/Interfaces/IMessageProps";
 import { ContentType, DELETE, GET, HTTPStatusCodes, NCAPIResponse, POST, POSTFile, PUT } from "Lib/API/NCAPI";
 import { Dictionary, Indexable } from "Lib/Objects/Dictionary";
-import MessageAttachment from "Types/API/MessageAttachment";
-import FailedUpload, { FailReason } from "Types/API/FailedUpload";
-import { IRawChannelProps } from "Types/API/Interfaces/IRawChannelProps";
-import Dimensions from "Types/Dimensions";
+import MessageAttachment from "OldTypes/API/MessageAttachment";
+import FailedUpload, { FailReason } from "OldTypes/API/FailedUpload";
+import { IRawChannelProps } from "OldTypes/API/Interfaces/IRawChannelProps";
+import Dimensions from "OldTypes/Dimensions";
 import { GetImageSize } from "Lib/Utility/ContentUtility";
 import { RemoveEXIF } from "Lib/EXIF";
 import KeyStore from "Lib/Storage/Objects/KeyStore";

@@ -3,7 +3,7 @@ import { AttachFile as GenericFile, AudioFile as AudioFileIcon, InsertDriveFile 
 import useClassNames from "Hooks/useClassNames";
 
 import { FileType } from "Lib/Utility/MimeTypeParser";
-import { NCComponent } from "Types/UI/Components";
+import { NCComponent } from "OldTypes/UI/Components";
 
 export interface MessageMediaSkeletonProps extends NCComponent {
   skeletonVariant?: "text" | "rounded" | "rectangular" | "circular",
