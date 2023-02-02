@@ -1,9 +1,8 @@
 # Orbit Web Client
-[![Node.js CI](https://github.com/Nova-Studios-Ltd/Orbit-Web/actions/workflows/BuildAndDeploy.yml/badge.svg?event=status)](https://github.com/Nova-Studios-Ltd/Orbit-Web/actions/workflows/BuildAndDeploy.yml)
 
 ## Description
 Orbit, a self-hosted communication platform designed with anonymity and privacy in mind. This repository contains the official client.
-
+Use the offical client: [Orbit Web Client](https://orbit.novastudios.uk)
 
 ## Requirments
 - [NodeJS](https://nodejs.org/en/download/)
@@ -41,7 +40,7 @@ Q: Will there be a Docker image?
 A: I plan to package the API, SQL Database, and Client into a easy to setup docker image
 
 ## Roadmap
-TODO: Add trello board
+[Trello board](https://trello.com/b/txTutVEp/web-nova-chat-3-orbit)
 
 ## Contributing
 We are open to people contributing, we will have better defined guidelines later on!

@@ -1,8 +1,10 @@
-name: Node.js CI
+name: Build Web
 
 on:
   push:
     branches: [ master ]
+    paths:
+      - src/**
 
 jobs:
   build:
