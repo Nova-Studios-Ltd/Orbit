@@ -38,8 +38,8 @@ export default class KeyStore {
     await (await this.KeyStore())?.Clear();
   }
 
-  static async LoadKeys(keys: Dictionary<string>) {
-    keys.forEach((pair: KeyValuePair<string>) => {
+  static async LoadKeys(keys: Dictionary<string, string>) {
+    keys.forEach((pair: KeyValuePair<string, string>) => {
       this.SetKey(pair.Key, pair.Value);
     });
   }

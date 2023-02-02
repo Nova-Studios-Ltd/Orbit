@@ -133,9 +133,9 @@ export async function RequestMessages(channel_uuid: string, callback: (messages:
  * @param before Request messages before this id (Default 2147483647)
  * @returns A dictionary of message ids to timestamps
  */
-export async function RequestMessageTimestamps(channel_uuid: string, limit = 30, after = -1, before = 2147483647) : Promise<Dictionary<string>> {
+export async function RequestMessageTimestamps(channel_uuid: string, limit = 30, after = -1, before = 2147483647) : Promise<Dictionary<string, string>> {
   const resp = await GET(`/Channel/${channel_uuid}/Messages/EditTimestamps?limit=${limit}&after=${after}&before=${before}`, UserData.Token);
-  return new Dictionary(resp.payload as Indexable<string>);
+  return new Dictionary(resp.payload as Indexable<string, string>);
 }
 
 /**
@@ -167,7 +167,7 @@ export async function SendMessage(channel_uuid: string, contents: string, rawAtt
         if (postToken.status !== HTTPStatusCodes.OK) return;
         for (let a = 0; a < rawAttachments.length; a++) {
 
-          // Generate Attachment key and encrypt with everyones pub key
+          // Generate Attachment key and encrypt with everyone's pub key
           const attachmentKey = await GetAESKey(32);
 
           const attachment = rawAttachments[a];

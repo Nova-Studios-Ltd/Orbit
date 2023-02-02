@@ -11,7 +11,7 @@ import { RSAMemoryKeypair } from "Lib/Encryption/Types/RSAMemoryKeypair";
 /**
  * Requests a users information
  * @param user_uuid The uuid of the user to request
- * @returns IUserData if succesful otherwise undefined
+ * @returns IUserData if successful otherwise undefined
  */
 export async function RequestUser(user_uuid: string) : Promise<IUserData | undefined> {
   const resp = await GET(`User/${user_uuid}`, UserData.Token);
@@ -23,7 +23,7 @@ export async function RequestUser(user_uuid: string) : Promise<IUserData | undef
  * Requests a users uuid
  * @param username Username
  * @param discriminator Discriminator
- * @returns A UUID if succesful otherwise undefined
+ * @returns A UUID if successful otherwise undefined
  */
 export async function RequestUserUUID(username: string, discriminator: string) : Promise<string | undefined> {
   const resp = await GET(`/User/${username}/${discriminator}/UUID`, "", false);

@@ -20,21 +20,21 @@ export async function RequestFriendState(friend_uuid: string) : Promise<string> 
  * @param user_uuid Uuid of the user to request friends of
  * @returns A dictionary of friends
  */
-export async function RequestFriends(user_uuid: string) : Promise<Dictionary<string>> {
+export async function RequestFriends(user_uuid: string) : Promise<Dictionary<string, string>> {
   const resp = await GET(`/Friend/${user_uuid}/Friends`, UserData.Token);
   if (resp.status === HTTPStatusCodes.OK) {
-    const d = new Dictionary<string>();
-    d._dict = resp.payload as Indexable<string>;
+    const d = new Dictionary<string, string>();
+    d._dict = resp.payload as Indexable<string, string>;
     return d;
   }
-  return new Dictionary<string>();
+  return new Dictionary<string, string>();
 }
 
 /**
  * Request the current users friends
  * @returns A dictionary of friends
  */
-export async function RequestUserFriends() : Promise<Dictionary<string>> {
+export async function RequestUserFriends() : Promise<Dictionary<string, string>> {
   return await RequestFriends(UserData.Uuid);
 }
 

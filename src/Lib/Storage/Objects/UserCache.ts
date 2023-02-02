@@ -7,19 +7,19 @@ import { WaitTill } from "Lib/Utility/Utility";
 import IUserData from "Types/API/Interfaces/IUserData";
 
 /**
- * A self managed object for storing userdata in memory to prevent re-requesting it
+ * A self managed object for storing user data in memory to prevent re-requesting it
  */
 export class UserCache {
-  CurrentCache: Dictionary<IUserData>;
+  CurrentCache: Dictionary<string, IUserData>;
   WaitingForNetCache: boolean;
 
   constructor() {
-    this.CurrentCache = new Dictionary<IUserData>();
+    this.CurrentCache = new Dictionary<string, IUserData>();
     this.WaitingForNetCache = false;
   }
 
   /**
-   * Stores a users IUserData by there uuid automaticly
+   * Stores a users IUserData by there uuid automatically
    * @param user IUserData containing user info
    */
   AddUser(user: IUserData) {
@@ -27,8 +27,8 @@ export class UserCache {
   }
 
   /**
-   * Retreives a users IUserData async, falls back to network request if user is not cached
-   * @param user_uuid Users UUID to retreive data for
+   * Retrieves a users IUserData async, falls back to network request if user is not cached
+   * @param user_uuid Users UUID to retrieve data for
    * @returns IUserData containing the user or undefined if the user is not found
    */
   async GetUserAsync(user_uuid: string): Promise<IUserData> {
@@ -48,8 +48,8 @@ export class UserCache {
   }
 
   /**
-  * Retreives a users IUserData, falls back to network request if user is not cached
-  * @param user_uuid Users UUID to retreive data for
+  * Retrieves a users IUserData, falls back to network request if user is not cached
+  * @param user_uuid Users UUID to retrieve data for
   * @returns IUserData containing the user or undefined if the user is not found
   */
   GetUser(user_uuid: string): IUserData | undefined {

@@ -96,11 +96,11 @@ export class ChannelCache {
     return new ChannelCacheResult([(await this.GetMessage(id)).Messages[0]], 1, parseInt(id), true);
   }
 
-  async GetMessageEditTimestamps() : Promise<Dictionary<string>> {
+  async GetMessageEditTimestamps() : Promise<Dictionary<string, string>> {
     const keys = (await this.CurrentCache.GetAllKeys()).reverse();
     keys.splice(keys.indexOf("LastAccess"), 1);
     keys.splice(keys.indexOf("Session"), 1);
-    const timestamps = new Dictionary<string>();
+    const timestamps = new Dictionary<string, string>();
     for (let k = 0; k < keys.length; k++) {
       const key = keys[k];
       timestamps.setValue(key, (await this.GetMessage(key)).Messages[0].editedTimestamp)

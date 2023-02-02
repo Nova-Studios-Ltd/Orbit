@@ -69,7 +69,8 @@ i18n.use(initReactI18next)
 .init({
   resources: Localizations,
   lng: "en", // TODO: Remove this and add a language selection system later
-  fallbackLng: "en"
+  fallbackLng: "en",
+  returnNull: false,
 });
 
 export const uCache = new UserCache();
@@ -500,7 +501,7 @@ function App() {
   }
 
   const populateFriendsList = async () => {
-    const rawFriends: Dictionary<string> = await RequestUserFriends();
+    const rawFriends: Dictionary<string, string> = await RequestUserFriends();
     const newFriendsArray: Friend[] = [];
 
     for (let i = 0; i < rawFriends.keys().length; i++) {

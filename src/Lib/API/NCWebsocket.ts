@@ -21,7 +21,7 @@ export default class NCWebsocket {
   private address: string;
   private token: string;
   private terminated: boolean = false;
-  private events: Dictionary<(event: IWebSocketEvent) => void>;
+  private events: Dictionary<string, (event: IWebSocketEvent) => void>;
   private timeoutID?: NodeJS.Timeout = undefined;
 
 
@@ -39,7 +39,7 @@ export default class NCWebsocket {
     this.token = token;
     this.state = NCWebsocketState.Connecting;
     this.websocket = new WebSocket(address);
-    this.events = new Dictionary<(event: IWebSocketEvent) => void>();
+    this.events = new Dictionary<string, (event: IWebSocketEvent) => void>();
     this.Init();
   }
 

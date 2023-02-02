@@ -1,17 +1,17 @@
+import { Flags, HasUrlFlag } from "Lib/Debug/Flags";
 import { API_DOMAIN } from "vars";
-import { Flags, HasUrlFlag } from "../Debug/Flags";
 
 /**
- * Represents commonly used HTTP Status Codes (HTTPStatusCodes.OK, 400, 401, 403, 404, 500)
+ * Represents commonly used HTTP Status Codes (200, 400, 401, 403, 404, 500)
  */
 export enum HTTPStatusCodes {
   OK = 200,
-  NotFound = 404,
-  ServerError = 500,
   BadRequest = 400,
   Unauthorized = 401,
   Forbidden = 403,
-  MethodNotAllowed = 405
+  NotFound = 404,
+  MethodNotAllowed = 405,
+  ServerError = 500,
 }
 
 /**
@@ -38,7 +38,7 @@ export enum ContentType {
   EMPTY = "",
   JSON = "application/json",
   PNG = "image/png",
-  FORMDATA = "multipart/form-data",
+  FORM_DATA = "multipart/form-data",
   TEXT = "text/plain"
 }
 
@@ -114,15 +114,15 @@ export async function PUT(endpoint: string, content_type: ContentType, payload: 
  * @returns A NCAPIResponse with the data from the NovaChat API
  */
 export async function PATCH(endpoint: string, content_type: ContentType, payload: string, token?: string) : Promise<NCAPIResponse> {
-    const resp = await fetch(`${API_DOMAIN}/${endpoint}`, {
-        method: "PATCH",
-        headers: {
-            "Authorization": token || "",
-            "Content-Type": content_type
-        },
-        body: payload
-    });
-    return new NCAPIResponse(resp.status, resp.statusText);
+  const resp = await fetch(`${API_DOMAIN}/${endpoint}`, {
+    method: "PATCH",
+    headers: {
+      "Authorization": token || "",
+      "Content-Type": content_type
+    },
+    body: payload
+  });
+  return new NCAPIResponse(resp.status, resp.statusText);
 }
 
 /**

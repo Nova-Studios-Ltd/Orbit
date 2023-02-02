@@ -15,10 +15,10 @@ class Event {
  * A channel can only be used once, but can have multiple function calls
  */
 export default class Events {
-  private Events: Dictionary<Event[]>;
+  private Events: Dictionary<string, Event[]>;
 
   constructor() {
-    this.Events = new Dictionary<Event[]>();
+    this.Events = new Dictionary<string, Event[]>();
   }
 
   /**
