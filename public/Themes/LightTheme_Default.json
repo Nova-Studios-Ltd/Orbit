@@ -1,0 +1,28 @@
+{
+	"name": "LightTheme_Default",
+	"creator": "",
+	"theme": {
+		"palette": {
+			"mode": "light",
+			"background": {
+				"default": "",
+        "paper": ""
+			}
+		},
+		"customPalette": {
+		    "customActions": {
+		      "active": "",
+		      "messageHover": "",
+		      "contextMenuItemActive": "",
+		      "avatarTextButtonActive": ""
+		    },
+		    "contextMenuBackground": "",
+		    "contextMenuItemBackground": "",
+		    "formBackground": "",
+		    "messageBackground": "",
+		    "TextComboBackground": "",
+		    "FileUploadSummaryItemBackground": "",
+		    "SystemAccentColor": ""
+	  	}
+	}
+}

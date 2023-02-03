@@ -32,7 +32,7 @@ function HandleResponsePayload<T>(json: string) : T {
  * @returns A NetResponse with the data
  */
 export async function GET<T>(endpoint: string, headers?: NetHeaders) : Promise<NetResponse<T>> {
-  const resp = await fetch(`${API_DOMAIN}/${endpoint}`, {
+  const resp = await fetch((endpoint.startsWith("http"))? endpoint : `${API_DOMAIN}/${endpoint}`, {
     method: "GET",
     headers: headers?.Finish() || {},
   });
@@ -48,7 +48,7 @@ export async function GET<T>(endpoint: string, headers?: NetHeaders) : Promise<N
  * @returns A NetResponse with the data
  */
 export async function POST<T>(endpoint: string, payload: string, headers?: NetHeaders) : Promise<NetResponse<T>> {
-  const resp = await fetch(`${API_DOMAIN}/${endpoint}`, {
+  const resp = await fetch((endpoint.startsWith("http"))? endpoint : `${API_DOMAIN}/${endpoint}`, {
     method: "POST",
     headers: headers?.Finish() || {},
     body: payload
@@ -65,7 +65,7 @@ export async function POST<T>(endpoint: string, payload: string, headers?: NetHe
  * @returns A NetResponse with the data
  */
 export async function PUT<T>(endpoint: string, payload: string, headers?: NetHeaders) : Promise<NetResponse<T>> {
-  const resp = await fetch(`${API_DOMAIN}/${endpoint}`, {
+  const resp = await fetch((endpoint.startsWith("http"))? endpoint : `${API_DOMAIN}/${endpoint}`, {
     method: "PUT",
     headers: headers?.Finish() || {},
     body: payload
@@ -82,7 +82,7 @@ export async function PUT<T>(endpoint: string, payload: string, headers?: NetHea
  * @returns A NetResponse with the data
  */
 export async function PATCH<T>(endpoint: string, payload: string, headers?: NetHeaders) : Promise<NetResponse<T>> {
-  const resp = await fetch(`${API_DOMAIN}/${endpoint}`, {
+  const resp = await fetch((endpoint.startsWith("http"))? endpoint : `${API_DOMAIN}/${endpoint}`, {
     method: "PATCH",
     headers: headers?.Finish() || {},
     body: payload
@@ -99,7 +99,7 @@ export async function PATCH<T>(endpoint: string, payload: string, headers?: NetH
  * @returns A NetResponse with the data
  */
 export async function DELETE<T>(endpoint: string, headers?: NetHeaders) : Promise<NetResponse<T>> {
-  const resp = await fetch(`${API_DOMAIN}/${endpoint}`, {
+  const resp = await fetch((endpoint.startsWith("http"))? endpoint : `${API_DOMAIN}/${endpoint}`, {
     method: "DELETE",
     headers: headers?.Finish() || {}
   });

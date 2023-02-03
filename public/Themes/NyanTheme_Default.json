@@ -1,0 +1,26 @@
+{
+	"name": "NyanTheme_Default",
+	"creator": "Gently#2861",
+	"theme": {
+		"palette": {
+      "mode": "light",
+      "background": {
+        "default": "#3F37C9",
+        "paper": "#480CA8"
+      }
+    },
+    "customPalette": {
+      "customActions": {
+        "active": "#4895EF",
+        "messageHover": "#8A8F94",
+        "contextMenuItemActive": "#7E8187",
+        "avatarTextButtonActive": "#4895EF"
+      },
+      "TextComboBackground": "#B5179E",
+      "SectionColor": "#4361EE",
+      "DefaultFont": "#4CC9F0",
+      "TileBoxShadow": "#202020",
+      "SettingDivider": "#3F37C9"
+    }
+	}
+}

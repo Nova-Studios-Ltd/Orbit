@@ -1,6 +1,6 @@
 // Global
 import React, { useEffect, useRef, useState } from "react";
-import { IconButton, Popover, ThemeProvider, Typography } from "@mui/material";
+import { IconButton, Popover, ThemeProvider, Typography, useTheme } from "@mui/material";
 import { Close as CloseIcon } from "@mui/icons-material";
 import { Route, Routes as RoutingGroup } from "react-router-dom";
 import i18n from "i18next";
@@ -12,7 +12,7 @@ import type { ReactNode } from "react";
 // Source
 import { Logout } from "Init/AuthHandler";
 import { OverrideConsoleLog, OverrideConsoleWarn, OverrideConsoleError, OverrideConsoleSuccess, DummyConsoleSuccess } from "./overrides";
-import { ThemeSelector } from "Theme";
+import { DarkTheme_Default, LightTheme_Default, ThemeSelector, WTFTheme_Default } from "Theme";
 import { Localizations } from "Localization/Localizations";
 import { UserCache } from "Lib/Storage/Objects/UserCache";
 import { Flags, GetUrlFlag, HasUrlFlag } from "Lib/Debug/Flags";
@@ -62,6 +62,8 @@ import "./App.css";
 
 // Debug
 import { API_DOMAIN, DEBUG, IsDevelopment, WEBSOCKET_DOMAIN } from "vars";
+import { ThemeEngine } from "Lib/CustomizationEngines/Theming/ThemeEngine";
+import { UserTheme } from "Lib/CustomizationEngines/Theming/UserTheme";
 
 
 
@@ -77,7 +79,6 @@ export const uCache = new UserCache();
 
 function App() {
   const Localizations_Common = useTranslation().t;
-  const theme = ThemeSelector(GetUrlFlag(Flags.Theme) || "DarkTheme_Default");
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -102,6 +103,10 @@ function App() {
   const [helpContent, setHelpContent] = useState(null as unknown as ReactNode);
   const [debugConsoleVisible, setDebugConsoleVisibility] = useState(HasUrlFlag(Flags.EnableConsole));
   const [debugConsoleBuffer, setDebugConsoleBuffer] = useState([] as DebugMessage[]);
+
+  // Theming
+  const [cTheme, setTheme] = useState("");
+  const theme = useTheme();
 
   const openConsole = () => setDebugConsoleVisibility(true);
 
@@ -129,11 +134,25 @@ function App() {
     changeTitleCallback: setTitle
   }
 
+
   useEffect(() => {
     const onNewDebugMessage = (message: DebugMessage) => {
       consoleBuffer.current = [...consoleBuffer.current, message];
       setDebugConsoleBuffer(consoleBuffer.current);
     }
+
+    (async () => {
+      await ThemeEngine.LoadThemesFromURL(`${window.location.origin}/Themes/`);
+      console.log(ThemeEngine.Themes);
+      const lastTheme = localStorage.getItem("Theme");
+      if (lastTheme === null) {
+        localStorage.setItem("Theme", "DarkTheme_Default");
+        setTheme("DarkTheme_Default");
+      }
+      else {
+        setTheme(lastTheme);
+      }
+    })();
 
     // Function overrides
 
@@ -521,12 +540,16 @@ function App() {
 
   // MainView End
 
+  let t = undefined;
+  t = ThemeEngine.Themes.getValue(cTheme);
+  if (t === undefined) t = new UserTheme("", "", LightTheme_Default);
+
   return (
     <div className="App" onContextMenu={(event) => event.preventDefault()}>
       <Helmet>
         <title>{title && title.length > 0 ? `${Localizations_Common("AppTitle")} - ${title}` : Localizations_Common("AppTitle")}</title>
       </Helmet>
-      <ThemeProvider theme={theme}>
+      <ThemeProvider theme={t.theme}>
         <RoutingGroup>
           <Route path="*" element={<ErrorView sharedProps={SharedProps} errorCode={404} />} />
           <Route path={Routes.Auth} element={<AuthView sharedProps={SharedProps} />}>

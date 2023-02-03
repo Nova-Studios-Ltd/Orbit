@@ -1,0 +1,28 @@
+{
+	"name": "DarkTheme_Default",
+	"creator": "Gently#2861",
+	"theme": {
+		"palette": {
+			"mode": "dark",
+			"background": {
+				"default": "#292B2E",
+        "paper": "#212121"
+			}
+		},
+		"customPalette": {
+		    "customActions": {
+		      "active": "#3C3E42",
+		      "messageHover": "#8A8F94",
+		      "contextMenuItemActive": "#7E8187",
+		      "avatarTextButtonActive": "#3C3E42"
+		    },
+		    "contextMenuBackground": "#3C3E42",
+		    "contextMenuItemBackground": "#3C3E42",
+		    "formBackground": "#212121",
+		    "messageBackground": "#3C3E42",
+		    "TextComboBackground": "#3C3E42",
+		    "FileUploadSummaryItemBackground": "#212121",
+		    "SystemAccentColor": "#0073E5"
+	  	}
+	}
+}
