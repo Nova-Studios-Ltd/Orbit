@@ -2,7 +2,7 @@ import { Flags, HasUrlFlag } from "Lib/Debug/Flags";
 import manifest from "../package.json";
 
 export const APP_VERSION = manifest.version;
-export const DEBUG = true;
+export const DEBUG = false;
 
 export const IsDevelopment = (window.location.host.includes("localhost") || window.location.host.includes("live")) && !HasUrlFlag(Flags.ForceMainAPI);
 
