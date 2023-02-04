@@ -12,14 +12,13 @@ import type { ReactNode } from "react";
 // Source
 import { Logout } from "Init/AuthHandler";
 import { OverrideConsoleLog, OverrideConsoleWarn, OverrideConsoleError, OverrideConsoleSuccess, DummyConsoleSuccess } from "./overrides";
-import { DarkTheme_Default, LightTheme_Default, ThemeSelector, WTFTheme_Default } from "Theme";
 import { Localizations } from "Localization/Localizations";
 import { UserCache } from "Lib/Storage/Objects/UserCache";
-import { Flags, GetUrlFlag, HasUrlFlag } from "Lib/Debug/Flags";
+import { Flags, HasUrlFlag } from "Lib/Debug/Flags";
 import { RequestUser, RequestUserChannels, RequestUserUUID } from "Lib/API/Endpoints/User";
 import { RequestChannel, RequestCreateChannel, RequestCreateGroup, RequestDeleteChannel, RequestRemoveMember, RequestResetChannelIcon, RequestUpdateChannelIcon, RequestUpdateChannelName } from "Lib/API/Endpoints/Channels";
 import { RequestDeleteMessage, RequestEditMessage, RequestMessages, SendMessage } from "Lib/API/Endpoints/Messages";
-import { FetchImageFromClipboard, NCFile, NotificationType, TriggerNotification, UploadFile } from "Lib/ElectronAPI";
+import { FetchImageFromClipboard, NCFile, UploadFile } from "Lib/ElectronAPI";
 import NSPerformace from "Lib/Debug/NSPerformace";
 import { ChannelCache } from "Lib/Storage/Objects/ChannelCache";
 import { IsValidUsername } from "Lib/Utility/Utility";
@@ -63,7 +62,6 @@ import "./App.css";
 // Debug
 import { API_DOMAIN, DEBUG, IsDevelopment, WEBSOCKET_DOMAIN } from "vars";
 import { ThemeEngine } from "Lib/CustomizationEngines/Theming/ThemeEngine";
-import { UserTheme } from "Lib/CustomizationEngines/Theming/UserTheme";
 
 
 

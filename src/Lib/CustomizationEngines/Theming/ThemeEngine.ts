@@ -1,10 +1,11 @@
 import { createTheme } from "@mui/material";
 import { HTTPStatus } from "Lib/API/NetAPI/HTTPStatus";
 import { GET } from "Lib/API/NetAPI/NetAPI";
+import { LightTheme_Default } from "Lib/CustomizationEngines/Theming/Theme";
 import { Themes } from "Lib/CustomizationEngines/Theming/Themes";
 import { UnloadedUserTheme, UserTheme } from "Lib/CustomizationEngines/Theming/UserTheme";
 import { Dictionary } from "Lib/Objects/Dictionary";
-import { LightTheme_Default } from "Theme";
+
 
 /**
  * Manages both internal and user added themes

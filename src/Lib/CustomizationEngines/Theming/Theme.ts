@@ -1,4 +1,31 @@
+import { createTheme } from "@mui/material";
+
 export {}
+
+export const LightTheme_Default = createTheme({
+  palette: {
+    mode: "light",
+    background: {
+      default: "",
+      paper: "",
+    }
+  },
+  customPalette: {
+    customActions: {
+      active: "",
+      messageHover: "",
+      contextMenuItemActive: "",
+      avatarTextButtonActive: "",
+    },
+    contextMenuBackground: "",
+    contextMenuItemBackground: "",
+    formBackground: "",
+    messageBackground: "",
+    TextComboBackground: "",
+    FileUploadSummaryItemBackground: "",
+    SystemAccentColor: "",
+  }
+});
 
 declare module "@mui/material/styles" {
   interface Theme {
