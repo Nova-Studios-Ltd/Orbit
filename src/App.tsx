@@ -143,7 +143,6 @@ function App() {
 
     (async () => {
       await ThemeEngine.LoadThemesFromURL(`${window.location.origin}/Themes/`);
-      console.log(ThemeEngine.Themes);
       const lastTheme = localStorage.getItem("Theme");
       if (lastTheme === null) {
         localStorage.setItem("Theme", "DarkTheme_Default");
@@ -534,15 +533,10 @@ function App() {
     setFriends(newFriendsArray);
   }
 
-  (window as any).notification = (tile: string, body: string, url: string) => {
-    TriggerNotification(title, body, NotificationType.Info, url);
-  }
-
   // MainView End
 
   let t = undefined;
-  t = ThemeEngine.Themes.getValue(cTheme);
-  if (t === undefined) t = new UserTheme("", "", LightTheme_Default);
+  t = ThemeEngine.GetTheme(cTheme);
 
   return (
     <div className="App" onContextMenu={(event) => event.preventDefault()}>

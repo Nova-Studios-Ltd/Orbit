@@ -4,10 +4,13 @@ import { GET } from "Lib/API/NetAPI/NetAPI";
 import { Themes } from "Lib/CustomizationEngines/Theming/Themes";
 import { UnloadedUserTheme, UserTheme } from "Lib/CustomizationEngines/Theming/UserTheme";
 import { Dictionary } from "Lib/Objects/Dictionary";
+import { LightTheme_Default } from "Theme";
 
-
+/**
+ * Manages both internal and user added themes
+ */
 export class ThemeEngine {
-  static Themes: Dictionary<string, UserTheme> = new Dictionary<string, UserTheme>();
+  private static Themes: Dictionary<string, UnloadedUserTheme> = new Dictionary<string, UnloadedUserTheme>();
 
   /**
    * Downloads and reads a themes.json from a given URL
@@ -33,12 +36,34 @@ export class ThemeEngine {
     for (let t = 0; t < themes.length; t++) {
       const theme = await GET<UnloadedUserTheme>(`${url}/${themes[t]}.json`);
       if (theme.status === HTTPStatus.OK && theme.payload.theme !== undefined) {
-        this.Themes.setValue(theme.payload.name, new UserTheme(theme.payload.name, theme.payload.creator, createTheme(theme.payload.theme)));
+        this.Themes.setValue(theme.payload.name, theme.payload);
         console.log(`Successfully loaded ${url}/${themes[t]}.json`);
       }
       else {
         console.warn(`${url}/${themes[t]}.json Not Found`);
       }
+    }
+  }
+
+  /**
+   * Fetches a user theme. Using both cache and non-cache
+   * @param name Name of the theme to get
+   * @returns A UserTheme
+   */
+  static GetTheme(name: string) : UserTheme {
+    if (localStorage.getItem("Theme_Cache") === null) {
+      const theme = this.Themes.getValue(name);
+      if (theme === undefined) return new UserTheme("", "", LightTheme_Default);
+      localStorage.setItem("Theme_Cache", JSON.stringify(theme));
+      return new UserTheme(theme.name, theme.creator, createTheme(theme.theme));
+    }
+    else {
+      const theme = JSON.parse(localStorage.getItem("Theme_Cache") as string) as UnloadedUserTheme;
+      if (theme.name !== name && name !== "") {
+        localStorage.removeItem("Theme_Cache");
+        return new UserTheme("", "", LightTheme_Default);
+      }
+      return new UserTheme(theme.name, theme.creator, createTheme(theme.theme));
     }
   }
 }

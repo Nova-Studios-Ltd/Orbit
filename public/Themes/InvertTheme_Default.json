@@ -1,0 +1,28 @@
+{
+	"name": "InvertTheme_Default",
+	"creator": "",
+	"theme": {
+		"palette": {
+			"mode": "light",
+			"background": {
+				"default": "#d6d4d1",
+          "paper": "#dedede"
+			}
+		},
+		"customPalette": {
+      "customActions": {
+        "active": "#c3c1bd",
+        "messageHover": "#75706b",
+        "contextMenuItemActive": "#817e78",
+        "avatarTextButtonActive": "#c3c1bd"
+      },
+      "contextMenuBackground": "#c3c1bd",
+      "contextMenuItemBackground": "#c3c1bd",
+      "formBackground": "#dedede",
+      "messageBackground": "#c3c1bd",
+      "TextComboBackground": "#c3c1bd",
+      "FileUploadSummaryItemBackground": "#dedede",
+      "SystemAccentColor": "#0073E5"
+    }
+	}
+}
