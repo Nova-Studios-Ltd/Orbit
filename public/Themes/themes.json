@@ -2,6 +2,7 @@
   "themes": [
     "DarkTheme_Default",
     "LightTheme_Default",
-    "NyanTheme_Default"
+    "NyanTheme_Default",
+    "InvertTheme_Default"
   ]
 }
