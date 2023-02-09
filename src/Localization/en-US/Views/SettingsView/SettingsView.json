@@ -1,3 +1,5 @@
 {
-  "ViewTitle": "Settings"
+  "ViewTitle": "Settings",
+  "Tab_Label-Dashboard": "Dashboard",
+  "Tab_Label-Debug": "Debug"
 }

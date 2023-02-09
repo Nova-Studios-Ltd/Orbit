@@ -1,9 +1,13 @@
 // Global
 import React, { useEffect } from "react";
-import { useNavigate, useLocation, Outlet, useParams } from "react-router-dom";
+import { Outlet, useLocation, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { IconButton, useTheme } from "@mui/material";
+import { IconButton, CircularProgress, useTheme } from "@mui/material";
 import { Add as AddIcon, Group as GroupIcon, Menu as MenuIcon } from "@mui/icons-material";
+import { AutoLogin } from "Init/AuthHandler";
+import { ChannelLoad, ChannelsPopulate } from "Redux/Thunks/Channels";
+import { FriendsPopulate } from "Redux/Thunks/Friends";
+import { isSubroute } from "NSLib/Util";
 
 // Source
 import { uCache } from "App";
@@ -18,222 +22,60 @@ import ChannelList from "Components/Channels/ChannelList/ChannelList";
 import AvatarTextButton from "Components/Buttons/AvatarTextButton/AvatarTextButton";
 import GenericHeader from "Components/Headers/GenericHeader/GenericHeader";
 
-// Types
-import type { View } from "Types/UI/Components";
-import { Routes } from "Types/UI/Routes";
-import type { IRawChannelProps } from "Types/API/Interfaces/IRawChannelProps";
-import type { IChannelUpdateProps } from "Types/API/Interfaces/IChannelUpdateProps";
-import type IUserData from "Types/API/Interfaces/IUserData";
-import { IMessageProps } from "Types/API/Interfaces/IMessageProps";
-import Friend from "Types/UI/Friend";
-import DebugButton from "Components/Buttons/DebugButtom/DebugButton";
-import KeyStore from "Lib/Storage/Objects/KeyStore";
+import { useDispatch, useSelector } from "Redux/Hooks";
+import { closeChannelMenu, openChannelMenu } from "Redux/Slices/AppSlice";
+import { generateSessionString } from "Redux/Thunks/App";
+import { navigate } from "Redux/Thunks/Routing";
+import { selectPathname } from "Redux/Selectors/RoutingSelectors";
 
+import type { View } from "Types/UI/Components";
+import { Routes, Params } from "Types/UI/Routing";
 
 interface MainViewProps extends View {
-  channels?: IRawChannelProps[],
-  messages?: IMessageProps[],
   avatarNonce?: string,
-  selectedChannel?: IRawChannelProps,
   channelMenuVisible?: boolean,
   sessionRef?: React.MutableRefObject<string>,
-  onNavigateToPage?: (path: Routes) => void,
-  setChannelMenuVisibility?: React.Dispatch<React.SetStateAction<boolean>>,
-  setChannels?: React.Dispatch<React.SetStateAction<IRawChannelProps[]>>,
-  setMessages?: React.Dispatch<React.SetStateAction<IMessageProps[]>>,
-  setFriends?: React.Dispatch<React.SetStateAction<Friend[]>>,
-  loadChannels?: () => void,
-  populateFriendsList?: () => void,
-  onChannelClearCache?: (channel: IRawChannelProps) => void,
-  onChannelClick?: (channel: IRawChannelProps) => void,
-  onChannelDelete?: (channel: IRawChannelProps) => void,
-  onChannelEdit?: (channel: IChannelUpdateProps) => void,
-  onChannelMenuToggle?: () => void,
-  onChannelMove?: (currentChannel: IRawChannelProps, otherChannel: IRawChannelProps, index: number) => void,
-  onChannelRemoveRecipient?: (channel: IRawChannelProps, recipient: IUserData) => void,
-  onChannelResetIcon?: (channel: IRawChannelProps) => void
 }
 
 function MainView(props: MainViewProps) {
   const Localizations_MainView = useTranslation("MainView").t;
-  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const location = useLocation();
-  const { uuid } = useParams();
   const theme = useTheme();
 
-  const autoNavigate = () => {
-    if ((!uuid || uuid.length < 1) && ((location.pathname === Routes.Chat) || (location.pathname === Routes.Root)) && props.channels && props.channels[0]) {
-      navigate(`${Routes.Chat}/${props.channels[0].table_Id}`);
-    }
-    else if ((location.pathname === Routes.Chat) || (location.pathname === Routes.Root)) {
-      navigate(Routes.FriendsList);
-    }
-  }
+  const pathname = location.pathname; // Might cause desync issues between state pathname and actual pathname, but needed for the channel preload check to work
+  const title = useSelector(state => state.routing.title);
+  const isDoingSomething = useSelector(state => state.app.isDoingSomething);
+  const channelMenuVisible = useSelector(state => state.app.channelMenuOpen);
+  const widthConstrained = useSelector(state => state.app.widthConstrained);
 
-  useEffect(() => {
-    if (!(props.sharedProps && props.sharedProps.widthConstrained) && !props.channelMenuVisible && props.setChannelMenuVisibility) props.setChannelMenuVisibility(true);
-  }, [location.pathname, navigate, props, uuid]);
-
-  const onMainViewContainerRightClick = (event: React.MouseEvent<HTMLDivElement>) => {
-    if (props.setChannelMenuVisibility && props.sharedProps && props.sharedProps.widthConstrained) {
-      props.setChannelMenuVisibility(false);
+  const onMainViewContainerClick = (event: React.MouseEvent<HTMLDivElement>) => {
+    if (widthConstrained) {
+      dispatch(closeChannelMenu());
     }
   }
 
-  useEffect(() => {
-    events.on("NewMessage", (message: IMessageProps, channel_uuid: string) => {
-      if (props.selectedChannel && props.selectedChannel.table_Id !== channel_uuid) return;
-      if (props.setMessages) {
-        props.setMessages(prevState => {
-          return [message, ...prevState];
-        });
-      }
-      else {
-        console.error("setMessages was undefined (MainView)")
-      }
-    });
-
-    events.on("DeleteMessage", (message: string) => {
-      if (props.setMessages) {
-        props.setMessages(prevState => {
-          const index = prevState.findIndex(e => e.message_Id === message);
-          if (index > -1) {
-            prevState.splice(index, 1);
-          }
-          return [...prevState];
-        });
-      }
-      else {
-        console.error("setMessages was undefined (MainView)")
-      }
-    });
-
-    events.on("EditMessage", (message: IMessageProps) => {
-      if (props.setMessages) {
-        props.setMessages(prevState => {
-          const index = prevState.findIndex(e => e.message_Id === message.message_Id);
-          if (index > -1) {
-            prevState[index] = message;
-          }
-          return [...prevState];
-        });
-      }
-      else {
-        console.error("setMessages was undefined (MainView)")
-      }
-    });
-
-    events.on("NewChannel", (channel: IRawChannelProps) => {
-      if (props.setChannels) {
-        props.setChannels(prevState => {
-          const index = prevState.findIndex(c => c.table_Id === channel.table_Id);
-          if (index > -1) return [...prevState]
-          return [...prevState, channel]}
-        );
-      }
-      else {
-        console.error("setChannels was undefined (MainView)")
-      }
-    });
-
-    events.on("DeleteChannel", (channel: string) => {
-      if (props.setChannels) {
-        props.setChannels(prevState => {
-          const index = prevState.findIndex(e => e.table_Id === channel);
-          if (index > -1) {
-            prevState.splice(index, 1);
-          }
-          return [...prevState];
-        });
-        if (props.setMessages) {
-          props.setMessages([]);
-        }
-        else {
-          console.error("setMessages was undefined (MainView)")
-        }
-      }
-      else {
-        console.error("setChannels was undefined (MainView)")
-      }
-    });
-
-    events.on("FriendAdded", async (request_uuid: string, status: string) => {
-      if (props.setFriends) {
-        const friendData = uCache.GetUser(request_uuid);
-        props.setFriends(prevState => {
-          return [...prevState, {friendData, status} as Friend ];
-        });
-      }
-      else {
-        console.error("setFriends was undefined (MainView)")
-      }
-    });
-
-    events.on("FriendUpdated", async (request_uuid: string, status: string) => {
-      if (props.setFriends) {
-        const friendData = await uCache.GetUserAsync(request_uuid);
-        props.setFriends(prevState => {
-          const index = prevState.findIndex(c => c.friendData?.uuid === request_uuid);
-          if (index > -1) {
-            prevState[index] = {friendData, status} as Friend
-          }
-          return [...prevState];
-        });
-      }
-      else {
-        console.error("setFriends was undefined (MainView)")
-      }
-    });
-
-    events.on("FriendRemoved", async (request_uuid: string) => {
-      if (props.setFriends) {
-        props.setFriends(prevState => {
-          const index = prevState.findIndex(c => c.friendData?.uuid === request_uuid);
-          if (index > -1) {
-            prevState.splice(index, 1);
-          }
-          return [...prevState];
-        });
-      }
-      else {
-        console.error("setFriends was undefined (MainView)")
-      }
-    });
-
-    return (() => {
-      events.remove("NewMessage");
-      events.remove("DeleteMessage");
-      events.remove("EditMessage");
-      events.remove("NewChannel");
-      events.remove("DeleteChannel");
-      events.remove("FriendUpdated")
-      events.remove("FriendAdded");
-      events.remove("FriendRemoved");
-    });
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [props, props.channels, props.messages]);
+  const onChannelMenuOpenButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
+    dispatch(openChannelMenu());
+  }
 
   useEffect(() => {
-    (async () => {
-      if (props.sessionRef) {
-        props.sessionRef.current = (await SHA256(Date.now().toString())).Base64;
-      }
-      else {
-        console.error("sessionRef was undefined (MainView)")
-      }
-    })();
+    dispatch(generateSessionString());
 
     AutoLogin().then((result: boolean) => {
       if (result) {
-        autoNavigate();
+        if ((pathname === Routes.Chat) || (pathname === Routes.Root)) {
+          dispatch(navigate({ pathname: Routes.FriendsList }));
+        }
       }
       else {
-        navigate(Routes.Login);
+        dispatch(navigate({ pathname: Routes.Login }));
       }
+    }).then(() => {
+      dispatch(ChannelsPopulate(pathname === Routes.Chat || pathname === Routes.FriendsList));
+      dispatch(FriendsPopulate());
     });
-
-    if (props.loadChannels) props.loadChannels();
-    if (props.populateFriendsList) props.populateFriendsList();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -241,24 +83,30 @@ function MainView(props: MainViewProps) {
     <ViewContainer>
       <div className="MainViewContainer">
         {
-          props.channelMenuVisible ?
+          channelMenuVisible ?
           <div className="MainViewContainerLeft">
             <div className="NavigationButtonContainer" style={{ backgroundColor: theme.palette.background.paper, borderColor: theme.palette.divider }}>
-              <AvatarTextButton className="NavigationButtonContainerItem" selected={location.pathname === Routes.Dashboard} onLeftClick={() => props.onNavigateToPage ? props.onNavigateToPage(Routes.Dashboard) : null} iconSrc={`${UserData.AvatarSrc}&nonce=${props.avatarNonce || ""}`}>{Localizations_MainView("Typography-SettingsHeader")}</AvatarTextButton>
-              <AvatarTextButton className="NavigationButtonContainerItem" iconObj={<GroupIcon />} selected={location.pathname === Routes.FriendsList || location.pathname === Routes.AddFriend || location.pathname === Routes.AddFriendGroup || location.pathname === Routes.BlockedUsersList} onLeftClick={() => props.onNavigateToPage ? props.onNavigateToPage(Routes.FriendsList) : null}>{Localizations_MainView("Typography-FriendsHeader")}</AvatarTextButton>
+              <AvatarTextButton className="NavigationButtonContainerItem" selected={isSubroute(pathname, Routes.Settings)} onLeftClick={() => dispatch(navigate({ pathname: Routes.Dashboard }))} iconSrc={`${UserData.AvatarSrc}&nonce=${props.avatarNonce || ""}`}>{Localizations_MainView("Typography-SettingsHeader")}</AvatarTextButton>
+              <AvatarTextButton className="NavigationButtonContainerItem" iconObj={<GroupIcon />} selected={isSubroute(pathname, Routes.Friends)} onLeftClick={() => dispatch(navigate({ pathname: Routes.FriendsList }))}>{Localizations_MainView("Typography-FriendsHeader")}</AvatarTextButton>
             </div>
             <div className="MainViewChannelListContainer">
               <GenericHeader className="MainViewHeader" title={Localizations_MainView("Header_Title-ChannelList")} childrenRight={
                 <div>
-                  <IconButton onClick={() => navigate(Routes.AddFriendGroup)}><AddIcon /></IconButton>
+                  <IconButton onClick={() => dispatch(navigate({ pathname: Routes.FriendsList, params: [ { key: Params.CreateGroup, unsetOnNavigate: true} ] }))}><AddIcon /></IconButton>
                 </div>
               } />
-              <ChannelList className="MainViewChannelList" sharedProps={props.sharedProps} channels={props.channels} onChannelClearCache={props.onChannelClearCache} onChannelClick={props.onChannelClick} onChannelEdit={props.onChannelEdit} onChannelDelete={props.onChannelDelete} onChannelMove={props.onChannelMove} onChannelRemoveRecipient={props.onChannelRemoveRecipient} onChannelResetIcon={props.onChannelResetIcon} selectedChannel={props.selectedChannel} />
+              <ChannelList className="MainViewChannelList" />
             </div>
           </div>
         : null}
-        <div className="MainViewContainerRight" onClick={onMainViewContainerRightClick} style={{ opacity: props.sharedProps?.widthConstrained && props.channelMenuVisible ? 0.5 : 1 }}>
-          <GenericHeader className="MainViewHeader MainViewContainerItem" title={props.sharedProps?.title} childrenLeft={props.sharedProps?.widthConstrained ? <IconButton onClick={(event: React.MouseEvent<HTMLButtonElement>) => { event.stopPropagation(); if (props.onChannelMenuToggle) props.onChannelMenuToggle(); }}><MenuIcon /></IconButton> : null} />
+        <div className="MainViewContainerRight" onClick={onMainViewContainerClick} style={{ opacity: widthConstrained && channelMenuVisible ? 0.5 : 1 }}>
+          <GenericHeader className="MainViewHeader MainViewContainerItem" title={title}
+            childrenLeft={
+            <>
+              {widthConstrained ? <IconButton onClick={onChannelMenuOpenButtonClick}><MenuIcon /></IconButton> : null}
+              {isDoingSomething ? <CircularProgress variant="indeterminate" /> : null}
+            </>
+            }/>
           <Outlet />
         </div>
       </div>

@@ -2,6 +2,8 @@ import { Avatar, ButtonBase, IconButton, Typography, useTheme } from "@mui/mater
 import { ArrowDropDown as DropdownIcon } from "@mui/icons-material";
 import React, { createContext, useState, ReactNode } from "react";
 
+import { useSelector } from "Redux/Hooks";
+
 import type { NCComponent } from "Types/UI/Components";
 import useClassNames from "Hooks/useClassNames";
 
@@ -15,7 +17,8 @@ export interface AvatarTextDropdownProps extends NCComponent {
 function AvatarTextDropdown(props: AvatarTextDropdownProps) {
   const theme = useTheme();
   const classNames = useClassNames("AvatarTextButtonContainer", props.className);
-  const isTouchCapable = props.sharedProps && props.sharedProps.isTouchCapable;
+
+  const isTouchCapable = useSelector(state => state.app.isTouchCapable);
 
   const [isHovering, setHoveringState] = useState(false);
 

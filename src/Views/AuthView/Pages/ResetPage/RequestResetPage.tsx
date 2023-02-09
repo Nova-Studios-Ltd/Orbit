@@ -1,31 +1,38 @@
 // Global
 import React, { useState } from "react";
-import { Button, Card, Link, TextField, Typography, useTheme } from "@mui/material";
+import { Button, Card, Link, Popover, TextField, Typography, useTheme } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { useLocation } from "react-router-dom";
 
 // Source
 import { POST, ContentType, HTTPStatusCodes } from "Lib/API/NCAPI";
 
+// Redux
+import { useDispatch } from "Redux/Hooks";
+import { navigate } from "Redux/Thunks/Routing";
+
 // Types
 import type { Page } from "Types/UI/Components";
 import { Routes } from "Types/UI/Routes";
-
+import type { Page } from "Types/UI/Components";
+import { Routes } from "Types/UI/Routing";
+import { Coordinates } from "Types/General";
 
 interface RequestResetPageProps extends Page {
 
 }
 
-
 export default function RequestResetPage(props: RequestResetPageProps) {
   const theme = useTheme();
-  const location = useLocation();
   const Localizations_ResetPage = useTranslation("ResetPage").t;
+
+  const dispatch = useDispatch();
 
   const [email, setEmail] = useState("");
   const [emailSent, setEmailSent] = useState(false);
   const [error, setError] = useState(false);
-
+  const [HelpPopupVisible, setHelpVisibility] = useState(false);
+  const [HelpPopupAnchorPos, setHelpPopupAnchorPos] = useState({} as unknown as Coordinates);
 
   const TextFieldChanged = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = event.currentTarget;
@@ -60,22 +67,27 @@ export default function RequestResetPage(props: RequestResetPageProps) {
     <div className="ResetPageContainer">
       <Typography variant="h6" align="center">{Localizations_ResetPage("Typography-FormCaption")}</Typography>
       {(!error)? (<></>) : (<Typography variant="caption" color="red">{Localizations_ResetPage("TextField_HelperText-UserNotFound")}</Typography>)}
-      {(emailSent)? (<Button className="ReturnHomeButton" variant="outlined" href={Routes.Login}>{Localizations_ResetPage("Button_Text-ReturnHome")}</Button>) : (
+      {(emailSent)? (<Button className="ReturnHomeButton" variant="outlined" onClick={() => dispatch(navigate({ pathname: Routes.Login }))}>{Localizations_ResetPage("Button_Text-ReturnHome")}</Button>) : (
       <form className="AuthForm RegisterForm" onSubmit={resetPassword}>
         <TextField id="emailField" className="RegisterFormItem" type="email" required label={Localizations_ResetPage("TextField_Label-Email")} value={email} onChange={TextFieldChanged} helperText={
           <>
             <Typography variant="caption" color="red">{Localizations_ResetPage("TextField_HelperText-ProvidedEmailWarning")}</Typography>
             <Link underline="none" style={{ cursor: "pointer", marginLeft: 8 }} onClick={(event) => {
-              if (props.sharedProps && props.sharedProps.HelpPopup) {
-                props.sharedProps.HelpPopup.setAnchor(event.currentTarget);
-                props.sharedProps.HelpPopup.setContent(E2ELearnMore);
-                props.sharedProps.HelpPopup.setVisibility(true);
-              }
+              setHelpPopupAnchorPos({ x: event.clientX, y: event.clientY });
+              setHelpVisibility(true);
             }}>{Localizations_ResetPage("Link-LearnMore")}</Link>
           </>
         }/>
         <Button className="RegisterFormItem" variant="outlined" type="submit">{Localizations_ResetPage("Button_Text-Reset")}</Button>
       </form>)}
+      <Popover className="GenericPopover" open={HelpPopupVisible} anchorReference="anchorPosition" anchorPosition={{ top: HelpPopupAnchorPos.y, left: HelpPopupAnchorPos.x }} onClose={() => {
+          setHelpVisibility(false);
+        }}>
+        <Card className="E2EHelpContainer">
+          <Typography variant="body1">{Localizations_ResetPage("TextField_HelperText-ForgottenPasswordWarningExplanationCaption")}</Typography>
+          <Typography variant="body2">{Localizations_ResetPage("TextField_HelperText-ForgottenPasswordWarningExplanation")}</Typography>
+        </Card>
+      </Popover>
     </div>
   );
 }

@@ -1,14 +1,16 @@
 // Global
 import React, { useEffect, useState } from "react";
 import { Avatar, Button, Icon, IconButton, useTheme, Typography } from "@mui/material";
-import { Add as AddIcon, AddCircle as AddFilledIcon, Group as GroupIcon } from "@mui/icons-material";
+import { Add as AddIcon, AddCircle as AddFilledIcon, Group as GroupIcon, FolderSpecial as FolderIcon } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
+import useClassNames from "Hooks/useClassNames";
 
 // Source
 import { NCFile, UploadFile } from "Lib/ElectronAPI";
 import useClassNames from "Hooks/useClassNames";
 import UserData from "Lib/Storage/Objects/UserData";
 import { uCache } from "App";
+import { NCFile, UploadFile } from "NSLib/ElectronAPI";
 
 // Components
 import AvatarTextButton from "Components/Buttons/AvatarTextButton/AvatarTextButton";
@@ -21,27 +23,26 @@ import TextCombo from "Components/Input/TextCombo/TextCombo";
 
 // Types
 import type { NCComponent } from "Types/UI/Components";
-import type { IRawChannelProps } from "Types/API/Interfaces/IRawChannelProps";
 import type { ChannelMoveData, Coordinates } from "Types/General";
 import type IUserData from "Types/API/Interfaces/IUserData";
 import type { IChannelUpdateProps } from "Types/API/Interfaces/IChannelUpdateProps";
 import { ChannelTypes, FriendButtonVariant } from "Types/Enums";
 import type Friend from "Types/UI/Friend";
-
+import type { INotSoRawChannelProps } from "Types/API/Interfaces/INotSoRawChannelProps";
 
 export interface ChannelProps extends NCComponent {
-  channelData: IRawChannelProps,
+  channelData: INotSoRawChannelProps,
   index: number,
-  isSelected?: boolean,
-  onChannelClick?: (channel: IRawChannelProps) => void,
-  onChannelClearCache?: (channel: IRawChannelProps) => void,
-  onChannelDelete?: (channel: IRawChannelProps) => void,
+  selected?: boolean,
+  onChannelClick?: (channel: INotSoRawChannelProps) => void,
+  onChannelClearCache?: (channel: INotSoRawChannelProps) => void,
+  onChannelDelete?: (channel: INotSoRawChannelProps) => void,
   onChannelEdit?: (channel: IChannelUpdateProps) => void,
-  onChannelMove?: (currentChannel: IRawChannelProps, otherChannel: IRawChannelProps, index: number) => void,
-  onChannelRemoveRecipient?: (channel: IRawChannelProps, recipient: IUserData) => void,
-  onChannelResetIcon?: (channel: IRawChannelProps) => void,
+  onChannelMove?: (currentChannel: INotSoRawChannelProps, otherChannel: INotSoRawChannelProps, index: number) => void,
+  onChannelRemoveRecipient?: (channel: INotSoRawChannelProps, recipient: IUserData) => void,
+  onChannelResetIcon?: (channel: INotSoRawChannelProps) => void,
   onReloadList?: () => void,
-  onFriendClicked?: (friend: Friend) => void,
+  onChannelFriendClicked?: (friend: Friend) => void,
   onCreateGroup?: (recipients: Friend[]) => void,
   onRemoveFriend?: (uuid: string) => void,
   onBlockFriend?: (uuid: string) => void,
@@ -57,6 +58,7 @@ function Channel(props: ChannelProps) {
 
   const isOwner = props.channelData.owner_UUID === UserData.Uuid;
   const isGroup = props && props.channelData.channelType === ChannelTypes.GroupChannel;
+  const isFileTransfer = props && props.channelData.channelType === ChannelTypes.PrivateChannel;
 
   const [ChannelContextMenuChangeTitleTextField, setChannelContextMenuChangeTitleTextField] = useState("");
   const [ChannelContextMenuIconFile, setChannelContextMenuIconFile] = useState(null as unknown as NCFile);
@@ -66,30 +68,13 @@ function Channel(props: ChannelProps) {
   const [ChannelInfoDialogVisible, setChannelInfoDialogVisibility] = useState(false);
   const [EditChannelDialogVisible, setEditChannelDialogVisibility] = useState(false);
   const [DeleteChannelDialogVisible, setDeleteChannelDialogVisibility] = useState(false);
-  const [ChannelMembersUserData, setChannelMembersUserData] = useState([] as Friend[]);
-
-  useEffect(() => {
-    const channelMembers: Friend[] = [];
-
-    if (props.channelData && props.channelData.members) {
-      for (let i = 0; i < props.channelData.members.length; i++) {
-        const uuid = props.channelData.members[i];
-          uCache.GetUserAsync(uuid).then((user) => {
-            if (user) {
-              const selectedIsOwner = props.channelData.owner_UUID === user.uuid;
-              const friend: Friend = { friendData: user, uiStates: { isOwner: isGroup && selectedIsOwner, removable: isOwner && isGroup && !selectedIsOwner } };
-              channelMembers.push(friend);
-              return;
-            }
-            console.error(`Failed to get user data with UUID ${uuid}`);
-          });
-      }
-      setChannelMembersUserData(channelMembers);
-    }
-  }, [isGroup, isOwner, props.channelData]);
 
   const onKickRecipient = (recipient: Friend) => {
     if (props.onChannelRemoveRecipient && recipient.friendData) props.onChannelRemoveRecipient(props.channelData, recipient.friendData);
+  }
+
+  const onChannelFriendClicked = (friend: Friend) => {
+    if (props.onChannelFriendClicked) props.onChannelFriendClicked(friend);
   }
 
   const onChannelLeftClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -172,14 +157,33 @@ function Channel(props: ChannelProps) {
     }
   }
 
+  const channelSymbol = () => {
+    if (isGroup) {
+      return (
+        <Icon>
+          <GroupIcon />
+        </Icon>
+      );
+    }
+    else if (isFileTransfer) {
+      return (
+        <Icon>
+          <FolderIcon />
+        </Icon>
+      );
+    }
+
+    return null;
+  }
+
   return (
     <div className={classNames}>
-      <AvatarTextButton className="ChannelAvatarTextButtonContainer" sharedProps={props.sharedProps} showEllipsisConditional draggable onDrag={onChannelDrag} onDrop={onOtherChannelDropped} iconSrc={props.channelData.channelIcon} selected={props.isSelected} onLeftClick={onChannelLeftClick} onRightClick={onChannelRightClick} childrenAfter={
-        (props && isGroup) ? <Icon><GroupIcon /></Icon> : null
+      <AvatarTextButton className="ChannelAvatarTextButtonContainer" showEllipsisConditional draggable onDrag={onChannelDrag} onDrop={onOtherChannelDropped} iconSrc={props.channelData.channelIcon} selected={props.selected} onLeftClick={onChannelLeftClick} onRightClick={onChannelRightClick} childrenAfter={
+        channelSymbol()
       }>
         {props.channelData.channelName}
       </AvatarTextButton>
-      <GenericDialog sharedProps={props.sharedProps} onClose={() => setDeleteChannelDialogVisibility(false)} open={DeleteChannelDialogVisible} title={Localizations_Channel("Typography-DeleteChannelDialogTitle", { channelName: props.channelData.channelName })} buttons={
+      <GenericDialog onClose={() => setDeleteChannelDialogVisibility(false)} open={DeleteChannelDialogVisible} title={Localizations_Channel("Typography-DeleteChannelDialogTitle", { channelName: props.channelData.channelName })} buttons={
         <>
           <Button onClick={() => setDeleteChannelDialogVisibility(false)}>{Localizations_GenericDialog("Button_Label-DialogCancel")}</Button>
           <Button color="error" onClick={() => deleteChannel()}>{Localizations_GenericDialog("Button_Label-DialogDelete")}</Button>
@@ -190,7 +194,7 @@ function Channel(props: ChannelProps) {
           <Typography variant="body1">{Localizations_Channel("Typography-DeleteChannelBlurb2")}</Typography>
         </div>
       </GenericDialog>
-      <GenericDialog sharedProps={props.sharedProps}onClose={() => closeEditChannelDialog()} open={EditChannelDialogVisible} title={isOwner ? Localizations_Channel("Typography-EditChannelDialogTitle", { channelName: props.channelData.channelName }) : Localizations_Channel("Typography-ChannelInfoDialogTitle", { channelName: props.channelData.channelName })} buttons={
+      <GenericDialog onClose={() => closeEditChannelDialog()} open={EditChannelDialogVisible} title={isOwner ? Localizations_Channel("Typography-EditChannelDialogTitle", { channelName: props.channelData.channelName }) : Localizations_Channel("Typography-ChannelInfoDialogTitle", { channelName: props.channelData.channelName })} buttons={
         isOwner ? (<>
           <Button onClick={() => closeEditChannelDialog()}>{Localizations_GenericDialog("Button_Label-DialogCancel")}</Button>
           <Button color="success" onClick={() => editChannel()}>{Localizations_GenericDialog("Button_Label-DialogSave")}</Button>
@@ -217,19 +221,19 @@ function Channel(props: ChannelProps) {
         </div>
         <div className="ChannelMembersListContainer">
           <Typography variant="h6">{Localizations_Channel("Typography-ChannelMembersListTitle")}</Typography>
-          <FriendList fullWidth variant={FriendButtonVariant.DialogGroup} friends={ChannelMembersUserData} onKickRecipient={onKickRecipient} />
+          <FriendList fullWidth variant={FriendButtonVariant.DialogGroup} friends={props.channelData.ui?.members} onReloadList={props.onReloadList} onFriendClicked={onChannelFriendClicked} onKickRecipient={onKickRecipient} />
           <GenericButton fullWidth onLeftClick={onAddNewRecipient}><Icon style={{ margin: "auto" }}><AddFilledIcon /></Icon></GenericButton>
         </div>
         <Button variant="outlined" onClick={clearChannelCache}>{Localizations_Channel("Button_Label-ClearCache")}</Button>
       </GenericDialog>
-      <GenericDialog sharedProps={props.sharedProps} onClose={() => setChannelInfoDialogVisibility(false)} open={ChannelInfoDialogVisible} title={Localizations_Channel("Typography-ChannelInfoDialogTitle", { channelName: props.channelData.channelName })} buttons={
+      <GenericDialog onClose={() => setChannelInfoDialogVisibility(false)} open={ChannelInfoDialogVisible} title={Localizations_Channel("Typography-ChannelInfoDialogTitle", { channelName: props.channelData.channelName })} buttons={
         <>
           <Button onClick={() => setChannelInfoDialogVisibility(false)}>{Localizations_GenericDialog("Button_Label-DialogOK")}</Button>
         </>
       }>
         <div className="ChannelMembersListContainer">
           <Typography variant="h6">{Localizations_Channel("Typography-ChannelMembersListTitle")}</Typography>
-          <FriendList fullWidth variant={FriendButtonVariant.DialogSingle} friends={ChannelMembersUserData} onKickRecipient={onKickRecipient} />
+          <FriendList fullWidth variant={FriendButtonVariant.DialogSingle} friends={props.channelData.ui?.members} onKickRecipient={onKickRecipient} />
         </div>
         <Button variant="outlined" onClick={clearChannelCache}>{Localizations_Channel("Button_Label-ClearCache")}</Button>
       </GenericDialog>

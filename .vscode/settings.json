@@ -12,5 +12,8 @@
     "**/__tests__": true,
     "**/.history": true,
     "**/.VSCodeCounter": true
-  }
+  },
+  "cSpell.ignorePaths": [
+    "package.json"
+  ]
 }

@@ -1,0 +1,13 @@
+.DebugMessageContainer {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+
+  gap: var(--global-margin);
+}
+
+@media only screen and (max-width: 600px) {
+  .DebugMessageContainer {
+
+  }
+}

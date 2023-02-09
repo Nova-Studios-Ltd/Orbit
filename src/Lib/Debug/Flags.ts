@@ -1,6 +1,10 @@
 /* eslint-disable no-restricted-globals */
 
-export class Flag {
+import { selectParamByKeyExists } from "Redux/Selectors/RoutingSelectors";
+import store from "Redux/Store";
+import { Param } from "Types/UI/Routing";
+
+export class NCFlag {
   urlString: string;
   isStringValue: boolean;
   defaultValue: string | boolean | undefined;
@@ -70,11 +74,8 @@ function clearFlag(name: string) : string {
  * @param flag The name of the flag
  * @returns True if the flag is found, otherwise false
  */
-export function HasUrlFlag(flag: Flag) : boolean {
-  const p = parseUrlSearch(flag.urlString);
-  if (p === undefined) return false;
-  if (p.length >= 0) return true;
-  return false;
+export function HasUrlFlag(flag: NCFlag) : boolean {
+  return selectParamByKeyExists(flag.urlString)(store.getState());
 }
 
 /**
@@ -87,6 +88,22 @@ export function GetUrlFlag<T>(flag: Flag) : T | undefined {
   const p = parseUrlSearch(flag.urlString);
   if (p === undefined) return undefined;
   return p as unknown as T;
+}
+
+/**
+ * Parses the current url into individual flags
+ * @returns An array of Params
+ */
+export function GetUrlFlags() : Param[] {
+  let params: Param[] = [];
+  const vars = location.search.replaceAll("?", "").split("&");
+  for (let v = 0; v < vars.length; v++) {
+    const d = vars[v];
+    const split = d.split("=");
+    if (split.length > 0 && split[0].length > 0) params.push({ key: split[0], value: split[1] });
+  }
+
+  return params;
 }
 
 

@@ -15,6 +15,9 @@ import { AESDecrypt } from "Lib/Encryption/AES";
 import { AESMemoryEncryptData } from "Lib/Encryption/Types/AESMemoryEncryptData";
 import { ComputeCSSDims } from "Lib/Utility/ContentUtility";
 
+// Redux
+import { useSelector } from "Redux/Hooks";
+
 // Components
 import MessageImage from "Components/Messages/MessageMedia/Subcomponents/MessageImage/MessageImage";
 import MessageVideo from "Components/Messages/MessageMedia/Subcomponents/MessageVideo/MessageVideo";
@@ -46,6 +49,8 @@ function MessageMedia(props: MessageMediaProps) {
   const classNames = useClassNames("MessageMediaContainer", props.className);
   const isPreviewableMediaType = useRef(false);
   const [dimensions, setDimensions] = useState({});
+
+  const widthConstrained = useSelector(state => state.app.widthConstrained);
 
   const [contentDataUrl, setContentDataUrl] = useState("");
   const contentData = useRef(new Uint8Array());
@@ -83,13 +88,13 @@ function MessageMedia(props: MessageMediaProps) {
 
     if (props.contentWidth && props.contentHeight) {
       const size = ComputeCSSDims(new Dimensions(props.contentWidth, props.contentHeight), new Dimensions(575, 400));
-      _dimensions = props.sharedProps?.widthConstrained ? { width: "100%", height: "auto" } : { width: size.width > 0 ? size.width : "18rem", height: size.height > 0 ? size.height : "30rem" };
+      _dimensions = widthConstrained ? { width: "100%", height: "auto" } : { width: size.width > 0 ? size.width : "18rem", height: size.height > 0 ? size.height : "30rem" };
     }
 
     if (isPreviewableMediaType.current) {
       setDimensions(_dimensions);
     }
-  }, [props.contentWidth, props.contentHeight, props.sharedProps?.widthConstrained]);
+  }, [props.contentWidth, props.contentHeight, widthConstrained]);
 
   const onMediaClick = (event: React.MouseEvent<HTMLDivElement>) => {
     event.stopPropagation();

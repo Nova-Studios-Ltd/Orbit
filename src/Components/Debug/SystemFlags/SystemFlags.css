@@ -1,0 +1,12 @@
+.SystemFlagsContainer {
+  display: flex;
+  flex-direction: column;
+
+  width: 100%;
+}
+
+@media only screen and (max-width: 600px) {
+  .SystemFlagsContainer {
+
+  }
+}

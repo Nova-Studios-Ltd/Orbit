@@ -1,11 +1,12 @@
-import React from "react";
+import React, { ReactNode } from "react";
 import "./Popup.css";
 
-export interface IPopup {
+export interface IPopupProps {
+  children: ReactNode,
   triggered?: boolean
 }
 
-export class Popup extends React.Component<IPopup> {
+export class Popup extends React.Component<IPopupProps> {
 
   render() {
     return (this.props.triggered) ? (
