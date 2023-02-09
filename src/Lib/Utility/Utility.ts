@@ -1,3 +1,5 @@
+import { Routes } from "Types/UI/Routing";
+
 /**
  * Generates a random number between min and max
  * @param min Lowest number
@@ -48,4 +50,15 @@ export async function WaitTill<T>(value: T, interval: number, predicate: (value:
     }
     id = setInterval(time, interval, []);
   });
+}
+
+/**
+ * Checks to see if a given path is a subroute of a parent.
+ * @param path the path to check
+ * @param parentRoute the parent route to compare against
+ * @returns true if the path is a subroute of the parent route
+ */
+export function isSubroute(path: string, parentRoute: Routes) {
+  if (path.includes(parentRoute)) return true;
+  return false;
 }
