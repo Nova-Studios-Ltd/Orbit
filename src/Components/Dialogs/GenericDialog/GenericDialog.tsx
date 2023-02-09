@@ -1,7 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useTheme, Typography } from "@mui/material";
 import useClassNames from "Hooks/useClassNames";
-import { CSSTransition } from "react-transition-group";
+import { CSSTransition, TransitionGroup } from "react-transition-group";
+
+import { useSelector } from "Redux/Hooks";
 
 import type { NCComponent } from "Types/UI/Components";
 import type { ReactNode } from "react";
@@ -18,6 +20,8 @@ export interface GenericDialogProps extends NCComponent {
 function GenericDialog(props: GenericDialogProps) {
   const theme = useTheme();
   const classNames = useClassNames("GenericDialogContainer", props.className);
+
+  const widthConstrained = useSelector(state => state.app.widthConstrained);
 
   const [scrollbarMargin, setScrollbarMargin] = useState(0);
 
@@ -45,12 +49,12 @@ function GenericDialog(props: GenericDialogProps) {
   }
 
   return (
-    <CSSTransition classNames={classNames} in={props.open} timeout={10}>
+    <CSSTransition classNames={classNames} in={props.open} unmountOnExit timeout={{ enter: 0, exit: 200 }}>
       <div className={classNames} style={{ color: theme.palette.text.primary }}>
-        <CSSTransition classNames="GenericDialogBackdrop" in={props.open} timeout={10}>
-          <div className="GenericDialogBackdrop" onClick={onBackdropClick} style={{ background: theme.palette.background.paper, display: props.sharedProps && props.sharedProps.widthConstrained ? "none" : "block" }}/>
+        <CSSTransition classNames="GenericDialogBackdrop" in={props.open} timeout={{ enter: 200, exit: 0 }}>
+          <div className="GenericDialogBackdrop" onClick={onBackdropClick} style={{ background: theme.palette.background.paper, display: widthConstrained ? "none" : "block" }}/>
         </CSSTransition>
-        <CSSTransition classNames="GenericDialogInnerContainer" in={props.open} timeout={10}>
+        <CSSTransition classNames="GenericDialogInnerContainer" in={props.open} timeout={{ enter: 200, exit: 0 }}>
           <div className="GenericDialogInnerContainer" style={{ backgroundColor: theme.palette.background.paper }} onKeyDown={onKeyDown}>
             <Typography className="GenericDialogTitle" variant="h5">{props.title}</Typography>
             <div className="GenericDialogContentScrollContainer" ref={ContentScrollContainerRef}>

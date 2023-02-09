@@ -3,6 +3,11 @@ import React, { useEffect, useState } from "react";
 import { Button, Link, TextField, Typography, useTheme } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { Link as RouterLink, useLocation, useNavigate } from "react-router-dom";
+import { isSubroute } from "NSLib/Util";
+
+import { useDispatch, useSelector } from "Redux/Hooks";
+import { navigate } from "Redux/Thunks/Routing";
+import { selectPathname } from "Redux/Selectors/RoutingSelectors";
 
 // Source
 import { LoginNewUser } from "Init/AuthHandler";
@@ -11,7 +16,7 @@ import { LocalStorage } from "Lib/Storage/LocalStorage";
 // Types
 import type { Page } from "Types/UI/Components";
 import { LoginStatus } from "Types/Enums";
-import { Routes } from "Types/UI/Routes";
+import { Routes } from "Types/UI/Routing";
 
 interface LoginPageProps extends Page {
 
@@ -20,33 +25,30 @@ interface LoginPageProps extends Page {
 function LoginPage(props: LoginPageProps) {
   const Localizations_Common = useTranslation().t;
   const Localizations_LoginPage = useTranslation("LoginPage").t;
+  const dispatch = useDispatch();
   const theme = useTheme();
-  const navigate = useNavigate();
-  const location = useLocation();
+
+  const pathname = useSelector(selectPathname());
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [failureStatus, setFailStatus] = useState(LoginStatus.PendingStatus);
-
-  useEffect(() => {
-    if (props.sharedProps && props.sharedProps.changeTitleCallback) props.sharedProps.changeTitleCallback(Localizations_LoginPage("PageTitle"));
-  })
 
   const login = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     LoginNewUser(email, password).then((status: LoginStatus) => {
       if (status === LoginStatus.Success)
-        navigate(Routes.Chat)
+        dispatch(navigate({ pathname: Routes.Chat }));
       else
         setFailStatus(status);
-    });
+    }).catch(reason => console.error(reason));
   }
 
   LocalStorage.ContainsAsync("LoggedIn").then(async (value: boolean) => {
-    if ((location.pathname.toLowerCase().includes(Routes.Login) || location.pathname.toLowerCase().includes(Routes.Register) || location.pathname === "/") && value) {
+    if ((isSubroute(pathname, Routes.Login) || isSubroute(pathname, Routes.Login) || pathname === Routes.Root) && value) {
       LocalStorage.SetItem("LoggedIn", "false");
-      navigate(Routes.Chat);
+      dispatch(navigate({ pathname: Routes.Chat }));
     }
   });
 
@@ -91,13 +93,13 @@ function LoginPage(props: LoginPageProps) {
         <TextField id="emailField" className="LoginFormItem" autoFocus error={failureStatus === LoginStatus.UnknownUser} required label={Localizations_LoginPage("TextField_Label-Email")} placeholder={Localizations_LoginPage("TextField_Placeholder-Email")} value={email} onChange={TextFieldChanged} />
         <TextField id="passwordField" className="LoginFormItem" type="password" error={failureStatus === LoginStatus.InvalidCredentials} required label={Localizations_LoginPage("TextField_Label-Password")} placeholder={Localizations_LoginPage("TextField_Placeholder-Password")} value={password} onChange={TextFieldChanged} helperText={
           <>
-            <Typography variant="caption">Forgot your password?</Typography>
-            <Link underline="none" style={{ cursor: "pointer", marginLeft: 8 }} href={Routes.RequestReset}>Reset it</Link>
+            <Typography variant="caption">{Localizations_LoginPage("Typography-ForgotPasswordQuestion")}</Typography>
+            <Link underline="none" style={{ cursor: "pointer", marginLeft: 8 }} onClick={() => dispatch(navigate({ pathname: Routes.RequestReset }))}>{Localizations_LoginPage("Link-ToRequestResetForm")}</Link>
           </>
           }/>
         <Button className="LoginFormItem" variant="outlined" type="submit">{Localizations_LoginPage("Button_Text-Login")}</Button>
       </form>
-      <Typography marginTop={1.5}>{Localizations_LoginPage("Typography-DontHaveAccountQuestion")} <RouterLink to={Routes.Register} style={{ color: theme.palette.primary.main }}>{Localizations_LoginPage("Link-ToRegisterForm")}</RouterLink></Typography>
+      <Typography marginTop={1.5}>{Localizations_LoginPage("Typography-DontHaveAccountQuestion")} <Link sx={{ cursor: "pointer" }} onClick={() => dispatch(navigate({ pathname: Routes.Register }))} style={{ color: theme.palette.primary.main }}>{Localizations_LoginPage("Link-ToRegisterForm")}</Link></Typography>
     </div>
   );
 }

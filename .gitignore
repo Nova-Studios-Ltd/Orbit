@@ -24,5 +24,7 @@ yarn-error.log*
 
 # custom
 
+/.cspell
 /.history
 /.VSCodeCounter
+/ssl

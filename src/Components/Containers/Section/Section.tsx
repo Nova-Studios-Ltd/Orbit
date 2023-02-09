@@ -7,7 +7,8 @@ import { Children, CSSProperties, ReactNode } from "react";
 export interface SectionProps extends NCComponent {
   title?: string,
   styles?: CSSProperties,
-  children?: ReactNode
+  children?: ReactNode,
+  childrenRight?: ReactNode
 }
 
 function Section(props: SectionProps) {
@@ -28,7 +29,12 @@ function Section(props: SectionProps) {
 
   return (
     <div className={classNames} style={props.styles}>
-      <Typography className="SectionTitle" variant="h6">{props.title}</Typography>
+      <div className="SectionContainerHeader">
+        <Typography className="SectionTitle" variant="h6">{props.title}</Typography>
+        <div className="SectionContainerHeaderRight">
+          {props.childrenRight}
+        </div>
+      </div>
       {items()}
     </div>
   )

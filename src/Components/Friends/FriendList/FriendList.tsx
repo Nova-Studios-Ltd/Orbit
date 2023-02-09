@@ -93,10 +93,10 @@ function FriendList(props: FriendListProps) {
             return;
           }
 
-          onFriendClicked(_friend)
+          onFriendClicked(_friend);
         }
 
-        return (<FriendButton key={friend.friendData && friend.friendData.uuid ? friend.friendData.uuid : index} sharedProps={props.sharedProps} friend={friend} inSelectionMode={props.inSelectionMode} selected={ticked} variant={props.variant} hideUUID={props.hideUUIDs} onLeftClick={onLeftClick} onBlockFriend={props.onBlockFriend} onUnblockFriend={props.onUnblockFriend} onRemoveFriend={props.onRemoveFriend} onKickRecipient={props.onKickRecipient} />)
+        return (<FriendButton key={friend.friendData && friend.friendData.uuid ? friend.friendData.uuid : index} friend={friend} inSelectionMode={props.inSelectionMode} selected={ticked} variant={props.variant} hideUUID={props.hideUUIDs} onLeftClick={onLeftClick} onBlockFriend={props.onBlockFriend} onUnblockFriend={props.onUnblockFriend} onRemoveFriend={props.onRemoveFriend} onKickRecipient={props.onKickRecipient} />)
       });
 
       const reducedElements = [];

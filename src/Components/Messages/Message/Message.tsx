@@ -5,7 +5,11 @@ import { Close as CloseIcon } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
 import JSZip from "jszip";
 
+// Redux
+import { useSelector } from "Redux/Hooks";
+
 // Components
+import ContextMenuItem from "Components/Menus/ContextMenuItem/ContextMenuItem";
 import MessageMedia from "Components/Messages/MessageMedia/MessageMedia";
 import TextCombo, { TextComboChangeEvent, TextComboSubmitEvent } from "Components/Input/TextCombo/TextCombo";
 
@@ -17,7 +21,6 @@ import IUserData from "Types/API/Interfaces/IUserData";
 import ContextMenu from "Components/Menus/ContextMenu/ContextMenu";
 import { Coordinates } from "Types/General";
 import Linkify from "linkify-react";
-import ContextMenuItem from "Components/Menus/ContextMenuItem/ContextMenuItem";
 
 // Source
 import { GETFile, HTTPStatusCodes } from "Lib/API/NCAPI";
@@ -29,7 +32,6 @@ import Base64Uint8Array from "Lib/Objects/Base64Uint8Array";
 import { AESDecrypt } from "Lib/Encryption/AES";
 import { AESMemoryEncryptData } from "Lib/Encryption/Types/AESMemoryEncryptData";
 import { uCache } from "App";
-
 
 export interface MessageProps extends NCComponent {
   content?: string,
@@ -52,10 +54,11 @@ function Message(props: MessageProps) {
   const Localizations_ContextMenuItem = useTranslation("ContextMenuItem").t;
 
   const isOwnMessage = props.authorID === UserData.Uuid;
-  const isTouchCapable = props.sharedProps && props.sharedProps.isTouchCapable;
+  const isTouchCapable = useSelector(state => state.app.isTouchCapable);
 
   const [isHovering, setHoveringState] = useState(false);
   const [isEditing, setEditingState] = useState(false);
+  const [isLinkClicked, setLinkClickedState] = useState(false);
   const [editFieldValue, setEditFieldValue] = useState("" as string | undefined);
   const [allAttachments, setAttachments] = useState([] as IAttachmentProps[]);
   const [displayName, setDisplayName] = useState(uCache.GetUser(props.authorID || "")?.username || "");
@@ -102,6 +105,7 @@ function Message(props: MessageProps) {
 
   const handleURLClick = (url: string) => {
     // Perhaps use custom viewer instead of opening externally?
+    setLinkClickedState(true);
     window.open(url);
   }
 
@@ -135,6 +139,11 @@ function Message(props: MessageProps) {
   }
 
   const messageLeftClickHandler = (event: React.MouseEvent<HTMLDivElement>) => {
+    if (isLinkClicked) {
+      setLinkClickedState(false)
+      return;
+    }
+
     if (isTouchCapable && !isEditing) messageRightClickHandler(event);
   }
 
@@ -184,7 +193,7 @@ function Message(props: MessageProps) {
     if (allAttachments && allAttachments.length > 0) {
       return allAttachments.map((attachment, index) => {
         return (
-          <MessageMedia key={`${props.id}-${index}`} sharedProps={props.sharedProps} onLeftClick={attachmentLeftClickHandler} onRightClick={attachmentRightClickHandler} contentUrl={attachment.contentUrl} fileName={attachment.filename} fileSize={attachment.size} rawMimeType={attachment.mimeType} contentWidth={attachment.contentWidth} contentHeight={attachment.contentHeight} isExternal={attachment.isExternal} keys={attachment.keys} iv={attachment.iv}/>
+          <MessageMedia key={`${props.id}-${index}`} onLeftClick={attachmentLeftClickHandler} onRightClick={attachmentRightClickHandler} contentUrl={attachment.contentUrl} fileName={attachment.filename} fileSize={attachment.size} rawMimeType={attachment.mimeType} contentWidth={attachment.contentWidth} contentHeight={attachment.contentHeight} isExternal={attachment.isExternal} keys={attachment.keys} iv={attachment.iv}/>
         )
       });
     }

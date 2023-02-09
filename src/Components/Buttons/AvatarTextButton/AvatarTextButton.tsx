@@ -4,6 +4,8 @@ import React, { useState, ReactNode, useRef } from "react";
 
 import GenericButton from "Components/Buttons/GenericButton/GenericButton";
 
+import { useSelector } from "Redux/Hooks";
+
 import type { NCComponent } from "Types/UI/Components";
 import useClassNames from "Hooks/useClassNames";
 import { SelectionType } from "Types/Enums";
@@ -28,7 +30,8 @@ export interface AvatarTextButtonProps extends NCComponent {
 function AvatarTextButton(props: AvatarTextButtonProps) {
   const theme = useTheme();
   const classNames = useClassNames(useClassNames("AvatarTextButtonContainer", props.className), props.fullWidth ? "FullWidth" : "");
-  const isTouchCapable = props.sharedProps && props.sharedProps.isTouchCapable;
+
+  const isTouchCapable = useSelector(state => state.app.isTouchCapable);
 
   const [isHovering, setHoveringState] = useState(false);
 

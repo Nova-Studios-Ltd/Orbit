@@ -14,7 +14,6 @@ export interface HelpPopupProps {
 export interface NCComponent {
   className?: string,
   style?: CSSProperties,
-  sharedProps?: SharedProps
 }
 
 export interface NCAPIComponent extends NCComponent {
@@ -27,13 +26,4 @@ export interface Page extends NCComponent {
 
 export interface View extends NCComponent {
 
-}
-
-export interface SharedProps {
-  HelpPopup?: HelpPopupProps,
-  widthConstrained?: boolean,
-  isTouchCapable?: boolean,
-  openConsole?: () => void,
-  title?: string,
-  changeTitleCallback?: (title: string) => void
 }

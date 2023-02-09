@@ -6,11 +6,13 @@ import { useTranslation } from "react-i18next";
 import PageContainer from "Components/Containers/PageContainer/PageContainer";
 import TextCombo, { TextComboChangeEvent } from "Components/Input/TextCombo/TextCombo";
 
+import { FriendAdd } from "Redux/Thunks/Friends";
+
 import type { Page } from "Types/UI/Components";
 import { TextComboStates } from "Types/Enums";
 
 interface AddFriendsPageProps extends Page {
-  onAddFriend?: (recipient: string) => Promise<0 | 1 | 2>
+
 }
 
 function AddFriendsPage(props: AddFriendsPageProps) {
@@ -20,10 +22,6 @@ function AddFriendsPage(props: AddFriendsPageProps) {
   const [RecipientFieldErrorState, setRecipientFieldErrorState] = useState(-1);
   const [RecipientField, setRecipientField] = useState("");
 
-  useEffect(() => {
-    if (props.sharedProps && props.sharedProps.changeTitleCallback) props.sharedProps.changeTitleCallback(Localizations_AddFriendsPage("PageTitle"));
-  });
-
   const handleRecipientFieldChanged = (event: TextComboChangeEvent) => {
     if (event.value !== undefined) {
       setRecipientField(event.value);
@@ -32,8 +30,8 @@ function AddFriendsPage(props: AddFriendsPageProps) {
   };
 
   const addFriend = () => {
-    if (RecipientField.length > 0 && props.onAddFriend !== undefined) {
-      props.onAddFriend(RecipientField).then((result) => {
+    if (RecipientField.length > 0) {
+      FriendAdd(RecipientField).then((result) => {
         setRecipientFieldErrorState(result);
 
         if (result === 0) {

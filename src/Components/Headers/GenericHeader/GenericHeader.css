@@ -9,11 +9,19 @@
 }
 
 .GenericHeaderLeft {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
   margin-right: var(--global-margin);
 }
 
 .GenericHeaderRight {
   margin-left: auto;
+
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 }
 
 @media only screen and (max-width: 600px) {

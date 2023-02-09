@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import React, { useCallback, useEffect, useRef } from "react";
 import { Typography, useTheme } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import useClassNames from "Hooks/useClassNames";
@@ -12,7 +12,6 @@ import type { IMessageProps } from "Types/API/Interfaces/IMessageProps";
 export interface MessageCanvasProps extends NCAPIComponent {
   innerClassName?: string,
   messages?: IMessageProps[],
-  canvasRef?: React.MutableRefObject<HTMLDivElement>,
   onMessageEdit?: (message: MessageProps) => void,
   onMessageDelete?: (message: MessageProps) => void,
   onLoadPriorMessages?: () => void
@@ -23,7 +22,35 @@ function MessageCanvas(props: MessageCanvasProps) {
   const theme = useTheme();
   const classNames = useClassNames("MessageCanvasContainer", props.className);
   const innerClassNames = useClassNames("TheActualMessageCanvas", props.innerClassName);
+
+  const canvasRef = useRef() as React.MutableRefObject<HTMLDivElement>;
   const lastScrollPos = useRef(0);
+  const messageCount = useRef(props.messages?.length || 0);
+
+  const setCanvasRef = useCallback((element: HTMLDivElement) => {
+    if (element) {
+      canvasRef.current = element;
+    }
+  }, []);
+
+  useEffect(() => {
+    if (canvasRef.current) {
+      const canvas = canvasRef.current;
+      const scrollHeight = canvasRef.current.scrollHeight;
+      const scrollOffset = canvasRef.current.offsetHeight;
+      const scrollTop = canvasRef.current.scrollTop;
+
+      if (props.messages && props.messages.length === messageCount.current) return;
+
+      if (lastScrollPos.current && (lastScrollPos.current - scrollOffset) === scrollTop) {
+        const distance = scrollHeight - scrollTop;
+        if (distance < scrollHeight / 5)
+          canvas.scroll({ top: scrollHeight, behavior: "smooth" });
+        else
+          canvas.scrollTop = scrollHeight;
+      }
+    }
+  }, [props.messages])
 
   const NoMessagesHint = (
     <div className="NoMessagesHintContainer">
@@ -35,7 +62,7 @@ function MessageCanvas(props: MessageCanvasProps) {
   const messagesArray = () => {
     if (props.messages && props.messages.length > 0) {
       return props.messages.map((message, index) => {
-        return (<Message key={message.message_Id} sharedProps={props.sharedProps} content={message.content} attachments={message.attachments} id={message.message_Id} authorID={message.author_UUID} avatarURL={message.avatar} timestamp={message.timestamp} editedTimestamp={message.editedTimestamp} isEdited={message.edited} encrypted={message.encrypted} onMessageEdit={props.onMessageEdit} onMessageDelete={props.onMessageDelete} />)
+        return (<Message key={message.message_Id} content={message.content} attachments={message.attachments} id={message.message_Id} authorID={message.author_UUID} avatarURL={message.avatar} timestamp={message.timestamp} editedTimestamp={message.editedTimestamp} isEdited={message.edited} encrypted={message.encrypted} onMessageEdit={props.onMessageEdit} onMessageDelete={props.onMessageDelete} />)
       }).reverse();
     }
 
@@ -43,8 +70,9 @@ function MessageCanvas(props: MessageCanvasProps) {
   }
 
   const onScroll = () => {
-    const scrollTop = props.canvasRef?.current.scrollTop;
-    if (scrollTop !== undefined && props.canvasRef !== undefined) {
+    if (canvasRef.current !== undefined) {
+      const scrollTop = canvasRef.current.scrollTop;
+
       if (scrollTop - lastScrollPos.current < -5 && scrollTop < 10 && props.onLoadPriorMessages !== undefined) {
         props.onLoadPriorMessages();
       }
@@ -54,7 +82,7 @@ function MessageCanvas(props: MessageCanvasProps) {
 
   return (
     <PageContainer className={classNames}>
-      <div className={classNames} ref={props.canvasRef} onScroll={onScroll}>
+      <div className={classNames} ref={setCanvasRef} onScroll={onScroll}>
         <div className={innerClassNames}>
           {messagesArray()}
         </div>

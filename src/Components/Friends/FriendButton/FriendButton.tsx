@@ -92,7 +92,7 @@ function FriendButton(props: FriendButtonProps) {
           {props.friend && props.friend.status ? <Typography variant="caption">{props.friend.status}</Typography> : null}
         </div>
       </AvatarTextButton>
-      <GenericDialog sharedProps={props.sharedProps} onClose={() => setRemoveFriendDialogVisible(false)} open={RemoveFriendDialogVisible} title={Localizations_FriendButton("Typography-RemoveFriendDialogTitle", { user: props.friend?.friendData?.username })} buttons={
+      <GenericDialog onClose={() => setRemoveFriendDialogVisible(false)} open={RemoveFriendDialogVisible} title={Localizations_FriendButton("Typography-RemoveFriendDialogTitle", { user: props.friend?.friendData?.username })} buttons={
         <>
           <Button onClick={(event) => { setRemoveFriendDialogVisible(false); event.stopPropagation(); }}>{Localizations_GenericDialog("Button_Label-DialogCancel")}</Button>
           <Button color="error" onClick={onRemoveFriend}>{Localizations_GenericDialog("Button_Label-DialogRemove")}</Button>
@@ -102,7 +102,7 @@ function FriendButton(props: FriendButtonProps) {
           <Typography variant="body1">{Localizations_FriendButton("Typography-RemoveFriendDialogBlurb", { user: props.friend?.friendData?.username })}</Typography>
         </div>
       </GenericDialog>
-      <GenericDialog sharedProps={props.sharedProps} onClose={() => setBlockUnblockFriendDialogVisible(false)} open={BlockUnblockFriendDialogVisible} title={isBlocked ? Localizations_FriendButton("Typography-UnblockFriendDialogTitle", { user: props.friend?.friendData?.username }) : Localizations_FriendButton("Typography-BlockFriendDialogTitle", { user: props.friend?.friendData?.username }) } buttons={
+      <GenericDialog onClose={() => setBlockUnblockFriendDialogVisible(false)} open={BlockUnblockFriendDialogVisible} title={isBlocked ? Localizations_FriendButton("Typography-UnblockFriendDialogTitle", { user: props.friend?.friendData?.username }) : Localizations_FriendButton("Typography-BlockFriendDialogTitle", { user: props.friend?.friendData?.username }) } buttons={
         <>
           <Button onClick={(event) => { setBlockUnblockFriendDialogVisible(false); event.stopPropagation() }}>{Localizations_GenericDialog("Button_Label-DialogCancel")}</Button>
           <Button color="error" onClick={onBlockUnblockFriend}>{isBlocked ? Localizations_GenericDialog("Button_Label-DialogUnblock") : Localizations_GenericDialog("Button_Label-DialogBlock")}</Button>

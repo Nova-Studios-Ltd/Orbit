@@ -1,29 +1,45 @@
 import { Typography, useTheme } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import useClassNames from "Hooks/useClassNames";
+import { isSubroute } from "NSLib/Util";
+import { REQUESTFriend } from "NSLib/APIEvents";
+import UserData from "DataManagement/UserData";
 
-import Channel, { ChannelProps } from "Components/Channels/Channel/Channel";
+import Channel from "Components/Channels/Channel/Channel";
+
+import { useDispatch, useSelector } from "Redux/Hooks";
+import { ChannelLoad, ChannelClearCache, ChannelDelete, ChannelEdit, ChannelMove, ChannelRemoveRecipient, ChannelResetIcon } from "Redux/Thunks/Channels";
+import { FriendsPopulate } from "Redux/Thunks/Friends";
+import { selectPathname } from "Redux/Selectors/RoutingSelectors";
 
 import type { NCAPIComponent } from "Types/UI/Components";
 import type { IRawChannelProps } from "Types/API/Interfaces/IRawChannelProps";
-import type { IChannelUpdateProps } from "Types/API/Interfaces/IChannelUpdateProps";
-import type IUserData from "Types/API/Interfaces/IUserData";
+import { Routes } from "Types/UI/Routing";
+import Friend from "Types/UI/Friend";
 
 export interface ChannelListProps extends NCAPIComponent {
-  channels?: IRawChannelProps[],
-  onChannelClearCache?: (channel: IRawChannelProps) => void,
-  onChannelClick?: (channel: IRawChannelProps) => void,
-  onChannelDelete?: (channel: IRawChannelProps) => void,
-  onChannelEdit?: (channel: IChannelUpdateProps) => void,
-  onChannelMove?: (currentChannel: IRawChannelProps, otherChannel: IRawChannelProps, index: number) => void,
-  onChannelRemoveRecipient?: (channel: IRawChannelProps, recipient: IUserData) => void,
-  onChannelResetIcon?: (channel: IRawChannelProps) => void
+
 }
 
 function ChannelList(props: ChannelListProps) {
   const Localizations_ChannelList = useTranslation("ChannelList").t;
   const classNames = useClassNames("ChannelListContainer", props.className);
   const theme = useTheme();
+  const dispatch = useDispatch();
+
+  const pathname = useSelector(selectPathname());
+  const channels = useSelector(state => state.chat.channels);
+  const selectedChannel = useSelector(state => state.chat.selectedChannel);
+
+  const onChannelClick = (channel: IRawChannelProps) => {
+    dispatch(ChannelLoad(channel));
+  }
+
+  const onChannelFriendClicked = (friend: Friend) => {
+    if (friend.friendData && friend.friendData.uuid !== UserData.Uuid) {
+      REQUESTFriend(friend.friendData.uuid);
+    }
+  }
 
   const NoChannelsHint = (
     <div className="NoChannelsHintContainer">
@@ -33,15 +49,15 @@ function ChannelList(props: ChannelListProps) {
   );
 
   const channelArray = () => {
-    if (props.channels && props.channels.length > 0) {
-      return props.channels.map((channel, index) => {
-        const isSelected = channel.table_Id === props.selectedChannel?.table_Id;
+    if (channels && channels.length > 0) {
+      return channels.map((channel, index) => {
+        const selected = (channel.table_Id === selectedChannel?.table_Id) && isSubroute(pathname, Routes.Chat);
 
         /* TODO: Check if channel uuid already has an index stored in localstorage, and use it
           to index the channels in user-specified order (otherwise default to order as retrieved from server)
         */
 
-        return (<Channel key={channel.table_Id} sharedProps={props.sharedProps} index={index} channelData={channel} isSelected={isSelected} onChannelClearCache={props.onChannelClearCache} onChannelClick={props.onChannelClick} onChannelDelete={props.onChannelDelete} onChannelEdit={props.onChannelEdit} onChannelMove={props.onChannelMove} onChannelRemoveRecipient={props.onChannelRemoveRecipient} onChannelResetIcon={props.onChannelResetIcon} />);
+        return (<Channel key={channel.table_Id} index={index} channelData={channel} selected={selected} onChannelClick={onChannelClick} onChannelClearCache={ChannelClearCache} onChannelDelete={ChannelDelete} onChannelEdit={ChannelEdit} onChannelMove={ChannelMove} onChannelRemoveRecipient={ChannelRemoveRecipient} onChannelResetIcon={ChannelResetIcon} onChannelFriendClicked={onChannelFriendClicked} onReloadList={() => dispatch(FriendsPopulate())} />);
       });
     }
 

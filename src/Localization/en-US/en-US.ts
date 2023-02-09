@@ -5,6 +5,7 @@ import AuthView_EN_US from "./Views/AuthView/AuthView.json";
 
 import LoginPage_EN_US from "./Views/AuthView/Pages/LoginPage.json";
 import RegisterPage_EN_US from "./Views/AuthView/Pages/RegisterPage.json";
+import RequestResetPage_EN_US from "./Views/AuthView/Pages/RequestResetPage.json";
 import ResetPage_EN_US from "./Views/AuthView/Pages/ResetPage.json";
 import ConfirmPage_EN_US from "./Views/AuthView/Pages/ConfirmPage.json";
 
@@ -33,7 +34,8 @@ import ChatPage_EN_US from "./Views/MainView/Pages/ChatPage.json";
 import SettingsView_EN_US from "./Views/SettingsView/SettingsView.json";
 
 import DashboardPage_EN_US from "./Views/SettingsView/Pages/DashboardPage.json";
-import NeworkDiagnostics_EN_US from "./Views/SettingsView/Pages/NetworkDiagnostics.json";
+import DebugPage_EN_US from "./Views/SettingsView/Pages/DebugPage.json";
+import NetworkDiagnostics_EN_US from "./Views/SettingsView/Pages/NetworkDiagnostics.json";
 
 // Components
 import Button_EN_US from "./Components/Buttons/Button.json"
@@ -64,6 +66,7 @@ export const Localizations_EN_US = {
 
   LoginPage: LoginPage_EN_US,
   RegisterPage: RegisterPage_EN_US,
+  RequestResetPage: RequestResetPage_EN_US,
   ResetPage: ResetPage_EN_US,
   ConfirmPage: ConfirmPage_EN_US,
 
@@ -92,7 +95,8 @@ export const Localizations_EN_US = {
   SettingsView: SettingsView_EN_US,
 
   DashboardPage: DashboardPage_EN_US,
-  NetworkDiagnostics: NeworkDiagnostics_EN_US,
+  DebugPage: DebugPage_EN_US,
+  NetworkDiagnostics: NetworkDiagnostics_EN_US,
 
   // Components
   Button: Button_EN_US,

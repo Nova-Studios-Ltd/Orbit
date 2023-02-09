@@ -2,7 +2,15 @@ import { Flags, HasUrlFlag } from "Lib/Debug/Flags";
 import { API_DOMAIN } from "vars";
 
 /**
- * Represents commonly used HTTP Status Codes (200, 400, 401, 403, 404, 500)
+ * Experimental type overrides.
+ */
+type EXPERIMENTAL_TYPE_RequestInit = RequestInit & { duplex: "half" | "full" };
+type EXPERIMENTAL_TYPE_fetch = (input: RequestInfo, init?: EXPERIMENTAL_TYPE_RequestInit) => Promise<Response>;
+
+const EXPERIMENTAL_fetch: EXPERIMENTAL_TYPE_fetch = fetch;
+
+/**
+ * Represents commonly used HTTP Status Codes (HTTPStatusCodes.OK, 400, 401, 403, 404, 500)
  */
 export enum HTTPStatusCodes {
   OK = 200,
@@ -43,6 +51,13 @@ export enum ContentType {
 }
 
 /**
+ * Represents the callback type for the status of requests.
+ *
+ * For example, getting the progress of an upload.
+ */
+export type ProgressCallback = (current: number, max: number) => any
+
+/**
  * Use to GET data from the API
  * @param endpoint Url of the endpoint
  * @param token Optional security token
@@ -76,13 +91,59 @@ export async function POST(endpoint: string, content_type: ContentType, payload:
         "Authorization": token || "",
         "Content-Type": content_type
     },
-    body: payload
+    body: payload,
   });
 
   if (json && resp.status === HTTPStatusCodes.OK)
     return new NCAPIResponse(resp.status, resp.statusText, await resp.json());
   else
     return new NCAPIResponse(resp.status, resp.statusText, await resp.text());
+}
+
+/**
+ * WARNING: Experimental method! May break at any time, and may not work on even slightly older browser versions.
+ *
+ * Use to POST a file to the API.
+ *
+ * This experimental version uses streams instead of static strings as the payload.
+ *
+ * @param endpoint Url of the endpoint
+ * @param content_type Indicates the type of data being sent
+ * @param payload The data to be sent with the request
+ * @param token Optional security token
+ * @param progressCallback Optional callback function that is called whenever a new "progress" event is received from the request
+ * @returns A NCAPIResponse with the data from the NovaChat API
+ */
+export async function EXPERIMENTAL_POSTFile(endpoint: string, payload: Blob, filename: string, keys?: string, iv?: string, token?: string, progressCallback?: ProgressCallback) : Promise<NCAPIResponse> {
+  let progress = 0;
+  const MAX_PROGRESS = payload.length;
+
+  const formData = new FormData();
+  formData.append("file", payload, filename);
+  formData.append("keys", keys || "");
+  formData.append("iv", iv || "");
+
+  const stream = new ReadableStream({
+    start: (controller) => {
+      controller.enqueue(formData);
+    },
+    pull: (controller) => {
+      progress++;
+      if (progressCallback) progressCallback(progress, MAX_PROGRESS);
+      if (progress >= MAX_PROGRESS) controller.close();
+    }
+  });
+
+  const resp = await EXPERIMENTAL_fetch(`${API_DOMAIN}/${endpoint}`, {
+    method: "POST",
+    headers: {
+        "Authorization": token || "",
+    },
+    body: stream,
+    duplex: "half"
+  }).catch(e => Promise.reject(e));
+
+  return new NCAPIResponse(resp.status, resp.statusText, await resp.text());
 }
 
 /**

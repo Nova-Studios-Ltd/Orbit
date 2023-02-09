@@ -4,6 +4,10 @@ import { Button, Card, Link, TextField, Typography, useTheme } from "@mui/materi
 import { useTranslation } from "react-i18next";
 import { useLocation } from "react-router-dom";
 
+// Redux
+import { useSelector } from "Redux/Hooks";
+import { selectPathname } from "Redux/Selectors/RoutingSelectors";
+
 // Source
 import { RequestResetPassword } from "Lib/API/Endpoints/User";
 import { GetRSAKeyPair } from "Lib/Encryption/RSA";
@@ -12,6 +16,8 @@ import { RSAMemoryKeypair } from "Lib/Encryption/Types/RSAMemoryKeypair";
 // Types
 import type { Page } from "Types/UI/Components";
 
+import type { Page } from "Types/UI/Components";
+import { Coordinates } from "Types/General";
 
 interface ResetPageProps extends Page {
 
@@ -20,12 +26,14 @@ interface ResetPageProps extends Page {
 
 export default function ResetPage(props: ResetPageProps) {
   const theme = useTheme();
-  const location = useLocation();
   const Localizations_ResetPage = useTranslation("ResetPage").t;
 
-  const [password, setPassword] = useState("");
-  const [confPassword, setConfPassword] = useState("")
+  const pathname = useSelector(selectPathname())
 
+  const [password, setPassword] = useState("");
+  const [confPassword, setConfPassword] = useState("");
+  const [HelpPopupVisible, setHelpVisibility] = useState(false);
+  const [HelpPopupAnchorPos, setHelpPopupAnchorPos] = useState({} as unknown as Coordinates);
 
   const TextFieldChanged = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = event.currentTarget;
@@ -45,17 +53,10 @@ export default function ResetPage(props: ResetPageProps) {
   const resetPassword = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    const token = location.search.split("=")[1];
+    /*const token = location.search.split("=")[1];
     if (token === undefined || token === "") return;
-    RequestResetPassword(password, token, await GetRSAKeyPair() as RSAMemoryKeypair, () => {});
+    RESETPassword(password, token, await GenerateRSAKeyPair() as RSAMemoryKeyPair, () => {});*/
   }
-
-  const E2ELearnMore = (
-    <Card className="E2EHelpContainer">
-      <Typography variant="body1">{Localizations_ResetPage("TextField_HelperText-ForgottenPasswordWarningExplanationCaption")}</Typography>
-      <Typography variant="body2">{Localizations_ResetPage("TextField_HelperText-ForgottenPasswordWarningExplanation")}</Typography>
-    </Card>
-  );
 
   return (
     <div className="RegisterPageContainer">
@@ -66,16 +67,21 @@ export default function ResetPage(props: ResetPageProps) {
           <>
             <Typography variant="caption" color="red">{Localizations_ResetPage("TextField_HelperText-ForgottenPasswordWarning")}</Typography>
             <Link underline="none" style={{ cursor: "pointer", marginLeft: 8 }} onClick={(event) => {
-              if (props.sharedProps && props.sharedProps.HelpPopup) {
-                props.sharedProps.HelpPopup.setAnchor(event.currentTarget);
-                props.sharedProps.HelpPopup.setContent(E2ELearnMore);
-                props.sharedProps.HelpPopup.setVisibility(true);
-              }
+              setHelpPopupAnchorPos({ x: event.clientX, y: event.clientY });
+              setHelpVisibility(true);
             }}>{Localizations_ResetPage("Link-LearnMore")}</Link>
           </>
         }/>
         <Button className="RegisterFormItem" variant="outlined" type="submit">{Localizations_ResetPage("Button_Text-Reset")}</Button>
       </form>
+      <Popover className="GenericPopover" open={HelpPopupVisible} anchorReference="anchorPosition" anchorPosition={{ top: HelpPopupAnchorPos.y, left: HelpPopupAnchorPos.x }} onClose={() => {
+          setHelpVisibility(false);
+        }}>
+        <Card className="E2EHelpContainer">
+          <Typography variant="body1">{Localizations_ResetPage("TextField_HelperText-ForgottenPasswordWarningExplanationCaption")}</Typography>
+          <Typography variant="body2">{Localizations_ResetPage("TextField_HelperText-ForgottenPasswordWarningExplanation")}</Typography>
+        </Card>
+      </Popover>
     </div>
   );
 }
