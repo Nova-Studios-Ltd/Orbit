@@ -72,6 +72,18 @@ function App() {
 
   useEffect(() => {
     if (onFirstLoad) {
+      (async () => {
+        await ThemeEngine.LoadThemesFromURL(`${window.location.origin}/Themes/`);
+        const lastTheme = localStorage.getItem("Theme");
+        if (lastTheme === null) {
+          localStorage.setItem("Theme", "DarkTheme_Default");
+          setTheme("DarkTheme_Default");
+        }
+        else {
+          setTheme(lastTheme);
+        }
+      })();
+
       const flags = GetUrlFlags();
       for (let i = 0; i < flags.length; i++) {
         const flag = flags[i];
@@ -83,26 +95,12 @@ function App() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location, onFirstLoad]);
 
-  useEffect(() => {
-    (async () => {
-      await ThemeEngine.LoadThemesFromURL(`${window.location.origin}/Themes/`);
-      const lastTheme = localStorage.getItem("Theme");
-      if (lastTheme === null) {
-        localStorage.setItem("Theme", "DarkTheme_Default");
-        setTheme("DarkTheme_Default");
-      }
-      else {
-        setTheme(lastTheme);
-      }
-    })();
-  });
-
   window.addEventListener("resize", () => {
     dispatch(updateWidthConstraintStatus((window.matchMedia("(max-width: 600px)").matches)));
   });
 
   (window as any).notification = (tile: string, body: string, url: string) => {
-    TriggerNotification(title, body, NotificationType.Info, url);
+    TriggerNotification(tile, body, NotificationType.Info, url);
   }
 
   return (
