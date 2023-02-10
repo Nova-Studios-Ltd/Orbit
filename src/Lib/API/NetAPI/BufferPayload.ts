@@ -13,7 +13,8 @@ export class BufferPayload {
     this.extraFields = new Dictionary<string, string>();
   }
 
-  WithExtraField(field: string, data: string) {
+  WithExtraField(field: string, data: string): BufferPayload {
     this.extraFields.setValue(field, data);
+    return this;
   }
 }

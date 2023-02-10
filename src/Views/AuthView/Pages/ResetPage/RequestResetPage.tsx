@@ -4,7 +4,10 @@ import { Button, Card, Link, Popover, TextField, Typography, useTheme } from "@m
 import { useTranslation } from "react-i18next";
 
 // Source
-import { POST, ContentType, HTTPStatusCodes } from "Lib/API/NCAPI";
+import { POST } from "Lib/API/NetAPI/NetAPI";
+import { ContentType } from "Lib/API/NetAPI/ContentType";
+import { HTTPStatus } from "Lib/API/NetAPI/HTTPStatus";
+import { NetHeaders } from "Lib/API/NetAPI/NetHeaders";
 
 // Redux
 import { useDispatch } from "Redux/Hooks";
@@ -48,8 +51,8 @@ export default function RequestResetPage(props: RequestResetPageProps) {
 
     setError(false);
 
-    const resp = await POST(`Auth/RequestReset?email=${email}`, ContentType.EMPTY, "", undefined, false);
-    if (resp.status !== HTTPStatusCodes.OK) setError(true);
+    const resp = await POST(`Auth/RequestReset?email=${email}`, "", new NetHeaders().WithContentType(ContentType.EMPTY));
+    if (resp.status !== HTTPStatus.OK) setError(true);
     else setEmailSent(true);
   }
 

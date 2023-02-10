@@ -1,4 +1,5 @@
-import { ContentType, GETFile } from "Lib/API/NCAPI";
+import { GETBuffer } from "Lib/API/NetAPI/NetAPI";
+import { ContentType } from "Lib/API/NetAPI/ContentType";
 
 /**
  * Interface representing Electrons IPCRenderer/IPCMain object
@@ -196,7 +197,7 @@ export function WriteImageToClipboard(data: Uint8Array, content_type: ContentTyp
 export function TriggerNotification(title: string, body: string, type: NotificationType, icon?: string) {
   if (IsElectron()) {
     if (icon) {
-      GETFile(icon).then((v) => {
+      GETBuffer(icon).then((v) => {
         GetIPCRenderer().send("TriggerNotif", title, body, v.payload);
       });
     }

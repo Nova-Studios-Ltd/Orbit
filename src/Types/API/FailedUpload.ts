@@ -1,8 +1,16 @@
+import { HTTPStatus } from "Lib/API/NetAPI/HTTPStatus";
+
 export enum FailReason {
-  UploadSizeExcceded = 413,
+  UploadSizeExceeded = 413,
   ChannelNotFound = 404,
   NotPermitted = 403,
   ServerFailure = 500
+}
+
+export function HTTPStatusToFailReason(status: HTTPStatus) {
+  const cast = Number.parseInt(FailReason[status]);
+  if (!cast) return status;
+  return cast;
 }
 
 export default class FailedUpload {
