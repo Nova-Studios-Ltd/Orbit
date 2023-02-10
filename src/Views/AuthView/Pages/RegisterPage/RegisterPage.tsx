@@ -1,19 +1,24 @@
 import React, { useState } from "react";
 import { Button, Card, Link, Popover, TextField, Typography, useTheme } from "@mui/material";
 import { useTranslation } from "react-i18next";
-import { ContentType, NCAPIResponse, POST } from "NSLib/NCAPI";
+import { POST } from "Lib/API/NetAPI/NetAPI";
+import { ContentType } from "Lib/API/NetAPI/ContentType";
+import { NetResponse } from "Lib/API/NetAPI/NetResponse";
 import { RegisterPayload, RegPayloadKey } from "Types/API/RegisterPayload";
+import { AESEncrypt } from "Lib/Encryption/AES";
+import { GetRSAKeyPair } from "Lib/Encryption/RSA";
+import { SHA256 } from "Lib/Encryption/Util";
+import Base64Uint8Array from "Lib/Objects/Base64Uint8Array";
 
 import { useDispatch } from "Redux/Hooks";
 import { navigate } from "Redux/Thunks/Routing";
 
 import type { Page } from "Types/UI/Components";
 import { RegisterStatus } from "Types/Enums";
-import { EncryptBase64, GenerateBase64SHA256, GenerateRSAKeyPair } from "NSLib/NCEncryption";
-import { Base64String } from "NSLib/Base64";
 import { Routes } from "Types/UI/Routing";
 import { Coordinates } from "Types/General";
-
+import { NetHeaders } from "Lib/API/NetAPI/NetHeaders";
+import { HTTPStatus } from "Lib/API/NetAPI/HTTPStatus";
 
 interface RegisterPageProps extends Page {
 
@@ -43,12 +48,12 @@ function RegisterPage(props: RegisterPageProps) {
     const hashPassword = await SHA256(password);
     const encPriv = await AESEncrypt(hashPassword, new Base64Uint8Array(keypair.PrivateKey));
 
-    POST("Auth/Register", ContentType.JSON, JSON.stringify(new RegisterPayload(username, hashPassword.Base64, email, new RegPayloadKey(encPriv.content.Base64, encPriv.iv.Base64, keypair.PublicKey))), undefined, false).then((response: NCAPIResponse) => {
-      if (response.status === 200) {
+    POST<void>("Auth/Register", JSON.stringify(new RegisterPayload(username, hashPassword.Base64, email, new RegPayloadKey(encPriv.content.Base64, encPriv.iv.Base64, keypair.PublicKey))), new NetHeaders().WithContentType(ContentType.JSON)).then((response: NetResponse<void>) => {
+      if (response.status === HTTPStatus.OK) {
         dispatch(navigate({ pathname: Routes.Login }));
         setFailStatus(RegisterStatus.Success);
       }
-      else if (response.status === 409) {
+      else if (response.status === HTTPStatus.Conflict) {
         setFailStatus(RegisterStatus.EmailUsed);
       }
       else {

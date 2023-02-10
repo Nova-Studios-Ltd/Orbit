@@ -1,11 +1,9 @@
-import { ChangeEvent, useState } from "react";
-import { FormControlLabel, Switch, Typography, useTheme } from "@mui/material";
+import { useTheme } from "@mui/material";
 import useClassNames from "Hooks/useClassNames";
-import { NCFlags, HasUrlFlag, SetUrlFlag, NCFlag, ClearUrlFlag, GetUrlFlag } from "NSLib/NCFlags";
+import { Flags, HasUrlFlag, Flag } from "Lib/Debug/Flags";
 
-import { useDispatch, useSelector } from "Redux/Hooks";
+import { useDispatch } from "Redux/Hooks";
 import { addParam, removeParam } from "Redux/Slices/RouteSlice";
-import { selectParamByKey } from "Redux/Selectors/RoutingSelectors";
 
 import FlagSwitch from "Components/Input/FlagSwitch/FlagSwitch";
 
@@ -30,10 +28,10 @@ function SystemFlags(props: SystemFlagsProps) {
     }
   };
 
-  const flags = Object.values(NCFlags);
+  const flags = Object.values(Flags);
 
   const flagEl = () => {
-    return flags.map((flag: NCFlag) => {
+    return flags.map((flag: Flag) => {
       const newFlag: Param = { key: flag.urlString, value: flag.defaultValue?.toString() };
       return (<FlagSwitch flag={newFlag} checked={HasUrlFlag(flag)} onChange={onChange} />);
     });

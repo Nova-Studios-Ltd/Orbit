@@ -5,8 +5,8 @@ import { AppAsyncThunkConfig, AppThunk } from "Redux/Store";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { startDoingSomething, stopDoingSomething } from "Redux/Slices/AppSlice";
 
-import { DELETEMessage, EDITMessage, GETMessages, SENDMessage } from "NSLib/APIEvents";
-import { FetchImageFromClipboard, NCFile, UploadFile } from "NSLib/ElectronAPI";
+import { RequestDeleteMessage, RequestEditMessage, RequestMessages, SendMessage } from "Lib/API/Endpoints/Messages";
+import { FetchImageFromClipboard, NCFile, UploadFile } from "Lib/ElectronAPI";
 
 import type { MessageInputSendEvent } from "Components/Input/MessageInput/MessageInput";
 import type { IMessageProps } from "Types/API/Interfaces/IMessageProps";
@@ -26,7 +26,7 @@ export function MessagesPopulate(channelUUID?: string): AppThunk {
       oldestID = parseInt(messages[messages.length - 1].message_Id);
     }
 
-    GETMessages(filteredChannelUUID, (messages: IMessageProps[]) => {
+    RequestMessages(filteredChannelUUID, (messages: IMessageProps[]) => {
       dispatch(addMultipleMessages(messages, filteredChannelUUID));
       dispatch(stopDoingSomething());
     }, false, 30, -1, oldestID - 1);
@@ -41,12 +41,10 @@ export function MessageInputSubmit(event: MessageInputSendEvent): AppThunk {
 
     if (selectedChannel === undefined || event.value === undefined || (event.value === "" && attachments.length === 0)) return;
 
-    SENDMessage(selectedChannel.table_Id, event.value, attachments, (sent: boolean) => {
+    SendMessage(selectedChannel.table_Id, event.value, attachments, (sent: boolean) => {
       if (sent) {
         dispatch(clearAttachments());
       }
-    }, (current, max) => {
-      console.log(`Uploaded ${current} bytes out of ${max} bytes`);
     });
   }
 }
@@ -56,7 +54,7 @@ export const MessageEdit = createAppAsyncThunk<Promise<void>, MessageProps>("mes
   const currentChannel = selectChannel()(thunkAPI.getState());
   if (!currentChannel) return;
   console.log(`Request to edit message ${message.id}`);
-  if (await EDITMessage(currentChannel.table_Id, message.id, message.content || "")) {
+  if (await RequestEditMessage(currentChannel.table_Id, message.id, message.content || "")) {
     console.success(`Request to edit message ${message.id} successful`);
   }
 });
@@ -66,7 +64,7 @@ export const MessageDelete = createAppAsyncThunk<Promise<void>, MessageProps>("m
   const currentChannel = selectChannel()(thunkAPI.getState());
   if (!currentChannel) return;
   console.log(`Request to delete message ${message.id}`);
-  if (await DELETEMessage(currentChannel.table_Id, message.id as string)) {
+  if (await RequestDeleteMessage(currentChannel.table_Id, message.id as string)) {
     console.success(`Request to delete message ${message.id} successful`);
   }
 });

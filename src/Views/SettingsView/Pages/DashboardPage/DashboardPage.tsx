@@ -4,7 +4,6 @@ import { Avatar, Button, Card, IconButton, Typography, useTheme } from "@mui/mat
 import { Add as AddIcon } from "@mui/icons-material";
 import useClassNames from "Hooks/useClassNames";
 import { useTranslation } from "react-i18next";
-import { NCChannelCache } from "NSLib/NCChannelCache";
 import { APP_VERSION, DEBUG } from "vars";
 import { Logout } from "Init/AuthHandler";
 
@@ -17,21 +16,17 @@ import UserData from "Lib/Storage/Objects/UserData";
 import { NCFile, UploadFile, WriteToClipboard } from "Lib/ElectronAPI";
 import { RequestChangeEmail, RequestChangePassword, RequestChangeUsername, RequestDeleteUser, RequestSetAvatar } from "Lib/API/Endpoints/User";
 import { ChannelCache } from "Lib/Storage/Objects/ChannelCache";
-import { Flags, HasUrlFlag } from "Lib/Debug/Flags";
 
 // Components
 import PageContainer from "Components/Containers/PageContainer/PageContainer";
 import Section from "Components/Containers/Section/Section";
-
-import type { Page } from "Types/UI/Components";
-import { NCFile, UploadFile, WriteToClipboard } from "NSLib/ElectronAPI";
-import { DELETEUser, SETAvatar, UPDATEEmail, UPDATEPassword, UPDATEUsername } from "NSLib/APIEvents";
-import React, { useState } from "react";
 import TextCombo from "Components/Input/TextCombo/TextCombo";
 import GenericDialog from "Components/Dialogs/GenericDialog/GenericDialog";
+
+// Types
+import type { Page } from "Types/UI/Components";
 import { Routes } from "Types/UI/Routing";
 import { TextComboStates } from "Types/Enums";
-import UserData from "DataManagement/UserData";
 
 interface DashboardPageProps extends Page {
   avatarNonce?: string,

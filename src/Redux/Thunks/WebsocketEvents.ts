@@ -1,5 +1,5 @@
-import { Events } from "Init/WebsocketEventInit";
-import { UserCache } from "App";
+import { events as Events } from "Init/WebsocketEventInit";
+import { uCache } from "App";
 
 import { AppThunk } from "Redux/Store";
 import { selectChannelUUIDByUUID } from "Redux/Selectors/ChannelSelectors";
@@ -36,17 +36,17 @@ export function RegisterWebsocketEvents(): AppThunk {
     });
 
     Events.on("FriendAdded", async (request_uuid: string, status: string) => {
-      const friendData = await UserCache.GetUserAsync(request_uuid);
+      const friendData = await uCache.GetUserAsync(request_uuid);
       dispatch(addFriend({ friendData, status }));
     });
 
     Events.on("FriendUpdated", async (request_uuid: string, status: string) => {
-      const friendData = await UserCache.GetUserAsync(request_uuid);
+      const friendData = await uCache.GetUserAsync(request_uuid);
       dispatch(addFriend({ friendData, status }));
     });
 
     Events.on("FriendRemoved", async (request_uuid: string) => {
-      const friendData = await UserCache.GetUserAsync(request_uuid);
+      const friendData = await uCache.GetUserAsync(request_uuid);
       dispatch(removeFriendByValue({ friendData }));
     });
   }

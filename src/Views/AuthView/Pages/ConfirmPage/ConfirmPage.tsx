@@ -7,8 +7,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 // Types
 import type { Page } from "Types/UI/Components";
-import { Routes } from "Types/UI/Routes";
-
+import { Routes } from "Types/UI/Routing";
 
 interface ConfirmPageProps extends Page {
 

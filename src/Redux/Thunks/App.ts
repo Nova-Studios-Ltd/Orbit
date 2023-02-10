@@ -1,6 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { GenerateBase64SHA256 } from "NSLib/NCEncryption";
+import { SHA256 } from "Lib/Encryption/Util";
 
 export const generateSessionString = createAsyncThunk("chat/generateSessionString", async () => {
-  return (await GenerateBase64SHA256(Date.now().toString())).Base64;
+  return (await SHA256(Date.now().toString())).Base64;
 });

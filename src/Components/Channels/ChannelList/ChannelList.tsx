@@ -1,9 +1,9 @@
 import { Typography, useTheme } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import useClassNames from "Hooks/useClassNames";
-import { isSubroute } from "NSLib/Util";
-import { REQUESTFriend } from "NSLib/APIEvents";
-import UserData from "DataManagement/UserData";
+import { isSubroute } from "Lib/Utility/Utility";
+import { SendFriendRequest } from "Lib/API/Endpoints/Friends";
+import UserData from "Lib/Storage/Objects/UserData";
 
 import Channel from "Components/Channels/Channel/Channel";
 
@@ -37,7 +37,7 @@ function ChannelList(props: ChannelListProps) {
 
   const onChannelFriendClicked = (friend: Friend) => {
     if (friend.friendData && friend.friendData.uuid !== UserData.Uuid) {
-      REQUESTFriend(friend.friendData.uuid);
+      SendFriendRequest(friend.friendData.uuid);
     }
   }
 
