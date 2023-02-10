@@ -1,6 +1,6 @@
 import { IsValidUsername } from "Lib/Utility/Utility";
 import { RequestCreateChannel, RequestCreateGroup } from "Lib/API/Endpoints/Channels";
-import { SendFriendRequest, SendAcceptFriend, RequestRemoveFriend, RequestBlockFriend, RequestUnblockFriend, RequestUserFriends } from "Lib/API/Endpoints/Friends";
+import { SendFriendRequest, SendAcceptFriend, RequestRemoveFriend, RequestBlockFriend, RequestUnblockFriend, RequestUserFriends, RequestFriendState } from "Lib/API/Endpoints/Friends";
 import { RequestUser, RequestUserUUID } from "Lib/API/Endpoints/User";
 import { Dictionary } from "Lib/Objects/Dictionary";
 
@@ -19,9 +19,9 @@ export const FriendsPopulate = createAsyncThunk("friends/populate", async (_, th
 
   for (let i = 0; i < rawFriends.keys().length; i++) {
     const friendUUID = rawFriends.keys()[i];
-    const friendStatus = rawFriends.getValue(friendUUID);
     const friendData = await RequestUser(friendUUID);
-    const friend = { friendData, status: friendStatus };
+    const friendStatus = await RequestFriendState(friendUUID);
+    const friend: Friend = { friendData, status: friendStatus };
 
     thunkAPI.dispatch(addFriend(friend));
   }
@@ -31,11 +31,9 @@ export const FriendsPopulate = createAsyncThunk("friends/populate", async (_, th
 
 export function FriendClicked(friend: Friend): AppThunk {
   return (dispatch, getState) => {
-    const state = getState();
-
-    if (friend.friendData && friend.friendData.uuid) {
-      switch (friend.status?.toLowerCase()) {
-        case "accepted":
+    if (friend.friendData && friend.friendData.uuid && friend.status && friend.status.state) {
+      switch (friend.status.state) {
+        case "Accepted":
           const existingChannel = dispatch(channelContainsUUID(friend.friendData.uuid, true));
           if (existingChannel) {
             dispatch(ChannelLoad(existingChannel));
@@ -44,7 +42,7 @@ export function FriendClicked(friend: Friend): AppThunk {
             RequestCreateChannel(friend.friendData.uuid, (status) => { console.log(`Channel creation from onFriendClicked status: ${status}`) });
           }
           break;
-        case "request":
+        case "Request":
           SendAcceptFriend(friend.friendData.uuid);
           break;
       }

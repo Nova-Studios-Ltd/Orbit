@@ -4,18 +4,19 @@ import { HTTPStatus } from "Lib/API/NetAPI/HTTPStatus";
 import { Dictionary, Indexable } from "Lib/Objects/Dictionary";
 import UserData from "Lib/Storage/Objects/UserData";
 import { NetHeaders } from "Lib/API/NetAPI/NetHeaders";
+import { FriendStatus } from "Types/UI/Friend";
 
 /**
  * Request the state of a friend from the current user
  * @param friend_uuid Uuid of the user to check state of
  * @returns A string representing the state
  */
-export async function RequestFriendState(friend_uuid: string) : Promise<string> {
-  const resp = await GET<string>(`/Friend/${UserData.Uuid}/Friends/${friend_uuid}`, new NetHeaders().WithAuthorization(UserData.Token));
+export async function RequestFriendState(friend_uuid: string) : Promise<FriendStatus> {
+  const resp = await GET<FriendStatus>(`/Friend/${UserData.Uuid}/Friends/${friend_uuid}`, new NetHeaders().WithAuthorization(UserData.Token));
   if (resp.status === HTTPStatus.OK) {
     return resp.payload;
   }
-  return "";
+  return {};
 }
 
 /**

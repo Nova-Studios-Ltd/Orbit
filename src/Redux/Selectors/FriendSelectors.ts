@@ -12,7 +12,7 @@ export function selectBlockedFriends(): AppSelector<Friend[]> {
 
     for (let i = 0; i < friendList.length; i++) {
       const friend = friendList[i];
-      if (friend.status !== undefined && friend.status.toLowerCase() === "blocked") filteredList.push(friend);
+      if (friend.status !== undefined && friend.status.state !== undefined && friend.status.state === "Blocked") filteredList.push(friend);
     }
 
     return filteredList;

@@ -80,7 +80,7 @@ function FriendList(props: FriendListProps) {
       const elements = props.friends.map((friend, index) => {
         if (!friend.friendData) return null;
 
-        const isBlocked = friend.status?.toLowerCase() === "blocked";
+        const isBlocked = friend.status?.state === "Blocked";
 
         if ((isBlocked && (props.variant !== (FriendButtonVariant.Blocked || FriendButtonVariant.All))) || (!isBlocked && props.variant === FriendButtonVariant.Blocked)) return null;
 
