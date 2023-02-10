@@ -1,6 +1,11 @@
-import { GET, HTTPStatusCodes, POST, ContentType, NCAPIResponse, PATCH, POSTFile, DELETE } from "Lib/API/NCAPI";
+import { GET, POST, POSTBuffer, PATCH, DELETE } from "Lib/API/NetAPI/NetAPI";
+import { ContentType } from "Lib/API/NetAPI/ContentType";
+import { HTTPStatus } from "Lib/API/NetAPI/HTTPStatus";
 import UserData from "Lib/Storage/Objects/UserData";
 import { IRawChannelProps } from "Types/API/Interfaces/IRawChannelProps";
+import { NetHeaders } from "Lib/API/NetAPI/NetHeaders";
+import { NetResponse } from "Lib/API/NetAPI/NetResponse";
+import { BufferPayload } from "Lib/API/NetAPI/BufferPayload";
 
 /**
  * Request a channel
@@ -8,8 +13,8 @@ import { IRawChannelProps } from "Types/API/Interfaces/IRawChannelProps";
  * @returns IRawChannelProps on success otherwise undefined
  */
 export async function RequestChannel(channel_uuid: string) : Promise<IRawChannelProps | undefined> {
-  const resp = await GET(`/Channel/${channel_uuid}`, UserData.Token);
-  if (resp.status === HTTPStatusCodes.OK) return resp.payload as IRawChannelProps;
+  const resp = await GET(`/Channel/${channel_uuid}`, new NetHeaders().WithAuthorization(UserData.Token));
+  if (resp.status === HTTPStatus.OK) return resp.payload as IRawChannelProps;
   return undefined;
 }
 
@@ -19,8 +24,8 @@ export async function RequestChannel(channel_uuid: string) : Promise<IRawChannel
  * @param callback Called on request completion
  */
 export function RequestCreateChannel(recipient_uuid: string, callback: (created: boolean) => void) {
-  POST(`Channel/CreateChannel?recipient_uuid=${recipient_uuid}`, ContentType.EMPTY, "", UserData.Token, false).then((resp: NCAPIResponse) => {
-    if (resp.status === HTTPStatusCodes.OK) callback(true);
+  POST<never>(`Channel/CreateChannel?recipient_uuid=${recipient_uuid}`, "", new NetHeaders().WithAuthorization(UserData.Token).WithContentType(ContentType.EMPTY)).then((resp) => {
+    if (resp.status === HTTPStatus.OK) callback(true);
     else callback(false);
   });
 }
@@ -30,8 +35,8 @@ export function RequestCreateChannel(recipient_uuid: string, callback: (created:
  * @param callback Called on request completion, contains the uuid of the new channel
  */
 export function RequestCreatePrivate(callback: (created: boolean, uuid: string) => void) {
-  POST("Channel/CreatePrivate", ContentType.EMPTY, "", UserData.Token, false).then((resp: NCAPIResponse) => {
-    if (resp.status === HTTPStatusCodes.OK) callback(true, resp.payload as string);
+  POST<never>("Channel/CreatePrivate", "", new NetHeaders().WithAuthorization(UserData.Token).WithContentType(ContentType.EMPTY)).then((resp) => {
+    if (resp.status === HTTPStatus.OK) callback(true, resp.payload as string);
     else callback(false, "");
   });
 }
@@ -43,8 +48,8 @@ export function RequestCreatePrivate(callback: (created: boolean, uuid: string) 
  * @param callback Called on request completion
  */
 export function RequestCreateGroup(group_name: string, recipients: string[], callback: (created: boolean) => void) {
-  POST(`Channel/CreateGroupChannel?group_name=${group_name}`, ContentType.JSON, JSON.stringify(recipients), UserData.Token).then((resp: NCAPIResponse) => {
-    if (resp.status === HTTPStatusCodes.OK) callback(true);
+  POST<never>(`Channel/CreateGroupChannel?group_name=${group_name}`, JSON.stringify(recipients), new NetHeaders().WithAuthorization(UserData.Token)).then((resp) => {
+    if (resp.status === HTTPStatus.OK) callback(true);
     else callback(false);
   });
 }
@@ -56,8 +61,8 @@ export function RequestCreateGroup(group_name: string, recipients: string[], cal
  * @param callback Called on request completion
  */
 export function RequestUpdateChannelName(channel_uuid: string, newName: string, callback: (updated: boolean) => void)  {
-  PATCH(`/Channel/${channel_uuid}/Name?new_name=${newName}`, ContentType.EMPTY, "", UserData.Token).then((resp: NCAPIResponse) => {
-    if (resp.status === HTTPStatusCodes.OK) callback(true);
+  PATCH<never>(`/Channel/${channel_uuid}/Name?new_name=${newName}`, "", new NetHeaders().WithAuthorization(UserData.Token).WithContentType(ContentType.EMPTY)).then((resp) => {
+    if (resp.status === HTTPStatus.OK) callback(true);
     else callback(false);
   });
 }
@@ -69,8 +74,8 @@ export function RequestUpdateChannelName(channel_uuid: string, newName: string, 
  * @param callback Called on request completion
  */
 export function RequestUpdateChannelIcon(channel_uuid: string, file: Blob, callback: (updated: boolean) => void) {
-  POSTFile(`/Media/Channel/${channel_uuid}`, file, "Unknown", undefined, undefined, UserData.Token).then((resp: NCAPIResponse) => {
-    if (resp.status === HTTPStatusCodes.OK) callback(true);
+  POSTBuffer(`/Media/Channel/${channel_uuid}`, new BufferPayload(file, "Unknown"), new NetHeaders().WithAuthorization(UserData.Token)).then((resp) => {
+    if (resp.status === HTTPStatus.OK) callback(true);
     else callback(false);
   });
 }
@@ -81,8 +86,8 @@ export function RequestUpdateChannelIcon(channel_uuid: string, file: Blob, callb
  * @param callback Called on request completion
  */
 export function RequestResetChannelIcon(channel_uuid: string, callback: (removed: boolean) => void) {
-  POST(`/Channel/${channel_uuid}/Icon`, ContentType.EMPTY, "", UserData.Token).then((resp: NCAPIResponse) => {
-    if (resp.status === HTTPStatusCodes.OK) callback(true);
+  POST<never>(`/Channel/${channel_uuid}/Icon`, "", new NetHeaders().WithAuthorization(UserData.Token).WithContentType(ContentType.EMPTY)).then((resp) => {
+    if (resp.status === HTTPStatus.OK) callback(true);
     else callback(false);
   });
 }
@@ -94,8 +99,8 @@ export function RequestResetChannelIcon(channel_uuid: string, callback: (removed
  * @param callback Called on request completion
  */
 export function RequestAddMember(channel_uuid: string, recipients: string[], callback: (added: boolean) => void) {
-  PATCH(`Channel/${channel_uuid}/Members`, ContentType.JSON, JSON.stringify(recipients), UserData.Token).then((resp: NCAPIResponse) => {
-    if (resp.status === HTTPStatusCodes.OK) callback(true);
+  PATCH<never>(`Channel/${channel_uuid}/Members`, JSON.stringify(recipients), new NetHeaders().WithAuthorization(UserData.Token).WithContentType(ContentType.JSON)).then((resp) => {
+    if (resp.status === HTTPStatus.OK) callback(true);
     else callback(false);
   });
 }
@@ -107,8 +112,8 @@ export function RequestAddMember(channel_uuid: string, recipients: string[], cal
  * @param callback Called on request completion
  */
 export function RequestRemoveMember(channel_uuid: string, recipient: string, callback: (removed: boolean) => void) {
-  DELETE(`/Channel/${channel_uuid}/Members?recipient=${recipient}`, UserData.Token).then((resp: NCAPIResponse) => {
-    if (resp.status === HTTPStatusCodes.OK) callback(true);
+  DELETE<never>(`/Channel/${channel_uuid}/Members?recipient=${recipient}`, new NetHeaders().WithAuthorization(UserData.Token)).then((resp) => {
+    if (resp.status === HTTPStatus.OK) callback(true);
     else callback(false);
   });
 }
@@ -119,8 +124,8 @@ export function RequestRemoveMember(channel_uuid: string, recipient: string, cal
  * @param callback Called on request completion
  */
 export function RequestArchiveChannel(channel_uuid: string, callback: (archived: boolean) => void) {
-  PATCH(`/Channel/${channel_uuid}/Achrive`, ContentType.EMPTY, "", UserData.Token).then((resp: NCAPIResponse) => {
-    if (resp.status === HTTPStatusCodes.OK) callback(true);
+  PATCH<never>(`/Channel/${channel_uuid}/Achrive`, "", new NetHeaders().WithAuthorization(UserData.Token).WithContentType(ContentType.EMPTY)).then((resp) => {
+    if (resp.status === HTTPStatus.OK) callback(true);
     else callback(false);
   });
 }
@@ -131,8 +136,8 @@ export function RequestArchiveChannel(channel_uuid: string, callback: (archived:
  * @param callback Called on request completion
  */
 export function RequestUnArchiveChannel(channel_uuid: string, callback: (archived: boolean) => void) {
-  PATCH(`/Channel/${channel_uuid}/Unachrive`, ContentType.EMPTY, "", UserData.Token).then((resp: NCAPIResponse) => {
-    if (resp.status === HTTPStatusCodes.OK) callback(true);
+  PATCH<never>(`/Channel/${channel_uuid}/Unachrive`, "", new NetHeaders().WithAuthorization(UserData.Token).WithContentType(ContentType.EMPTY)).then((resp) => {
+    if (resp.status === HTTPStatus.OK) callback(true);
     else callback(false);
   });
 }
@@ -143,8 +148,8 @@ export function RequestUnArchiveChannel(channel_uuid: string, callback: (archive
  * @param callback Called on request completion
  */
 export function RequestDeleteChannel(channel_uuid: string, callback: (deleted: boolean) => void) {
-  DELETE(`/Channel/${channel_uuid}`, UserData.Token).then((resp: NCAPIResponse) => {
-    if (resp.status === HTTPStatusCodes.OK) callback(true);
+  DELETE<never>(`/Channel/${channel_uuid}`, new NetHeaders().WithAuthorization(UserData.Token)).then((resp) => {
+    if (resp.status === HTTPStatus.OK) callback(true);
     else callback(false);
   });
 }

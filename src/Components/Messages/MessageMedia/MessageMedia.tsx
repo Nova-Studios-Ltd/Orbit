@@ -7,7 +7,7 @@ import useClassNames from "Hooks/useClassNames";
 import Dimensions from "Types/Dimensions";
 import MimeTypeParser, { FileType } from "Lib/Utility/MimeTypeParser";
 import { Flags, HasUrlFlag } from "Lib/Debug/Flags";
-import { GETFile } from "Lib/API/NCAPI";
+import { GETBuffer } from "Lib/API/NetAPI/NetAPI";
 import UserData from "Lib/Storage/Objects/UserData";
 import { RSADecrypt } from "Lib/Encryption/RSA";
 import Base64Uint8Array from "Lib/Objects/Base64Uint8Array";
@@ -27,6 +27,7 @@ import MessageFile from "Components/Messages/MessageMedia/Subcomponents/MessageF
 // Types
 import type { NCComponent } from "Types/UI/Components";
 import type { IAttachmentProps } from "Types/API/Interfaces/IAttachmentProps";
+import { NetHeaders } from "Lib/API/NetAPI/NetHeaders";
 
 
 export interface MessageMediaProps extends NCComponent {
@@ -64,7 +65,7 @@ function MessageMedia(props: MessageMediaProps) {
       if (props.contentUrl === undefined || props.keys === undefined || props.iv === undefined) return;
 
       // Now we grab the content itself
-      const content = await GETFile(props.contentUrl, UserData.Token, props.isExternal);
+      const content = await GETBuffer(props.contentUrl, new NetHeaders().WithAuthorization(UserData.Token), props.isExternal);
 
       // don't decrypt the data if the media is external
       if (props.isExternal) {

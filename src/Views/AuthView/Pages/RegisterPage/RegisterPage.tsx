@@ -48,7 +48,7 @@ function RegisterPage(props: RegisterPageProps) {
     const hashPassword = await SHA256(password);
     const encPriv = await AESEncrypt(hashPassword, new Base64Uint8Array(keypair.PrivateKey));
 
-    POST<void>("Auth/Register", JSON.stringify(new RegisterPayload(username, hashPassword.Base64, email, new RegPayloadKey(encPriv.content.Base64, encPriv.iv.Base64, keypair.PublicKey))), new NetHeaders().WithContentType(ContentType.JSON)).then((response: NetResponse<void>) => {
+    POST<never>("Auth/Register", JSON.stringify(new RegisterPayload(username, hashPassword.Base64, email, new RegPayloadKey(encPriv.content.Base64, encPriv.iv.Base64, keypair.PublicKey))), new NetHeaders().WithContentType(ContentType.JSON)).then((response: NetResponse<never>) => {
       if (response.status === HTTPStatus.OK) {
         dispatch(navigate({ pathname: Routes.Login }));
         setFailStatus(RegisterStatus.Success);

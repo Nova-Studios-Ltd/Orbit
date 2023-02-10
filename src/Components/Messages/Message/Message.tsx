@@ -23,7 +23,8 @@ import { Coordinates } from "Types/General";
 import Linkify from "linkify-react";
 
 // Source
-import { GETFile, HTTPStatusCodes } from "Lib/API/NCAPI";
+import { GETBuffer } from "Lib/API/NetAPI/NetAPI";
+import { HTTPStatus } from "Lib/API/NetAPI/HTTPStatus";
 import UserData from "Lib/Storage/Objects/UserData";
 import { GetImageSize, GetMimeType } from "Lib/Utility/ContentUtility";
 import { DownloadUint8ArrayFile, WriteToClipboard } from "Lib/ElectronAPI";
@@ -32,6 +33,7 @@ import Base64Uint8Array from "Lib/Objects/Base64Uint8Array";
 import { AESDecrypt } from "Lib/Encryption/AES";
 import { AESMemoryEncryptData } from "Lib/Encryption/Types/AESMemoryEncryptData";
 import { uCache } from "App";
+import { NetHeaders } from "Lib/API/NetAPI/NetHeaders";
 
 export interface MessageProps extends NCComponent {
   content?: string,
@@ -171,10 +173,10 @@ function Message(props: MessageProps) {
     for (var i = 0; i < props.attachments.length; i++) {
       // Download (Or pull from cache) all attachments, decrypt and compress them
       const att = props.attachments[i];
-      const file = await GETFile(att.contentUrl, UserData.Token);
+      const file = await GETBuffer(att.contentUrl, new NetHeaders().WithAuthorization(UserData.Token));
       const att_key = await RSADecrypt(UserData.KeyPair.PrivateKey, new Base64Uint8Array(att.keys[UserData.Uuid]));
       const decryptedContent = await AESDecrypt(att_key, new AESMemoryEncryptData(new Base64Uint8Array(att.iv), file.payload as Base64Uint8Array));
-      if (file.status !== HTTPStatusCodes.OK) continue;
+      if (file.status !== HTTPStatus.OK) continue;
       zip.file(att.filename, decryptedContent);
     }
     // Generate Zip

@@ -1,4 +1,4 @@
-import { HTTPStatusCodes } from "Lib/API/NCAPI";
+import { HTTPStatus } from "Lib/API/NetAPI/HTTPStatus";
 import Dimensions from "Types/Dimensions";
 import { API_DOMAIN } from "vars";
 import MimeTypeParser, { FileType } from "./MimeTypeParser";
@@ -14,7 +14,7 @@ export async function GetMimeType(url: string): Promise<FileType> {
   const req = await fetch(`${API_DOMAIN}/Proxy?url=${encodeURIComponent(url)}`, {
     method: "HEAD"
   });
-  if (req.status !== HTTPStatusCodes.OK) return FileType.Unknown;
+  if (req.status !== HTTPStatus.OK) return FileType.Unknown;
   return new MimeTypeParser((await req.blob()).type).getGeneralizedFileType();
 }
 
