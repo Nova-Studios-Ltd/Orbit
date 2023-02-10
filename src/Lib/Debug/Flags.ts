@@ -4,7 +4,7 @@ import { selectParamByKeyExists } from "Redux/Selectors/RoutingSelectors";
 import store from "Redux/Store";
 import { Param } from "Types/UI/Routing";
 
-export class NCFlag {
+export class Flag {
   urlString: string;
   isStringValue: boolean;
   defaultValue: string | boolean | undefined;
@@ -74,7 +74,7 @@ function clearFlag(name: string) : string {
  * @param flag The name of the flag
  * @returns True if the flag is found, otherwise false
  */
-export function HasUrlFlag(flag: NCFlag) : boolean {
+export function HasUrlFlag(flag: Flag) : boolean {
   return selectParamByKeyExists(flag.urlString)(store.getState());
 }
 

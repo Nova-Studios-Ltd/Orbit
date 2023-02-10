@@ -12,7 +12,7 @@ import DebugConsoleCanvas from "Components/Debug/DebugConsoleCanvas/DebugConsole
 import PageContainer from "Components/Containers/PageContainer/PageContainer";
 
 import type { Page } from "Types/UI/Components";
-import { HasUrlFlag, NCFlags } from "NSLib/NCFlags";
+import { HasUrlFlag, Flags } from "Lib/Debug/Flags";
 import { Param } from "Types/UI/Routing";
 
 interface DebugPageProps extends Page {
@@ -28,7 +28,7 @@ function DebugPage(props: DebugPageProps) {
   return (
     <PageContainer className={classNames} noPadding>
       <Section title={Localizations_DebugPage("Section_Title-Diagnostics")}>
-        <NetworkDiag showAdvanced={HasUrlFlag(NCFlags.EnableSocketControls)}/>
+        <NetworkDiag showAdvanced={HasUrlFlag(Flags.EnableSocketControls)}/>
       </Section>
       <Section title={Localizations_DebugPage("Section_Title-Flags")} childrenRight={
         <Button onClick={() => dispatch(clearParams())}>{Localizations_DebugPage("Button_Label-ClearAllFlags")}</Button>

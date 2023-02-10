@@ -2,7 +2,6 @@
 import React, { useState } from "react";
 import { Button, Card, Link, Popover, TextField, Typography, useTheme } from "@mui/material";
 import { useTranslation } from "react-i18next";
-import { useLocation } from "react-router-dom";
 
 // Source
 import { POST, ContentType, HTTPStatusCodes } from "Lib/API/NCAPI";
@@ -12,8 +11,6 @@ import { useDispatch } from "Redux/Hooks";
 import { navigate } from "Redux/Thunks/Routing";
 
 // Types
-import type { Page } from "Types/UI/Components";
-import { Routes } from "Types/UI/Routes";
 import type { Page } from "Types/UI/Components";
 import { Routes } from "Types/UI/Routing";
 import { Coordinates } from "Types/General";

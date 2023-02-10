@@ -17,7 +17,7 @@ export interface NCComponent {
 }
 
 export interface NCAPIComponent extends NCComponent {
-  selectedChannel?: IRawChannelProps,
+
 }
 
 export interface Page extends NCComponent {

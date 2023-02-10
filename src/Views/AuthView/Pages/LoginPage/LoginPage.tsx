@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Button, Link, TextField, Typography, useTheme } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { Link as RouterLink, useLocation, useNavigate } from "react-router-dom";
-import { isSubroute } from "NSLib/Util";
+import { isSubroute } from "Lib/Utility/Utility";
 
 import { useDispatch, useSelector } from "Redux/Hooks";
 import { navigate } from "Redux/Thunks/Routing";

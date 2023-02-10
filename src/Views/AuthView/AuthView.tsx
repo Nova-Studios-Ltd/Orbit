@@ -2,7 +2,6 @@
 import { useTheme } from "@mui/material";
 import { Outlet } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import GenerateRandomColor from "NSLib/ColorGeneration";
 
 // Source
 import GenerateRandomColor from "Lib/Utility/ColorGeneration";

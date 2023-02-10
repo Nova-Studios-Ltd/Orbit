@@ -1,6 +1,6 @@
 // Globals
 import React, { useState } from "react";
-import { Button, Card, Link, TextField, Typography, useTheme } from "@mui/material";
+import { Button, Card, Link, TextField, Typography, useTheme, Popover } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { useLocation } from "react-router-dom";
 
@@ -14,8 +14,6 @@ import { GetRSAKeyPair } from "Lib/Encryption/RSA";
 import { RSAMemoryKeypair } from "Lib/Encryption/Types/RSAMemoryKeypair";
 
 // Types
-import type { Page } from "Types/UI/Components";
-
 import type { Page } from "Types/UI/Components";
 import { Coordinates } from "Types/General";
 

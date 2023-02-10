@@ -1,8 +1,11 @@
-import { DELETEChannel, GETChannel, GETFriendState, GETMessages, GETUser, GETUserChannels, REMOVEChannelIcon, REMOVEChannelMember, UPDATEChannelIcon, UPDATEChannelName } from "NSLib/APIEvents";
-import { NCChannelCache } from "NSLib/NCChannelCache";
-import { HasUrlFlag, NCFlags } from "NSLib/NCFlags";
+import { RequestDeleteChannel, RequestChannel, RequestRemoveMember, RequestUpdateChannelIcon, RequestUpdateChannelName, RequestResetChannelIcon } from "Lib/API/Endpoints/Channels";
+import { RequestFriendState } from "Lib/API/Endpoints/Friends";
+import { RequestMessages } from "Lib/API/Endpoints/Messages";
+import { RequestUser, RequestUserChannels } from "Lib/API/Endpoints/User";
+import { ChannelCache } from "Lib/Storage/Objects/ChannelCache";
+import { HasUrlFlag, Flags } from "Lib/Debug/Flags";
 import NSPerformance from "Lib/Debug/NSPerformance";
-import UserData from "DataManagement/UserData";
+import UserData from "Lib/Storage/Objects/UserData";
 
 import { AppThunk } from "Redux/Store";
 import { navigate } from "Redux/Thunks/Routing";
@@ -49,7 +52,7 @@ export function channelContainsUUID(uuid: string, noGroup?: boolean): AppThunk<I
 
 export function ChannelsPopulate(preload?: boolean): AppThunk {
   return (dispatch, getState) => {
-    GETUserChannels(async (channels: string[]) => {
+    RequestUserChannels(async (channels: string[]) => {
       let state = getState();
       const perf = new NSPerformance("LoadChannelList");
       const loadedChannels = [] as INotSoRawChannelProps[];
@@ -58,7 +61,7 @@ export function ChannelsPopulate(preload?: boolean): AppThunk {
 
       for (var i = 0; i < channels.length; i++) {
         const perfC = new NSPerformance("GETChannelInfo")
-        const channel: INotSoRawChannelProps | undefined = await GETChannel(channels[i]);
+        const channel: INotSoRawChannelProps | undefined = await RequestChannel(channels[i]);
         if (channel === undefined) continue;
         channel.ui = { members: [] };
         if (channel.members) {
@@ -66,8 +69,8 @@ export function ChannelsPopulate(preload?: boolean): AppThunk {
             const member = channel.members[i];
             let memberData = loadedFriends.find(friend => friend.friendData?.uuid === member);
             if (!memberData) {
-              const newMemberData = await GETUser(member);
-              const memberStatus = await GETFriendState(member);
+              const newMemberData = await RequestUser(member);
+              const memberStatus = await RequestFriendState(member);
               memberData = { friendData: newMemberData, status: memberStatus };
               loadedFriends.push(memberData);
             }
@@ -112,16 +115,16 @@ export function ChannelLoad(channel?: IRawChannelProps): AppThunk {
   dispatch(startDoingSomething());
 
   // Check if channel has cache
-  const isCache = await NCChannelCache.ContainsCache(channel.table_Id);
+  const isCache = await ChannelCache.ContainsCache(channel.table_Id);
 
-  if (isCache !== undefined && !await (isCache as NCChannelCache).IsEmpty()) {
-    const cache = isCache as NCChannelCache;
+  if (isCache !== undefined && !await (isCache as ChannelCache).IsEmpty()) {
+    const cache = isCache as ChannelCache;
     // Fully refresh cache, ignoring anything, pulling the newest messages
-    if (await cache.RequiresRefresh() || HasUrlFlag(NCFlags.ForceCacheRebuild)) {
+    if (await cache.RequiresRefresh() || HasUrlFlag(Flags.ForceCacheRebuild)) {
       console.log("Rebuilding cache...");
       //cache.ClearCache();
 
-      GETMessages(channel.table_Id, async (messages: IMessageProps[]) => {
+      RequestMessages(channel.table_Id, async (messages: IMessageProps[]) => {
         if (channel === undefined || channel.table_Id === undefined) return; // To suppress the compiler error because the linter is dumb (or I did something dumb)
         dispatch(setAllMessagesAtOnce([...messages], channel.table_Id));
         //scrollCanvas();
@@ -132,15 +135,15 @@ export function ChannelLoad(channel?: IRawChannelProps): AppThunk {
       return true;
     }
 
-    if (!await cache.IsValidSession(session) || HasUrlFlag(NCFlags.IgnoreCacheSession)) {
+    if (!await cache.IsValidSession(session) || HasUrlFlag(Flags.IgnoreCacheSession)) {
       console.log("Checking and updating cache...");
       //await NCChannelCache.CleanCache(channel.table_Id);
       //await NCChannelCache.UpdateCache(channel.table_Id);
 
-      const c = await NCChannelCache.Open(channel.table_Id)
+      const c = await ChannelCache.Open(channel.table_Id)
       await c.WriteSession(session);
 
-      GETMessages(channel.table_Id, (messages: IMessageProps[]) => {
+      RequestMessages(channel.table_Id, (messages: IMessageProps[]) => {
         if (channel === undefined || channel.table_Id === undefined) return; // To suppress the compiler error because the linter is dumb (or I did something dumb)
         dispatch(setAllMessagesAtOnce([...messages], channel.table_Id));
         dispatch(stopDoingSomething());
@@ -150,7 +153,7 @@ export function ChannelLoad(channel?: IRawChannelProps): AppThunk {
       return true;
     }
 
-    GETMessages(channel.table_Id, (messages: IMessageProps[]) => {
+    RequestMessages(channel.table_Id, (messages: IMessageProps[]) => {
       if (channel === undefined || channel.table_Id === undefined) return; // To suppress the compiler error because the linter is dumb (or I did something dumb)
       dispatch(setAllMessagesAtOnce([...messages], channel.table_Id));
       dispatch(stopDoingSomething());
@@ -158,12 +161,12 @@ export function ChannelLoad(channel?: IRawChannelProps): AppThunk {
     });
   }
   else {
-    GETMessages(channel.table_Id, async (messages: IMessageProps[]) => {
+    RequestMessages(channel.table_Id, async (messages: IMessageProps[]) => {
       if (channel === undefined || channel.table_Id === undefined) return; // To suppress the compiler error because the linter is dumb (or I did something dumb)
       dispatch(setAllMessagesAtOnce([...messages], channel.table_Id));
       //scrollCanvas();
-      const cc = await NCChannelCache.ContainsCache(channel.table_Id);
-      if (cc) await (cc as NCChannelCache).WriteSession(session);
+      const cc = await ChannelCache.ContainsCache(channel.table_Id);
+      if (cc) await (cc as ChannelCache).WriteSession(session);
       dispatch(stopDoingSomething());
     }, true);
   }
@@ -175,7 +178,7 @@ export function ChannelLoad(channel?: IRawChannelProps): AppThunk {
 export function ChannelClearCache(channel: IRawChannelProps) {
   console.log(`Request to clear channel ${channel.channelName}'s cache`);
   if (channel.table_Id === undefined) return;
-  NCChannelCache.DeleteSpecificCache(channel.table_Id).then((success: boolean) => {
+  ChannelCache.DeleteSpecificCache(channel.table_Id).then((success: boolean) => {
     if (!success) console.error(`Failed to clear channel ${channel.table_Id}'s cache`)
     console.success(`Cleared channel ${channel.channelName}'s cache successfully`);
   });
@@ -183,8 +186,8 @@ export function ChannelClearCache(channel: IRawChannelProps) {
 
 export function ChannelEdit(channel: IChannelUpdateProps) {
   console.log(`Request to edit channel ${channel.table_Id}`);
-  UPDATEChannelName(channel.table_Id, channel.channelName, (result) => { if (result) console.success(`Successfully changed channel ${channel.table_Id}'s name to ${channel.channelName}`); else console.error(`Failed to change channel ${channel.table_Id}'s channel name`) });
-  if (channel.channelIcon && channel.channelIcon.FileContents) UPDATEChannelIcon(channel.table_Id, new Blob([channel.channelIcon.FileContents]), (result) => { if (result) console.success(`Successfully changed channel ${channel.table_Id}'s icon`); else console.error(`Failed to change channel ${channel.table_Id}'s channel icon`) });
+  RequestUpdateChannelName(channel.table_Id, channel.channelName, (result) => { if (result) console.success(`Successfully changed channel ${channel.table_Id}'s name to ${channel.channelName}`); else console.error(`Failed to change channel ${channel.table_Id}'s channel name`) });
+  if (channel.channelIcon && channel.channelIcon.FileContents) RequestUpdateChannelIcon(channel.table_Id, new Blob([channel.channelIcon.FileContents]), (result) => { if (result) console.success(`Successfully changed channel ${channel.table_Id}'s icon`); else console.error(`Failed to change channel ${channel.table_Id}'s channel icon`) });
   //loadChannels();
   //onAvatarChanged();
 };
@@ -192,7 +195,7 @@ export function ChannelEdit(channel: IChannelUpdateProps) {
 export function ChannelDelete(channel: IRawChannelProps) {
   console.log(`Request to delete channel ${channel.channelName}`);
   if (channel.table_Id === undefined) return;
-  DELETEChannel(channel.table_Id, (deleted: boolean) => {
+  RequestDeleteChannel(channel.table_Id, (deleted: boolean) => {
     console.success(`Request to delete channel ${channel.channelName} successful`);
   });
 };
@@ -204,12 +207,12 @@ export function ChannelMove(currentChannel: IRawChannelProps, otherChannel: IRaw
 };
 
 export function ChannelRemoveRecipient(channel: IRawChannelProps, recipient: IUserData) {
-  REMOVEChannelMember(channel.table_Id, recipient.uuid, (removed) => {
+  RequestRemoveMember(channel.table_Id, recipient.uuid, (removed) => {
     if (removed) console.success(`Successfully removed user ${recipient.username} from the channel ${channel.channelName}`)
     else console.error(`Unable to remove user ${recipient.username} from the channel ${channel.channelName}`);
   });
 }
 
 export function ChannelResetIcon(channel: IRawChannelProps) {
-  REMOVEChannelIcon(channel.table_Id, (result) => { if (result) console.success(`Successfully reset channel ${channel.table_Id}'s icon`); else console.error(`Failed to reset channel ${channel.table_Id}'s channel icon`) });
+  RequestResetChannelIcon(channel.table_Id, (result) => { if (result) console.success(`Successfully reset channel ${channel.table_Id}'s icon`); else console.error(`Failed to reset channel ${channel.table_Id}'s channel icon`) });
 }

@@ -3,14 +3,11 @@ import React, { useEffect, useState } from "react";
 import { Avatar, Button, Icon, IconButton, useTheme, Typography } from "@mui/material";
 import { Add as AddIcon, AddCircle as AddFilledIcon, Group as GroupIcon, FolderSpecial as FolderIcon } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
-import useClassNames from "Hooks/useClassNames";
 
 // Source
 import { NCFile, UploadFile } from "Lib/ElectronAPI";
 import useClassNames from "Hooks/useClassNames";
 import UserData from "Lib/Storage/Objects/UserData";
-import { uCache } from "App";
-import { NCFile, UploadFile } from "NSLib/ElectronAPI";
 
 // Components
 import AvatarTextButton from "Components/Buttons/AvatarTextButton/AvatarTextButton";

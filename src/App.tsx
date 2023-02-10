@@ -1,6 +1,6 @@
 // Global
 import { useEffect, useState } from "react";
-import { ThemeProvider, useTheme } from "@mui/material";
+import { ThemeProvider } from "@mui/material";
 import { Route, Routes as RoutingGroup } from "react-router-dom";
 import i18n from "i18next";
 import { initReactI18next, useTranslation } from "react-i18next";
@@ -8,11 +8,9 @@ import { Helmet } from "react-helmet";
 import { useNavigate } from "react-router-dom";
 
 // Source
-import { OverrideConsoleLog, OverrideConsoleWarn, OverrideConsoleError, OverrideConsoleSuccess, DummyConsoleSuccess } from "./overrides";
-import { NotificationType, TriggerNotification } from "NSLib/ElectronAPI";
-import { NCFlags, GetUrlFlag, GetUrlFlags } from "NSLib/NCFlags";
+import { NotificationType, TriggerNotification } from "Lib/ElectronAPI";
+import { GetUrlFlags } from "Lib/Debug/Flags";
 
-import { ThemeSelector } from "Theme";
 import { Localizations } from "Localization/Localizations";
 import { UserCache } from "Lib/Storage/Objects/UserCache";
 
@@ -43,7 +41,6 @@ import DebugConsole from "Components/Debug/DebugConsole/DebugConsole";
 import Redirect from "Components/Special/Redirect/Redirect";
 
 import { Routes } from "Types/UI/Routing";
-import { API_DOMAIN, DEBUG, IsDevelopment, WEBSOCKET_DOMAIN } from "vars";
 import { ThemeEngine } from "Lib/CustomizationEngines/Theming/ThemeEngine";
 
 import "./App.css";
