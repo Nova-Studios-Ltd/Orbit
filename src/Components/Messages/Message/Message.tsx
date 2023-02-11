@@ -114,7 +114,7 @@ function Message(props: MessageProps) {
   }
 
   const copyMessage = () => {
-    if (selectedAttachment !== undefined && selectedAttachment.content && selectedAttachment.mimeType && selectedAttachment.mimeType.length > 0) {
+    if (selectedAttachment && selectedAttachment.content && selectedAttachment.mimeType && selectedAttachment.mimeType.length > 0) {
       EXPERIMENTAL_WriteBlobToClipboard(new Blob([selectedAttachment.content.buffer], { type: selectedAttachment.mimeType }));
       return;
     }
