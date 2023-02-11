@@ -147,7 +147,7 @@ export function FetchImageFromClipboard(event?: React.ClipboardEvent<HTMLInputEl
 /**
  * Write a string of text to the clipboard, automaticly handles switching to native
  * @param text Text to be written to the clipboard
- * @returns True if write is succesful otherwise false
+ * @returns True if write is successful otherwise false
  */
 export function WriteToClipboard(text: string) : Promise<boolean> {
   return new Promise(async (resolve) => {
@@ -160,6 +160,31 @@ export function WriteToClipboard(text: string) : Promise<boolean> {
         console.success("Successfully copied text to clipboard");
       }, () => {
         resolve(false);
+        console.error("Unable to copy text to clipboard");
+      });
+    }
+  });
+}
+
+/**
+ * EXPERIMENTAL METHOD
+ *
+ * Writes a blob with a specific mime type to the clipboard, automaticly handles switching to native
+ * @param data Blob to be written to the clipboard
+ * @returns True if write is successful otherwise false
+ */
+export function EXPERIMENTAL_WriteBlobToClipboard(data: Blob) : Promise<boolean> {
+  return new Promise(async (resolve) => {
+    if (IsElectron()) {
+      resolve(await GetIPCRenderer().invoke("WriteBlobClipboard", data));
+    }
+    else {
+      navigator.clipboard.write([new ClipboardItem({ [data.type]: data })]).then(() => {
+        resolve(true);
+        console.success("Successfully copied blob to clipboard");
+      }, () => {
+        resolve(false);
+        console.error("Unable to copy blob to clipboard");
       });
     }
   });

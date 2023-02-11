@@ -27,7 +27,7 @@ import { GETBuffer } from "Lib/API/NetAPI/NetAPI";
 import { HTTPStatus } from "Lib/API/NetAPI/HTTPStatus";
 import UserData from "Lib/Storage/Objects/UserData";
 import { GetImageSize, GetMimeType } from "Lib/Utility/ContentUtility";
-import { DownloadUint8ArrayFile, WriteToClipboard } from "Lib/ElectronAPI";
+import { DownloadUint8ArrayFile, EXPERIMENTAL_WriteBlobToClipboard, WriteToClipboard } from "Lib/ElectronAPI";
 import { RSADecrypt } from "Lib/Encryption/RSA";
 import Base64Uint8Array from "Lib/Objects/Base64Uint8Array";
 import { AESDecrypt } from "Lib/Encryption/AES";
@@ -67,6 +67,8 @@ function Message(props: MessageProps) {
   const [selectedAttachment, setSelectedAttachment] = useState(null as unknown as IAttachmentProps);
   const [ContextMenuVisible, setContextMenuVisibility] = useState(false);
   const [ContextMenuAnchorPos, setContextMenuAnchorPos] = useState(null as unknown as Coordinates);
+
+  const canCopy = (props.content !== undefined && props.content.length > 0) || selectedAttachment;
 
   useEffect(() => {
     if (props.attachments === undefined) return;
@@ -112,6 +114,10 @@ function Message(props: MessageProps) {
   }
 
   const copyMessage = () => {
+    if (selectedAttachment !== undefined && selectedAttachment.mimeType.length > 0) {
+      EXPERIMENTAL_WriteBlobToClipboard(new Blob([selectedAttachment.content.buffer], { type: selectedAttachment.mimeType }));
+      return;
+    }
     if (props.content === undefined) return;
     WriteToClipboard(props.content);
   }
@@ -229,9 +235,9 @@ function Message(props: MessageProps) {
           } /> : null}
       </div>
       <ContextMenu open={ContextMenuVisible} anchorPos={ContextMenuAnchorPos} onDismiss={closeContextMenu}>
-        <ContextMenuItem hide={!selectedAttachment} disabled>{selectedAttachment?.filename}</ContextMenuItem>
+        <ContextMenuItem hide={!selectedAttachment} onLeftClick={() => WriteToClipboard(selectedAttachment?.filename)} style={{ color: theme.palette.grey.A400 }}>{selectedAttachment?.filename}</ContextMenuItem>
         <ContextMenuItem hide={!selectedAttachment} onLeftClick={() => downloadSelectedAttachment()}>{Localizations_ContextMenuItem("ContextMenuItem-Download")}</ContextMenuItem>
-        <ContextMenuItem disabled={(props.content !== undefined && props.content.length < 1)} onLeftClick={() => copyMessage()}>{Localizations_ContextMenuItem("ContextMenuItem-Copy")}</ContextMenuItem>
+        <ContextMenuItem disabled={!canCopy} onLeftClick={() => copyMessage()}>{Localizations_ContextMenuItem("ContextMenuItem-Copy")}</ContextMenuItem>
         <ContextMenuItem hide={!isOwnMessage} onLeftClick={() => startEditMessage()}>{Localizations_ContextMenuItem("ContextMenuItem-Edit")}</ContextMenuItem>
         <ContextMenuItem hide={!isOwnMessage} onLeftClick={() => { if (props.onMessageDelete) props.onMessageDelete(filteredMessageProps) }}>{Localizations_ContextMenuItem("ContextMenuItem-Delete")}</ContextMenuItem>
         <ContextMenuItem hide={props.attachments && props.attachments?.length < 2} onLeftClick={() => downloadAllAttachments()}>{Localizations_ContextMenuItem("ContextMenuItem-DownloadAll")}</ContextMenuItem>
