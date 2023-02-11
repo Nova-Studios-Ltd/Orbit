@@ -31,7 +31,8 @@ export const FriendsPopulate = createAsyncThunk("friends/populate", async (_, th
 
 export function FriendClicked(friend: Friend): AppThunk {
   return (dispatch, getState) => {
-    if (friend.friendData && friend.friendData.uuid && friend.status && friend.status.state) {
+    if (!(friend.friendData && friend.friendData.uuid)) return;
+    if (friend.status && friend.status.state) {
       switch (friend.status.state) {
         case "Accepted":
           const existingChannel = dispatch(channelContainsUUID(friend.friendData.uuid, true));
@@ -46,6 +47,9 @@ export function FriendClicked(friend: Friend): AppThunk {
           SendAcceptFriend(friend.friendData.uuid);
           break;
       }
+    }
+    else {
+      SendFriendRequest(friend.friendData.uuid);
     }
   }
 }

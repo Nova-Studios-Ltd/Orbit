@@ -8,6 +8,7 @@ import FriendButton from "Components/Friends/FriendButton/FriendButton";
 import type { NCComponent } from "Types/UI/Components";
 import type Friend from "Types/UI/Friend";
 import { FriendButtonVariant } from "Types/Enums";
+import { consoleLogOrig } from "Redux/Thunks/Overrides";
 
 export interface FriendListProps extends NCComponent {
   friends?: Friend[],
@@ -82,7 +83,7 @@ function FriendList(props: FriendListProps) {
 
         const isBlocked = friend.status?.state === "Blocked";
 
-        if ((isBlocked && (props.variant !== (FriendButtonVariant.Blocked || FriendButtonVariant.All))) || (!isBlocked && props.variant === FriendButtonVariant.Blocked)) return null;
+        if ((isBlocked && props.variant === FriendButtonVariant.FriendsOnly) || (!isBlocked && props.variant === FriendButtonVariant.Blocked)) return null;
 
         const ticked = friendIsInRecipientsList(friend);
 
