@@ -6,6 +6,12 @@ export enum FileType {
   Document
 }
 
+export enum ClipboardSupportedMimeType {
+  PlainText = "text/plain",
+  HTML = "text/html",
+  PNG = "image/png"
+}
+
 export default class MimeTypeParser {
   readonly IMAGE_TYPES = /(\/|\.)(gif|jpe?g|bmp|png|webp)($|\?)/gi;
   readonly VIDEO_TYPES = /(\/|\.)(mp4|m4v|mkv|mov|avi)($|\?)/gi;

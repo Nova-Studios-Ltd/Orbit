@@ -14,7 +14,7 @@ export interface IPCRenderer {
 }
 
 /**
- * Class respresenting a uploaded file
+ * Class representing a uploaded file
  */
 export class NCFile {
   readonly FileContents: Uint8Array;
@@ -44,7 +44,7 @@ export function IsElectron() : boolean {
 }
 
 /**
- * Retreive IPCRenderer
+ * Retrieve IPCRenderer
  * @returns A IPCRenderer object
  */
 export function GetIPCRenderer() : IPCRenderer {
@@ -52,7 +52,7 @@ export function GetIPCRenderer() : IPCRenderer {
 }
 
 /**
- * Triggers a file download, automaticly handles switching to native
+ * Triggers a file download, automatically handles switching to native
  * @param file Uint8Array containing the file contents
  * @param filename Optional name
  */
@@ -70,7 +70,7 @@ export async function DownloadUint8ArrayFile(file: Uint8Array, filename = "unkno
 }
 
 /**
- * Triggers a file download, automaticly handles switching to native
+ * Triggers a file download, automatically handles switching to native
  * @param file Blob containing the file contents
  * @param filename Optional name
  */
@@ -90,7 +90,7 @@ export async function DownloadUint8ArrayFile(file: Uint8Array, filename = "unkno
 
 
 /**
- * Triggers a file upload, automaticly handles switching to native
+ * Triggers a file upload, automatically handles switching to native
  * @returns A Promise containing a NCFile array
  */
 export function UploadFile(multiple?: boolean): Promise<NCFile[]> {
@@ -121,7 +121,7 @@ export function UploadFile(multiple?: boolean): Promise<NCFile[]> {
 }
 
 /**
- * Fetches a files from the clipboard, automaticly handles switching to native
+ * Fetches a files from the clipboard, automatically handles switching to native
  * @param event Event from document.onpaste, *currently not used.
  * @returns A Uint8Array of png data
  */
@@ -145,9 +145,9 @@ export function FetchImageFromClipboard(event?: React.ClipboardEvent<HTMLInputEl
 }
 
 /**
- * Write a string of text to the clipboard, automaticly handles switching to native
+ * Write a string of text to the clipboard, automatically handles switching to native
  * @param text Text to be written to the clipboard
- * @returns True if write is succesful otherwise false
+ * @returns True if write is successful otherwise false
  */
 export function WriteToClipboard(text: string) : Promise<boolean> {
   return new Promise(async (resolve) => {
@@ -160,13 +160,38 @@ export function WriteToClipboard(text: string) : Promise<boolean> {
         console.success("Successfully copied text to clipboard");
       }, () => {
         resolve(false);
+        console.error("Unable to copy text to clipboard");
       });
     }
   });
 }
 
 /**
- * Writes data to the clipboard, automaticly handles switching to native
+ * EXPERIMENTAL METHOD
+ *
+ * Writes a blob with a specific mime type to the clipboard, automatically handles switching to native
+ * @param data Blob to be written to the clipboard
+ * @returns True if write is successful otherwise false
+ */
+export function EXPERIMENTAL_WriteBlobToClipboard(data: Blob) : Promise<boolean> {
+  return new Promise(async (resolve) => {
+    if (IsElectron()) {
+      resolve(await GetIPCRenderer().invoke("WriteBlobClipboard", data));
+    }
+    else {
+      navigator.clipboard.write([new ClipboardItem({ [data.type]: data })]).then(() => {
+        resolve(true);
+        console.success("Successfully copied blob to clipboard");
+      }, (reason) => {
+        resolve(false);
+        console.error(`Unable to copy blob to clipboard (${reason})`);
+      });
+    }
+  });
+}
+
+/**
+ * Writes data to the clipboard, automatically handles switching to native
  * @param data A Uint8Array containing the data to be written to the clipboard
  * @param content_type ContentType
  * @returns True if write is successful otherwise false
@@ -188,7 +213,7 @@ export function WriteImageToClipboard(data: Uint8Array, content_type: ContentTyp
 }
 
 /**
- * Handles creating a notification for native or broswer
+ * Handles creating a notification for native or browser
  * @param title Title of the notification
  * @param body Body of the notification
  * @param type Type of the notification (Can be: Error, Information, etc.)

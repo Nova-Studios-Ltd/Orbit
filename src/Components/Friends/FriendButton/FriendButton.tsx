@@ -41,7 +41,8 @@ function FriendButton(props: FriendButtonProps) {
   const Localizations_ContextMenuItem = useTranslation("ContextMenuItem").t;
   const Localizations_GenericDialog = useTranslation("GenericDialog").t;
 
-  const isBlocked = props.friend?.status?.toLowerCase() === "blocked";
+  const status = props.friend?.status?.state;
+  const isBlocked = status === "Blocked";
 
   const [FriendContextMenuVisible, setFriendContextMenuVisibility] = useState(false);
   const [FriendContextMenuAnchorPos, setFriendContextMenuAnchorPos] = useState({} as unknown as Coordinates);
@@ -89,7 +90,7 @@ function FriendButton(props: FriendButtonProps) {
         <div className="FriendButtonContent">
           <Typography>{props.friend?.friendData?.username}#{props.friend?.friendData?.discriminator}</Typography>
           {!props.hideUUID ? <Typography variant="caption" color="gray">{props.friend?.friendData?.uuid}</Typography> : null}
-          {props.friend && props.friend.status ? <Typography variant="caption">{props.friend.status}</Typography> : null}
+          {props.friend && props.friend.status ? <Typography variant="caption">{status}</Typography> : null}
         </div>
       </AvatarTextButton>
       <GenericDialog onClose={() => setRemoveFriendDialogVisible(false)} open={RemoveFriendDialogVisible} title={Localizations_FriendButton("Typography-RemoveFriendDialogTitle", { user: props.friend?.friendData?.username })} buttons={
@@ -119,9 +120,9 @@ function FriendButton(props: FriendButtonProps) {
         </> : null}
         <ContextMenuItem onLeftClick={() => props.friend && props.friend.friendData && props.friend.friendData.username && props.friend.friendData.discriminator ? WriteToClipboard(`${props.friend.friendData.username}#${props.friend.friendData.discriminator}`) : null}>{Localizations_ContextMenuItem("ContextMenuItem-CopyUser")}</ContextMenuItem>
         {!props.hideUUID ? <ContextMenuItem onLeftClick={() => props.friend && props.friend.friendData && props.friend.friendData.uuid ? WriteToClipboard(props.friend.friendData.uuid) : null}>{Localizations_ContextMenuItem("ContextMenuItem-CopyUUID")}</ContextMenuItem> : null}
-        {props.friend && props.friend.status?.toLowerCase() === "request" ? <ContextMenuItem disabled={!props.onLeftClick} onLeftClick={onLeftClick}>{Localizations_ContextMenuItem("ContextMenuItem-Accept")}</ContextMenuItem> : null}
+        {status === "Request" ? <ContextMenuItem disabled={!props.onLeftClick} onLeftClick={onLeftClick}>{Localizations_ContextMenuItem("ContextMenuItem-Accept")}</ContextMenuItem> : null}
         {props.variant !== FriendButtonVariant.Blocked ? <ContextMenuItem disabled={!props.onRemoveFriend} onLeftClick={() => setRemoveFriendDialogVisible(true)}>{Localizations_ContextMenuItem("ContextMenuItem-Unfriend")}</ContextMenuItem> : null}
-        <ContextMenuItem disabled={!props.onBlockFriend || !props.onUnblockFriend} onLeftClick={() => setBlockUnblockFriendDialogVisible(true)}>{props.friend?.status?.toLowerCase() === "blocked" ? Localizations_ContextMenuItem("ContextMenuItem-Unblock") : Localizations_ContextMenuItem("ContextMenuItem-Block")}</ContextMenuItem>
+        <ContextMenuItem disabled={!props.onBlockFriend || !props.onUnblockFriend} onLeftClick={() => setBlockUnblockFriendDialogVisible(true)}>{isBlocked ? Localizations_ContextMenuItem("ContextMenuItem-Unblock") : Localizations_ContextMenuItem("ContextMenuItem-Block")}</ContextMenuItem>
       </ContextMenu>
     </div>
   );
