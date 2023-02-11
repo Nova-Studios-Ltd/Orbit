@@ -14,6 +14,7 @@ import FriendList from "Components/Friends/FriendList/FriendList";
 import type { Page } from "Types/UI/Components";
 import type Friend from "Types/UI/Friend";
 import { Params } from "Types/UI/Routing";
+import { FriendButtonVariant } from "Types/Enums";
 
 interface FriendPageProps extends Page {
 
@@ -41,7 +42,7 @@ function FriendPage(props: FriendPageProps) {
 
   return (
     <PageContainer className={classNames} adaptive={false}>
-      <FriendList friends={friends} inSelectionMode={inSelectionMode} emptyPlaceholderHeader={Localizations_FriendPage("Typography_Heading-NoFriendHint")} emptyPlaceholderBody={Localizations_FriendPage("Typography_Body-NoFriendHint", { AddFriendSectionTitle: Localizations_FriendView("Tab_Label-AddFriend") })} onCreateGroup={onCreateGroup} onFriendClicked={(friend) => dispatch(FriendClicked(friend))} onReloadList={() => dispatch(FriendsPopulate())} onRemoveFriend={FriendRemove} onBlockFriend={FriendBlock} onUnblockFriend={FriendUnblock} />
+      <FriendList friends={friends} variant={FriendButtonVariant.FriendsOnly} inSelectionMode={inSelectionMode} emptyPlaceholderHeader={Localizations_FriendPage("Typography_Heading-NoFriendHint")} emptyPlaceholderBody={Localizations_FriendPage("Typography_Body-NoFriendHint", { AddFriendSectionTitle: Localizations_FriendView("Tab_Label-AddFriend") })} onCreateGroup={onCreateGroup} onFriendClicked={(friend) => dispatch(FriendClicked(friend))} onReloadList={() => dispatch(FriendsPopulate())} onRemoveFriend={FriendRemove} onBlockFriend={FriendBlock} onUnblockFriend={FriendUnblock} />
     </PageContainer>
   );
 }

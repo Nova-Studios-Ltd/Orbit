@@ -3,13 +3,12 @@ import useClassNames from "Hooks/useClassNames";
 import { useTranslation } from "react-i18next";
 
 import { useDispatch, useSelector } from "Redux/Hooks";
-import { selectBlockedFriends } from "Redux/Selectors/FriendSelectors";
+import { selectAllFriends, selectBlockedFriends } from "Redux/Selectors/FriendSelectors";
 import { FriendsPopulate, FriendUnblock } from "Redux/Thunks/Friends";
 
 import PageContainer from "Components/Containers/PageContainer/PageContainer";
 import FriendList from "Components/Friends/FriendList/FriendList";
 
-import type Friend from "Types/UI/Friend";
 import type { Page } from "Types/UI/Components";
 import { FriendButtonVariant } from "Types/Enums";
 
@@ -22,11 +21,11 @@ function BlockedUsersPage(props: BlockedUsersPageProps) {
   const classNames = useClassNames("BlockedUsersPageContainer", props.className);
   const dispatch = useDispatch();
 
-  const friends = useSelector(selectBlockedFriends());
+  const friends = useSelector(selectAllFriends());
 
   return (
     <PageContainer className={classNames} adaptive={false}>
-      <FriendList friends={friends} emptyPlaceholderHeader={Localizations_BlockedUsersPage("Typography_Heading-NoBlockedUsersHint")} emptyPlaceholderBody={Localizations_BlockedUsersPage("Typography_Body-NoBlockedUsersHint")} onReloadList={() => dispatch(FriendsPopulate())} onUnblockFriend={FriendUnblock} />
+      <FriendList friends={friends} variant={FriendButtonVariant.Blocked} emptyPlaceholderHeader={Localizations_BlockedUsersPage("Typography_Heading-NoBlockedUsersHint")} emptyPlaceholderBody={Localizations_BlockedUsersPage("Typography_Body-NoBlockedUsersHint")} onReloadList={() => dispatch(FriendsPopulate())} onUnblockFriend={FriendUnblock} />
     </PageContainer>
   );
 }

@@ -79,9 +79,9 @@ Then spin up a web server of your choice and copy the files from the build folde
 
 ## Questions
 
-> Q: Will there be a Docker image?
->
-> A: I plan to package the API, SQL Database, and Client into a easy to setup docker image
+**Q**: Will there be a Docker image?
+
+**A**: Currently there is no Docker image. However, the plan is to bundle the API, SQL Database, and Client into an easy to setup docker image at some point in the future.
 
 ## Support
 
@@ -89,18 +89,16 @@ Spam Nova1545.
 
 ## Roadmap
 
-What's a roadmap?
+We have a [trello board](https://trello.com/b/txTutVEp/web-nova-chat-3-orbit) for documenting features we are working on or are considering to implement.
 
 ## Contributing
 
-We are open to people contributing, we will have better defined guidelines later on!
+We are open to people contributing! However, currently there are no guidelines on how to do so. We will write some soon!
 
 ## License
 
-The project is currently licensed under a GPLv3 license.
+This project is currently licensed under a GPLv3 license.
 
 ## Project Status
 
-Development is ongoing! Please be aware that both me (Nova1545) and my colleague (GentlyTech) currently work or are in school full time, so updates and changes maybe be slow at times.
-
-<small>8===D</small>
+Development is ongoing! Please be aware that our development team currently work full time (elsewhere) or are in school, so updates and changes may be slow at times.
