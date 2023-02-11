@@ -129,6 +129,7 @@ function Message(props: MessageProps) {
   }
 
   const closeContextMenu = (event: React.FocusEvent<HTMLDivElement> | React.MouseEvent<HTMLDivElement>) => {
+    setSelectedAttachment(null as unknown as IAttachmentProps);
     setContextMenuVisibility(false);
   }
 
