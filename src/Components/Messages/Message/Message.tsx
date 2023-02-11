@@ -26,7 +26,7 @@ import Linkify from "linkify-react";
 import { GETBuffer } from "Lib/API/NetAPI/NetAPI";
 import { HTTPStatus } from "Lib/API/NetAPI/HTTPStatus";
 import UserData from "Lib/Storage/Objects/UserData";
-import { GetImageSize, GetMimeType } from "Lib/Utility/ContentUtility";
+import { CanCopyMimeType, GetImageSize, GetMimeType } from "Lib/Utility/ContentUtility";
 import { DownloadUint8ArrayFile, EXPERIMENTAL_WriteBlobToClipboard, WriteToClipboard } from "Lib/ElectronAPI";
 import { RSADecrypt } from "Lib/Encryption/RSA";
 import Base64Uint8Array from "Lib/Objects/Base64Uint8Array";
@@ -68,7 +68,7 @@ function Message(props: MessageProps) {
   const [ContextMenuVisible, setContextMenuVisibility] = useState(false);
   const [ContextMenuAnchorPos, setContextMenuAnchorPos] = useState(null as unknown as Coordinates);
 
-  const canCopy = (props.content !== undefined && props.content.length > 0) || selectedAttachment;
+  const canCopy = selectedAttachment ? CanCopyMimeType(selectedAttachment.mimeType) : (props.content !== undefined && props.content.length > 0);
 
   useEffect(() => {
     if (props.attachments === undefined) return;
@@ -114,7 +114,7 @@ function Message(props: MessageProps) {
   }
 
   const copyMessage = () => {
-    if (selectedAttachment !== undefined && selectedAttachment.mimeType.length > 0) {
+    if (selectedAttachment !== undefined && selectedAttachment.content && selectedAttachment.mimeType && selectedAttachment.mimeType.length > 0) {
       EXPERIMENTAL_WriteBlobToClipboard(new Blob([selectedAttachment.content.buffer], { type: selectedAttachment.mimeType }));
       return;
     }

@@ -1,7 +1,7 @@
 import { HTTPStatus } from "Lib/API/NetAPI/HTTPStatus";
 import Dimensions from "Types/Dimensions";
 import { API_DOMAIN } from "vars";
-import MimeTypeParser, { FileType } from "./MimeTypeParser";
+import MimeTypeParser, { ClipboardSupportedMimeType, FileType } from "./MimeTypeParser";
 
 /**
  * Gets the generalized File Type of a URL
@@ -16,6 +16,15 @@ export async function GetMimeType(url: string): Promise<FileType> {
   });
   if (req.status !== HTTPStatus.OK) return FileType.Unknown;
   return new MimeTypeParser((await req.blob()).type).getGeneralizedFileType();
+}
+
+/**
+ * Determines whether a mime type can be copied
+ * @param mimeType the mimeType to check
+ * @returns a boolean indicating whether the mime type is supported by the Clipboard API
+ */
+export function CanCopyMimeType(mimeType: string): boolean {
+  return Object.values(ClipboardSupportedMimeType).includes(mimeType as ClipboardSupportedMimeType);
 }
 
 /**
@@ -55,7 +64,7 @@ export async function GetImageSize(image: string | Uint8Array) : Promise<Dimensi
 /**
  * Generates the Width and Height of a image with respect to aspect ratio
  * @param image The Dimensions of the current image
- * @param desired The Dimensions you wish to acheive
+ * @param desired The Dimensions you wish to achieve
  * @returns New Dimensions
  */
 export function ComputeCSSDims(image: Dimensions, desired: Dimensions) : Dimensions {
