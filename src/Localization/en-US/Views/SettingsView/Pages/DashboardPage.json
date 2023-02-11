@@ -17,7 +17,7 @@
   "Typography-ChangeEmailDialogTitle": "Change Email",
   "Typography-ChangePasswordDialogTitle": "Change Password",
   "Typography-DeleteAccountDialogTitle": "Delete Account",
-  "Typography-LogoutDialogTitle": "Logout?",
+  "Typography-LogoutDialogTitle": "Logout",
   "Typography-DeleteAccountBlurb": "Deleting your account will remove all messages and media you have sent from everyone's DMs, and your account data will be wiped. You will need to create a new account to use {{AppTitle}} again.",
   "Typography-DeleteAccountThanks": "Thank you for using {{AppTitle}}!",
   "Typography-LogoutBlurb": "You will have to sign in again manually.",
