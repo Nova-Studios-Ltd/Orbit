@@ -55,11 +55,9 @@ window.addEventListener("popstate", () => {
 const rootEl = document.getElementById("root");
 const root = createRoot(rootEl!);
 root.render(
-  <React.StrictMode>
-    <StateProvider store={store}>
-      <Router>
-        <App />
-      </Router>
-    </StateProvider>
-  </React.StrictMode>
-)
+  <StateProvider store={store}>
+    <Router>
+      <App />
+    </Router>
+  </StateProvider>
+);
