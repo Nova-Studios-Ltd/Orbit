@@ -48,7 +48,7 @@ export function RequestCreatePrivate(callback: (created: boolean, uuid: string) 
  * @param callback Called on request completion
  */
 export function RequestCreateGroup(group_name: string, recipients: string[], callback: (created: boolean) => void) {
-  POST<never>(`Channel/CreateGroupChannel?group_name=${group_name}`, JSON.stringify(recipients), new NetHeaders().WithAuthorization(UserData.Token)).then((resp) => {
+  POST<never>(`Channel/CreateGroupChannel?group_name=${group_name}`, JSON.stringify(recipients), new NetHeaders().WithAuthorization(UserData.Token).WithContentType(ContentType.JSON)).then((resp) => {
     if (resp.status === HTTPStatus.OK) callback(true);
     else callback(false);
   });
