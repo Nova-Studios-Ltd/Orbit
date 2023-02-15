@@ -23,7 +23,9 @@ export interface TextComboDismissEvent {
 export interface TextComboProps extends NCAPIComponent {
   childrenLeft?: ReactNode,
   childrenRight?: ReactNode,
+  submitIcon?: ReactNode,
   disabled?: boolean,
+  submitDisabled?: boolean,
   value?: string,
   submitButton?: boolean,
   maxLength?: number,
@@ -117,7 +119,7 @@ function TextCombo(props: TextComboProps) {
           {RemainingTextFieldCharLength < TextFieldCharLengthDisplayThreshold ? <Typography variant="caption" alignSelf="center">{RemainingTextFieldCharLength}</Typography> : null}
           {props.childrenRight}
           <span>
-            {props.submitButton === false ? null : <IconButton title={Localizations_TextCombo("TextCombo-Tooltip-SubmitGeneric")} aria-label={Localizations_TextCombo("TextCombo-Tooltip-SubmitGeneric")} onClick={() => submit()}><SendIcon /></IconButton>}
+            {props.submitButton === false ? null : <IconButton disabled={props.submitDisabled} title={Localizations_TextCombo("TextCombo-Tooltip-SubmitGeneric")} aria-label={Localizations_TextCombo("TextCombo-Tooltip-SubmitGeneric")} onClick={() => submit()}>{props.submitIcon ? props.submitIcon : <SendIcon />}</IconButton>}
           </span>
         </div>
       </div>
