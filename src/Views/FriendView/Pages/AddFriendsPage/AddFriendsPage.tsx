@@ -10,7 +10,7 @@ import { FriendAdd } from "Redux/Thunks/Friends";
 import type { Page } from "Types/UI/Components";
 import type { TextComboChangeEvent } from "Components/Input/TextCombo/TextCombo";
 import RecipientForm from "Components/Friends/RecipientForm/RecipientForm";
-import { AddFriendFormErrorStates } from "Types/Enums";
+import { RecipientFormErrorStates } from "Types/Enums";
 
 interface AddFriendsPageProps extends Page {
 
@@ -20,13 +20,13 @@ function AddFriendsPage(props: AddFriendsPageProps) {
   const Localizations_AddFriendsPage = useTranslation("AddFriendsPage").t;
   const classNames = useClassNames("AddFriendsPageContainer", props.className);
 
-  const [RecipientFieldErrorState, setRecipientFieldErrorState] = useState(AddFriendFormErrorStates.Neutral);
+  const [RecipientFieldErrorState, setRecipientFieldErrorState] = useState(RecipientFormErrorStates.Neutral);
   const [RecipientField, setRecipientField] = useState("");
 
   const handleRecipientFieldChanged = (event: TextComboChangeEvent) => {
     if (event.value !== undefined) {
       setRecipientField(event.value);
-      setRecipientFieldErrorState(-1);
+      setRecipientFieldErrorState(RecipientFormErrorStates.Neutral);
     }
   };
 
