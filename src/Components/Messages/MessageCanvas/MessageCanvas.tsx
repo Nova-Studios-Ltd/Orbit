@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef } from "react";
-import { Typography, useTheme } from "@mui/material";
+import { Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import useClassNames from "Hooks/useClassNames";
 
@@ -19,7 +19,6 @@ export interface MessageCanvasProps extends NCAPIComponent {
 
 function MessageCanvas(props: MessageCanvasProps) {
   const Localizations_MessageCanvas = useTranslation("MessageCanvas").t;
-  const theme = useTheme();
   const classNames = useClassNames("MessageCanvasContainer", props.className);
   const innerClassNames = useClassNames("TheActualMessageCanvas", props.innerClassName);
 

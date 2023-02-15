@@ -1,8 +1,7 @@
 import { addAttachment, addMultipleAttachments, addMultipleMessages, clearAttachments, removeAttachmentByID } from "Redux/Slices/ChatSlice";
 import { selectChannel, selectChannelUUIDByUUID } from "Redux/Selectors/ChannelSelectors";
 
-import { AppAsyncThunkConfig, AppThunk } from "Redux/Store";
-import { createAsyncThunk } from "@reduxjs/toolkit";
+import { AppThunk } from "Redux/Store";
 import { startDoingSomething, stopDoingSomething } from "Redux/Slices/AppSlice";
 
 import { RequestDeleteMessage, RequestEditMessage, RequestMessages, SendMessage } from "Lib/API/Endpoints/Messages";
@@ -89,7 +88,7 @@ export function MessageFileUpload(clipboard?: boolean, event?: React.ClipboardEv
       dispatch(addMultipleAttachments(newAttachmentList));
     });
   }
-};
+}
 
 export function MessageFileRemove(id?: string): AppThunk {
   return (dispatch, getState) => {
@@ -100,4 +99,4 @@ export function MessageFileRemove(id?: string): AppThunk {
 
     dispatch(removeAttachmentByID(id));
   }
-};
+}

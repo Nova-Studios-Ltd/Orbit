@@ -1,4 +1,3 @@
-import { useTheme } from "@mui/material";
 import useClassNames from "Hooks/useClassNames";
 import { Flags, HasUrlFlag, Flag } from "Lib/Debug/Flags";
 
@@ -16,7 +15,6 @@ interface SystemFlagsProps extends NCComponent {
 
 function SystemFlags(props: SystemFlagsProps) {
   const classNames = useClassNames("SystemFlagsContainer", props.className);
-  const theme = useTheme();
   const dispatch = useDispatch();
 
   const onChange = (flag: Param, action: "set" | "unset") => {

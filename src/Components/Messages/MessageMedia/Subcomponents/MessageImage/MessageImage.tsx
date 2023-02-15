@@ -1,6 +1,3 @@
-import { useState } from "react";
-import { Icon, Skeleton, Typography, useTheme } from "@mui/material";
-import { Image as ImageIcon } from "@mui/icons-material";
 import useClassNames from "Hooks/useClassNames";
 
 import MessageMediaSkeleton from "Components/Skeletons/MessageMediaSkeleton/MessageMediaSkeleton";
@@ -12,7 +9,6 @@ export interface MessageImageProps extends MessageMediaProps {
 }
 
 function MessageImage(props: MessageImageProps) {
-  const theme = useTheme();
   const classNames = useClassNames("MessageMediaImageContainer", props.className);
   const loaded = props.contentUrl !== undefined && props.contentUrl.length > 0;
 

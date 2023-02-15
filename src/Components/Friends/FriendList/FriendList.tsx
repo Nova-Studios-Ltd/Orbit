@@ -8,7 +8,6 @@ import FriendButton from "Components/Friends/FriendButton/FriendButton";
 import type { NCComponent } from "Types/UI/Components";
 import type Friend from "Types/UI/Friend";
 import { FriendButtonVariant } from "Types/Enums";
-import { consoleLogOrig } from "Redux/Thunks/Overrides";
 
 export interface FriendListProps extends NCComponent {
   friends?: Friend[],

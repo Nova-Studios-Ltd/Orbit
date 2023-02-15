@@ -1,11 +1,10 @@
-import { Menu, useTheme } from "@mui/material";
+import { useTheme } from "@mui/material";
 import useClassNames from "Hooks/useClassNames";
 import { CSSTransition } from "react-transition-group";
 
 import type { NCComponent } from "Types/UI/Components";
-import ContextMenuItem, { ContextMenuItemProps } from "../ContextMenuItem/ContextMenuItem";
 import { Coordinates } from "Types/General";
-import React, { createRef, ReactNode, useEffect, useRef, useState } from "react";
+import React, { ReactNode, useEffect, useState } from "react";
 
 export interface ContextMenuProps extends NCComponent {
   children?: ReactNode,

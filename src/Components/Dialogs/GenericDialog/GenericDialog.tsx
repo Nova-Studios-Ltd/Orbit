@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useTheme, Typography } from "@mui/material";
 import useClassNames from "Hooks/useClassNames";
-import { CSSTransition, TransitionGroup } from "react-transition-group";
+import { CSSTransition } from "react-transition-group";
 
 import { useSelector } from "Redux/Hooks";
 

@@ -23,7 +23,6 @@ interface RequestResetPageProps extends Page {
 }
 
 export default function RequestResetPage(props: RequestResetPageProps) {
-  const theme = useTheme();
   const Localizations_ResetPage = useTranslation("ResetPage").t;
 
   const dispatch = useDispatch();
@@ -55,13 +54,6 @@ export default function RequestResetPage(props: RequestResetPageProps) {
     if (resp.status !== HTTPStatus.OK) setError(true);
     else setEmailSent(true);
   }
-
-  const E2ELearnMore = (
-    <Card className="E2EHelpContainer">
-      <Typography variant="body1">{Localizations_ResetPage("TextField_HelperText-ProvidedEmailCaption")}</Typography>
-      <Typography variant="body2">{Localizations_ResetPage("TextField_HelperText-ProvidedEmailWarningExplanation")}</Typography>
-    </Card>
-  );
 
   return (
     <div className="ResetPageContainer">

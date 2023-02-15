@@ -4,7 +4,6 @@ import { HTTPStatus } from "Lib/API/NetAPI/HTTPStatus";
 import UserData from "Lib/Storage/Objects/UserData";
 import { IRawChannelProps } from "Types/API/Interfaces/IRawChannelProps";
 import { NetHeaders } from "Lib/API/NetAPI/NetHeaders";
-import { NetResponse } from "Lib/API/NetAPI/NetResponse";
 import { BufferPayload } from "Lib/API/NetAPI/BufferPayload";
 
 /**

@@ -1,4 +1,3 @@
-import { useTheme } from "@mui/material";
 import useClassNames from "Hooks/useClassNames";
 
 import CustomAudio from "Components/MediaPlayer/CustomAudio/CustomAudio";
@@ -11,7 +10,6 @@ export interface MessageAudioProps extends MessageMediaProps {
 }
 
 function MessageAudio(props: MessageAudioProps) {
-  //const theme = useTheme();
   const classNames = useClassNames("MessageMediaAudioContainer", props.className);
   const loaded = props.contentUrl !== undefined && props.contentUrl.length > 0;
 

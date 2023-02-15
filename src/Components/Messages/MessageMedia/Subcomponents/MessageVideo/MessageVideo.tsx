@@ -1,4 +1,3 @@
-import { useTheme } from "@mui/material";
 import useClassNames from "Hooks/useClassNames";
 
 import MessageMediaSkeleton from "Components/Skeletons/MessageMediaSkeleton/MessageMediaSkeleton";
@@ -10,7 +9,6 @@ export interface MessageVideoProps extends MessageMediaProps {
 }
 
 function MessageVideo(props: MessageVideoProps) {
-  const theme = useTheme();
   const classNames = useClassNames("MessageMediaVideoContainer", props.className);
   const loaded = props.contentUrl !== undefined && props.contentUrl.length > 0;
 

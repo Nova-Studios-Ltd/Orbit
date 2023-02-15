@@ -1,6 +1,6 @@
 // Global
 import React, { useState } from "react";
-import { Button, Checkbox, IconButton, Typography, useTheme } from "@mui/material";
+import { Button, Checkbox, IconButton, Typography } from "@mui/material";
 import { Security as OwnerIcon } from "@mui/icons-material";
 import useClassNames from "Hooks/useClassNames";
 import { useTranslation } from "react-i18next";
@@ -35,7 +35,6 @@ export interface FriendButtonProps extends NCComponent {
 }
 
 function FriendButton(props: FriendButtonProps) {
-  const theme = useTheme();
   const classNames = useClassNames("FriendButtonContainer", props.className);
   const Localizations_FriendButton = useTranslation("FriendButton").t;
   const Localizations_ContextMenuItem = useTranslation("ContextMenuItem").t;

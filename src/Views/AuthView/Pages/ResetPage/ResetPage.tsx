@@ -1,11 +1,7 @@
 // Globals
-import { Button, Card, Link, Popover, TextField, Typography, useTheme } from "@mui/material";
+import { Button, Card, Link, Popover, TextField, Typography } from "@mui/material";
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
-
-// Redux
-import { useSelector } from "Redux/Hooks";
-import { selectPathname } from "Redux/Selectors/RoutingSelectors";
 
 // Types
 import { Coordinates } from "Types/General";

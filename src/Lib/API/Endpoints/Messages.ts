@@ -20,7 +20,6 @@ import { RemoveEXIF } from "Lib/EXIF";
 import KeyStore from "Lib/Storage/Objects/KeyStore";
 import { GetFileExtension } from "Lib/Utility/Utility";
 import { NetHeaders } from "Lib/API/NetAPI/NetHeaders";
-import { NetResponse } from "Lib/API/NetAPI/NetResponse";
 import { BufferPayload } from "Lib/API/NetAPI/BufferPayload";
 
 

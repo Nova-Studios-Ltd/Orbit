@@ -1,8 +1,6 @@
-import { FormControlLabel, Switch, useTheme } from "@mui/material";
+import { FormControlLabel, Switch } from "@mui/material";
 import useClassNames from "Hooks/useClassNames";
 import React, { useCallback } from "react";
-
-import { useDispatch } from "Redux/Hooks";
 
 import type { NCComponent } from "Types/UI/Components";
 import { Param } from "Types/UI/Routing";
@@ -14,8 +12,6 @@ export interface FlagSwitchProps extends NCComponent {
 }
 
 function FlagSwitch(props: FlagSwitchProps) {
-  const dispatch = useDispatch();
-  const theme = useTheme();
   const classNames = useClassNames("FlagSwitchContainer", props.className);
 
   const onChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {

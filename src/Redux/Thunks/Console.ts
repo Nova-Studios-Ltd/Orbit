@@ -1,4 +1,4 @@
-import store, { AppThunk } from "Redux/Store";
+import { AppThunk } from "Redux/Store";
 import { addDebugMessage, closeDebugConsole as closeConsole } from "Redux/Slices/ConsoleSlice";
 
 import type { DebugMessageSkeleton } from "Types/General";

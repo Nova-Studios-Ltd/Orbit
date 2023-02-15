@@ -2,8 +2,6 @@ import { Typography, useTheme } from "@mui/material";
 import useClassNames from "Hooks/useClassNames";
 import { useTranslation } from "react-i18next";
 
-import { useDispatch, useSelector } from "Redux/Hooks";
-
 import type { NCComponent } from "Types/UI/Components";
 import { DebugMessageType } from "Types/Enums";
 import { DebugMessageSkeleton } from "Types/General";
@@ -13,7 +11,6 @@ export interface DebugMessageProps extends NCComponent {
 }
 
 function DebugMessage(props: DebugMessageProps) {
-  const dispatch = useDispatch();
   const theme = useTheme();
   const classNames = useClassNames("DebugMessageContainer", props.className);
   const Localizations_DebugMessage = useTranslation("DebugMessage").t;

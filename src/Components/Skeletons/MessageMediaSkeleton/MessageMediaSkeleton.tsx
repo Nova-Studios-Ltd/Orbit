@@ -1,4 +1,4 @@
-import { Icon, Skeleton, useTheme } from "@mui/material";
+import { Icon, Skeleton } from "@mui/material";
 import { AttachFile as GenericFile, AudioFile as AudioFileIcon, InsertDriveFile as DocumentFileIcon, Image as ImageFileIcon, VideoFile as VideoFileIcon } from "@mui/icons-material";
 import useClassNames from "Hooks/useClassNames";
 
@@ -11,7 +11,6 @@ export interface MessageMediaSkeletonProps extends NCComponent {
 }
 
 function MessageMediaSkeleton(props: MessageMediaSkeletonProps) {
-  const theme = useTheme();
   const classNames = useClassNames("MessageMediaUnloadedSkeleton", props.className);
 
   const icon = () => {
