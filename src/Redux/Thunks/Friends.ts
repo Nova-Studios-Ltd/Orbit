@@ -2,7 +2,6 @@ import { IsValidUsername } from "Lib/Utility/Utility";
 import { RequestCreateChannel, RequestCreateGroup } from "Lib/API/Endpoints/Channels";
 import { SendFriendRequest, SendAcceptFriend, RequestRemoveFriend, RequestBlockFriend, RequestUnblockFriend, RequestUserFriends, RequestFriendState } from "Lib/API/Endpoints/Friends";
 import { RequestUser, RequestUserUUID } from "Lib/API/Endpoints/User";
-import { Dictionary } from "Lib/Objects/Dictionary";
 
 import { AppThunk } from "Redux/Store";
 import { ChannelLoad, channelContainsUUID } from "Redux/Thunks/Channels";
@@ -10,8 +9,8 @@ import { addFriend } from "Redux/Slices/FriendSlice";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { startDoingSomething, stopDoingSomething } from "Redux/Slices/AppSlice";
 
-import { Routes } from "Types/UI/Routing";
 import type Friend from "Types/UI/Friend";
+import { RecipientFormErrorState } from "Types/Enums";
 
 export const FriendsPopulate = createAsyncThunk("friends/populate", async (_, thunkAPI) => {
   thunkAPI.dispatch(startDoingSomething());
@@ -81,11 +80,11 @@ export async function FriendAdd(recipient: string) {
   if (IsValidUsername(recipient)) {
     const ud = recipient.split("#");
     const user = await RequestUserUUID(ud[0], ud[1]);
-    if (user === undefined) return 1;
+    if (user === undefined) return RecipientFormErrorState.UserNotFound;
     SendFriendRequest(user);
-    return 0;
+    return RecipientFormErrorState.Success;
   }
-  return 2;
+  return RecipientFormErrorState.InvalidFormat;
 };
 
 export function FriendBlock(uuid: string) {

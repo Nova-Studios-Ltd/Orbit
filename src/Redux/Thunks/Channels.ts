@@ -1,7 +1,7 @@
-import { RequestDeleteChannel, RequestChannel, RequestRemoveMember, RequestUpdateChannelIcon, RequestUpdateChannelName, RequestResetChannelIcon } from "Lib/API/Endpoints/Channels";
-import { RequestFriendState } from "Lib/API/Endpoints/Friends";
+import { RequestDeleteChannel, RequestChannel, RequestRemoveMember, RequestUpdateChannelIcon, RequestUpdateChannelName, RequestResetChannelIcon, RequestAddMember } from "Lib/API/Endpoints/Channels";
+import { RequestFriendState, SendFriendRequest } from "Lib/API/Endpoints/Friends";
 import { RequestMessages } from "Lib/API/Endpoints/Messages";
-import { RequestUser, RequestUserChannels } from "Lib/API/Endpoints/User";
+import { RequestUser, RequestUserChannels, RequestUserUUID } from "Lib/API/Endpoints/User";
 import { ChannelCache } from "Lib/Storage/Objects/ChannelCache";
 import { HasUrlFlag, Flags } from "Lib/Debug/Flags";
 import NSPerformance from "Lib/Debug/NSPerformance";
@@ -14,7 +14,7 @@ import { clearMessagesByID, setAllMessagesAtOnce, setActiveChannel, setAllChanne
 import { selectParamByKey } from "Redux/Selectors/RoutingSelectors";
 import { selectChannel } from "Redux/Selectors/ChannelSelectors";
 
-import { ChannelTypes } from "Types/Enums";
+import { ChannelTypes, RecipientFormErrorState } from "Types/Enums";
 import type { IRawChannelProps } from "Types/API/Interfaces/IRawChannelProps";
 import type { IMessageProps } from "Types/API/Interfaces/IMessageProps";
 import type { IChannelUpdateProps } from "Types/API/Interfaces/IChannelUpdateProps";
@@ -22,6 +22,7 @@ import type IUserData from "Types/API/Interfaces/IUserData";
 import { Routes } from "Types/UI/Routing";
 import { INotSoRawChannelProps } from "Types/API/Interfaces/INotSoRawChannelProps";
 import Friend from "Types/UI/Friend";
+import { IsValidUsername } from "Lib/Utility/Utility";
 
 export function channelContainsUUID(uuid: string, noGroup?: boolean): AppThunk<IRawChannelProps | undefined> {
   return (dispatch, getState) => {
@@ -174,6 +175,17 @@ export function ChannelLoad(channel?: IRawChannelProps): AppThunk {
   return true;
   }
 }
+
+export async function ChannelAddRecipient(channel_uuid:string, recipient: string) {
+  if (IsValidUsername(recipient)) {
+    const ud = recipient.split("#");
+    const user = await RequestUserUUID(ud[0], ud[1]);
+    if (user === undefined) return RecipientFormErrorState.UserNotFound;
+    RequestAddMember(channel_uuid, [user], () => {});
+    return RecipientFormErrorState.Success;
+  }
+  return RecipientFormErrorState.InvalidFormat;
+};
 
 export function ChannelClearCache(channel: IRawChannelProps) {
   console.log(`Request to clear channel ${channel.channelName}'s cache`);

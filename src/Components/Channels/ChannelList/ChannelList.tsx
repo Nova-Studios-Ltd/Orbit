@@ -1,14 +1,14 @@
 import { Typography, useTheme } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import useClassNames from "Hooks/useClassNames";
-import { isSubroute } from "Lib/Utility/Utility";
+import { isSubroute, IsValidUsername } from "Lib/Utility/Utility";
 import { SendFriendRequest } from "Lib/API/Endpoints/Friends";
 import UserData from "Lib/Storage/Objects/UserData";
 
 import Channel from "Components/Channels/Channel/Channel";
 
 import { useDispatch, useSelector } from "Redux/Hooks";
-import { ChannelLoad, ChannelClearCache, ChannelDelete, ChannelEdit, ChannelMove, ChannelRemoveRecipient, ChannelResetIcon } from "Redux/Thunks/Channels";
+import { ChannelLoad, ChannelClearCache, ChannelDelete, ChannelEdit, ChannelMove, ChannelRemoveRecipient, ChannelResetIcon, ChannelAddRecipient } from "Redux/Thunks/Channels";
 import { FriendsPopulate } from "Redux/Thunks/Friends";
 import { selectPathname } from "Redux/Selectors/RoutingSelectors";
 
@@ -16,6 +16,7 @@ import type { NCAPIComponent } from "Types/UI/Components";
 import type { IRawChannelProps } from "Types/API/Interfaces/IRawChannelProps";
 import { Routes } from "Types/UI/Routing";
 import Friend from "Types/UI/Friend";
+import { RequestAddMember } from "Lib/API/Endpoints/Channels";
 
 export interface ChannelListProps extends NCAPIComponent {
 
@@ -53,11 +54,17 @@ function ChannelList(props: ChannelListProps) {
       return channels.map((channel, index) => {
         const selected = (channel.table_Id === selectedChannel?.table_Id) && isSubroute(pathname, Routes.Chat);
 
+        const onAddRecipient = (recipient: string) => {
+          if (recipient.length > 0) {
+            ChannelAddRecipient(channel.table_Id, recipient);
+          }
+        };
+
         /* TODO: Check if channel uuid already has an index stored in localstorage, and use it
           to index the channels in user-specified order (otherwise default to order as retrieved from server)
         */
 
-        return (<Channel key={channel.table_Id} index={index} channelData={channel} selected={selected} onChannelClick={onChannelClick} onChannelClearCache={ChannelClearCache} onChannelDelete={ChannelDelete} onChannelEdit={ChannelEdit} onChannelMove={ChannelMove} onChannelRemoveRecipient={ChannelRemoveRecipient} onChannelResetIcon={ChannelResetIcon} onChannelFriendClicked={onChannelFriendClicked} onReloadList={() => dispatch(FriendsPopulate())} />);
+        return (<Channel key={channel.table_Id} index={index} channelData={channel} selected={selected} onAddRecipient={onAddRecipient} onChannelClick={onChannelClick} onChannelClearCache={ChannelClearCache} onChannelDelete={ChannelDelete} onChannelEdit={ChannelEdit} onChannelMove={ChannelMove} onChannelRemoveRecipient={ChannelRemoveRecipient} onChannelResetIcon={ChannelResetIcon} onChannelFriendClicked={onChannelFriendClicked} onReloadList={() => dispatch(FriendsPopulate())} />);
       });
     }
 

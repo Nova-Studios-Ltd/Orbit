@@ -1,7 +1,7 @@
 // Global
 import React, { useEffect, useState } from "react";
-import { Avatar, Button, Icon, IconButton, useTheme, Typography } from "@mui/material";
-import { Add as AddIcon, AddCircle as AddFilledIcon, Group as GroupIcon, FolderSpecial as FolderIcon } from "@mui/icons-material";
+import { Avatar, Button, Icon, IconButton, Typography } from "@mui/material";
+import { Add as AddIcon, Group as GroupIcon, FolderSpecial as FolderIcon } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
 
 // Source
@@ -10,20 +10,20 @@ import useClassNames from "Hooks/useClassNames";
 import UserData from "Lib/Storage/Objects/UserData";
 
 // Components
+import RecipientForm from "Components/Friends/RecipientForm/RecipientForm";
 import AvatarTextButton from "Components/Buttons/AvatarTextButton/AvatarTextButton";
 import ContextMenu from "Components/Menus/ContextMenu/ContextMenu";
 import ContextMenuItem from "Components/Menus/ContextMenuItem/ContextMenuItem";
 import FriendList from "Components/Friends/FriendList/FriendList";
-import GenericButton from "Components/Buttons/GenericButton/GenericButton";
 import GenericDialog from "Components/Dialogs/GenericDialog/GenericDialog";
-import TextCombo from "Components/Input/TextCombo/TextCombo";
+import TextCombo, { TextComboChangeEvent } from "Components/Input/TextCombo/TextCombo";
 
 // Types
 import type { NCComponent } from "Types/UI/Components";
 import type { ChannelMoveData, Coordinates } from "Types/General";
 import type IUserData from "Types/API/Interfaces/IUserData";
 import type { IChannelUpdateProps } from "Types/API/Interfaces/IChannelUpdateProps";
-import { ChannelTypes, FriendButtonVariant } from "Types/Enums";
+import { ChannelTypes, FriendButtonVariant, RecipientFormErrorState } from "Types/Enums";
 import type Friend from "Types/UI/Friend";
 import type { INotSoRawChannelProps } from "Types/API/Interfaces/INotSoRawChannelProps";
 
@@ -31,6 +31,8 @@ export interface ChannelProps extends NCComponent {
   channelData: INotSoRawChannelProps,
   index: number,
   selected?: boolean,
+  recipientErrorState?: RecipientFormErrorState,
+  onAddRecipient?: (recipient: string) => void,
   onChannelClick?: (channel: INotSoRawChannelProps) => void,
   onChannelClearCache?: (channel: INotSoRawChannelProps) => void,
   onChannelDelete?: (channel: INotSoRawChannelProps) => void,
@@ -47,7 +49,6 @@ export interface ChannelProps extends NCComponent {
 }
 
 function Channel(props: ChannelProps) {
-  const theme = useTheme();
   const classNames = useClassNames("ChannelContainer", props.className);
   const Localizations_GenericDialog = useTranslation("GenericDialog").t;
   const Localizations_Channel = useTranslation("Channel").t;
@@ -58,6 +59,8 @@ function Channel(props: ChannelProps) {
   const isFileTransfer = props && props.channelData.channelType === ChannelTypes.PrivateChannel;
 
   const [ChannelContextMenuChangeTitleTextField, setChannelContextMenuChangeTitleTextField] = useState("");
+  const [ChannelContextMenuAddRecipientTextField, setChannelContextMenuAddRecipientTextField] = useState("");
+  const [ChannelContextMenuAddRecipientErrorState, setChannelContextMenuAddRecipientErrorState] = useState(RecipientFormErrorState.Neutral);
   const [ChannelContextMenuIconFile, setChannelContextMenuIconFile] = useState(null as unknown as NCFile);
   const [ChannelContextMenuIconPreview, setChannelContextMenuIconPreview] = useState(props.channelData.channelIcon);
   const [ChannelContextMenuVisible, setChannelContextMenuVisibility] = useState(false);
@@ -65,6 +68,11 @@ function Channel(props: ChannelProps) {
   const [ChannelInfoDialogVisible, setChannelInfoDialogVisibility] = useState(false);
   const [EditChannelDialogVisible, setEditChannelDialogVisibility] = useState(false);
   const [DeleteChannelDialogVisible, setDeleteChannelDialogVisibility] = useState(false);
+
+  useEffect(() => {
+    if (props.recipientErrorState !== ChannelContextMenuAddRecipientErrorState) setChannelContextMenuAddRecipientErrorState(props.recipientErrorState);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [props.recipientErrorState]);
 
   const onKickRecipient = (recipient: Friend) => {
     if (props.onChannelRemoveRecipient && recipient.friendData) props.onChannelRemoveRecipient(props.channelData, recipient.friendData);
@@ -125,9 +133,16 @@ function Channel(props: ChannelProps) {
     }
   }
 
-  const onAddNewRecipient = (event: React.MouseEvent<HTMLButtonElement>) => {
-
+  const onAddNewRecipient = () => {
+    if (props.onAddRecipient) props.onAddRecipient(ChannelContextMenuAddRecipientTextField);
   }
+
+  const onRecipientFieldChanged = (event: TextComboChangeEvent) => {
+    if (event.value !== undefined) {
+      setChannelContextMenuAddRecipientTextField(event.value);
+      setChannelContextMenuAddRecipientErrorState(RecipientFormErrorState.Neutral);
+    }
+  };
 
   const clearChannelCache = () => {
     if (props.onChannelClearCache) props.onChannelClearCache(props.channelData);
@@ -219,7 +234,7 @@ function Channel(props: ChannelProps) {
         <div className="ChannelMembersListContainer">
           <Typography variant="h6">{Localizations_Channel("Typography-ChannelMembersListTitle")}</Typography>
           <FriendList fullWidth variant={FriendButtonVariant.DialogGroup} friends={props.channelData.ui?.members} onReloadList={props.onReloadList} onFriendClicked={onChannelFriendClicked} onKickRecipient={onKickRecipient} />
-          <GenericButton fullWidth onLeftClick={onAddNewRecipient}><Icon style={{ margin: "auto" }}><AddFilledIcon /></Icon></GenericButton>
+          <RecipientForm fullWidth onSubmit={onAddNewRecipient} onChange={onRecipientFieldChanged} value={ChannelContextMenuAddRecipientTextField} errorState={ChannelContextMenuAddRecipientErrorState} />
         </div>
         <Button variant="outlined" onClick={clearChannelCache}>{Localizations_Channel("Button_Label-ClearCache")}</Button>
       </GenericDialog>
