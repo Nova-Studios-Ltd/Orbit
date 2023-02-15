@@ -1,4 +1,4 @@
-import { Button } from "@mui/material";
+import { Add as AddIcon } from "@mui/icons-material";
 import useClassNames from "Hooks/useClassNames";
 import { useTranslation } from "react-i18next";
 
@@ -38,9 +38,7 @@ function RecipientForm(props: RecipientFormProps) {
 
   return (
     <div className={classNames}>
-      <TextCombo submitButton={false} autoFocus status={(props.errorState !== undefined && props.errorState > 0) ? TextComboStates.Error : (props.errorState !== undefined && props.errorState === RecipientFormErrorStates.Success) ? TextComboStates.Success : TextComboStates.Neutral} statusText={errorText()} value={props.value} placeholder={Localizations_AddFriendForm("TextField_Placeholder-FriendFormat")} onChange={props.onChange} onSubmit={onSubmit} childrenRight={
-        <Button className="AddFriendButton" onClick={onSubmit} disabled={!props.value || props.value.length < 1} variant="contained">{Localizations_AddFriendForm("Button_Label-AddFriend")}</Button>
-      }/>
+      <TextCombo submitIcon={<AddIcon />} submitDisabled={props.value !== undefined && props.value.length < 1} autoFocus status={(props.errorState !== undefined && props.errorState > 0) ? TextComboStates.Error : (props.errorState !== undefined && props.errorState === RecipientFormErrorStates.Success) ? TextComboStates.Success : TextComboStates.Neutral} statusText={errorText()} value={props.value} placeholder={Localizations_AddFriendForm("TextField_Placeholder-FriendFormat")} onChange={props.onChange} onSubmit={onSubmit} />
     </div>
   );
 }
