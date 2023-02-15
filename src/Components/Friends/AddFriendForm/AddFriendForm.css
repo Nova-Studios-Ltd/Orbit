@@ -1,11 +1,14 @@
-.AddFriendsPageContainer {
+.AddFriendFormContainer {
   display: flex;
   flex-direction: column;
-  gap: var(--global-margin);
+}
+
+.AddFriendButton {
+  height: 100%;
 }
 
 @media only screen and (max-width: 600px) {
-  .AddFriendsPageContainer {
+  .AddFriendFormContainer {
 
   }
 }

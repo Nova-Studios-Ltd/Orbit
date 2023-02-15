@@ -1,15 +1,16 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import useClassNames from "Hooks/useClassNames";
-import { Button, Typography } from "@mui/material";
+import { Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
 
 import PageContainer from "Components/Containers/PageContainer/PageContainer";
-import TextCombo, { TextComboChangeEvent } from "Components/Input/TextCombo/TextCombo";
 
 import { FriendAdd } from "Redux/Thunks/Friends";
 
 import type { Page } from "Types/UI/Components";
-import { TextComboStates } from "Types/Enums";
+import type { TextComboChangeEvent } from "Components/Input/TextCombo/TextCombo";
+import AddFriendForm from "Components/Friends/AddFriendForm/AddFriendForm";
+import { AddFriendFormErrorStates } from "Types/Enums";
 
 interface AddFriendsPageProps extends Page {
 
@@ -19,7 +20,7 @@ function AddFriendsPage(props: AddFriendsPageProps) {
   const Localizations_AddFriendsPage = useTranslation("AddFriendsPage").t;
   const classNames = useClassNames("AddFriendsPageContainer", props.className);
 
-  const [RecipientFieldErrorState, setRecipientFieldErrorState] = useState(-1);
+  const [RecipientFieldErrorState, setRecipientFieldErrorState] = useState(AddFriendFormErrorStates.Neutral);
   const [RecipientField, setRecipientField] = useState("");
 
   const handleRecipientFieldChanged = (event: TextComboChangeEvent) => {
@@ -42,28 +43,10 @@ function AddFriendsPage(props: AddFriendsPageProps) {
     }
   };
 
-  const errorText = () => {
-    switch (RecipientFieldErrorState) {
-      case 0:
-        return Localizations_AddFriendsPage("TextField_StatusText__RecipientField-Success");
-      case 1:
-        return Localizations_AddFriendsPage("TextField_StatusText__RecipientField-FriendNotFound");
-      case 2:
-        return Localizations_AddFriendsPage("TextField_StatusText__RecipientField-InvalidFormat");
-      case -1:
-      default:
-        return "";
-    }
-  }
-
   return (
     <PageContainer className={classNames} adaptive={false}>
       <Typography variant="body1">{Localizations_AddFriendsPage("Typography-AddFriendBlurb")}</Typography>
-      <div className="AddFriendContainer">
-        <TextCombo submitButton={false} autoFocus status={RecipientFieldErrorState > 0 ? TextComboStates.Error : (RecipientFieldErrorState === 0) ? TextComboStates.Success : TextComboStates.Neutral} statusText={errorText()} value={RecipientField} placeholder={Localizations_AddFriendsPage("TextField_Placeholder-FriendFormat")} onChange={handleRecipientFieldChanged} onSubmit={addFriend} childrenRight={
-          <Button className="AddFriendButton" onClick={addFriend} disabled={RecipientField.length < 1} variant="contained">{Localizations_AddFriendsPage("Button_Label-AddFriend")}</Button>
-        }/>
-      </div>
+      <AddFriendForm onAddFriend={addFriend} onChange={handleRecipientFieldChanged} value={RecipientField} errorState={RecipientFieldErrorState} />
     </PageContainer>
   );
 }
