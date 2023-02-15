@@ -47,7 +47,7 @@ export enum TextComboStates {
   Success
 }
 
-export enum AddFriendFormErrorStates {
+export enum RecipientFormErrorStates {
   Neutral = -1,
   Success = 0,
   UserNotFound = 1,
