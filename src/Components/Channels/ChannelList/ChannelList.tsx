@@ -54,9 +54,9 @@ function ChannelList(props: ChannelListProps) {
       return channels.map((channel, index) => {
         const selected = (channel.table_Id === selectedChannel?.table_Id) && isSubroute(pathname, Routes.Chat);
 
-        const onAddRecipient = (recipient: string) => {
+        const onAddRecipient = async (recipient: string) => {
           if (recipient.length > 0) {
-            ChannelAddRecipient(channel.table_Id, recipient);
+            return (await ChannelAddRecipient(channel.table_Id, recipient));
           }
         };
 

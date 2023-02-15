@@ -47,6 +47,7 @@ function AddFriendsPage(props: AddFriendsPageProps) {
     <PageContainer className={classNames} adaptive={false}>
       <Typography variant="body1">{Localizations_AddFriendsPage("Typography-AddFriendBlurb")}</Typography>
       <RecipientForm fullWidth onSubmit={addFriend} onChange={handleRecipientFieldChanged} value={RecipientField} errorState={RecipientFieldErrorState} />
+      <Typography variant="caption">{Localizations_AddFriendsPage("Typography-Remarks")}</Typography>
     </PageContainer>
   );
 }

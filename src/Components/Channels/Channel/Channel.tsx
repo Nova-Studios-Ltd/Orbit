@@ -31,8 +31,7 @@ export interface ChannelProps extends NCComponent {
   channelData: INotSoRawChannelProps,
   index: number,
   selected?: boolean,
-  recipientErrorState?: RecipientFormErrorState,
-  onAddRecipient?: (recipient: string) => void,
+  onAddRecipient?: (recipient: string) => Promise<RecipientFormErrorState | undefined>,
   onChannelClick?: (channel: INotSoRawChannelProps) => void,
   onChannelClearCache?: (channel: INotSoRawChannelProps) => void,
   onChannelDelete?: (channel: INotSoRawChannelProps) => void,
@@ -69,11 +68,6 @@ function Channel(props: ChannelProps) {
   const [EditChannelDialogVisible, setEditChannelDialogVisibility] = useState(false);
   const [DeleteChannelDialogVisible, setDeleteChannelDialogVisibility] = useState(false);
 
-  useEffect(() => {
-    if (props.recipientErrorState !== ChannelContextMenuAddRecipientErrorState) setChannelContextMenuAddRecipientErrorState(props.recipientErrorState);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [props.recipientErrorState]);
-
   const onKickRecipient = (recipient: Friend) => {
     if (props.onChannelRemoveRecipient && recipient.friendData) props.onChannelRemoveRecipient(props.channelData, recipient.friendData);
   }
@@ -94,13 +88,13 @@ function Channel(props: ChannelProps) {
 
   const openEditChannelDialog = () => {
     setChannelContextMenuChangeTitleTextField(props.channelData.channelName);
+    setChannelContextMenuAddRecipientTextField("");
     setChannelContextMenuIconFile(null as unknown as NCFile);
     setChannelContextMenuIconPreview(props.channelData.channelIcon);
     setEditChannelDialogVisibility(true);
   }
 
   const closeEditChannelDialog = () => {
-    setChannelContextMenuChangeTitleTextField("");
     setEditChannelDialogVisibility(false);
   }
 
@@ -134,7 +128,11 @@ function Channel(props: ChannelProps) {
   }
 
   const onAddNewRecipient = () => {
-    if (props.onAddRecipient) props.onAddRecipient(ChannelContextMenuAddRecipientTextField);
+    if (props.onAddRecipient) {
+      props.onAddRecipient(ChannelContextMenuAddRecipientTextField).then((status) => {
+        if (status !== undefined) setChannelContextMenuAddRecipientErrorState(status);
+      });
+    }
   }
 
   const onRecipientFieldChanged = (event: TextComboChangeEvent) => {
