@@ -85,7 +85,7 @@ function Channel(props: ChannelProps) {
   }
 
   const openEditChannelDialog = () => {
-    setChannelContextMenuChangeTitleTextField("");
+    setChannelContextMenuChangeTitleTextField(props.channelData.channelName);
     setChannelContextMenuIconFile(null as unknown as NCFile);
     setChannelContextMenuIconPreview(props.channelData.channelIcon);
     setEditChannelDialogVisibility(true);
