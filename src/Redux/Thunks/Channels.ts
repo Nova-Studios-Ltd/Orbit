@@ -66,6 +66,8 @@ export function ChannelsPopulate(preload?: boolean): AppThunk {
         if (channel === undefined) continue;
         channel.ui = { members: [] };
         if (channel.members) {
+          const loggedInUserIsOwner = channel.owner_UUID === UserData.Uuid;
+
           for (let i = 0; i < channel.members.length; i++) {
             const member = channel.members[i];
             let memberData = loadedFriends.find(friend => friend.friendData?.uuid === member);
@@ -76,9 +78,9 @@ export function ChannelsPopulate(preload?: boolean): AppThunk {
               loadedFriends.push(memberData);
             }
 
-            const isOwner = member === channel.owner_UUID;
-            const removable = isOwner && member !== UserData.Uuid;
-            if (channel.ui && channel.ui.members) channel.ui.members.push({ ...memberData, uiStates: { isOwner: isOwner, removable: removable } });
+            const entryIsOwner = member === channel.owner_UUID;
+            const removable = loggedInUserIsOwner && member !== UserData.Uuid;
+            if (channel.ui && channel.ui.members) channel.ui.members.push({ ...memberData, uiStates: { isOwner: entryIsOwner, removable: removable } });
           }
         }
         channel.channelIcon = `${channel.channelIcon}&nonce=${avatarNonce}`;
