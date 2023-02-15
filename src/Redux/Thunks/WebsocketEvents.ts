@@ -4,7 +4,7 @@ import { uCache } from "App";
 import { AppThunk } from "Redux/Store";
 import { selectChannelUUIDByUUID } from "Redux/Selectors/ChannelSelectors";
 import { addChannel, removeChannelByID, addMessage, editMessage, removeMessageByID } from "Redux/Slices/ChatSlice";
-import { addFriend, removeFriendByValue } from "Redux/Slices/FriendSlice";
+import { addFriend, removeFriendByID, removeFriendByValue } from "Redux/Slices/FriendSlice";
 
 import type { IMessageProps } from "Types/API/Interfaces/IMessageProps";
 import type { IRawChannelProps } from "Types/API/Interfaces/IRawChannelProps";
@@ -42,6 +42,11 @@ export function RegisterWebsocketEvents(): AppThunk {
     });
 
     Events.on("FriendUpdated", async (request_uuid: string, status: FriendStatus) => {
+      console.log(status?.state, status.state?.length);
+      if (!status.state || status.state.length < 1) {
+        dispatch(removeFriendByID(request_uuid));
+      }
+
       const friendData = await uCache.GetUserAsync(request_uuid);
       dispatch(addFriend({ friendData, status }));
     });

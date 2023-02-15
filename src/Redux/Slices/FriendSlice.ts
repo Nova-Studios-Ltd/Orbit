@@ -26,6 +26,15 @@ export const FriendSlice = createSlice({
         }
       }
     },
+    removeFriendByID: (state, action: PayloadAction<string | undefined>) => {
+      if (action.payload === undefined) {
+        state.friends.pop();
+      }
+      else {
+        const findIndex = state.friends.findIndex(friend => friend.friendData?.uuid === action.payload);
+        if (findIndex > -1) state.friends.splice(findIndex, 1);
+      }
+    },
     removeFriendByValue: (state, action: PayloadAction<Friend | undefined>) => {
       if (action.payload === undefined) {
         state.friends.pop();
@@ -35,23 +44,11 @@ export const FriendSlice = createSlice({
         if (findIndex > -1) state.friends.splice(findIndex, 1);
       }
     },
-    editFriendByIndex: {
-      reducer(state, action: PayloadAction<{ updatedFriend: Friend, index: number }>) {
-        if (action.payload.updatedFriend !== undefined && action.payload.index < state.friends.length) {
-          state.friends[action.payload.index] = action.payload.updatedFriend;
-        }
-      },
-      prepare(updatedFriend: Friend, index: number) {
-        return {
-          payload: { updatedFriend, index }
-        }
-      }
-    },
     clearFriends: (state) => {
       return initialState;
     }
   }
 });
 
-export const { addFriend, clearFriends, removeFriendByValue, editFriendByIndex } = FriendSlice.actions;
+export const { addFriend, clearFriends, removeFriendByID, removeFriendByValue } = FriendSlice.actions;
 export default FriendSlice.reducer;
