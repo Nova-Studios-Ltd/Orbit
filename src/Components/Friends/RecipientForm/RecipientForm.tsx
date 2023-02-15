@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 import TextCombo, { TextComboChangeEvent } from "Components/Input/TextCombo/TextCombo";
 
 import type { NCComponent } from "Types/UI/Components";
-import { AddFriendFormErrorStates as RecipientFormErrorStates, TextComboStates } from "Types/Enums";
+import { RecipientFormErrorStates as RecipientFormErrorStates, TextComboStates } from "Types/Enums";
 
 export interface RecipientFormProps extends NCComponent {
   value?: string,
