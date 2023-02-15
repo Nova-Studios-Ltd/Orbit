@@ -1,19 +1,19 @@
-import { Button, useTheme } from "@mui/material";
+import { Button } from "@mui/material";
 import useClassNames from "Hooks/useClassNames";
 import { useTranslation } from "react-i18next";
 
-import { useDispatch, useSelector } from "Redux/Hooks";
+import { useDispatch } from "Redux/Hooks";
 import { clearParams } from "Redux/Slices/RouteSlice";
 
-import NetworkDiag from "Views/SettingsView/Pages/DashboardPage/DebugTools/NetworkDiagnostics";
-import SystemFlags from "Components/Debug/SystemFlags/SystemFlags";
+import { Flags, HasUrlFlag } from "Lib/Debug/Flags";
+
+import PageContainer from "Components/Containers/PageContainer/PageContainer";
 import Section from "Components/Containers/Section/Section";
 import DebugConsoleCanvas from "Components/Debug/DebugConsoleCanvas/DebugConsoleCanvas";
-import PageContainer from "Components/Containers/PageContainer/PageContainer";
+import SystemFlags from "Components/Debug/SystemFlags/SystemFlags";
+import NetworkDiag from "Views/SettingsView/Pages/DashboardPage/DebugTools/NetworkDiagnostics";
 
 import type { Page } from "Types/UI/Components";
-import { HasUrlFlag, Flags } from "Lib/Debug/Flags";
-import { Param } from "Types/UI/Routing";
 
 interface DebugPageProps extends Page {
 
@@ -23,7 +23,6 @@ function DebugPage(props: DebugPageProps) {
   const Localizations_DebugPage = useTranslation("DebugPage").t;
   const classNames = useClassNames("DebugPageContainer", props.className);
   const dispatch = useDispatch();
-  const theme = useTheme();
 
   return (
     <PageContainer className={classNames} noPadding>

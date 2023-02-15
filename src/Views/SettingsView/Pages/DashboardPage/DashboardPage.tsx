@@ -1,6 +1,6 @@
 // Global
 import React, { useState } from "react";
-import { Avatar, Button, Card, IconButton, Typography, useTheme } from "@mui/material";
+import { Avatar, Button, Card, IconButton, Typography } from "@mui/material";
 import { Add as AddIcon } from "@mui/icons-material";
 import useClassNames from "Hooks/useClassNames";
 import { useTranslation } from "react-i18next";
@@ -40,7 +40,6 @@ function DashboardPage(props: DashboardPageProps) {
   const Localizations_GenericDialog = useTranslation("GenericDialog").t;
   const classNames = useClassNames("DashboardPageContainer", props.className);
   const dispatch = useDispatch();
-  const theme = useTheme();
 
   const usernameText = `${UserData.Username}#${UserData.Discriminator}`;
   const avatarSrc = UserData.AvatarSrc ? `${UserData.AvatarSrc}&nonce=${props.avatarNonce}` : "";

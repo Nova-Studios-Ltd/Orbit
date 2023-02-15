@@ -1,4 +1,4 @@
-import { useTheme, Typography } from "@mui/material";
+import { Typography } from "@mui/material";
 import useClassNames from "Hooks/useClassNames";
 
 import type { NCComponent } from "Types/UI/Components";
@@ -12,7 +12,6 @@ export interface SectionProps extends NCComponent {
 }
 
 function Section(props: SectionProps) {
-  const theme = useTheme();
   let classNames = useClassNames("SectionContainer", props.className);
 
   const items = () => {

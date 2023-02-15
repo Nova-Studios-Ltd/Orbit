@@ -1,32 +1,22 @@
 // Globals
+import { Button, Card, Link, Popover, TextField, Typography, useTheme } from "@mui/material";
 import React, { useState } from "react";
-import { Button, Card, Link, TextField, Typography, useTheme, Popover } from "@mui/material";
 import { useTranslation } from "react-i18next";
-import { useLocation } from "react-router-dom";
 
 // Redux
 import { useSelector } from "Redux/Hooks";
 import { selectPathname } from "Redux/Selectors/RoutingSelectors";
 
-// Source
-import { RequestResetPassword } from "Lib/API/Endpoints/User";
-import { GetRSAKeyPair } from "Lib/Encryption/RSA";
-import { RSAMemoryKeypair } from "Lib/Encryption/Types/RSAMemoryKeypair";
-
 // Types
-import type { Page } from "Types/UI/Components";
 import { Coordinates } from "Types/General";
+import type { Page } from "Types/UI/Components";
 
 interface ResetPageProps extends Page {
 
 }
 
-
-export default function ResetPage(props: ResetPageProps) {
-  const theme = useTheme();
+export default function ResetPage() {
   const Localizations_ResetPage = useTranslation("ResetPage").t;
-
-  const pathname = useSelector(selectPathname())
 
   const [password, setPassword] = useState("");
   const [confPassword, setConfPassword] = useState("");

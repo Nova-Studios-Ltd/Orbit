@@ -1,7 +1,3 @@
-import { useTheme } from "@mui/material";
-import useClassNames from "Hooks/useClassNames";
-import { useTranslation } from "react-i18next";
-
 import MessageCanvas from "Components/Messages/MessageCanvas/MessageCanvas";
 import MessageInput from "Components/Input/MessageInput/MessageInput";
 
@@ -17,10 +13,7 @@ export interface ChatPageProps extends NCComponent {
 }
 
 function ChatPage(props: ChatPageProps) {
-  const theme = useTheme();
   const dispatch = useDispatch();
-  const classNames = useClassNames("ComponentContainer", props.className);
-  const Localizations_MainView = useTranslation("MainView").t;
 
   const messages = useSelector(selectMessagesByChannel());
   const attachments = useSelector(state => state.chat.attachments);

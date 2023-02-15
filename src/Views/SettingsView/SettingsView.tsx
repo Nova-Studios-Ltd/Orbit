@@ -1,4 +1,4 @@
-import { SyntheticEvent, useEffect } from "react";
+import { SyntheticEvent } from "react";
 import { Outlet } from "react-router-dom";
 import useClassNames from "Hooks/useClassNames";
 import { useTranslation } from "react-i18next";

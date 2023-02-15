@@ -1,10 +1,8 @@
-import { Avatar, ButtonBase, IconButton, Typography, useTheme } from "@mui/material";
-import { MoreHoriz as EllipsisIcon } from "@mui/icons-material";
-import React, { useState, ReactNode, useRef } from "react";
+import { ButtonBase, useTheme } from "@mui/material";
+import React, { ReactNode, useState } from "react";
 
-import type { NCComponent } from "Types/UI/Components";
 import useClassNames from "Hooks/useClassNames";
-import { SelectionType } from "Types/Enums";
+import type { NCComponent } from "Types/UI/Components";
 
 export interface GenericButtonProps extends NCComponent {
   children?: ReactNode,

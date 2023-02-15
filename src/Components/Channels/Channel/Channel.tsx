@@ -1,5 +1,5 @@
 // Global
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Avatar, Button, Icon, IconButton, Typography } from "@mui/material";
 import { Add as AddIcon, Group as GroupIcon, FolderSpecial as FolderIcon } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";

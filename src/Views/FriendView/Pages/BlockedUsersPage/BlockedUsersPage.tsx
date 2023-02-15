@@ -1,9 +1,8 @@
-import { useEffect } from "react";
 import useClassNames from "Hooks/useClassNames";
 import { useTranslation } from "react-i18next";
 
 import { useDispatch, useSelector } from "Redux/Hooks";
-import { selectAllFriends, selectBlockedFriends } from "Redux/Selectors/FriendSelectors";
+import { selectAllFriends } from "Redux/Selectors/FriendSelectors";
 import { FriendsPopulate, FriendUnblock } from "Redux/Thunks/Friends";
 
 import PageContainer from "Components/Containers/PageContainer/PageContainer";

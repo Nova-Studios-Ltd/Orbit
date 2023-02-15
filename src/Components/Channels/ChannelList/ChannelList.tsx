@@ -1,7 +1,7 @@
 import { Typography, useTheme } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import useClassNames from "Hooks/useClassNames";
-import { isSubroute, IsValidUsername } from "Lib/Utility/Utility";
+import { isSubroute } from "Lib/Utility/Utility";
 import { SendFriendRequest } from "Lib/API/Endpoints/Friends";
 import UserData from "Lib/Storage/Objects/UserData";
 
@@ -16,7 +16,6 @@ import type { NCAPIComponent } from "Types/UI/Components";
 import type { IRawChannelProps } from "Types/API/Interfaces/IRawChannelProps";
 import { Routes } from "Types/UI/Routing";
 import Friend from "Types/UI/Friend";
-import { RequestAddMember } from "Lib/API/Endpoints/Channels";
 
 export interface ChannelListProps extends NCAPIComponent {
 
