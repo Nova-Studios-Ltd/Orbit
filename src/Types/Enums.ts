@@ -50,6 +50,6 @@ export enum TextComboStates {
 export enum AddFriendFormErrorStates {
   Neutral = -1,
   Success = 0,
-  FriendNotFound = 1,
+  UserNotFound = 1,
   InvalidFormat = 2
 }

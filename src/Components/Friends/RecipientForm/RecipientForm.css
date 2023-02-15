@@ -1,14 +1,14 @@
-.AddFriendFormContainer {
+.RecipientFormContainer {
   display: flex;
   flex-direction: column;
 }
 
-.AddFriendButton {
+.AddRecipientButton {
   height: 100%;
 }
 
 @media only screen and (max-width: 600px) {
-  .AddFriendFormContainer {
+  .RecipientFormContainer {
 
   }
 }

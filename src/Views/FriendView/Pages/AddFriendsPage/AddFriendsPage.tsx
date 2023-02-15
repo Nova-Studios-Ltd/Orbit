@@ -9,7 +9,7 @@ import { FriendAdd } from "Redux/Thunks/Friends";
 
 import type { Page } from "Types/UI/Components";
 import type { TextComboChangeEvent } from "Components/Input/TextCombo/TextCombo";
-import AddFriendForm from "Components/Friends/AddFriendForm/AddFriendForm";
+import RecipientForm from "Components/Friends/RecipientForm/RecipientForm";
 import { AddFriendFormErrorStates } from "Types/Enums";
 
 interface AddFriendsPageProps extends Page {
@@ -46,7 +46,7 @@ function AddFriendsPage(props: AddFriendsPageProps) {
   return (
     <PageContainer className={classNames} adaptive={false}>
       <Typography variant="body1">{Localizations_AddFriendsPage("Typography-AddFriendBlurb")}</Typography>
-      <AddFriendForm onAddFriend={addFriend} onChange={handleRecipientFieldChanged} value={RecipientField} errorState={RecipientFieldErrorState} />
+      <RecipientForm onSubmit={addFriend} onChange={handleRecipientFieldChanged} value={RecipientField} errorState={RecipientFieldErrorState} />
     </PageContainer>
   );
 }

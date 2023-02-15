@@ -45,7 +45,7 @@ import ChannelList_EN_US from "./Components/Channels/ChannelList.json";
 
 import GenericDialog_EN_US from "./Components/Dialog/GenericDialog.json";
 
-import AddFriendForm_EN_US from "./Components/Friends/AddFriendForm.json";
+import RecipientForm_EN_US from "./Components/Friends/RecipientForm.json";
 import FriendButton_EN_US from "./Components/Friends/FriendButton.json";
 import FriendList_EN_US from "./Components/Friends/FriendList.json";
 
@@ -107,7 +107,7 @@ export const Localizations_EN_US = {
 
   GenericDialog: GenericDialog_EN_US,
 
-  AddFriendForm: AddFriendForm_EN_US,
+  RecipientForm: RecipientForm_EN_US,
   FriendButton: FriendButton_EN_US,
   FriendList: FriendList_EN_US,
 
