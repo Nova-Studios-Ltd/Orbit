@@ -2,7 +2,7 @@ import { IconButton, Typography, useTheme } from "@mui/material";
 import useClassNames from "Hooks/useClassNames";
 import { useTranslation } from "react-i18next";
 
-import { Send as SendIcon, UploadFile as UploadIcon } from "@mui/icons-material";
+import { Send as SendIcon } from "@mui/icons-material";
 
 import type { NCAPIComponent } from "Types/UI/Components";
 import { ChangeEvent, useEffect, useState, ReactNode, useRef } from "react";
