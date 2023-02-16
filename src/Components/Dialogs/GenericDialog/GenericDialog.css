@@ -95,13 +95,9 @@
     height: 100%;
     width: 100%;
 
-    align-items: center;
+    align-items: flex-start;
 
     border-radius: 0;
-  }
-
-  .GenericDialogContentContainer {
-    padding: var(--dialog-padding-top-constrained) var(--dialog-padding-right-constrained) var(--dialog-padding-bottom-constrained) var(--dialog-padding-left-constrained);    ;
   }
 
   .GenericDialogButtonContainer {
