@@ -1,5 +1,6 @@
 {
   "Button_Label-ClearCache": "Clear Message Cache",
+  "Button_Label-CopyChannelID": "Copy Channel ID",
   "Button_Label-ResetIcon": "Reset Channel Icon",
   "Typography-ChangeChannelIcon": "Channel Icon",
   "Typography-ChangeChannelName": "Channel Name",

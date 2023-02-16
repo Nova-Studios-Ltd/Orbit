@@ -5,7 +5,7 @@ import { Add as AddIcon, Group as GroupIcon, FolderSpecial as FolderIcon } from 
 import { useTranslation } from "react-i18next";
 
 // Source
-import { NCFile, UploadFile } from "Lib/ElectronAPI";
+import { NCFile, UploadFile, WriteToClipboard } from "Lib/ElectronAPI";
 import useClassNames from "Hooks/useClassNames";
 import UserData from "Lib/Storage/Objects/UserData";
 
@@ -234,6 +234,7 @@ function Channel(props: ChannelProps) {
           <FriendList fullWidth variant={FriendButtonVariant.DialogGroup} friends={props.channelData.ui?.members} onReloadList={props.onReloadList} onFriendClicked={onChannelFriendClicked} onKickRecipient={onKickRecipient} />
           <RecipientForm fullWidth onSubmit={onAddNewRecipient} onChange={onRecipientFieldChanged} value={ChannelContextMenuAddRecipientTextField} errorState={ChannelContextMenuAddRecipientErrorState} />
         </div>
+        <Button variant="outlined" color="warning" onClick={() => WriteToClipboard(props.channelData.table_Id)}>{Localizations_Channel("Button_Label-CopyChannelID")}</Button>
         <Button variant="outlined" onClick={clearChannelCache}>{Localizations_Channel("Button_Label-ClearCache")}</Button>
       </GenericDialog>
       <GenericDialog onClose={() => setChannelInfoDialogVisibility(false)} open={ChannelInfoDialogVisible} title={Localizations_Channel("Typography-ChannelInfoDialogTitle", { channelName: props.channelData.channelName })} buttons={
@@ -245,6 +246,7 @@ function Channel(props: ChannelProps) {
           <Typography variant="h6">{Localizations_Channel("Typography-ChannelMembersListTitle")}</Typography>
           <FriendList fullWidth variant={FriendButtonVariant.DialogSingle} friends={props.channelData.ui?.members} onKickRecipient={onKickRecipient} />
         </div>
+        <Button variant="outlined" color="warning" onClick={() => WriteToClipboard(props.channelData.table_Id)}>{Localizations_Channel("Button_Label-CopyChannelID")}</Button>
         <Button variant="outlined" onClick={clearChannelCache}>{Localizations_Channel("Button_Label-ClearCache")}</Button>
       </GenericDialog>
       <ContextMenu open={ChannelContextMenuVisible} onDismiss={() => setChannelContextMenuVisibility(false)} anchorPos={ChannelContextMenuAnchorPos}>
