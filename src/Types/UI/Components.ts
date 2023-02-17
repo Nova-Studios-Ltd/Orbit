@@ -1,19 +1,9 @@
-import type { IRawChannelProps } from "Types/API/Interfaces/IRawChannelProps";
-import type { CSSProperties, ReactNode } from "react";
-
-export interface HelpPopupProps {
-  visible: boolean,
-  anchorEl?: Element,
-  content?: ReactNode,
-  setVisibility: React.Dispatch<React.SetStateAction<boolean>>,
-  setAnchor: React.Dispatch<React.SetStateAction<Element>>,
-  setContent: React.Dispatch<React.SetStateAction<ReactNode>>,
-  closePopup: () => void
-}
+import type { CSSProperties } from "react";
 
 export interface NCComponent {
   className?: string,
   style?: CSSProperties,
+  renderCondition?: boolean
 }
 
 export interface NCAPIComponent extends NCComponent {
