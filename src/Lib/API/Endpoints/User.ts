@@ -1,16 +1,12 @@
 import IUserData from "Types/API/Interfaces/IUserData";
 import UserData from "Lib/Storage/Objects/UserData";
-import { GET, PUT, PATCH, DELETE, POSTBuffer } from "Lib/API/NetAPI/NetAPI";
-import { ContentType } from "Lib/API/NetAPI/ContentType";
-import { HTTPStatus } from "Lib/API/NetAPI/HTTPStatus";
 import { SHA256 } from "Lib/Encryption/Util";
 import { AESEncrypt } from "Lib/Encryption/AES";
 import Base64Uint8Array from "Lib/Objects/Base64Uint8Array";
 import { PasswordPayloadKey, UpdatePasswordPayload } from "Types/API/UpdatePasswordPayload";
 import { ResetPasswordPayload, ResetPasswordPayloadKey } from "Types/API/ResetPasswordPayload";
 import { RSAMemoryKeypair } from "Lib/Encryption/Types/RSAMemoryKeypair";
-import { NetHeaders } from "Lib/API/NetAPI/NetHeaders";
-import { BufferPayload } from "Lib/API/NetAPI/BufferPayload";
+import { NetAPI, NetHeaders, HTTPStatus, ContentType, BufferPayload } from "@nova-studios-ltd/typescript-netapi";
 
 /**
  * Requests a users information
@@ -18,7 +14,7 @@ import { BufferPayload } from "Lib/API/NetAPI/BufferPayload";
  * @returns IUserData if successful otherwise undefined
  */
 export async function RequestUser(user_uuid: string) : Promise<IUserData | undefined> {
-  const resp = await GET(`User/${user_uuid}`, new NetHeaders().WithAuthorization(UserData.Token));
+  const resp = await NetAPI.GET(`User/${user_uuid}`, new NetHeaders().WithAuthorization(UserData.Token));
   if (resp.status === HTTPStatus.OK) return resp.payload as IUserData;
   return undefined;
 }
@@ -30,7 +26,7 @@ export async function RequestUser(user_uuid: string) : Promise<IUserData | undef
  * @returns A UUID if successful otherwise undefined
  */
 export async function RequestUserUUID(username: string, discriminator: string) : Promise<string | undefined> {
-  const resp = await GET<string>(`/User/${username}/${discriminator}/UUID`, new NetHeaders().WithAuthorization(UserData.Token));
+  const resp = await NetAPI.GET<string>(`/User/${username}/${discriminator}/UUID`, new NetHeaders().WithAuthorization(UserData.Token));
   if (resp.status === HTTPStatus.OK) return resp.payload;
   return undefined;
 }
@@ -40,7 +36,7 @@ export async function RequestUserUUID(username: string, discriminator: string) :
  * @param callback Called on success, contains a array of channel uuid's
  */
 export async function RequestUserChannels(callback: (channel: string[]) => void) {
-  GET<string[]>("/User/@me/Channels", new NetHeaders().WithAuthorization(UserData.Token)).then((resp) => {
+  NetAPI.GET<string[]>("/User/@me/Channels", new NetHeaders().WithAuthorization(UserData.Token)).then((resp) => {
     if (resp.status === HTTPStatus.OK) callback(resp.payload);
   });
 }
@@ -51,7 +47,7 @@ export async function RequestUserChannels(callback: (channel: string[]) => void)
  * @param callback Calls when the request finishes, return status and the new username
  */
 export async function RequestChangeUsername(newUsername: string, callback: (status: boolean, newUsername: string) => void) {
-  PATCH(`/User/@me/Username`, JSON.stringify(newUsername), new NetHeaders().WithAuthorization(UserData.Token).WithContentType(ContentType.JSON)).then((resp) => {
+  NetAPI.PATCH(`/User/@me/Username`, JSON.stringify(newUsername), new NetHeaders().WithAuthorization(UserData.Token).WithContentType(ContentType.JSON)).then((resp) => {
     if (resp.status === HTTPStatus.OK) callback(true, newUsername);
     else callback(false, "");
   });
@@ -66,7 +62,7 @@ export async function RequestChangePassword(newPassword: string, callback: (stat
   const hashedPassword = await SHA256(newPassword);
   const privkey = await AESEncrypt(hashedPassword, new Base64Uint8Array(UserData.KeyPair.PrivateKey));
   const payload = new UpdatePasswordPayload(hashedPassword.Base64, new PasswordPayloadKey(privkey.content.Base64, privkey.iv.Base64));
-  PATCH(`/User/@me/Password`, JSON.stringify(payload), new NetHeaders().WithAuthorization(UserData.Token).WithContentType(ContentType.JSON)).then((resp) => {
+  NetAPI.PATCH(`/User/@me/Password`, JSON.stringify(payload), new NetHeaders().WithAuthorization(UserData.Token).WithContentType(ContentType.JSON)).then((resp) => {
     if (resp.status === HTTPStatus.OK) callback(true, newPassword);
     else callback(false, "");
   });
@@ -78,7 +74,7 @@ export async function RequestChangePassword(newPassword: string, callback: (stat
  * @param callback Calls when the request finishes, return status and the new email
  */
 export async function RequestChangeEmail(newEmail: string, callback: (status: boolean, newEmail: string) => void) {
-  PATCH(`/User/@me/Email`, JSON.stringify(newEmail), new NetHeaders().WithAuthorization(UserData.Token).WithContentType(ContentType.JSON)).then((resp) => {
+  NetAPI.PATCH(`/User/@me/Email`, JSON.stringify(newEmail), new NetHeaders().WithAuthorization(UserData.Token).WithContentType(ContentType.JSON)).then((resp) => {
     if (resp.status === HTTPStatus.OK) callback(true, newEmail);
     else callback(false, "");
   });
@@ -95,7 +91,7 @@ export async function RequestResetPassword(newPassword: string, token: string, k
   const hashedPassword = await SHA256(newPassword);
   const privkey = await AESEncrypt(hashedPassword, new Base64Uint8Array(keypair.PrivateKey));
   const payload = new ResetPasswordPayload(hashedPassword.Base64, new ResetPasswordPayloadKey(privkey.content.Base64, privkey.iv.Base64, keypair.PublicKey));
-  PUT(`/User/@me/Reset?tokem=${token}`, JSON.stringify(payload), new NetHeaders().WithAuthorization(UserData.Token).WithContentType(ContentType.JSON)).then((resp) => {
+  NetAPI.PUT(`/User/@me/Reset?tokem=${token}`, JSON.stringify(payload), new NetHeaders().WithAuthorization(UserData.Token).WithContentType(ContentType.JSON)).then((resp) => {
     if (resp.status === HTTPStatus.OK) callback(true, newPassword);
     else callback(false, "");
   });
@@ -106,7 +102,7 @@ export async function RequestResetPassword(newPassword: string, token: string, k
  * @param callback Called when the request finishes, returns status
  */
 export async function RequestDeleteUser(callback: (status: boolean) => void) {
-  DELETE(`/User/@me`, new NetHeaders().WithAuthorization(UserData.Token)).then((resp) => {
+  NetAPI.DELETE(`/User/@me`, new NetHeaders().WithAuthorization(UserData.Token)).then((resp) => {
     if (resp.status === HTTPStatus.OK) callback(true);
     else callback(false);
   });
@@ -118,7 +114,7 @@ export async function RequestDeleteUser(callback: (status: boolean) => void) {
  * @param callback Called when the requets finishes
  */
 export function RequestSetAvatar(file: Blob, callback: (set: boolean) => void) {
-  POSTBuffer(`/User/${UserData.Uuid}/Avatar`, new BufferPayload(file, "Unknown"), new NetHeaders().WithAuthorization(UserData.Token)).then((resp) => {
+  NetAPI.POSTBuffer(`/User/${UserData.Uuid}/Avatar`, new BufferPayload(file, "Unknown"), new NetHeaders().WithAuthorization(UserData.Token)).then((resp) => {
     if (resp.status === HTTPStatus.OK) callback(true);
     else callback(false);
   });
@@ -130,7 +126,7 @@ export function RequestSetAvatar(file: Blob, callback: (set: boolean) => void) {
  * @returns True if succesful, otherwise false
  */
 export async function SendConfirmEmail(token: string) : Promise<boolean> {
-  const resp = await PUT(`/User/@me/ConfirmEmail?token=${token}`, "", new NetHeaders().WithContentType(ContentType.EMPTY));
+  const resp = await NetAPI.PUT(`/User/@me/ConfirmEmail?token=${token}`, "", new NetHeaders().WithContentType(ContentType.EMPTY));
   if (resp.status === HTTPStatus.OK) return true;
   return false;
 }

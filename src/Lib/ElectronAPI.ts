@@ -1,5 +1,4 @@
-import { GETBuffer } from "Lib/API/NetAPI/NetAPI";
-import { ContentType } from "Lib/API/NetAPI/ContentType";
+import { ContentType, NetAPI } from "@nova-studios-ltd/typescript-netapi";
 
 /**
  * Interface representing Electrons IPCRenderer/IPCMain object
@@ -222,7 +221,7 @@ export function WriteImageToClipboard(data: Uint8Array, content_type: ContentTyp
 export function TriggerNotification(title: string, body: string, type: NotificationType, icon?: string) {
   if (IsElectron()) {
     if (icon) {
-      GETBuffer(icon).then((v) => {
+      NetAPI.GETBuffer(icon).then((v) => {
         GetIPCRenderer().send("TriggerNotif", title, body, v.payload);
       });
     }

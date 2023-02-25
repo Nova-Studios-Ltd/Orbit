@@ -1,4 +1,4 @@
-import { Dictionary } from "Lib/Objects/Dictionary";
+import { Dictionary } from "@nova-studios-ltd/typescript-dictionary";
 
 class Event {
   once: boolean;

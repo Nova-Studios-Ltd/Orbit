@@ -4,10 +4,7 @@ import { Button, Card, Link, Popover, TextField, Typography, useTheme } from "@m
 import { useTranslation } from "react-i18next";
 
 // Source
-import { POST } from "Lib/API/NetAPI/NetAPI";
-import { ContentType } from "Lib/API/NetAPI/ContentType";
-import { HTTPStatus } from "Lib/API/NetAPI/HTTPStatus";
-import { NetHeaders } from "Lib/API/NetAPI/NetHeaders";
+import { NetAPI, NetHeaders, ContentType, HTTPStatus } from "@nova-studios-ltd/typescript-netapi";
 
 // Redux
 import { useDispatch } from "Redux/Hooks";
@@ -51,7 +48,7 @@ export default function RequestResetPage(props: RequestResetPageProps) {
 
     setError(false);
 
-    const resp = await POST(`Auth/RequestReset?email=${email}`, "", new NetHeaders().WithContentType(ContentType.EMPTY));
+    const resp = await NetAPI.POST(`Auth/RequestReset?email=${email}`, "", new NetHeaders().WithContentType(ContentType.EMPTY));
     if (resp.status !== HTTPStatus.OK) setError(true);
     else setEmailSent(true);
   }

@@ -1,4 +1,4 @@
-import { Dictionary, KeyValuePair } from "Lib/Objects/Dictionary";
+import { Dictionary, KeyValuePair } from "@nova-studios-ltd/typescript-dictionary";
 import IndexedDB from "Lib/Storage/IndexedDB";
 import IndexedDBStore from "Lib/Storage/IndexedDBStore";
 import { RequestKey } from "Lib/API/Endpoints/Keystore";

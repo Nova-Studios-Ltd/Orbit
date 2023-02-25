@@ -1,9 +1,6 @@
-import { GET, POST } from "Lib/API/NetAPI/NetAPI";
-import { ContentType } from "Lib/API/NetAPI/ContentType";
-import { HTTPStatus } from "Lib/API/NetAPI/HTTPStatus";
-import { Dictionary, Indexable } from "Lib/Objects/Dictionary";
+import { Dictionary, Indexable } from "@nova-studios-ltd/typescript-dictionary";
+import { NetAPI, NetHeaders, HTTPStatus, ContentType } from "@nova-studios-ltd/typescript-netapi";
 import UserData from "Lib/Storage/Objects/UserData";
-import { NetHeaders } from "Lib/API/NetAPI/NetHeaders";
 
 /**
  * Requests a public key for the provided user
@@ -11,7 +8,7 @@ import { NetHeaders } from "Lib/API/NetAPI/NetHeaders";
  * @returns A string containing the public key
  */
 export async function RequestKey(key_user_uuid: string) : Promise<string | undefined> {
-  const resp = await GET(`/User/@me/Keystore/${key_user_uuid}`, new NetHeaders().WithAuthorization(UserData.Token));
+  const resp = await NetAPI.GET(`/User/@me/Keystore/${key_user_uuid}`, new NetHeaders().WithAuthorization(UserData.Token));
   if (resp.status === HTTPStatus.OK) return resp.payload as string;
   return undefined;
 }
@@ -21,7 +18,7 @@ export async function RequestKey(key_user_uuid: string) : Promise<string | undef
  * @returns A dictionary of keys if successful
  */
 export async function RequestUserKeystore() : Promise<Dictionary<string, string> | undefined> {
-  const resp = await GET(`/User/@me/Keystore`, new NetHeaders().WithAuthorization(UserData.Token));
+  const resp = await NetAPI.GET(`/User/@me/Keystore`, new NetHeaders().WithAuthorization(UserData.Token));
   if (resp.status === HTTPStatus.OK) {
     const d = new Dictionary<string, string>();
     d._dict = resp.payload as Indexable<string, string>
@@ -37,7 +34,7 @@ export async function RequestUserKeystore() : Promise<Dictionary<string, string>
  * @returns True of successful, otherwise false
  */
 export async function SendUserKey(key_user_uuid: string, key: string) : Promise<boolean> {
-  const resp = await POST(`/User/@me/Keystore/${key_user_uuid}`, key, new NetHeaders().WithAuthorization(UserData.Token).WithContentType(ContentType.JSON));
+  const resp = await NetAPI.POST(`/User/@me/Keystore/${key_user_uuid}`, key, new NetHeaders().WithAuthorization(UserData.Token).WithContentType(ContentType.JSON));
   if (resp.status === HTTPStatus.OK) return true;
   return false;
 }

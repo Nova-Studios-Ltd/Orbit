@@ -1,9 +1,6 @@
-import { GET, POST, PATCH, DELETE } from "Lib/API/NetAPI/NetAPI";
-import { ContentType } from "Lib/API/NetAPI/ContentType";
-import { HTTPStatus } from "Lib/API/NetAPI/HTTPStatus";
-import { Dictionary, Indexable } from "Lib/Objects/Dictionary";
+import { Dictionary, Indexable } from "@nova-studios-ltd/typescript-dictionary";
+import { NetAPI, NetHeaders, HTTPStatus, ContentType } from "@nova-studios-ltd/typescript-netapi";
 import UserData from "Lib/Storage/Objects/UserData";
-import { NetHeaders } from "Lib/API/NetAPI/NetHeaders";
 import { FriendStatus } from "Types/UI/Friend";
 
 /**
@@ -12,7 +9,7 @@ import { FriendStatus } from "Types/UI/Friend";
  * @returns A string representing the state
  */
 export async function RequestFriendState(friend_uuid: string) : Promise<FriendStatus> {
-  const resp = await GET<FriendStatus>(`/Friend/${UserData.Uuid}/Friends/${friend_uuid}`, new NetHeaders().WithAuthorization(UserData.Token));
+  const resp = await NetAPI.GET<FriendStatus>(`/Friend/${UserData.Uuid}/Friends/${friend_uuid}`, new NetHeaders().WithAuthorization(UserData.Token));
   if (resp.status === HTTPStatus.OK) {
     return resp.payload;
   }
@@ -25,7 +22,7 @@ export async function RequestFriendState(friend_uuid: string) : Promise<FriendSt
  * @returns A dictionary of friends
  */
 export async function RequestFriends(user_uuid: string) : Promise<Dictionary<string, string>> {
-  const resp = await GET(`/Friend/${user_uuid}/Friends`, new NetHeaders().WithAuthorization(UserData.Token));
+  const resp = await NetAPI.GET(`/Friend/${user_uuid}/Friends`, new NetHeaders().WithAuthorization(UserData.Token));
   if (resp.status === HTTPStatus.OK) {
     const d = new Dictionary<string, string>();
     d._dict = resp.payload as Indexable<string, string>;
@@ -48,7 +45,7 @@ export async function RequestUserFriends() : Promise<Dictionary<string, string>>
  * @returns True if succesful, otherwise false
  */
 export async function SendFriendRequest(request_uuid: string) : Promise<boolean> {
-  const resp = await POST(`/Friend/${UserData.Uuid}/Send/${request_uuid}`, "", new NetHeaders().WithAuthorization(UserData.Token).WithContentType(ContentType.EMPTY));
+  const resp = await NetAPI.POST(`/Friend/${UserData.Uuid}/Send/${request_uuid}`, "", new NetHeaders().WithAuthorization(UserData.Token).WithContentType(ContentType.EMPTY));
   return resp.status === HTTPStatus.OK;
 }
 
@@ -58,7 +55,7 @@ export async function SendFriendRequest(request_uuid: string) : Promise<boolean>
  * @returns True if succesful, otherwise false
  */
 export async function SendAcceptFriend(request_uuid: string) : Promise<boolean> {
-  const resp = await PATCH(`/Friend/${UserData.Uuid}/Accept/${request_uuid}`, "", new NetHeaders().WithAuthorization(UserData.Token).WithContentType(ContentType.EMPTY));
+  const resp = await NetAPI.PATCH(`/Friend/${UserData.Uuid}/Accept/${request_uuid}`, "", new NetHeaders().WithAuthorization(UserData.Token).WithContentType(ContentType.EMPTY));
   return resp.status === HTTPStatus.OK;
 }
 
@@ -68,7 +65,7 @@ export async function SendAcceptFriend(request_uuid: string) : Promise<boolean> 
  * @returns True if succesful, otherwise false
  */
 export async function DECLINEFriend(request_uuid: string) : Promise<boolean> {
-  const resp = await PATCH(`/Friend/${UserData.Uuid}/Decline/${request_uuid}`, "", new NetHeaders().WithAuthorization(UserData.Token).WithContentType(ContentType.EMPTY));
+  const resp = await NetAPI.PATCH(`/Friend/${UserData.Uuid}/Decline/${request_uuid}`, "", new NetHeaders().WithAuthorization(UserData.Token).WithContentType(ContentType.EMPTY));
   return resp.status === HTTPStatus.OK;
 }
 
@@ -78,7 +75,7 @@ export async function DECLINEFriend(request_uuid: string) : Promise<boolean> {
  * @returns True if succesful, otherwise false
  */
 export async function RequestRemoveFriend(request_uuid: string) : Promise<boolean> {
-  const resp = await DELETE(`/Friend/${UserData.Uuid}/Remove/${request_uuid}`, new NetHeaders().WithAuthorization(UserData.Token))
+  const resp = await NetAPI.DELETE(`/Friend/${UserData.Uuid}/Remove/${request_uuid}`, new NetHeaders().WithAuthorization(UserData.Token))
   return resp.status === HTTPStatus.OK;
 }
 
@@ -88,7 +85,7 @@ export async function RequestRemoveFriend(request_uuid: string) : Promise<boolea
  * @returns True if succesful, otherwise false
  */
 export async function RequestBlockFriend(request_uuid: string) : Promise<boolean> {
-  const resp = await PATCH(`/Friend/${UserData.Uuid}/Block/${request_uuid}`, "", new NetHeaders().WithAuthorization(UserData.Token).WithContentType(ContentType.EMPTY));
+  const resp = await NetAPI.PATCH(`/Friend/${UserData.Uuid}/Block/${request_uuid}`, "", new NetHeaders().WithAuthorization(UserData.Token).WithContentType(ContentType.EMPTY));
   return resp.status === HTTPStatus.OK;
 }
 
@@ -98,6 +95,6 @@ export async function RequestBlockFriend(request_uuid: string) : Promise<boolean
  * @returns True if succesful, otherwise false
  */
 export async function RequestUnblockFriend(request_uuid: string) : Promise<boolean> {
-  const resp = await PATCH(`/Friend/${UserData.Uuid}/Unblock/${request_uuid}`, "", new NetHeaders().WithAuthorization(UserData.Token).WithContentType(ContentType.EMPTY));
+  const resp = await NetAPI.PATCH(`/Friend/${UserData.Uuid}/Unblock/${request_uuid}`, "", new NetHeaders().WithAuthorization(UserData.Token).WithContentType(ContentType.EMPTY));
   return resp.status === HTTPStatus.OK;
 }

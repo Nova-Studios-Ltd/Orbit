@@ -1,10 +1,9 @@
 import { createTheme } from "@mui/material";
-import { HTTPStatus } from "Lib/API/NetAPI/HTTPStatus";
-import { GET } from "Lib/API/NetAPI/NetAPI";
 import { LightTheme_Default } from "Lib/CustomizationEngines/Theming/Theme";
 import { Themes } from "Lib/CustomizationEngines/Theming/Themes";
 import { UnloadedUserTheme, UserTheme } from "Lib/CustomizationEngines/Theming/UserTheme";
-import { Dictionary } from "Lib/Objects/Dictionary";
+import { Dictionary } from "@nova-studios-ltd/typescript-dictionary";
+import { NetAPI, HTTPStatus } from "@nova-studios-ltd/typescript-netapi";
 
 
 /**
@@ -19,7 +18,7 @@ export class ThemeEngine {
    * @returns A list of strings with the names of the theme json files
    */
   private static async ReadThemesJson(url: string) : Promise<string[]> {
-    const resp = await GET<Themes>(`${url}/themes.json`);
+    const resp = await NetAPI.GET<Themes>(`${url}/themes.json`);
     if (resp.status === HTTPStatus.OK) {
       return resp.payload.themes;
     }
@@ -35,7 +34,7 @@ export class ThemeEngine {
     url = url.replace(/\/+$/, '');
     const themes = await this.ReadThemesJson(url);
     for (let t = 0; t < themes.length; t++) {
-      const theme = await GET<UnloadedUserTheme>(`${url}/${themes[t]}.json`);
+      const theme = await NetAPI.GET<UnloadedUserTheme>(`${url}/${themes[t]}.json`);
       if (theme.status === HTTPStatus.OK && theme.payload.theme !== undefined) {
         this.Themes.setValue(theme.payload.name, theme.payload);
         console.log(`Successfully loaded ${url}/${themes[t]}.json`);

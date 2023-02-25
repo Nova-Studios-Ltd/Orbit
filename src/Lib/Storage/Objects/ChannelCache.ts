@@ -1,5 +1,5 @@
 import { IMessageProps } from "Types/API/Interfaces/IMessageProps";
-import { Dictionary } from "Lib/Objects/Dictionary";
+import { Dictionary } from "@nova-studios-ltd/typescript-dictionary";
 import IndexedDB from "Lib/Storage/IndexedDB";
 import IndexedDBStore from "Lib/Storage/IndexedDBStore";
 import NSPerformace from "Lib/Debug/NSPerformace";

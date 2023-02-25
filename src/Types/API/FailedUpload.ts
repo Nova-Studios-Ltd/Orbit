@@ -1,4 +1,4 @@
-import { HTTPStatus } from "Lib/API/NetAPI/HTTPStatus";
+import { HTTPStatus } from "@nova-studios-ltd/typescript-netapi";
 
 export enum FailReason {
   UploadSizeExceeded = 413,

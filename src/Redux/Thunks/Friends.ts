@@ -2,7 +2,7 @@ import { IsValidUsername } from "Lib/Utility/Utility";
 import { RequestCreateChannel, RequestCreateGroup } from "Lib/API/Endpoints/Channels";
 import { SendFriendRequest, SendAcceptFriend, RequestRemoveFriend, RequestBlockFriend, RequestUnblockFriend, RequestUserFriends, RequestFriendState } from "Lib/API/Endpoints/Friends";
 import { RequestUser, RequestUserUUID } from "Lib/API/Endpoints/User";
-import { Dictionary } from "Lib/Objects/Dictionary";
+import { Dictionary } from "@nova-studios-ltd/typescript-dictionary";
 
 import { AppThunk } from "Redux/Store";
 import { ChannelLoad, channelContainsUUID } from "Redux/Thunks/Channels";

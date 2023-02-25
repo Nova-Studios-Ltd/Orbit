@@ -1,6 +1,6 @@
 // Source
 import { RequestUser } from "Lib/API/Endpoints/User";
-import { Dictionary } from "Lib/Objects/Dictionary";
+import { Dictionary } from "@nova-studios-ltd/typescript-dictionary";
 import { WaitTill } from "Lib/Utility/Utility";
 
 // Types

@@ -1,4 +1,4 @@
-import { HTTPStatus } from "Lib/API/NetAPI/HTTPStatus";
+import { HTTPStatus } from "@nova-studios-ltd/typescript-netapi";
 import Dimensions from "Types/Dimensions";
 import { API_DOMAIN } from "vars";
 import MimeTypeParser, { ClipboardSupportedMimeType, FileType } from "./MimeTypeParser";

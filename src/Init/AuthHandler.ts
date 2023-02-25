@@ -1,10 +1,8 @@
 // Source
+import { NetAPI, NetHeaders, ContentType, HTTPStatus } from "@nova-studios-ltd/typescript-netapi";
 import WebsocketInit from "Init/WebsocketEventInit";
 import { RequestUserKeystore } from "Lib/API/Endpoints/Keystore";
 import { RequestUser } from "Lib/API/Endpoints/User";
-import { ContentType } from "Lib/API/NetAPI/ContentType";
-import { HTTPStatus} from "Lib/API/NetAPI/HTTPStatus";
-import { POST } from "Lib/API/NetAPI/NetAPI";
 import NCWebsocket from "Lib/API/NCWebsocket";
 import { Flags, HasUrlFlag } from "Lib/Debug/Flags";
 import { AESDecrypt } from "Lib/Encryption/AES";
@@ -22,7 +20,7 @@ import IUserLoginData from "Types/API/Interfaces/IUserLoginData";
 import { LoginStatus } from "Types/Enums";
 
 import { WEBSOCKET_DOMAIN } from "vars";
-import { NetHeaders } from "Lib/API/NetAPI/NetHeaders";
+
 
 
 export let Websocket: NCWebsocket;
@@ -31,7 +29,7 @@ export async function LoginNewUser(email: string, password: string) : Promise<Lo
   const shaPass = await SHA256(password);
 
   // Attempt to log user in
-  const loginResp = await POST("Auth/Login", JSON.stringify({password: shaPass.Base64, email: email}), new NetHeaders().WithContentType(ContentType.JSON));
+  const loginResp = await NetAPI.POST("Auth/Login", JSON.stringify({password: shaPass.Base64, email: email}), new NetHeaders().WithContentType(ContentType.JSON));
   if (loginResp.status === HTTPStatus.Forbidden) return LoginStatus.InvalidCredentials;
   else if (loginResp.status === HTTPStatus.NotFound) return LoginStatus.UnknownUser;
   else if (loginResp.status === HTTPStatus.ServerError) return LoginStatus.ServerError;

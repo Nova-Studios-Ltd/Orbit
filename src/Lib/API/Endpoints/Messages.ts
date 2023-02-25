@@ -7,10 +7,7 @@ import Base64Uint8Array from "Lib/Objects/Base64Uint8Array";
 import { ChannelCache } from "Lib/Storage/Objects/ChannelCache";
 import UserData from "Lib/Storage/Objects/UserData";
 import { IMessageProps } from "Types/API/Interfaces/IMessageProps";
-import { GET, POST, PUT, DELETE, POSTBuffer } from "Lib/API/NetAPI/NetAPI";
-import { ContentType } from "Lib/API/NetAPI/ContentType";
-import { HTTPStatus } from "Lib/API/NetAPI/HTTPStatus";
-import { Dictionary, Indexable } from "Lib/Objects/Dictionary";
+import { Dictionary, Indexable } from "@nova-studios-ltd/typescript-dictionary";
 import MessageAttachment from "Types/API/MessageAttachment";
 import FailedUpload, { HTTPStatusToFailReason } from "Types/API/FailedUpload";
 import { IRawChannelProps } from "Types/API/Interfaces/IRawChannelProps";
@@ -19,10 +16,7 @@ import { GetImageSize } from "Lib/Utility/ContentUtility";
 import { RemoveEXIF } from "Lib/EXIF";
 import KeyStore from "Lib/Storage/Objects/KeyStore";
 import { GetFileExtension } from "Lib/Utility/Utility";
-import { NetHeaders } from "Lib/API/NetAPI/NetHeaders";
-import { NetResponse } from "Lib/API/NetAPI/NetResponse";
-import { BufferPayload } from "Lib/API/NetAPI/BufferPayload";
-
+import { NetAPI, NetHeaders, HTTPStatus, BufferPayload, ContentType } from "@nova-studios-ltd/typescript-netapi";
 
 async function DecryptMessage(message: IMessageProps) : Promise<IMessageProps> {
   const perf = new NSPerformace("DecryptMessage");
@@ -66,7 +60,7 @@ export async function RequestMessage(channel_uuid: string, message_id: string, b
     const message = cache.GetMessage(message_id);
     if ((await message).Satisfied) return (await message).Messages[0];
   }
-  const resp = await GET(`Channel/${channel_uuid}/Messages/${message_id}`, new NetHeaders().WithAuthorization(UserData.Token));
+  const resp = await NetAPI.GET(`Channel/${channel_uuid}/Messages/${message_id}`, new NetHeaders().WithAuthorization(UserData.Token));
   if (resp.status === HTTPStatus.OK) {
     const m = await DecryptMessage(resp.payload as IMessageProps);
     cache.SetMessage(message_id, m);
@@ -109,7 +103,7 @@ export async function RequestMessages(channel_uuid: string, callback: (messages:
       newLimit = limit;
       newBefore = before;
     }
-    const resp = await GET(`Channel/${channel_uuid}/Messages?limit=${newLimit}&after=${after}&before=${newBefore}`, new NetHeaders().WithAuthorization(UserData.Token));
+    const resp = await NetAPI.GET(`Channel/${channel_uuid}/Messages?limit=${newLimit}&after=${after}&before=${newBefore}`, new NetHeaders().WithAuthorization(UserData.Token));
     if (resp.status === HTTPStatus.OK) {
       const rawMessages = resp.payload as IMessageProps[];
       const decryptedMessages = [] as IMessageProps[];
@@ -139,7 +133,7 @@ export async function RequestMessages(channel_uuid: string, callback: (messages:
  * @returns A dictionary of message ids to timestamps
  */
 export async function RequestMessageTimestamps(channel_uuid: string, limit = 30, after = -1, before = 2147483647) : Promise<Dictionary<string, string>> {
-  const resp = await GET(`/Channel/${channel_uuid}/Messages/EditTimestamps?limit=${limit}&after=${after}&before=${before}`, new NetHeaders().WithAuthorization(UserData.Token));
+  const resp = await NetAPI.GET(`/Channel/${channel_uuid}/Messages/EditTimestamps?limit=${limit}&after=${after}&before=${before}`, new NetHeaders().WithAuthorization(UserData.Token));
   return new Dictionary(resp.payload as Indexable<string, string>);
 }
 
@@ -151,7 +145,7 @@ export async function RequestMessageTimestamps(channel_uuid: string, limit = 30,
  * @param callback Function to call when the request completes
  */
 export async function SendMessage(channel_uuid: string, contents: string, rawAttachments: MessageAttachment[], callback: (sent: boolean, failedUploads: FailedUpload[]) => void) {
-  GET<IRawChannelProps>(`/Channel/${channel_uuid}`, new NetHeaders().WithAuthorization(UserData.Token)).then(async (resp) => {
+  NetAPI.GET<IRawChannelProps>(`/Channel/${channel_uuid}`, new NetHeaders().WithAuthorization(UserData.Token)).then(async (resp) => {
     if (resp.status === HTTPStatus.OK) {
       const channel = resp.payload;
       if (channel.members === undefined) {
@@ -167,7 +161,7 @@ export async function SendMessage(channel_uuid: string, contents: string, rawAtt
       const attachments = [] as string[];
       let token = "empty";
       if (rawAttachments.length > 0) {
-        const postToken = await GET(`/Channel/${channel_uuid}/RequestContentToken?uploads=${rawAttachments.length}`, new NetHeaders().WithAuthorization(UserData.Token));
+        const postToken = await NetAPI.GET(`/Channel/${channel_uuid}/RequestContentToken?uploads=${rawAttachments.length}`, new NetHeaders().WithAuthorization(UserData.Token));
         token = postToken.payload as string;
         if (postToken.status !== HTTPStatus.OK) return;
         for (let a = 0; a < rawAttachments.length; a++) {
@@ -200,7 +194,7 @@ export async function SendMessage(channel_uuid: string, contents: string, rawAtt
 
           encKeys[UserData.Uuid] = (await RSAEncrypt(UserData.KeyPair.PublicKey, attachmentKey)).Base64;
 
-          const re = await POSTBuffer(`/Channel/${channel_uuid}?width=${imageSize.width}&height=${imageSize.height}&contentToken=${token}&fileType=${GetFileExtension(attachment.filename)}`, new BufferPayload(new Blob([encAttachment.content]), encFilename.content.Base64).WithExtraField("keys", JSON.stringify(encKeys)).WithExtraField("iv", encAttachment.iv.Base64), new NetHeaders().WithAuthorization(UserData.Token))
+          const re = await NetAPI.POSTBuffer(`/Channel/${channel_uuid}?width=${imageSize.width}&height=${imageSize.height}&contentToken=${token}&fileType=${GetFileExtension(attachment.filename)}`, new BufferPayload(new Blob([encAttachment.content]), encFilename.content.Base64).WithExtraField("keys", JSON.stringify(encKeys)).WithExtraField("iv", encAttachment.iv.Base64), new NetHeaders().WithAuthorization(UserData.Token))
           if (re.status === HTTPStatus.OK) attachments.push(re.payload as string);
           else failedUploads.push(new FailedUpload(HTTPStatusToFailReason(re.status), attachment.filename, attachment.id));
         }
@@ -217,7 +211,7 @@ export async function SendMessage(channel_uuid: string, contents: string, rawAtt
         }
       }
       encKeys[UserData.Uuid] = (await RSAEncrypt(UserData.KeyPair.PublicKey, messageKey)).Base64;
-      const mPost = await POST(`/Channel/${channel_uuid}/Messages?contentToken=${token}`, JSON.stringify({Content: encryptedMessage.content.Base64, IV: encryptedMessage.iv.Base64, EncryptedKeys: encKeys, Attachments: attachments}), new NetHeaders().WithAuthorization(UserData.Token).WithContentType(ContentType.JSON))
+      const mPost = await NetAPI.POST(`/Channel/${channel_uuid}/Messages?contentToken=${token}`, JSON.stringify({Content: encryptedMessage.content.Base64, IV: encryptedMessage.iv.Base64, EncryptedKeys: encKeys, Attachments: attachments}), new NetHeaders().WithAuthorization(UserData.Token).WithContentType(ContentType.JSON))
       if (mPost.status === HTTPStatus.OK || failedUploads.length === 0) callback(true, [] as FailedUpload[]);
       else callback(false, failedUploads);
       return;
@@ -237,7 +231,7 @@ export async function RequestEditMessage(channel_uuid: string, message_id: strin
   if (oldMessage === undefined) return false;
   const key = await RSADecrypt(UserData.KeyPair.PrivateKey, new Base64Uint8Array(oldMessage.encryptedKeys[UserData.Uuid]));
   const c = await AESEncrypt(key, Base64Uint8Array.FromString(message), new Base64Uint8Array(oldMessage.iv));
-  const resp = await PUT(`Channel/${channel_uuid}/Messages/${message_id}`, JSON.stringify({content: c.content}), new NetHeaders().WithAuthorization(UserData.Token).WithContentType(ContentType.JSON));
+  const resp = await NetAPI.PUT(`Channel/${channel_uuid}/Messages/${message_id}`, JSON.stringify({content: c.content}), new NetHeaders().WithAuthorization(UserData.Token).WithContentType(ContentType.JSON));
   if (resp.status === HTTPStatus.OK) return true;
   return false;
 }
@@ -249,7 +243,7 @@ export async function RequestEditMessage(channel_uuid: string, message_id: strin
  * @returns True if sucess, otherwise False
  */
 export async function RequestDeleteMessage(channel_uuid: string, message_id: string) : Promise<boolean> {
-  const resp = await DELETE(`Channel/${channel_uuid}/Messages/${message_id}`, new NetHeaders().WithAuthorization(UserData.Token));
+  const resp = await NetAPI.DELETE(`Channel/${channel_uuid}/Messages/${message_id}`, new NetHeaders().WithAuthorization(UserData.Token));
   if (resp.status === HTTPStatus.OK) return true;
   return false;
 }
@@ -261,7 +255,7 @@ export async function RequestDeleteMessage(channel_uuid: string, message_id: str
  * @param attachment_uuid Uuid of the attachment
  */
 export async function RequestDeleteAttachment(channel_uuid: string, message_id: string, attachment_uuid: string) : Promise<boolean> {
-  const resp = await DELETE(`Channel/${channel_uuid}/Messages/${message_id}/Attachments/${attachment_uuid}`, new NetHeaders().WithAuthorization(UserData.Token));
+  const resp = await NetAPI.DELETE(`Channel/${channel_uuid}/Messages/${message_id}/Attachments/${attachment_uuid}`, new NetHeaders().WithAuthorization(UserData.Token));
   if (resp.status === HTTPStatus.OK) return true;
   return false;
 }

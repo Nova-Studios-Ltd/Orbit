@@ -1,5 +1,5 @@
 import IWebSocketEvent from "Types/API/Interfaces/IWebsocketEvent";
-import { Dictionary } from "Lib/Objects/Dictionary";
+import { Dictionary } from "@nova-studios-ltd/typescript-dictionary";
 
 /**
  * Represents the state of NCWebSocket

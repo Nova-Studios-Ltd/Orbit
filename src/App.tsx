@@ -71,8 +71,11 @@ function App() {
   t = ThemeEngine.GetTheme(cTheme);
 
   useEffect(() => {
+    console.log(onFirstLoad);
     if (onFirstLoad) {
+      console.log("Loading themes");
       (async () => {
+        console.log("Loading themes");
         await ThemeEngine.LoadThemesFromURL(`${window.location.origin}/Themes/`);
         const lastTheme = localStorage.getItem("Theme");
         if (lastTheme === null) {

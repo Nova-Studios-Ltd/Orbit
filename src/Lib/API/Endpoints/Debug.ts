@@ -1,5 +1,4 @@
-import { GET } from "Lib/API/NetAPI/NetAPI";
-import { HTTPStatus } from "Lib/API/NetAPI/HTTPStatus";
+import { HTTPStatus, NetAPI } from "@nova-studios-ltd/typescript-netapi";
 
 /**
  * Sends a ping and returns the latency
@@ -8,7 +7,7 @@ import { HTTPStatus } from "Lib/API/NetAPI/HTTPStatus";
  */
 export async function SendPing(status: number = HTTPStatus.OK) : Promise<number> {
   const start = Date.now();
-  const resp = await GET(`/Events/Ping?status=${status}`);
+  const resp = await NetAPI.GET(`/Events/Ping?status=${status}`);
   if (resp.status === HTTPStatus.OK) {
     return Date.now() - start;
   }
